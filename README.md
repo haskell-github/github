@@ -23,18 +23,18 @@ Example Usage
     main = do
       possibleCommits ← Github.commitsFor "thoughtbot" "paperclip"
       case possibleCommits of
-        (Left error)    → putStrLn $ "Error: " ++ (show error)
-        (Right commits) → putStrLn $ intercalate "λnλn" $ map formatCommit commits
+        (Left error)    -> putStrLn $ "Error: " ++ (show error)
+        (Right commits) -> putStrLn $ intercalate "\n\n" $ map formatCommit commits
     
-    formatCommit :: Github.Commit → String
+    formatCommit :: Github.Commit -> String
     formatCommit commit =
       "commit " ++ (Github.commitSha commit) ++
-        "λnAuthor: " ++ (formatAuthor author) ++
-        "λnDate:   " ++ (show $ Github.fromGithubDate $ Github.authorDate author) ++
-        "λnλnλt" ++ (Github.commitMessage commit)
+        "\nAuthor: " ++ (formatAuthor author) ++
+        "\nDate:   " ++ (show $ Github.fromGithubDate $ Github.authorDate author) ++
+        "\n\n\t" ++ (Github.commitMessage commit)
       where author = Github.commitAuthor commit
     
-    formatAuthor :: Github.Author → String
+    formatAuthor :: Github.Author -> String
     formatAuthor author =
       (Github.authorName author) ++ " <" ++ (Github.authorEmail author) ++ ">"
 
