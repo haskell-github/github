@@ -21,14 +21,16 @@ Example Usage
     import qualified Github.Repos.Commits as Github
 
     main = do
-      commits <- Github.commitsFor "thoughtbot" "paperclip"
-      putStrLn $ map formatCommit commits
+      possibleCommits <- Github.commitsFor "thoughtbot" "paperclip"
+      case possibleCommits of
+        (Left error)    -> putStrLn $ "Error: " ++ (show error)
+        (Right commits) -> putStrLn $ map formatCommit commits
 
     formatCommit :: Commit -> String
     formatCommit commit =
       "commit " ++ (Github.commitSha commit) ++
         "\nAuthor: " ++ (formatAuthor $ Github.commitAuthor commit) ++
-        "\nDate:   " ++ (show $ Github.commitCommiterDate commit) ++
+        "\nDate:   " ++ (show $ Github.commitAuthorDate commit) ++
         "\n\n\t" ++ (Github.commitMessage commit)
 
     formatAuthor :: Author -> String
