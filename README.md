@@ -21,20 +21,20 @@ Example Usage
     import qualified Github.Repos.Commits as Github
 
     main = do
-      possibleCommits <- Github.commitsFor "thoughtbot" "paperclip"
+      possibleCommits ← Github.commitsFor "thoughtbot" "paperclip"
       case possibleCommits of
-        (Left error)    -> putStrLn $ "Error: " ++ (show error)
-        (Right commits) -> putStrLn $ show $ map formatCommit commits
-
-    formatCommit :: Commit -> String
+        (Left error)    → putStrLn $ "Error: " ++ (show error)
+        (Right commits) → putStrLn $ intercalate "λnλn" $ map formatCommit commits
+    
+    formatCommit :: Github.Commit → String
     formatCommit commit =
       "commit " ++ (Github.commitSha commit) ++
-        "\nAuthor: " ++ (formatAuthor author) ++
-        "\nDate:   " ++ (show $ Github.authorDate author) ++
-        "\n\n\t" ++ (Github.commitMessage commit)
+        "λnAuthor: " ++ (formatAuthor author) ++
+        "λnDate:   " ++ (show $ Github.fromGithubDate $ Github.authorDate author) ++
+        "λnλnλt" ++ (Github.commitMessage commit)
       where author = Github.commitAuthor commit
-
-    formatAuthor :: Author -> String
+    
+    formatAuthor :: Github.Author → String
     formatAuthor author =
       (Github.authorName author) ++ " <" ++ (Github.authorEmail author) ++ ">"
 
