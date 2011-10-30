@@ -1,22 +1,12 @@
 module Github.Repos.Commits (
-  commitsFor
-, Commit(..)
-, Author(..)
+ commitsFor
+,module Github.Data
 ) where
 
-import Data.Time
-
-data Commit = Commit {
-   commitSha     :: String
-  ,commitAuthor  :: Author
-  ,commitMessage :: String
-}
-
-data Author = Author {
-   authorName  :: String
-  ,authorEmail :: String
-  ,authorDate  :: UTCTime
-}
+import Github.Data
+import Github.Repos.Commits.Private
 
 commitsFor :: String -> String -> IO (Either String [Commit])
-commitsFor user repo = undefined
+commitsFor user repo = do
+  commitsJsonString <- githubApiGet $ buildUrl ["repos", user, repo, "commits"]
+  return $ parseCommitsJson commitsJsonString
