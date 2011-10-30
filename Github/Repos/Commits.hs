@@ -9,4 +9,4 @@ import Github.Repos.Commits.Private
 commitsFor :: String -> String -> IO (Either String [Commit])
 commitsFor user repo = do
   commitsJsonString <- githubApiGet $ buildUrl ["repos", user, repo, "commits"]
-  return $ parseCommitsJson commitsJsonString
+  return $ either Left parseCommitsJson commitsJsonString

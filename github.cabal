@@ -55,7 +55,8 @@ Library
                  bytestring,
                  containers,
                  text,
-                 old-locale
+                 old-locale,
+                 download-curl
   
   -- Modules not exported by this package.
   -- Other-modules:       
