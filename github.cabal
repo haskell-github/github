@@ -37,7 +37,7 @@ Build-type:          Simple
 
 -- Extra files to be distributed with the package, such as examples or
 -- a README.
-Extra-source-files:  README.md
+Extra-source-files:  README.md, Sample.hs
 
 -- Constraint on the version of Cabal needed to build this package.
 Cabal-version:       >=1.2
@@ -48,7 +48,7 @@ Library
   Exposed-modules:     Github.Repos.Commits
   
   -- Packages needed in order to build this package.
-  -- Build-depends:       
+  Build-depends:       haskell2010, time
   
   -- Modules not exported by this package.
   -- Other-modules:       

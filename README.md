@@ -24,18 +24,19 @@ Example Usage
       possibleCommits <- Github.commitsFor "thoughtbot" "paperclip"
       case possibleCommits of
         (Left error)    -> putStrLn $ "Error: " ++ (show error)
-        (Right commits) -> putStrLn $ map formatCommit commits
+        (Right commits) -> putStrLn $ show $ map formatCommit commits
 
     formatCommit :: Commit -> String
     formatCommit commit =
       "commit " ++ (Github.commitSha commit) ++
-        "\nAuthor: " ++ (formatAuthor $ Github.commitAuthor commit) ++
-        "\nDate:   " ++ (show $ Github.commitAuthorDate commit) ++
+        "\nAuthor: " ++ (formatAuthor author) ++
+        "\nDate:   " ++ (show $ Github.authorDate author) ++
         "\n\n\t" ++ (Github.commitMessage commit)
+      where author = Github.commitAuthor commit
 
     formatAuthor :: Author -> String
     formatAuthor author =
-      (Github.authorName author) ++ " <" ++ (Github.authorEmail) ++ ">
+      (Github.authorName author) ++ " <" ++ (Github.authorEmail author) ++ ">"
 
 Documentation
 =============
