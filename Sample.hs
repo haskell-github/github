@@ -13,10 +13,11 @@ formatCommit :: Github.Commit -> String
 formatCommit commit =
   "commit " ++ (Github.commitSha commit) ++
     "\nAuthor: " ++ (formatAuthor author) ++
-    "\nDate:   " ++ (show $ Github.fromGithubDate $ Github.authorDate author) ++
-    "\n\n\t" ++ (Github.commitMessage commit)
-  where author = Github.commitAuthor commit
+    "\nDate:   " ++ (show $ Github.fromGithubDate $ Github.gitUserDate author) ++
+    "\n\n\t" ++ (Github.gitCommitMessage gitCommit)
+  where author = Github.gitCommitAuthor gitCommit
+        gitCommit = Github.commitGitCommit commit
 
-formatAuthor :: Github.Author -> String
+formatAuthor :: Github.GitUser -> String
 formatAuthor author =
-  (Github.authorName author) ++ " <" ++ (Github.authorEmail author) ++ ">"
+  (Github.gitUserName author) ++ " <" ++ (Github.gitUserEmail author) ++ ">"

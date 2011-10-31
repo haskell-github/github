@@ -45,7 +45,7 @@ Cabal-version:       >=1.2
 
 Library
   -- Modules exported by the library.
-  Exposed-modules:     Github.Repos.Commits, Github.Data
+  Exposed-modules:     Github.Repos.Commits, Github.Data, Github.Data.Definitions
   
   -- Packages needed in order to build this package.
   Build-depends: base,
