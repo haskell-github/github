@@ -13,7 +13,7 @@ import Data.Time
 import Data.Data
 
 newtype GithubDate = GithubDate { fromGithubDate :: UTCTime }
-  deriving (Show, Data, Typeable)
+  deriving (Show, Data, Typeable, Eq, Ord)
 
 data Commit = Commit {
    commitSha       :: String
@@ -22,12 +22,12 @@ data Commit = Commit {
   ,commitGitCommit :: GitCommit
   ,commitCommitter :: Maybe GithubUser
   ,commitAuthor    :: Maybe GithubUser
-} deriving (Show, Data, Typeable)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data Tree = Tree {
    treeSha :: String
   ,treeUrl :: String
-} deriving (Show, Data, Typeable)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data GitCommit = GitCommit {
    gitCommitMessage :: String
@@ -35,7 +35,7 @@ data GitCommit = GitCommit {
   ,gitCommitCommitter :: GitUser
   ,gitCommitAuthor :: GitUser
   ,gitCommitTree :: Tree
-} deriving (Show, Data, Typeable)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data GithubUser = GithubUser {
    githubUserAvatarUrl :: String
@@ -43,10 +43,10 @@ data GithubUser = GithubUser {
   ,githubUserUrl :: String
   ,githubUserId :: Int
   ,githubUserGravatarId :: String
-} deriving (Show, Data, Typeable)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data GitUser = GitUser {
    gitUserName  :: String
   ,gitUserEmail :: String
   ,gitUserDate  :: GithubDate
-} deriving (Show, Data, Typeable)
+} deriving (Show, Data, Typeable, Eq, Ord)
