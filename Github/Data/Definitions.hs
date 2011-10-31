@@ -63,3 +63,17 @@ data Stats = Stats {
   ,statsTotal :: Int
   ,statsDeletions :: Int
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data Comment = Comment {
+   commentPosition :: Maybe Int
+  ,commentLine :: Maybe Int
+  ,commentBody :: String
+  ,commentCommitId :: String
+  ,commentUpdatedAt :: UTCTime
+  ,commentHtmlUrl :: String
+  ,commentUrl :: String
+  ,commentCreatedAt :: UTCTime
+  ,commentPath :: String
+  ,commentUser :: GithubUser
+  ,commentId :: Int
+} deriving (Show, Data, Typeable, Eq, Ord)

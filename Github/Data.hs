@@ -81,6 +81,21 @@ instance FromJSON Stats where
           <*> o .: "deletions"
   parseJSON _          = fail "Could not build a Stats"
 
+instance FromJSON Comment where
+  parseJSON (Object o) =
+    Comment <$> o .:? "position"
+            <*> o .:? "line"
+            <*> o .: "body"
+            <*> o .: "commit_id"
+            <*> o .: "updated_at"
+            <*> o .: "html_url"
+            <*> o .: "url"
+            <*> o .: "created_at"
+            <*> o .: "path"
+            <*> o .: "user"
+            <*> o .: "id"
+  parseJSON _          = fail "Could not build a Comment"
+
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of
                    Nothing -> pure []
