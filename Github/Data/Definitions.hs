@@ -1,13 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 
-module Github.Data.Definitions (
-  GithubDate(..)
-, Commit(..)
-, Tree(..)
-, GitCommit(..)
-, GithubUser(..)
-, GitUser(..)
-) where
+module Github.Data.Definitions where
 
 import Data.Time
 import Data.Data
@@ -22,6 +15,8 @@ data Commit = Commit {
   ,commitGitCommit :: GitCommit
   ,commitCommitter :: Maybe GithubUser
   ,commitAuthor    :: Maybe GithubUser
+  ,commitFiles     :: [File]
+  ,commitStats     :: Maybe Stats
 } deriving (Show, Data, Typeable, Eq, Ord)
 
 data Tree = Tree {
@@ -49,4 +44,22 @@ data GitUser = GitUser {
    gitUserName  :: String
   ,gitUserEmail :: String
   ,gitUserDate  :: GithubDate
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data File = File {
+   filesBlobUrl :: String
+  ,filesStatus :: String
+  ,filesRawUrl :: String
+  ,filesAdditions :: Int
+  ,filesSha :: String
+  ,filesChanges :: Int
+  ,filesPatch :: String
+  ,filesFilename :: String
+  ,filesDeletions :: Int
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data Stats = Stats {
+   statsAdditions :: Int
+  ,statsTotal :: Int
+  ,statsDeletions :: Int
 } deriving (Show, Data, Typeable, Eq, Ord)

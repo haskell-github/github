@@ -19,6 +19,16 @@ parseCommitsJson jsonString =
               anythingElse ->  Left $ show anythingElse
        undone -> Left $ show undone
 
+parseCommitJson :: BS.ByteString -> Either String Commit
+parseCommitJson jsonString =
+  let parsed = parse (fromJSON <$> json) jsonString in
+  case parsed of
+       Data.Attoparsec.Done _ jsonResult -> do
+         case jsonResult of
+              (Success s) -> Right s
+              anythingElse ->  Left $ show anythingElse
+       undone -> Left $ show undone
+
 buildUrl :: [String] -> String
 buildUrl paths = "https://api.github.com/" ++ intercalate "/" paths
 

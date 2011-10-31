@@ -27,6 +27,8 @@ instance FromJSON Commit where
            <*> o .: "commit"
            <*> o .:? "committer"
            <*> o .:? "author"
+           <*> o .:< "files"
+           <*> o .:? "stats"
   parseJSON _          = fail "Could not build a Commit"
 
 instance FromJSON Tree where
@@ -58,3 +60,28 @@ instance FromJSON GitUser where
             <*> o .: "email"
             <*> o .: "date"
   parseJSON _          = fail "Could not build a GitUser"
+
+instance FromJSON File where
+  parseJSON (Object o) =
+    File <$> o .: "blob_url"
+         <*> o .: "status"
+         <*> o .: "raw_url"
+         <*> o .: "additions"
+         <*> o .: "sha"
+         <*> o .: "changes"
+         <*> o .: "patch"
+         <*> o .: "filename"
+         <*> o .: "deletions"
+  parseJSON _          = fail "Could not build a File"
+
+instance FromJSON Stats where
+  parseJSON (Object o) =
+    Stats <$> o .: "additions"
+          <*> o .: "total"
+          <*> o .: "deletions"
+  parseJSON _          = fail "Could not build a Stats"
+
+(.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
+obj .:< key = case Map.lookup key obj of
+                   Nothing -> pure []
+                   Just v  -> parseJSON v

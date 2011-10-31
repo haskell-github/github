@@ -1,23 +1,27 @@
-module Sample where
+module GitShow where
 
 import qualified Github.Repos.Commits as Github
 import Data.List
 
 main = do
-  possibleCommits <- Github.commitsFor "thoughtbot" "paperclip"
-  case possibleCommits of
+  possibleCommit <- Github.commit "thoughtbot" "paperclip" "bc5c51d1ece1ee45f94b056a0f5a1674d7e8cba9"
+  case possibleCommit of
     (Left error)    -> putStrLn $ "Error: " ++ (show error)
-    (Right commits) -> putStrLn $ intercalate "\n\n" $ map formatCommit commits
+    (Right commit) -> putStrLn $ formatCommit commit
 
 formatCommit :: Github.Commit -> String
 formatCommit commit =
   "commit " ++ (Github.commitSha commit) ++
     "\nAuthor: " ++ (formatAuthor author) ++
     "\nDate:   " ++ (show $ Github.fromGithubDate $ Github.gitUserDate author) ++
-    "\n\n\t" ++ (Github.gitCommitMessage gitCommit)
+    "\n\n\t" ++ (Github.gitCommitMessage gitCommit) ++ "\n" ++
+    patches
   where author = Github.gitCommitAuthor gitCommit
         gitCommit = Github.commitGitCommit commit
+        patches = 
+          intercalate "\n" $ map Github.filesPatch $ Github.commitFiles commit
 
 formatAuthor :: Github.GitUser -> String
 formatAuthor author =
   (Github.gitUserName author) ++ " <" ++ (Github.gitUserEmail author) ++ ">"
+

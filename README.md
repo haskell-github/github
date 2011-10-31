@@ -18,7 +18,7 @@ Or from the command line:
 Example Usage
 =============
 
-See the file Sample.hs .
+See the samples in the samples/ directory.
 
 Documentation
 =============
