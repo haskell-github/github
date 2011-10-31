@@ -17,7 +17,7 @@ instance FromJSON GithubDate where
     case parseTime defaultTimeLocale "%FT%T%Z" (T.unpack t) of
          Just d -> pure $ GithubDate d
          _      -> fail "could not parse Github datetime"
-  parseJSON v   = fail "Given something besides a String"
+  parseJSON _          = fail "Given something besides a String"
 
 instance FromJSON Commit where
   parseJSON (Object o) =

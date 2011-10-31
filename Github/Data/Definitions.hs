@@ -73,7 +73,7 @@ data Comment = Comment {
   ,commentHtmlUrl :: String
   ,commentUrl :: String
   ,commentCreatedAt :: UTCTime
-  ,commentPath :: String
+  ,commentPath :: Maybe String
   ,commentUser :: GithubUser
   ,commentId :: Int
 } deriving (Show, Data, Typeable, Eq, Ord)

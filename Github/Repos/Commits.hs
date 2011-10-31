@@ -2,6 +2,7 @@ module Github.Repos.Commits (
  commitsFor
 ,commit
 ,commentsFor
+,commitCommentsFor
 ,module Github.Data
 ) where
 
@@ -16,3 +17,7 @@ commit user repo sha1 = fullGithubGet ["repos", user, repo, "commits", sha1]
 
 commentsFor :: String -> String -> IO (Either String [Comment])
 commentsFor user repo = fullGithubGet ["repos", user, repo, "comments"]
+
+commitCommentsFor :: String -> String -> String -> IO (Either String [Comment])
+commitCommentsFor user repo sha1 =
+  fullGithubGet ["repos", user, repo, "commits", sha1, "comments"]
