@@ -9,16 +9,10 @@ import Github.Data
 import Github.Repos.Commits.Private
 
 commitsFor :: String -> String -> IO (Either String [Commit])
-commitsFor user repo = do
-  commitsJsonString <- githubApiGet $ buildUrl ["repos", user, repo, "commits"]
-  return $ either Left parseCommitsJson commitsJsonString
+commitsFor user repo = fullGithubGet ["repos", user, repo, "commits"]
 
 commit :: String -> String -> String -> IO (Either String Commit)
-commit user repo sha1 = do
-  commitJsonString <- githubApiGet $ buildUrl ["repos", user, repo, "commits", sha1]
-  return $ either Left parseCommitJson commitJsonString
+commit user repo sha1 = fullGithubGet ["repos", user, repo, "commits", sha1]
 
 commentsFor :: String -> String -> IO (Either String [Comment])
-commentsFor user repo = do
-  commentsJsonString <- githubApiGet $ buildUrl ["repos", user, repo, "comments"]
-  return $ either Left parseCommentsJson commentsJsonString
+commentsFor user repo = fullGithubGet ["repos", user, repo, "comments"]
