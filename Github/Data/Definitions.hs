@@ -93,3 +93,8 @@ data NewComment = NewComment {
   ,newCommentPath       :: String
   ,newCommentPosition   :: Int
 } deriving (Show, Eq, Ord)
+
+-- A comment update.
+data UpdatedComment = UpdatedComment {
+  updatedCommentBody :: String
+} deriving (Show, Eq, Ord)

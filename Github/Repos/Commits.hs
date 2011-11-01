@@ -5,6 +5,7 @@ module Github.Repos.Commits (
 ,commitCommentsFor
 ,postCommentOn
 ,commitCommentFor
+,updateCommentWith
 ,module Github.Data
 ) where
 
@@ -32,3 +33,8 @@ postCommentOn :: String -> String -> String -> NewComment -> IO (Either Error Co
 postCommentOn user repo sha1 newComment =
   fullGithubPost ["repos", user, repo, "commits", sha1, "comments"]
                  newComment
+
+updateCommentWith :: String -> String -> String -> String -> IO (Either Error Comment)
+updateCommentWith user repo commentId newBody =
+  fullGithubPatch ["repos", user, repo, "comments", commentId]
+                  UpdatedComment { updatedCommentBody = newBody }

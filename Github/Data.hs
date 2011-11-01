@@ -104,6 +104,11 @@ instance ToJSON NewComment where
       ,("line_number", Number $ Data.Attoparsec.Number.I $ fromIntegral $ newCommentLineNumber newComment)
       ,("path", String $ T.pack $ newCommentPath newComment)]
 
+instance ToJSON UpdatedComment where
+  toJSON updatedComment =
+    Object $ Map.fromList
+      [("body", String $ T.pack $ updatedCommentBody updatedComment)]
+
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of
                    Nothing -> pure []

@@ -32,6 +32,20 @@ fullGithubPost paths body = do
                   (parseJson . BS.pack . rspBody)
                   result
 
+fullGithubPatch :: (ToJSON a, Show a, FromJSON b, Show b) => [String] -> a -> IO (Either Error b)
+fullGithubPatch paths body = do
+  let (Just uri) = parseURI $ buildUrl paths
+      request = Request {
+         rqURI = uri
+        ,rqMethod = Custom "PATCH"
+        ,rqHeaders = []
+        ,rqBody = show $ toJSON body
+    }
+  result <- simpleHTTP request
+  return $ either (Left . HTTPConnectionError)
+                  (parseJson . BS.pack . rspBody)
+                  result
+
 parseJson :: (FromJSON b, Show b) => BS.ByteString -> Either Error b
 parseJson jsonString =
   let parsed = parse (fromJSON <$> json) jsonString in
