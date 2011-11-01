@@ -4,6 +4,14 @@ module Github.Data.Definitions where
 
 import Data.Time
 import Data.Data
+import Network.Stream (ConnError(..))
+
+data Error =
+    OpenURIError String
+  | HTTPConnectionError Network.Stream.ConnError
+  | ParseError String
+  | JsonError String
+  deriving (Show, Eq)
 
 newtype GithubDate = GithubDate { fromGithubDate :: UTCTime }
   deriving (Show, Data, Typeable, Eq, Ord)

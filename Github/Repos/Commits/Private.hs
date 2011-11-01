@@ -16,9 +16,9 @@ buildUrl paths = "https://api.github.com/" ++ intercalate "/" paths
 
 fullGithubGet paths = do
   commitsJsonString <- openURI $ buildUrl paths
-  return $ either Left parseJson commitsJsonString
+  return $ either (Left . OpenURIError) parseJson commitsJsonString
 
--- fullGithubPost :: (ToJSON a, Show a, FromJSON b, Show b) => [String] -> a -> IO (Either String b)
+fullGithubPost :: (ToJSON a, Show a, FromJSON b, Show b) => [String] -> a -> IO (Either Error b)
 fullGithubPost paths body = do
   let (Just uri) = parseURI $ buildUrl paths
       request = Request {
@@ -28,14 +28,16 @@ fullGithubPost paths body = do
         ,rqBody = show $ toJSON body
     }
   result <- simpleHTTP request
-  return $ either (Left . show) (parseJson . BS.pack . rspBody) result
+  return $ either (Left . HTTPConnectionError)
+                  (parseJson . BS.pack . rspBody)
+                  result
 
-parseJson :: (FromJSON b, Show b) => BS.ByteString -> Either String b
+parseJson :: (FromJSON b, Show b) => BS.ByteString -> Either Error b
 parseJson jsonString =
   let parsed = parse (fromJSON <$> json) jsonString in
   case parsed of
        Data.Attoparsec.Done _ jsonResult -> do
          case jsonResult of
               (Success s) -> Right s
-              anythingElse -> Left $ show anythingElse
-       undone -> Left $ show undone
+              (Error e) -> Left $ JsonError e
+       (Fail _ _ e) -> Left $ ParseError e
