@@ -4,6 +4,7 @@ module Github.Repos.Commits (
 ,commentsFor
 ,commitCommentsFor
 ,postCommentOn
+,commitCommentFor
 ,module Github.Data
 ) where
 
@@ -22,6 +23,10 @@ commentsFor user repo = fullGithubGet ["repos", user, repo, "comments"]
 commitCommentsFor :: String -> String -> String -> IO (Either Error [Comment])
 commitCommentsFor user repo sha1 =
   fullGithubGet ["repos", user, repo, "commits", sha1, "comments"]
+
+commitCommentFor :: String -> String -> String -> IO (Either Error Comment)
+commitCommentFor user repo commentId =
+  fullGithubGet ["repos", user, repo, "comments", commentId]
 
 postCommentOn :: String -> String -> String -> NewComment -> IO (Either Error Comment)
 postCommentOn user repo sha1 newComment =
