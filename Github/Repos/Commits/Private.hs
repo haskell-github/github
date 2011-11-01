@@ -19,6 +19,9 @@ githubPost paths body = githubAPI POST paths (Just body)
 githubPatch :: (ToJSON a, Show a, FromJSON b, Show b) => [String] -> a -> IO (Either Error b)
 githubPatch paths body = githubAPI (Custom "PATCH") paths (Just body)
 
+githubDelete :: (FromJSON b, Show b) => [String] -> IO (Either Error b)
+githubDelete paths = githubAPI DELETE paths (Nothing :: Maybe Value)
+
 buildUrl :: [String] -> String
 buildUrl paths = "https://api.github.com/" ++ intercalate "/" paths
 

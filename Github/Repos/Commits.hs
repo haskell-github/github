@@ -6,6 +6,7 @@ module Github.Repos.Commits (
 ,postCommentOn
 ,commitCommentFor
 ,updateCommentWith
+,deleteComment
 ,module Github.Data
 ) where
 
@@ -38,3 +39,9 @@ updateCommentWith :: String -> String -> String -> String -> IO (Either Error Co
 updateCommentWith user repo commentId newBody =
   githubPatch ["repos", user, repo, "comments", commentId]
               UpdatedComment { updatedCommentBody = newBody }
+
+-- skipped due to lack of Internet: compare two commits
+
+deleteComment :: String -> String -> String -> IO (Either Error ())
+deleteComment user repo commentId =
+  githubDelete ["repos", user, repo, "comments", commentId]
