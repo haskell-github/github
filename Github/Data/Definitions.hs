@@ -7,8 +7,7 @@ import Data.Data
 import Network.Stream (ConnError(..))
 
 data Error =
-    OpenURIError String
-  | HTTPConnectionError Network.Stream.ConnError
+    HTTPConnectionError Network.Stream.ConnError
   | ParseError String
   | JsonError String
   deriving (Show, Eq)

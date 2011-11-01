@@ -7,39 +7,29 @@ import Data.Attoparsec
 import Control.Applicative
 import Data.List
 import qualified Data.ByteString.Char8 as BS
-import Network.Curl.Download
 import Network.HTTP
 import Network.URI
+
+githubGet :: (FromJSON b, Show b) => [String] -> IO (Either Error b)
+githubGet paths = githubAPI GET paths (Nothing :: Maybe Value)
+
+githubPost :: (ToJSON a, Show a, FromJSON b, Show b) => [String] -> a -> IO (Either Error b)
+githubPost paths body = githubAPI POST paths (Just body)
+
+githubPatch :: (ToJSON a, Show a, FromJSON b, Show b) => [String] -> a -> IO (Either Error b)
+githubPatch paths body = githubAPI (Custom "PATCH") paths (Just body)
 
 buildUrl :: [String] -> String
 buildUrl paths = "https://api.github.com/" ++ intercalate "/" paths
 
-fullGithubGet paths = do
-  commitsJsonString <- openURI $ buildUrl paths
-  return $ either (Left . OpenURIError) parseJson commitsJsonString
-
-fullGithubPost :: (ToJSON a, Show a, FromJSON b, Show b) => [String] -> a -> IO (Either Error b)
-fullGithubPost paths body = do
+githubAPI :: (ToJSON a, Show a, FromJSON b, Show b) => RequestMethod -> [String] -> Maybe a -> IO (Either Error b)
+githubAPI method paths body = do
   let (Just uri) = parseURI $ buildUrl paths
       request = Request {
          rqURI = uri
-        ,rqMethod = POST
+        ,rqMethod = method
         ,rqHeaders = []
-        ,rqBody = show $ toJSON body
-    }
-  result <- simpleHTTP request
-  return $ either (Left . HTTPConnectionError)
-                  (parseJson . BS.pack . rspBody)
-                  result
-
-fullGithubPatch :: (ToJSON a, Show a, FromJSON b, Show b) => [String] -> a -> IO (Either Error b)
-fullGithubPatch paths body = do
-  let (Just uri) = parseURI $ buildUrl paths
-      request = Request {
-         rqURI = uri
-        ,rqMethod = Custom "PATCH"
-        ,rqHeaders = []
-        ,rqBody = show $ toJSON body
+        ,rqBody = show $ maybe "" toJSON body
     }
   result <- simpleHTTP request
   return $ either (Left . HTTPConnectionError)

@@ -59,7 +59,6 @@ Library
                  containers,
                  text,
                  old-locale,
-                 download-curl,
                  HTTP,
                  network
   
