@@ -54,15 +54,15 @@ data GitUser = GitUser {
 } deriving (Show, Data, Typeable, Eq, Ord)
 
 data File = File {
-   filesBlobUrl :: String
-  ,filesStatus :: String
-  ,filesRawUrl :: String
-  ,filesAdditions :: Int
-  ,filesSha :: String
-  ,filesChanges :: Int
-  ,filesPatch :: String
-  ,filesFilename :: String
-  ,filesDeletions :: Int
+   fileBlobUrl :: String
+  ,fileStatus :: String
+  ,fileRawUrl :: String
+  ,fileAdditions :: Int
+  ,fileSha :: String
+  ,fileChanges :: Int
+  ,filePatch :: String
+  ,fileFilename :: String
+  ,fileDeletions :: Int
 } deriving (Show, Data, Typeable, Eq, Ord)
 
 data Stats = Stats {
