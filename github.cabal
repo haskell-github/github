@@ -59,7 +59,9 @@ Library
                  containers,
                  text,
                  old-locale,
-                 download-curl
+                 download-curl,
+                 HTTP,
+                 network
   
   -- Modules not exported by this package.
   -- Other-modules:       

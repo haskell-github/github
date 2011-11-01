@@ -9,6 +9,7 @@ import qualified Data.Map as Map
 import qualified Data.Text as T
 import Data.Aeson.Types
 import System.Locale (defaultTimeLocale)
+import Data.Attoparsec.Number (Number(..))
 
 import Github.Data.Definitions
 
@@ -95,6 +96,13 @@ instance FromJSON Comment where
             <*> o .: "user"
             <*> o .: "id"
   parseJSON _          = fail "Could not build a Comment"
+
+instance ToJSON NewComment where
+  toJSON newComment =
+    Object $ Map.fromList
+      [("body", String $ T.pack $ newCommentBody newComment)
+      ,("line_number", Number $ Data.Attoparsec.Number.I $ fromIntegral $ newCommentLineNumber newComment)
+      ,("path", String $ T.pack $ newCommentPath newComment)]
 
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of
