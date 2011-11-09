@@ -33,13 +33,13 @@ githubAPI :: (ToJSON a, Show a, FromJSON b, Show b) => BS.ByteString -> [String]
 githubAPI method paths body = do
   let (Just uri) = parseURI $ buildUrl paths
       (Just host) = uriRegName uri
-      encodedBody = RequestBodyBS $ BS.pack $ maybe "" (show . toJSON) body
+      encodedBody = BS.pack $ maybe "" (LBS.unpack . encode . toJSON) body
       request = def { method = method
                     , secure = True
                     , host = BS.pack host
                     , port = 443
                     , path = BS.pack $ uriPath uri
-                    , requestBody = encodedBody
+                    , requestBody = RequestBodyBS encodedBody
                     }
 
   result <- (getResponse request >>= return . Right) `catch` (return . Left)
@@ -57,5 +57,5 @@ parseJson jsonString =
        Data.Attoparsec.Done _ jsonResult -> do
          case jsonResult of
               (Success s) -> Right s
-              (Error e) -> Left $ JsonError e
+              (Error e) -> Left $ JsonError $ e ++ " on the JSON: " ++ BS.unpack jsonString
        (Fail _ _ e) -> Left $ ParseError e

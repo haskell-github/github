@@ -91,6 +91,7 @@ data Comment = Comment {
 -- A comment that has not yet been sent to the API.
 data NewComment = NewComment {
    newCommentBody       :: String
+  ,newCommentCommitId   :: String
   ,newCommentLineNumber :: Int
   ,newCommentPath       :: String
   ,newCommentPosition   :: Int

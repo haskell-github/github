@@ -101,8 +101,11 @@ instance ToJSON NewComment where
   toJSON newComment =
     Object $ Map.fromList
       [("body", String $ T.pack $ newCommentBody newComment)
-      ,("line_number", Number $ Data.Attoparsec.Number.I $ fromIntegral $ newCommentLineNumber newComment)
-      ,("path", String $ T.pack $ newCommentPath newComment)]
+      ,("line", Number $ Data.Attoparsec.Number.I $ fromIntegral $ newCommentLineNumber newComment)
+      ,("path", String $ T.pack $ newCommentPath newComment)
+      ,("position", Number $ Data.Attoparsec.Number.I $ fromIntegral $ newCommentPosition newComment)
+      ,("commit_id", String $ T.pack $ newCommentCommitId newComment)
+      ]
 
 instance ToJSON UpdatedComment where
   toJSON updatedComment =
