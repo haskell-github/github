@@ -1,13 +1,16 @@
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveDataTypeable, StandaloneDeriving #-}
 
 module Github.Data.Definitions where
 
 import Data.Time
 import Data.Data
-import Network.Stream (ConnError(..))
+import Network.HTTP.Enumerator (HttpException(..))
+import qualified Control.Exception as E
+
+deriving instance Eq Network.HTTP.Enumerator.HttpException
 
 data Error =
-    HTTPConnectionError Network.Stream.ConnError
+    HTTPConnectionError E.IOException
   | ParseError String
   | JsonError String
   deriving (Show, Eq)

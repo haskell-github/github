@@ -60,7 +60,11 @@ Library
                  text,
                  old-locale,
                  HTTP,
-                 network
+                 network,
+                 http-enumerator,
+                 uri,
+                 failure,
+                 http-types
   
   -- Modules not exported by this package.
   -- Other-modules:       
