@@ -4,6 +4,7 @@ module Github.Repos.Commits (
 ,commentsFor
 ,commitCommentsFor
 ,commitCommentFor
+,diff
 ,module Github.Data
 ) where
 
@@ -26,3 +27,7 @@ commitCommentsFor user repo sha1 =
 commitCommentFor :: String -> String -> String -> IO (Either Error Comment)
 commitCommentFor user repo commentId =
   githubGet ["repos", user, repo, "comments", commentId]
+
+diff :: String -> String -> String -> String -> IO (Either Error Diff)
+diff user repo base head =
+  githubGet ["repos", user, repo, "compare", base ++ "..." ++ head]

@@ -87,3 +87,18 @@ data Comment = Comment {
   ,commentUser :: GithubUser
   ,commentId :: Int
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data Diff = Diff {
+   diffStatus :: String
+  ,diffBehindBy :: Int
+  ,diffPatchUrl :: String
+  ,diffUrl :: String
+  ,diffBaseCommit :: Commit
+  ,diffCommits :: [Commit]
+  ,diffTotalCommits :: Int
+  ,diffHtmlUrl :: String
+  ,diffFiles :: [File]
+  ,diffAheadBy :: Int
+  ,diffDiffUrl :: String
+  ,diffPermalinkUrl :: String
+} deriving (Show, Data, Typeable, Eq, Ord)

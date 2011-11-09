@@ -97,6 +97,22 @@ instance FromJSON Comment where
             <*> o .: "id"
   parseJSON _          = fail "Could not build a Comment"
 
+instance FromJSON Diff where
+  parseJSON (Object o) =
+    Diff <$> o .: "status"
+         <*> o .: "behind_by"
+         <*> o .: "patch_url"
+         <*> o .: "url"
+         <*> o .: "base_commit"
+         <*> o .:< "commits"
+         <*> o .: "total_commits"
+         <*> o .: "html_url"
+         <*> o .:< "files"
+         <*> o .: "ahead_by"
+         <*> o .: "diff_url"
+         <*> o .: "permalink_url"
+  parseJSON _          = fail "Could not build a Diff"
+
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of
                    Nothing -> pure []
