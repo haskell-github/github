@@ -87,17 +87,3 @@ data Comment = Comment {
   ,commentUser :: GithubUser
   ,commentId :: Int
 } deriving (Show, Data, Typeable, Eq, Ord)
-
--- A comment that has not yet been sent to the API.
-data NewComment = NewComment {
-   newCommentBody       :: String
-  ,newCommentCommitId   :: String
-  ,newCommentLineNumber :: Int
-  ,newCommentPath       :: String
-  ,newCommentPosition   :: Int
-} deriving (Show, Eq, Ord)
-
--- A comment update.
-data UpdatedComment = UpdatedComment {
-  updatedCommentBody :: String
-} deriving (Show, Eq, Ord)

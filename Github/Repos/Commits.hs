@@ -3,10 +3,7 @@ module Github.Repos.Commits (
 ,commit
 ,commentsFor
 ,commitCommentsFor
-,postCommentOn
 ,commitCommentFor
-,updateCommentWith
-,deleteComment
 ,module Github.Data
 ) where
 
@@ -29,19 +26,3 @@ commitCommentsFor user repo sha1 =
 commitCommentFor :: String -> String -> String -> IO (Either Error Comment)
 commitCommentFor user repo commentId =
   githubGet ["repos", user, repo, "comments", commentId]
-
-postCommentOn :: String -> String -> String -> NewComment -> IO (Either Error Comment)
-postCommentOn user repo sha1 newComment =
-  githubPost ["repos", user, repo, "commits", sha1, "comments"]
-             newComment
-
-updateCommentWith :: String -> String -> String -> String -> IO (Either Error Comment)
-updateCommentWith user repo commentId newBody =
-  githubPatch ["repos", user, repo, "comments", commentId]
-              UpdatedComment { updatedCommentBody = newBody }
-
--- skipped due to lack of Internet: compare two commits
-
-deleteComment :: String -> String -> String -> IO (Either Error ())
-deleteComment user repo commentId =
-  githubDelete ["repos", user, repo, "comments", commentId]

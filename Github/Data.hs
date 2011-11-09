@@ -97,21 +97,6 @@ instance FromJSON Comment where
             <*> o .: "id"
   parseJSON _          = fail "Could not build a Comment"
 
-instance ToJSON NewComment where
-  toJSON newComment =
-    Object $ Map.fromList
-      [("body", String $ T.pack $ newCommentBody newComment)
-      ,("line", Number $ Data.Attoparsec.Number.I $ fromIntegral $ newCommentLineNumber newComment)
-      ,("path", String $ T.pack $ newCommentPath newComment)
-      ,("position", Number $ Data.Attoparsec.Number.I $ fromIntegral $ newCommentPosition newComment)
-      ,("commit_id", String $ T.pack $ newCommentCommitId newComment)
-      ]
-
-instance ToJSON UpdatedComment where
-  toJSON updatedComment =
-    Object $ Map.fromList
-      [("body", String $ T.pack $ updatedCommentBody updatedComment)]
-
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of
                    Nothing -> pure []

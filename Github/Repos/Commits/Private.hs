@@ -17,15 +17,6 @@ import qualified Control.Exception as E
 githubGet :: (FromJSON b, Show b) => [String] -> IO (Either Error b)
 githubGet paths = githubAPI (BS.pack "GET") paths (Nothing :: Maybe Value)
 
-githubPost :: (ToJSON a, Show a, FromJSON b, Show b) => [String] -> a -> IO (Either Error b)
-githubPost paths body = githubAPI (BS.pack "POST") paths (Just body)
-
-githubPatch :: (ToJSON a, Show a, FromJSON b, Show b) => [String] -> a -> IO (Either Error b)
-githubPatch paths body = githubAPI (BS.pack "PATCH") paths (Just body)
-
-githubDelete :: (FromJSON b, Show b) => [String] -> IO (Either Error b)
-githubDelete paths = githubAPI (BS.pack "DELETE") paths (Nothing :: Maybe Value)
-
 buildUrl :: [String] -> String
 buildUrl paths = "https://api.github.com/" ++ intercalate "/" paths
 
