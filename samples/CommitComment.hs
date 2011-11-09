@@ -3,7 +3,7 @@ module CommitComment where
 import qualified Github.Repos.Commits as Github
 
 main = do
-  possibleComment <- Github.commitCommentFor "thoughtbot" "paperclip" "41f685f6e01396936bb8cd98e7cca517e2c7d96b"
+  possibleComment <- Github.commitCommentFor "thoughtbot" "paperclip" "669575"
   case possibleComment of
     (Left error)    -> putStrLn $ "Error: " ++ (show error)
     (Right comment) -> putStrLn $ formatComment comment
