@@ -126,3 +126,12 @@ data GistFile = GistFile {
   ,gistFileFilename :: String
   ,gistFileContent :: Maybe String
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data GistComment = GistComment {
+   gistCommentUser :: GithubUser
+  ,gistCommentUrl :: String
+  ,gistCommentCreatedAt :: GithubDate
+  ,gistCommentBody :: String
+  ,gistCommentUpdatedAt :: GithubDate
+  ,gistCommentId :: Int
+} deriving (Show, Data, Typeable, Eq, Ord)
