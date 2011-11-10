@@ -145,3 +145,15 @@ data Blob = Blob {
   ,blobSha :: String
   ,blobSize :: Int
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data GitReference = GitReference {
+   gitReferenceObject :: GitObject
+  ,gitReferenceUrl :: String
+  ,gitReferenceRef :: String
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data GitObject = GitObject {
+   gitObjectType :: String
+  ,gitObjectSha :: String
+  ,gitObjectUrl :: String
+} deriving (Show, Data, Typeable, Eq, Ord)

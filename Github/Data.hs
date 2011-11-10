@@ -161,6 +161,20 @@ instance FromJSON Blob where
          <*> o .: "size"
   parseJSON _          = fail "Could not build a Blob"
 
+instance FromJSON GitReference where
+  parseJSON (Object o) =
+    GitReference <$> o .: "object"
+                 <*> o .: "url"
+                 <*> o .: "ref"
+  parseJSON _          = fail "Could not build a GitReference"
+
+instance FromJSON GitObject where
+  parseJSON (Object o) =
+    GitObject <$> o .: "type"
+           <*> o .: "sha"
+           <*> o .: "url"
+  parseJSON _          = fail "Could not build a GitObject"
+
 -- | A better version of Aeson's .:?, using `mzero' instead of `Nothing'
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of
