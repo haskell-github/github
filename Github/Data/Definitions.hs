@@ -124,4 +124,5 @@ data GistFile = GistFile {
   ,gistFileSize :: Int
   ,gistFileLanguage :: Maybe String
   ,gistFileFilename :: String
+  ,gistFileContent :: Maybe String
 } deriving (Show, Data, Typeable, Eq, Ord)

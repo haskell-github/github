@@ -137,6 +137,7 @@ instance FromJSON GistFile where
              <*> o .: "size"
              <*> o .:? "language"
              <*> o .: "filename"
+             <*> o .:? "content"
   parseJSON _          = fail "Could not build a GistFile"
 
 
