@@ -150,6 +150,15 @@ instance FromJSON GistComment where
                 <*> o .: "id"
   parseJSON _          = fail "Could not build a GistComment"
 
+instance FromJSON Blob where
+  parseJSON (Object o) =
+    Blob <$> o .: "url"
+         <*> o .: "encoding"
+         <*> o .: "content"
+         <*> o .: "sha"
+         <*> o .: "size"
+  parseJSON _          = fail "Could not build a Blob"
+
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of
                    Nothing -> pure []

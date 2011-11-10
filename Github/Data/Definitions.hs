@@ -135,3 +135,11 @@ data GistComment = GistComment {
   ,gistCommentUpdatedAt :: GithubDate
   ,gistCommentId :: Int
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data Blob = Blob {
+   blobUrl :: String
+  ,blobEncoding :: String
+  ,blobContent :: String
+  ,blobSha :: String
+  ,blobSize :: Int
+} deriving (Show, Data, Typeable, Eq, Ord)
