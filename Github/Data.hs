@@ -45,6 +45,8 @@ instance FromJSON GitCommit where
               <*> o .: "committer"
               <*> o .: "author"
               <*> o .: "tree"
+              <*> o .:? "sha"
+              <*> o .:< "parents"
   parseJSON _          = fail "Could not build a GitCommit"
 
 instance FromJSON GithubUser where
@@ -159,9 +161,10 @@ instance FromJSON Blob where
          <*> o .: "size"
   parseJSON _          = fail "Could not build a Blob"
 
+-- | A better version of Aeson's .:?, using `mzero' instead of `Nothing'
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of
-                   Nothing -> pure []
+                   Nothing -> pure mzero
                    Just v  -> parseJSON v
 
 obj `values` key =

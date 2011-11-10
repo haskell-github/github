@@ -40,6 +40,8 @@ data GitCommit = GitCommit {
   ,gitCommitCommitter :: GitUser
   ,gitCommitAuthor :: GitUser
   ,gitCommitTree :: Tree
+  ,gitCommitSha :: Maybe String
+  ,gitCommitParents :: [Tree]
 } deriving (Show, Data, Typeable, Eq, Ord)
 
 data GithubUser = GithubUser {
