@@ -48,7 +48,8 @@ Library
   Exposed-modules: Github.Repos.Commits,
                    Github.Data,
                    Github.Data.Definitions,
-                   Github.Repos.Commits.Private
+                   Github.Private,
+                   Github.Gists
   
   -- Packages needed in order to build this package.
   Build-depends: base,
@@ -64,7 +65,8 @@ Library
                  http-enumerator,
                  uri,
                  failure,
-                 http-types
+                 http-types,
+                 vector
   
   -- Modules not exported by this package.
   -- Other-modules:       

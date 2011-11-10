@@ -102,3 +102,26 @@ data Diff = Diff {
   ,diffDiffUrl :: String
   ,diffPermalinkUrl :: String
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data Gist = Gist {
+   gistUser :: GithubUser
+  ,gistGitPushUrl :: String
+  ,gistUrl :: String
+  ,gistDescription :: Maybe String
+  ,gistCreatedAt :: GithubDate
+  ,gistPublic :: Bool
+  ,gistComments :: Int
+  ,gistUpdatedAt :: GithubDate
+  ,gistHtmlUrl :: String
+  ,gistId :: String
+  ,gistFiles :: [GistFile]
+  ,gistGitPullUrl :: String
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data GistFile = GistFile {
+   gistFileType :: String
+  ,gistFileRawUrl :: String
+  ,gistFileSize :: Int
+  ,gistFileLanguage :: Maybe String
+  ,gistFileFilename :: String
+} deriving (Show, Data, Typeable, Eq, Ord)

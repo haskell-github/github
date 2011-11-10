@@ -10,6 +10,7 @@ import qualified Data.Text as T
 import Data.Aeson.Types
 import System.Locale (defaultTimeLocale)
 import Data.Attoparsec.Number (Number(..))
+import qualified Data.Vector as V
 
 import Github.Data.Definitions
 
@@ -113,7 +114,37 @@ instance FromJSON Diff where
          <*> o .: "permalink_url"
   parseJSON _          = fail "Could not build a Diff"
 
+instance FromJSON Gist where
+  parseJSON (Object o) =
+    Gist <$> o .: "user"
+         <*> o .: "git_push_url"
+         <*> o .: "url"
+         <*> o .:? "description"
+         <*> o .: "created_at"
+         <*> o .: "public"
+         <*> o .: "comments"
+         <*> o .: "updated_at"
+         <*> o .: "html_url"
+         <*> o .: "id"
+         <*> o `values` "files"
+         <*> o .: "git_push_url"
+  parseJSON _          = fail "Could not build a Gist"
+
+instance FromJSON GistFile where
+  parseJSON (Object o) =
+    GistFile <$> o .: "type"
+             <*> o .: "raw_url"
+             <*> o .: "size"
+             <*> o .:? "language"
+             <*> o .: "filename"
+  parseJSON _          = fail "Could not build a GistFile"
+
+
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of
                    Nothing -> pure []
                    Just v  -> parseJSON v
+
+obj `values` key =
+  let (Object children) = Map.findWithDefault (Object Map.empty) key obj in
+    parseJSON $ Array $ V.fromList $ Map.elems children

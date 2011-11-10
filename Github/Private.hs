@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings, StandaloneDeriving #-}
-module Github.Repos.Commits.Private where
+module Github.Private where
 
 import Github.Data
 import Data.Aeson

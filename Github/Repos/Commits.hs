@@ -9,7 +9,7 @@ module Github.Repos.Commits (
 ) where
 
 import Github.Data
-import Github.Repos.Commits.Private
+import Github.Private
 
 commitsFor :: String -> String -> IO (Either Error [Commit])
 commitsFor user repo = githubGet ["repos", user, repo, "commits"]
