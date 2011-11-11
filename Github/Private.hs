@@ -15,22 +15,33 @@ import Control.Failure hiding (Error(..))
 import qualified Control.Exception as E
 
 githubGet :: (FromJSON b, Show b) => [String] -> IO (Either Error b)
-githubGet paths = githubAPI (BS.pack "GET") paths (Nothing :: Maybe Value)
+githubGet paths =
+  githubAPI (BS.pack "GET")
+            (buildUrl paths)
+            (Nothing :: Maybe Value)
+
+githubGetWithQueryString :: (FromJSON b, Show b) => [String] -> String -> IO (Either Error b)
+githubGetWithQueryString paths queryString =
+  githubAPI (BS.pack "GET")
+            (buildUrl paths ++ "?" ++ queryString)
+            (Nothing :: Maybe Value)
 
 buildUrl :: [String] -> String
 buildUrl paths = "https://api.github.com/" ++ intercalate "/" paths
 
-githubAPI :: (ToJSON a, Show a, FromJSON b, Show b) => BS.ByteString -> [String] -> Maybe a -> IO (Either Error b)
-githubAPI method paths body = do
-  let (Just uri) = parseURI $ buildUrl paths
+githubAPI :: (ToJSON a, Show a, FromJSON b, Show b) => BS.ByteString -> String -> Maybe a -> IO (Either Error b)
+githubAPI method url body = do
+  let (Just uri) = parseURI url
       (Just host) = uriRegName uri
       encodedBody = BS.pack $ maybe "" (LBS.unpack . encode . toJSON) body
+      queryString = Types.parseQuery $ BS.pack $ maybe "" id $ uriQuery uri
       request = def { method = method
                     , secure = True
                     , host = BS.pack host
                     , port = 443
                     , path = BS.pack $ uriPath uri
                     , requestBody = RequestBodyBS encodedBody
+                    , queryString = queryString
                     }
 
   result <- (getResponse request >>= return . Right) `catch` (return . Left)
