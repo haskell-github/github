@@ -227,6 +227,16 @@ instance FromJSON PullRequest where
                 <*> o .:? "diff_url"
   parseJSON _          = fail "Could not build a PullRequest"
 
+instance FromJSON IssueComment where
+  parseJSON (Object o) =
+    IssueComment <$> o .: "updated_at"
+                <*> o .: "user"
+                <*> o .: "url"
+                <*> o .: "created_at"
+                <*> o .: "body"
+                <*> o .: "id"
+  parseJSON _          = fail "Could not build an IssueComment"
+
 -- | A better version of Aeson's .:?, using `mzero' instead of `Nothing'
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of

@@ -203,3 +203,12 @@ data PullRequest = PullRequest {
   ,pullRequestPatchUrl :: Maybe String
   ,pullRequestDiffUrl :: Maybe String
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data IssueComment = IssueComment {
+   issueCommentUpdatedAt :: GithubDate
+  ,issueCommentUser :: GithubUser
+  ,issueCommentUrl :: String
+  ,issueCommentCreatedAt :: GithubDate
+  ,issueCommentBody :: String
+  ,issueCommentId :: Int
+} deriving (Show, Data, Typeable, Eq, Ord)
