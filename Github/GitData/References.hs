@@ -1,6 +1,7 @@
 module Github.GitData.References (
  reference
 ,references
+,namespacedReferences
 ,module Github.Data
 ) where
 
@@ -14,3 +15,7 @@ reference user repoName ref =
 references :: String -> String -> IO (Either Error [GitReference])
 references user repoName =
   githubGet ["repos", user, repoName, "git", "refs"]
+
+namespacedReferences :: String -> String -> String -> IO (Either Error [GitReference])
+namespacedReferences user repoName namespace =
+  githubGet ["repos", user, repoName, "git", "refs", namespace]
