@@ -187,6 +187,46 @@ instance FromJSON GitObject where
            <*> o .: "url"
   parseJSON _          = fail "Could not build a GitObject"
 
+instance FromJSON Issue where
+  parseJSON (Object o) =
+    Issue <$> o .:? "closed_at"
+          <*> o .: "updated_at"
+          <*> o .: "html_url"
+          <*> o .:? "closed_by"
+          <*> o .: "labels"
+          <*> o .: "number"
+          <*> o .:? "assignee"
+          <*> o .: "user"
+          <*> o .: "title"
+          <*> o .: "pull_request"
+          <*> o .: "url"
+          <*> o .: "created_at"
+          <*> o .: "body"
+          <*> o .: "state"
+          <*> o .: "id"
+          <*> o .: "comments"
+          <*> o .:? "milestone"
+  parseJSON _          = fail "Could not build an Issue"
+
+instance FromJSON Milestone where
+  parseJSON (Object o) =
+    pure Milestone
+  parseJSON _          = fail "Could not build a Milestone"
+
+instance FromJSON IssueLabel where
+  parseJSON (Object o) =
+    IssueLabel <$> o .: "color"
+               <*> o .: "url"
+               <*> o .: "name"
+  parseJSON _          = fail "Could not build a Milestone"
+
+instance FromJSON PullRequest where
+  parseJSON (Object o) =
+    PullRequest <$> o .:? "html_url"
+                <*> o .:? "patch_url"
+                <*> o .:? "diff_url"
+  parseJSON _          = fail "Could not build a PullRequest"
+
 -- | A better version of Aeson's .:?, using `mzero' instead of `Nothing'
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of

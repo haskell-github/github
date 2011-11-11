@@ -167,3 +167,39 @@ data GitObject = GitObject {
   ,gitObjectSha :: String
   ,gitObjectUrl :: String
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data Issue = Issue {
+   issueClosedAt :: Maybe GithubDate
+  ,issueUpdatedAt :: GithubDate
+  ,issueHtmlUrl :: String
+  ,issueClosedBy :: Maybe String
+  ,issueLabels :: [IssueLabel]
+  ,issueNumber :: Int
+  ,issueAssignee :: Maybe GithubUser
+  ,issueUser :: GithubUser
+  ,issueTitle :: String
+  ,issuePullRequest :: PullRequest
+  ,issueUrl :: String
+  ,issueCreatedAt :: GithubDate
+  ,issueBody :: String
+  ,issueState :: String
+  ,issueId :: Int
+  ,issueComments :: Int
+  ,issueMilestone :: Maybe Milestone
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data Milestone = Milestone {
+  -- ?
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data IssueLabel = IssueLabel {
+   labelColor :: String
+  ,labelUrl :: String
+  ,labelName :: String
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data PullRequest = PullRequest {
+  pullRequestHtmlUrl :: Maybe String
+  ,pullRequestPatchUrl :: Maybe String
+  ,pullRequestDiffUrl :: Maybe String
+} deriving (Show, Data, Typeable, Eq, Ord)
