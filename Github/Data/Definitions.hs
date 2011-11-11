@@ -32,6 +32,16 @@ data Commit = Commit {
 data Tree = Tree {
    treeSha :: String
   ,treeUrl :: String
+  ,treeGitTrees :: [GitTree]
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data GitTree = GitTree {
+  gitTreeType :: String
+  ,gitTreeSha :: String
+  ,gitTreeUrl :: String
+  ,gitTreeSize :: Maybe Int
+  ,gitTreePath :: String
+  ,gitTreeMode :: String
 } deriving (Show, Data, Typeable, Eq, Ord)
 
 data GitCommit = GitCommit {

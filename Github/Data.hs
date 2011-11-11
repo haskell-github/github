@@ -35,8 +35,20 @@ instance FromJSON Commit where
 
 instance FromJSON Tree where
   parseJSON (Object o) =
-    Tree <$> o .: "sha" <*> o .: "url"
+    Tree <$> o .: "sha"
+         <*> o .: "url"
+         <*> o .:< "tree"
   parseJSON _          = fail "Could not build a Tree"
+
+instance FromJSON GitTree where
+  parseJSON (Object o) =
+    GitTree <$> o .: "type"
+         <*> o .: "sha"
+         <*> o .: "url"
+         <*> o .:? "size"
+         <*> o .: "path"
+         <*> o .: "mode"
+  parseJSON _          = fail "Could not build a GitTree"
 
 instance FromJSON GitCommit where
   parseJSON (Object o) =

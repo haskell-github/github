@@ -54,6 +54,7 @@ Library
                    Github.GitData.Blobs,
                    Github.GitData.Commits,
                    Github.GitData.References,
+                   Github.GitData.Trees,
                    Github.Repos.Commits
 
 
