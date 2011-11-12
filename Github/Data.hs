@@ -241,10 +241,11 @@ instance FromJSON Event where
   parseJSON (Object o) =
     Event <$> o .: "actor"
                 <*> o .: "event"
-                <*> o .: "commit_id"
+                <*> o .:? "commit_id"
                 <*> o .: "url"
                 <*> o .: "created_at"
                 <*> o .: "id"
+                <*> o .:? "issue"
   parseJSON _          = fail "Could not build an Event"
 
 instance FromJSON EventType where
@@ -255,6 +256,7 @@ instance FromJSON EventType where
   parseJSON (String "referenced") = pure Referenced
   parseJSON (String "mentioned") = pure Mentioned
   parseJSON (String "assigned") = pure Assigned
+  parseJSON (String "unsubscribed") = pure Unsubscribed
   parseJSON _ = fail "Could not build an EventType"
 
 -- | A better version of Aeson's .:?, using `mzero' instead of `Nothing'
