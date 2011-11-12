@@ -212,3 +212,22 @@ data IssueComment = IssueComment {
   ,issueCommentBody :: String
   ,issueCommentId :: Int
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data EventType =
+    Mentioned  -- | The actor was @mentioned in an issue body.
+  | Subscribed -- | The actor subscribed to receive notifications for an issue.
+  | Referenced -- | The issue was referenced from a commit message. The commit_id attribute is the commit SHA1 of where that happened.
+  | Merged     -- | The issue was merged by the actor. The commit_id attribute is the SHA1 of the HEAD commit that was merged.
+  | Assigned   -- | The issue was assigned to the actor.
+  | Closed     -- | The issue was closed by the actor. When the commit_id is present, it identifies the commit that closed the issue using “closes / fixes #NN” syntax. 
+  | Reopened   -- | The issue was reopened by the actor.
+  deriving (Show, Data, Typeable, Eq, Ord)
+
+data Event = Event {
+   eventActor :: GithubUser
+  ,eventType :: EventType
+  ,eventCommitId :: Maybe String
+  ,eventUrl :: String
+  ,eventCreatedAt :: GithubDate
+  ,eventId :: Int
+} deriving (Show, Data, Typeable, Eq, Ord)

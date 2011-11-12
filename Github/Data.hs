@@ -237,6 +237,26 @@ instance FromJSON IssueComment where
                 <*> o .: "id"
   parseJSON _          = fail "Could not build an IssueComment"
 
+instance FromJSON Event where
+  parseJSON (Object o) =
+    Event <$> o .: "actor"
+                <*> o .: "event"
+                <*> o .: "commit_id"
+                <*> o .: "url"
+                <*> o .: "created_at"
+                <*> o .: "id"
+  parseJSON _          = fail "Could not build an Event"
+
+instance FromJSON EventType where
+  parseJSON (String "closed") = pure Closed
+  parseJSON (String "reopened") = pure Reopened
+  parseJSON (String "subscribed") = pure Subscribed
+  parseJSON (String "merged") = pure Merged
+  parseJSON (String "referenced") = pure Referenced
+  parseJSON (String "mentioned") = pure Mentioned
+  parseJSON (String "assigned") = pure Assigned
+  parseJSON _ = fail "Could not build an EventType"
+
 -- | A better version of Aeson's .:?, using `mzero' instead of `Nothing'
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of
