@@ -242,3 +242,10 @@ data Event = Event {
   ,eventId :: Int
   ,eventIssue :: Maybe Issue
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data SimpleOrganization = SimpleOrganization {
+   simpleOrganizationUrl :: String
+  ,simpleOrganizationAvatarUrl :: String
+  ,simpleOrganizationId :: Int
+  ,simpleOrganizationLogin :: String
+} deriving (Show, Data, Typeable, Eq, Ord)

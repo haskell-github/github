@@ -268,6 +268,14 @@ instance FromJSON EventType where
   parseJSON (String "unsubscribed") = pure Unsubscribed
   parseJSON _ = fail "Could not build an EventType"
 
+instance FromJSON SimpleOrganization where
+  parseJSON (Object o) =
+    SimpleOrganization <$> o .: "url"
+                       <*> o .: "avatar_url"
+                       <*> o .: "id"
+                       <*> o .: "login"
+  parseJSON _ = fail "Could not build a SimpleOrganization"
+
 -- | A better version of Aeson's .:?, using `mzero' instead of `Nothing'
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of
