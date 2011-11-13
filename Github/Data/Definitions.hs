@@ -249,3 +249,22 @@ data SimpleOrganization = SimpleOrganization {
   ,simpleOrganizationId :: Int
   ,simpleOrganizationLogin :: String
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data Organization = Organization {
+   organizationType :: String
+  ,organizationBlog :: Maybe String
+  ,organizationLocation :: Maybe String
+  ,organizationLogin :: String
+  ,organizationFollowers :: Int
+  ,organizationCompany :: Maybe String
+  ,organizationAvatarUrl :: String
+  ,organizationPublicGists :: Int
+  ,organizationHtmlUrl :: String
+  ,organizationEmail :: Maybe String
+  ,organizationFollowing :: Int
+  ,organizationPublicRepos :: Int
+  ,organizationUrl :: String
+  ,organizationCreatedAt :: GithubDate
+  ,organizationName :: Maybe String
+  ,organizationId :: Int
+} deriving (Show, Data, Typeable, Eq, Ord)

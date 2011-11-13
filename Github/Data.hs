@@ -276,6 +276,26 @@ instance FromJSON SimpleOrganization where
                        <*> o .: "login"
   parseJSON _ = fail "Could not build a SimpleOrganization"
 
+instance FromJSON Organization where
+  parseJSON (Object o) =
+    Organization <$> o .: "type"
+                 <*> o .:? "blog"
+                 <*> o .:? "location"
+                 <*> o .: "login"
+                 <*> o .: "followers"
+                 <*> o .:? "company"
+                 <*> o .: "avatar_url"
+                 <*> o .: "public_gists"
+                 <*> o .: "html_url"
+                 <*> o .:? "email"
+                 <*> o .: "following"
+                 <*> o .: "public_repos"
+                 <*> o .: "url"
+                 <*> o .: "created_at"
+                 <*> o .:? "name"
+                 <*> o .: "id"
+  parseJSON _ = fail "Could not build an Organization"
+
 -- | A better version of Aeson's .:?, using `mzero' instead of `Nothing'
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of
