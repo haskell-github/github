@@ -57,7 +57,9 @@ Library
                    Github.GitData.Trees,
                    Github.Repos.Commits,
                    Github.Issues,
-                   Github.Issues.Comments
+                   Github.Issues.Comments,
+                   Github.Issues.Events,
+                   Github.Issues.Labels
 
 
   -- Packages needed in order to build this package.

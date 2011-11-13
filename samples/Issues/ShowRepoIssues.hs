@@ -4,7 +4,7 @@ import qualified Github.Issues as Github
 import Data.List (intercalate)
 
 main = do
-  let limitations = [Github.Closed, Github.Mentions "mike-burns", Github.AssignedTo "jyurek"]
+  let limitations = [Github.OnlyClosed, Github.Mentions "mike-burns", Github.AssignedTo "jyurek"]
   possibleIssues <- Github.issuesForRepo "thoughtbot" "paperclip" limitations
   case possibleIssues of
        (Left error) -> putStrLn $ "Error: " ++ show error

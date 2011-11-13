@@ -1,6 +1,6 @@
 module Github.Issues.Labels (
- repoLabels
-,label
+ label
+,labelsOnRepo
 ,labelsOnIssue
 ,labelsOnMilestone
 ,module Github.Data
@@ -9,8 +9,8 @@ module Github.Issues.Labels (
 import Github.Data
 import Github.Private
 
-repoLabels :: String -> String -> IO (Either Error [IssueLabel])
-repoLabels user repoName = githubGet ["repos", user, repoName, "labels"]
+labelsOnRepo :: String -> String -> IO (Either Error [IssueLabel])
+labelsOnRepo user repoName = githubGet ["repos", user, repoName, "labels"]
 
 labelsOnIssue :: String -> String -> Int ->  IO (Either Error [IssueLabel])
 labelsOnIssue user repoName issueId =

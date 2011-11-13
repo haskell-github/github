@@ -17,7 +17,7 @@ data IssueLimitation =
     | NoMilestone
     | MilestoneId Int
     | Open
-    | Closed
+    | OnlyClosed
     | Unassigned
     | AnyAssignment
     | AssignedTo String
@@ -43,7 +43,7 @@ issuesForRepo user repoName issueLimitations =
     convert NoMilestone      = "milestone=none"
     convert (MilestoneId n)  = "milestone=" ++ show n
     convert Open             = "state=open"
-    convert Closed           = "state=closed"
+    convert OnlyClosed       = "state=closed"
     convert Unassigned       = "assignee=none"
     convert AnyAssignment    = "assignee=*"
     convert (AssignedTo u)   = "assignee=" ++ u
