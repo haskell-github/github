@@ -189,7 +189,16 @@ data Issue = Issue {
 } deriving (Show, Data, Typeable, Eq, Ord)
 
 data Milestone = Milestone {
-  -- ?
+   milestoneCreator :: GithubUser
+  ,milestoneDueOn :: GithubDate
+  ,milestoneOpenIssues :: Int
+  ,milestoneNumber :: Int
+  ,milestoneClosedIssues :: Int
+  ,milestoneDescription :: String
+  ,milestoneTitle :: String
+  ,milestoneUrl :: String
+  ,milestoneCreatedAt :: GithubDate
+  ,milestoneState :: String
 } deriving (Show, Data, Typeable, Eq, Ord)
 
 data IssueLabel = IssueLabel {

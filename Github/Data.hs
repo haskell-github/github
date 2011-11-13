@@ -210,7 +210,16 @@ instance FromJSON Issue where
 
 instance FromJSON Milestone where
   parseJSON (Object o) =
-    pure Milestone
+    Milestone <$> o .: "creator"
+              <*> o .: "due_on"
+              <*> o .: "open_issues"
+              <*> o .: "number"
+              <*> o .: "closed_issues"
+              <*> o .: "description"
+              <*> o .: "title"
+              <*> o .: "url"
+              <*> o .: "created_at"
+              <*> o .: "state"
   parseJSON _          = fail "Could not build a Milestone"
 
 instance FromJSON IssueLabel where
