@@ -178,7 +178,7 @@ data Issue = Issue {
   ,issueAssignee :: Maybe GithubUser
   ,issueUser :: GithubUser
   ,issueTitle :: String
-  ,issuePullRequest :: PullRequest
+  ,issuePullRequest :: PullRequestReference
   ,issueUrl :: String
   ,issueCreatedAt :: GithubDate
   ,issueBody :: String
@@ -207,10 +207,10 @@ data IssueLabel = IssueLabel {
   ,labelName :: String
 } deriving (Show, Data, Typeable, Eq, Ord)
 
-data PullRequest = PullRequest {
-  pullRequestHtmlUrl :: Maybe String
-  ,pullRequestPatchUrl :: Maybe String
-  ,pullRequestDiffUrl :: Maybe String
+data PullRequestReference = PullRequestReference {
+  pullRequestReferenceHtmlUrl :: Maybe String
+  ,pullRequestReferencePatchUrl :: Maybe String
+  ,pullRequestReferenceDiffUrl :: Maybe String
 } deriving (Show, Data, Typeable, Eq, Ord)
 
 data IssueComment = IssueComment {
@@ -267,4 +267,30 @@ data Organization = Organization {
   ,organizationCreatedAt :: GithubDate
   ,organizationName :: Maybe String
   ,organizationId :: Int
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data PullRequest = PullRequest {
+   pullRequestClosedAt :: Maybe GithubDate
+  ,pullRequestCreatedAt :: GithubDate
+  ,pullRequestUser :: GithubUser
+  ,pullRequestPatchUrl :: String
+  ,pullRequestState :: String
+  ,pullRequestNumber :: Int
+  ,pullRequestHtmlUrl :: String
+  ,pullRequestUpdatedAt :: GithubDate
+  ,pullRequestBody :: String
+  ,pullRequestIssueUrl :: String
+  ,pullRequestDiffUrl :: String
+  ,pullRequestUrl :: String
+  ,pullRequestLinks :: PullRequestLinks
+  ,pullRequestMergedAt :: Maybe GithubDate
+  ,pullRequestTitle :: String
+  ,pullRequestId :: Int
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data PullRequestLinks = PullRequestLinks {
+   pullRequestLinksReviewComments :: String
+  ,pullRequestLinksComments :: String
+  ,pullRequestLinksHtml :: String
+  ,pullRequestLinksSelf :: String
 } deriving (Show, Data, Typeable, Eq, Ord)

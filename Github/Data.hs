@@ -229,32 +229,32 @@ instance FromJSON IssueLabel where
                <*> o .: "name"
   parseJSON _          = fail "Could not build a Milestone"
 
-instance FromJSON PullRequest where
+instance FromJSON PullRequestReference where
   parseJSON (Object o) =
-    PullRequest <$> o .:? "html_url"
-                <*> o .:? "patch_url"
-                <*> o .:? "diff_url"
+    PullRequestReference <$> o .:? "html_url"
+                         <*> o .:? "patch_url"
+                         <*> o .:? "diff_url"
   parseJSON _          = fail "Could not build a PullRequest"
 
 instance FromJSON IssueComment where
   parseJSON (Object o) =
     IssueComment <$> o .: "updated_at"
-                <*> o .: "user"
-                <*> o .: "url"
-                <*> o .: "created_at"
-                <*> o .: "body"
-                <*> o .: "id"
+                 <*> o .: "user"
+                 <*> o .: "url"
+                 <*> o .: "created_at"
+                 <*> o .: "body"
+                 <*> o .: "id"
   parseJSON _          = fail "Could not build an IssueComment"
 
 instance FromJSON Event where
   parseJSON (Object o) =
     Event <$> o .: "actor"
-                <*> o .: "event"
-                <*> o .:? "commit_id"
-                <*> o .: "url"
-                <*> o .: "created_at"
-                <*> o .: "id"
-                <*> o .:? "issue"
+          <*> o .: "event"
+          <*> o .:? "commit_id"
+          <*> o .: "url"
+          <*> o .: "created_at"
+          <*> o .: "id"
+          <*> o .:? "issue"
   parseJSON _          = fail "Could not build an Event"
 
 instance FromJSON EventType where
@@ -296,12 +296,47 @@ instance FromJSON Organization where
                  <*> o .: "id"
   parseJSON _ = fail "Could not build an Organization"
 
--- | A better version of Aeson's .:?, using `mzero' instead of `Nothing'
+instance FromJSON PullRequest where
+  parseJSON (Object o) =
+    PullRequest <$> o .:? "closed_at"
+                <*> o .: "created_at"
+                <*> o .: "user"
+                <*> o .: "patch_url"
+                <*> o .: "state"
+                <*> o .: "number"
+                <*> o .: "html_url"
+                <*> o .: "updated_at"
+                <*> o .: "body"
+                <*> o .: "issue_url"
+                <*> o .: "diff_url"
+                <*> o .: "url"
+                <*> o .: "_links"
+                <*> o .:? "merged_at"
+                <*> o .: "title"
+                <*> o .: "id"
+  parseJSON _ = fail "Could not build a PullRequest"
+
+instance FromJSON PullRequestLinks where
+  parseJSON (Object o) =
+    PullRequestLinks <$> o <.:> ["review_comments", "href"]
+                     <*> o <.:> ["comments", "href"]
+                     <*> o <.:> ["html", "href"]
+                     <*> o <.:> ["self", "href"]
+  parseJSON _ = fail "Could not build a PullRequestLinks"
+
+-- | A better version of Aeson's .:?, using `mzero' instead of `Nothing'.
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of
                    Nothing -> pure mzero
                    Just v  -> parseJSON v
 
+-- | Produce all values for the given key.
 obj `values` key =
   let (Object children) = Map.findWithDefault (Object Map.empty) key obj in
     parseJSON $ Array $ V.fromList $ Map.elems children
+
+-- | Produce the value for the last key, traversing.
+obj <.:> [key] = obj .: key
+obj <.:> (key:keys) =
+  let (Object nextObj) = Map.findWithDefault (Object Map.empty) key obj in
+      nextObj <.:> keys
