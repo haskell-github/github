@@ -288,9 +288,44 @@ data PullRequest = PullRequest {
   ,pullRequestId :: Int
 } deriving (Show, Data, Typeable, Eq, Ord)
 
+data DetailedPullRequest = DetailedPullRequest {
+  -- this is a duplication of a PullRequest
+   detailedPullRequestClosedAt :: Maybe GithubDate
+  ,detailedPullRequestCreatedAt :: GithubDate
+  ,detailedPullRequestUser :: GithubUser
+  ,detailedPullRequestPatchUrl :: String
+  ,detailedPullRequestState :: String
+  ,detailedPullRequestNumber :: Int
+  ,detailedPullRequestHtmlUrl :: String
+  ,detailedPullRequestUpdatedAt :: GithubDate
+  ,detailedPullRequestBody :: String
+  ,detailedPullRequestIssueUrl :: String
+  ,detailedPullRequestDiffUrl :: String
+  ,detailedPullRequestUrl :: String
+  ,detailedPullRequestLinks :: PullRequestLinks
+  ,detailedPullRequestMergedAt :: Maybe GithubDate
+  ,detailedPullRequestTitle :: String
+  ,detailedPullRequestId :: Int
+
+  ,detailedPullRequestMergedBy :: Maybe GithubUser
+  ,detailedPullRequestChangedFiles :: Int
+  ,detailedPullRequestHead :: PullRequestCommit
+  ,detailedPullRequestComments :: Int
+  ,detailedPullRequestDeletions :: Int
+  ,detailedPullRequestAdditions :: Int
+  ,detailedPullRequestReviewComments :: Int
+  ,detailedPullRequestBase :: PullRequestCommit
+  ,detailedPullRequestCommits :: Int
+  ,detailedPullRequestMerged :: Bool
+  ,detailedPullRequestMergeable :: Bool
+} deriving (Show, Data, Typeable, Eq, Ord)
+
 data PullRequestLinks = PullRequestLinks {
    pullRequestLinksReviewComments :: String
   ,pullRequestLinksComments :: String
   ,pullRequestLinksHtml :: String
   ,pullRequestLinksSelf :: String
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data PullRequestCommit = PullRequestCommit {
 } deriving (Show, Data, Typeable, Eq, Ord)

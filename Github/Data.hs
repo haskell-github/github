@@ -298,23 +298,56 @@ instance FromJSON Organization where
 
 instance FromJSON PullRequest where
   parseJSON (Object o) =
-    PullRequest <$> o .:? "closed_at"
-                <*> o .: "created_at"
-                <*> o .: "user"
-                <*> o .: "patch_url"
-                <*> o .: "state"
-                <*> o .: "number"
-                <*> o .: "html_url"
-                <*> o .: "updated_at"
-                <*> o .: "body"
-                <*> o .: "issue_url"
-                <*> o .: "diff_url"
-                <*> o .: "url"
-                <*> o .: "_links"
-                <*> o .:? "merged_at"
-                <*> o .: "title"
-                <*> o .: "id"
+      PullRequest
+        <$> o .:? "closed_at"
+        <*> o .: "created_at"
+        <*> o .: "user"
+        <*> o .: "patch_url"
+        <*> o .: "state"
+        <*> o .: "number"
+        <*> o .: "html_url"
+        <*> o .: "updated_at"
+        <*> o .: "body"
+        <*> o .: "issue_url"
+        <*> o .: "diff_url"
+        <*> o .: "url"
+        <*> o .: "_links"
+        <*> o .:? "merged_at"
+        <*> o .: "title"
+        <*> o .: "id"
   parseJSON _ = fail "Could not build a PullRequest"
+
+instance FromJSON DetailedPullRequest where
+  parseJSON (Object o) =
+      DetailedPullRequest
+        <$> o .:? "closed_at"
+        <*> o .: "created_at"
+        <*> o .: "user"
+        <*> o .: "patch_url"
+        <*> o .: "state"
+        <*> o .: "number"
+        <*> o .: "html_url"
+        <*> o .: "updated_at"
+        <*> o .: "body"
+        <*> o .: "issue_url"
+        <*> o .: "diff_url"
+        <*> o .: "url"
+        <*> o .: "_links"
+        <*> o .:? "merged_at"
+        <*> o .: "title"
+        <*> o .: "id"
+        <*> o .:? "merged_by"
+        <*> o .: "changed_files"
+        <*> o .: "head"
+        <*> o .: "comments"
+        <*> o .: "deletions"
+        <*> o .: "additions"
+        <*> o .: "review_comments"
+        <*> o .: "base"
+        <*> o .: "commits"
+        <*> o .: "merged"
+        <*> o .: "mergeable"
+  parseJSON _ = fail "Could not build a DetailedPullRequest"
 
 instance FromJSON PullRequestLinks where
   parseJSON (Object o) =
@@ -323,6 +356,11 @@ instance FromJSON PullRequestLinks where
                      <*> o <.:> ["html", "href"]
                      <*> o <.:> ["self", "href"]
   parseJSON _ = fail "Could not build a PullRequestLinks"
+
+instance FromJSON PullRequestCommit where
+  parseJSON (Object o) =
+    return PullRequestCommit
+  parseJSON _ = fail "Could not build a PullRequestCommit"
 
 -- | A better version of Aeson's .:?, using `mzero' instead of `Nothing'.
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
