@@ -2,6 +2,7 @@ module Github.PullRequests (
  pullRequestsFor
 ,pullRequest
 ,pullRequestCommits
+,pullRequestFiles
 ,module Github.Data
 ) where
 
@@ -19,3 +20,7 @@ pullRequest userName repoName number =
 pullRequestCommits :: String -> String -> Int -> IO (Either Error [Commit])
 pullRequestCommits userName repoName number =
   githubGet ["repos", userName, repoName, "pulls", show number, "commits"]
+
+pullRequestFiles :: String -> String -> Int -> IO (Either Error [File])
+pullRequestFiles userName repoName number =
+  githubGet ["repos", userName, repoName, "pulls", show number, "files"]
