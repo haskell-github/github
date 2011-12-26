@@ -55,11 +55,17 @@ Library
                    Github.GitData.Commits,
                    Github.GitData.References,
                    Github.GitData.Trees,
-                   Github.Repos.Commits,
                    Github.Issues,
                    Github.Issues.Comments,
                    Github.Issues.Events,
-                   Github.Issues.Labels
+                   Github.Issues.Labels,
+                   Github.Issues.Milestones,
+                   Github.Organizations,
+                   Github.Organizations.Members,
+                   Github.PullRequests,
+                   Github.Repos,
+                   Github.Repos.Collaborators,
+                   Github.Repos.Commits
 
 
   -- Packages needed in order to build this package.
