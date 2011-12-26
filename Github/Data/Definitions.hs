@@ -366,3 +366,12 @@ data RepoPublicity =
   | Private -- | Only private repos.
   | Member  -- | Only repos to which the user is a member but not an owner.
  deriving (Show, Eq)
+
+data Contributor = Contributor {
+   contributorContributions :: Int
+  ,contributorAvatarUrl :: String
+  ,contributorLogin :: String
+  ,contributorUrl :: String
+  ,contributorId :: Int
+  ,contributorGravatarId :: String
+} deriving (Show, Data, Typeable, Eq, Ord)

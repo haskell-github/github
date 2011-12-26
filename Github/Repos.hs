@@ -2,6 +2,7 @@ module Github.Repos (
  userRepos
 ,organizationRepos
 ,userRepo
+,contributors
 ,module Github.Data
 ) where
 
@@ -25,3 +26,7 @@ organizationRepos orgName = githubGet ["orgs", orgName, "repos"]
 
 userRepo :: String -> String -> IO (Either Error Repo)
 userRepo userName repoName = githubGet ["repos", userName, repoName]
+
+contributors :: String -> String -> IO (Either Error [Contributor])
+contributors userName repoName =
+  githubGet ["repos", userName, repoName, "contributors"]
