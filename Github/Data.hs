@@ -412,6 +412,19 @@ instance FromJSON Languages where
            (Map.keys o)
   parseJSON _ = fail "Could not build Languages"
 
+instance FromJSON Tag where
+  parseJSON (Object o) =
+    Tag <$> o .: "name"
+        <*> o .: "zipball_url"
+        <*> o .: "tarball_url"
+        <*> o .: "commit"
+  parseJSON _ = fail "Could not build a Tag"
+
+instance FromJSON BranchCommit where
+  parseJSON (Object o) =
+    BranchCommit <$> o .: "sha" <*> o .: "url"
+  parseJSON _ = fail "Could not build BranchCommit"
+
 
 -- | A slightly more generic version of Aeson's .:?, using `mzero' instead of
 --   `Nothing'.

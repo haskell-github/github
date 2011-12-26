@@ -369,11 +369,11 @@ data RepoPublicity =
 
 data Contributor =
     KnownContributor 
-      Int -- | Number of contributions.
+      Int    -- | Number of contributions.
       String -- | Avatar URL.
       String -- | Login.
       String -- | URL.
-      Int -- | ID.
+      Int    -- | ID.
       String -- | Gravatar ID.
   | AnonymousContributor
       Int    -- | Number of contributions.
@@ -388,3 +388,15 @@ data Language =
     String -- | Name of the language.
     Int    -- | Number of characters written in that language.
  deriving (Show, Data, Typeable, Eq, Ord)
+
+data Tag = Tag {
+   tagName :: String
+  ,tagZipballUrl :: String
+  ,tagTarballUrl :: String
+  ,tagCommit :: BranchCommit
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data BranchCommit = BranchCommit {
+   branchCommitSha :: String
+  ,branchCommitUrl :: String
+} deriving (Show, Data, Typeable, Eq, Ord)

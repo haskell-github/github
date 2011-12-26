@@ -5,6 +5,7 @@ module Github.Repos (
 ,contributors
 ,contributorsWithAnonymous
 ,languagesFor
+,tagsFor
 ,module Github.Data
 ) where
 
@@ -43,3 +44,7 @@ languagesFor :: String -> String -> IO (Either Error [Language])
 languagesFor userName repoName = do
   result <- githubGet ["repos", userName, repoName, "languages"]
   return $ either Left (Right . getLanguages) result
+
+tagsFor :: String -> String -> IO (Either Error [Tag])
+tagsFor userName repoName =
+  githubGet ["repos", userName, repoName, "tags"]
