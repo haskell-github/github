@@ -104,7 +104,7 @@ instance FromJSON Comment where
             <*> o .: "body"
             <*> o .: "commit_id"
             <*> o .: "updated_at"
-            <*> o .: "html_url"
+            <*> o .:? "html_url"
             <*> o .: "url"
             <*> o .: "created_at"
             <*> o .: "path"

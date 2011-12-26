@@ -92,7 +92,7 @@ data Comment = Comment {
   ,commentBody :: String
   ,commentCommitId :: String
   ,commentUpdatedAt :: UTCTime
-  ,commentHtmlUrl :: String
+  ,commentHtmlUrl :: Maybe String
   ,commentUrl :: String
   ,commentCreatedAt :: UTCTime
   ,commentPath :: Maybe String

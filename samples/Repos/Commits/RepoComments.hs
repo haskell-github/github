@@ -2,6 +2,7 @@ module RepoComments where
 
 import qualified Github.Repos.Commits as Github
 import Data.List
+import Data.Maybe (maybe)
 
 main = do
   possibleComments <- Github.commentsFor "thoughtbot" "paperclip"
@@ -13,7 +14,7 @@ formatComment :: Github.Comment -> String
 formatComment comment =
   "Author: " ++ (formatAuthor $ Github.commentUser comment) ++
     "\nUpdated: " ++ (show $ Github.commentUpdatedAt comment) ++
-    "\nURL: " ++ (Github.commentHtmlUrl comment) ++
+    (maybe "" ("\nURL: "++) $ Github.commentHtmlUrl comment) ++
     "\n\n" ++ (Github.commentBody comment)
 
 formatAuthor :: Github.GithubUser -> String
