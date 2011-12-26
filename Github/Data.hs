@@ -370,7 +370,7 @@ instance FromJSON Repo where
          <*> o .: "html_url"
          <*> o .: "svn_url"
          <*> o .: "forks"
-         <*> o .: "homepage"
+         <*> o .:? "homepage"
          <*> o .: "fork"
          <*> o .: "git_url"
          <*> o .: "private"

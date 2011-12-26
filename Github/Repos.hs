@@ -1,5 +1,6 @@
 module Github.Repos (
  userRepos
+,organizationRepos
 ,module Github.Data
 ) where
 
@@ -17,3 +18,6 @@ userRepos userName Public =
   githubGetWithQueryString ["users", userName, "repos"] "type=public"
 userRepos userName Private =
   return $ Left $ UserError "Cannot access private repos using userRepos"
+
+organizationRepos :: String -> IO (Either Error [Repo])
+organizationRepos orgName = githubGet ["orgs", orgName, "repos"]

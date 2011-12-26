@@ -338,7 +338,7 @@ data Repo = Repo {
   ,repoHtmlUrl :: String
   ,repoSvnUrl :: String
   ,repoForks :: Int
-  ,repoHomepage :: String
+  ,repoHomepage :: Maybe String
   ,repoFork :: Bool
   ,repoGitUrl :: String
   ,repoPrivate :: Bool
