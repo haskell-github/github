@@ -386,6 +386,9 @@ instance FromJSON Repo where
          <*> o .: "id"
          <*> o .: "url"
          <*> o .: "open_issues"
+         <*> o .:? "has_wiki"
+         <*> o .:? "has_issues"
+         <*> o .:? "has_downloads"
   parseJSON _ = fail "Could not build a Repo"
 
 

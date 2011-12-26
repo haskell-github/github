@@ -1,6 +1,7 @@
 module Github.Repos (
  userRepos
 ,organizationRepos
+,userRepo
 ,module Github.Data
 ) where
 
@@ -21,3 +22,6 @@ userRepos userName Private =
 
 organizationRepos :: String -> IO (Either Error [Repo])
 organizationRepos orgName = githubGet ["orgs", orgName, "repos"]
+
+userRepo :: String -> String -> IO (Either Error Repo)
+userRepo userName repoName = githubGet ["repos", userName, repoName]

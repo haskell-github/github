@@ -354,6 +354,9 @@ data Repo = Repo {
   ,repoId :: Int
   ,repoUrl :: String
   ,repoOpenIssues :: Int
+  ,repoHasWiki :: Maybe Bool
+  ,repoHasIssues :: Maybe Bool
+  ,repoHasDownloads :: Maybe Bool
 } deriving (Show, Data, Typeable, Eq, Ord)
 
 data RepoPublicity =
