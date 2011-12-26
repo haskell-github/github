@@ -6,6 +6,7 @@ module Github.Repos (
 ,contributorsWithAnonymous
 ,languagesFor
 ,tagsFor
+,branchesFor
 ,module Github.Data
 ) where
 
@@ -48,3 +49,7 @@ languagesFor userName repoName = do
 tagsFor :: String -> String -> IO (Either Error [Tag])
 tagsFor userName repoName =
   githubGet ["repos", userName, repoName, "tags"]
+
+branchesFor :: String -> String -> IO (Either Error [Branch])
+branchesFor userName repoName =
+  githubGet ["repos", userName, repoName, "branches"]

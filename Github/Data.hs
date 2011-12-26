@@ -420,9 +420,12 @@ instance FromJSON Tag where
         <*> o .: "commit"
   parseJSON _ = fail "Could not build a Tag"
 
+instance FromJSON Branch where
+  parseJSON (Object o) = Branch <$> o .: "name" <*> o .: "commit"
+  parseJSON _ = fail "Could not build a Branch"
+
 instance FromJSON BranchCommit where
-  parseJSON (Object o) =
-    BranchCommit <$> o .: "sha" <*> o .: "url"
+  parseJSON (Object o) = BranchCommit <$> o .: "sha" <*> o .: "url"
   parseJSON _ = fail "Could not build BranchCommit"
 
 

@@ -396,6 +396,11 @@ data Tag = Tag {
   ,tagCommit :: BranchCommit
 } deriving (Show, Data, Typeable, Eq, Ord)
 
+data Branch = Branch {
+   branchName :: String
+  ,branchCommit :: BranchCommit
+} deriving (Show, Data, Typeable, Eq, Ord)
+
 data BranchCommit = BranchCommit {
    branchCommitSha :: String
   ,branchCommitUrl :: String
