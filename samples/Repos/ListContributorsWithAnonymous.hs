@@ -1,10 +1,10 @@
-module ListContributors where
+module ListContributorsWithAnonymous where
 
 import qualified Github.Repos as Github
 import Data.List
 
 main = do
-  possibleContributors <- Github.contributors "thoughtbot" "paperclip"
+  possibleContributors <- Github.contributorsWithAnonymous "thoughtbot" "paperclip"
   case possibleContributors of
        (Left error) -> putStrLn $ "Error: " ++ (show error)
        (Right contributors) ->

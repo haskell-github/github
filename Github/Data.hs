@@ -392,16 +392,21 @@ instance FromJSON Repo where
   parseJSON _ = fail "Could not build a Repo"
 
 instance FromJSON Contributor where
-  parseJSON (Object o) =
-    Contributor <$> o .: "contributions"
-                <*> o .: "avatar_url"
-                <*> o .: "login"
-                <*> o .: "url"
-                <*> o .: "id"
-                <*> o .: "gravatar_id"
+  parseJSON (Object o)
+    | o `at` "type" == (Just "Anonymous") =
+      AnonymousContributor <$> o .: "contributions"
+                           <*> o .: "name"
+    | otherwise =
+      KnownContributor <$> o .: "contributions"
+                       <*> o .: "avatar_url"
+                       <*> o .: "login"
+                       <*> o .: "url"
+                       <*> o .: "id"
+                       <*> o .: "gravatar_id"
   parseJSON _ = fail "Could not build a Contributor"
 
--- | A better version of Aeson's .:?, using `mzero' instead of `Nothing'.
+-- | A slightly more generic version of Aeson's .:?, using `mzero' instead of
+--   `Nothing'.
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of
                    Nothing -> pure mzero
@@ -417,3 +422,7 @@ obj <.:> [key] = obj .: key
 obj <.:> (key:keys) =
   let (Object nextObj) = Map.findWithDefault (Object Map.empty) key obj in
       nextObj <.:> keys
+
+-- | Produce the value for the given key, maybe.
+at :: Object -> T.Text -> Maybe Value
+obj `at` key = Map.lookup key obj

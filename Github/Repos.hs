@@ -3,6 +3,7 @@ module Github.Repos (
 ,organizationRepos
 ,userRepo
 ,contributors
+,contributorsWithAnonymous
 ,module Github.Data
 ) where
 
@@ -30,3 +31,9 @@ userRepo userName repoName = githubGet ["repos", userName, repoName]
 contributors :: String -> String -> IO (Either Error [Contributor])
 contributors userName repoName =
   githubGet ["repos", userName, repoName, "contributors"]
+
+contributorsWithAnonymous :: String -> String -> IO (Either Error [Contributor])
+contributorsWithAnonymous userName repoName =
+  githubGetWithQueryString
+    ["repos", userName, repoName, "contributors"]
+    "anon=true"

@@ -367,11 +367,15 @@ data RepoPublicity =
   | Member  -- | Only repos to which the user is a member but not an owner.
  deriving (Show, Eq)
 
-data Contributor = Contributor {
-   contributorContributions :: Int
-  ,contributorAvatarUrl :: String
-  ,contributorLogin :: String
-  ,contributorUrl :: String
-  ,contributorId :: Int
-  ,contributorGravatarId :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+data Contributor =
+    KnownContributor 
+      Int -- | Number of contributions.
+      String -- | Avatar URL.
+      String -- | Login.
+      String -- | URL.
+      Int -- | ID.
+      String -- | Gravatar ID.
+  | AnonymousContributor
+      Int    -- | Number of contributions.
+      String -- | Name.
+ deriving (Show, Data, Typeable, Eq, Ord)
