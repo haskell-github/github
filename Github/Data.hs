@@ -362,6 +362,33 @@ instance FromJSON PullRequestCommit where
     return PullRequestCommit
   parseJSON _ = fail "Could not build a PullRequestCommit"
 
+instance FromJSON Repo where
+  parseJSON (Object o) =
+    Repo <$> o .: "ssh_url"
+         <*> o .: "description"
+         <*> o .: "created_at"
+         <*> o .: "html_url"
+         <*> o .: "svn_url"
+         <*> o .: "forks"
+         <*> o .: "homepage"
+         <*> o .: "fork"
+         <*> o .: "git_url"
+         <*> o .: "private"
+         <*> o .: "clone_url"
+         <*> o .: "size"
+         <*> o .: "updated_at"
+         <*> o .: "watchers"
+         <*> o .: "owner"
+         <*> o .: "name"
+         <*> o .: "language"
+         <*> o .:? "master_branch"
+         <*> o .: "pushed_at"
+         <*> o .: "id"
+         <*> o .: "url"
+         <*> o .: "open_issues"
+  parseJSON _ = fail "Could not build a Repo"
+
+
 -- | A better version of Aeson's .:?, using `mzero' instead of `Nothing'.
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of

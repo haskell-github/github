@@ -13,6 +13,7 @@ data Error =
     HTTPConnectionError E.IOException
   | ParseError String
   | JsonError String
+  | UserError String
   deriving (Show, Eq)
 
 newtype GithubDate = GithubDate { fromGithubDate :: UTCTime }
@@ -329,3 +330,36 @@ data PullRequestLinks = PullRequestLinks {
 
 data PullRequestCommit = PullRequestCommit {
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data Repo = Repo {
+   repoSshUrl :: String
+  ,repoDescription :: String
+  ,repoCreatedAt :: GithubDate
+  ,repoHtmlUrl :: String
+  ,repoSvnUrl :: String
+  ,repoForks :: Int
+  ,repoHomepage :: String
+  ,repoFork :: Bool
+  ,repoGitUrl :: String
+  ,repoPrivate :: Bool
+  ,repoCloneUrl :: String
+  ,repoSize :: Int
+  ,repoUpdatedAt :: GithubDate
+  ,repoWatchers :: Int
+  ,repoOwner :: GithubUser
+  ,repoName :: String
+  ,repoLanguage :: String
+  ,repoMasterBranch :: Maybe String
+  ,repoPushedAt :: GithubDate
+  ,repoId :: Int
+  ,repoUrl :: String
+  ,repoOpenIssues :: Int
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data RepoPublicity =
+    All     -- | All repos accessible to the user.
+  | Owner   -- | Only repos owned by the user.
+  | Public  -- | Only public repos.
+  | Private -- | Only private repos.
+  | Member  -- | Only repos to which the user is a member but not an owner.
+ deriving (Show, Eq)
