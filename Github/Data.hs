@@ -405,6 +405,14 @@ instance FromJSON Contributor where
                        <*> o .: "gravatar_id"
   parseJSON _ = fail "Could not build a Contributor"
 
+instance FromJSON Languages where
+  parseJSON (Object o) =
+    Languages <$>
+      mapM (\name -> Language (T.unpack name) <$> o .: name)
+           (Map.keys o)
+  parseJSON _ = fail "Could not build Languages"
+
+
 -- | A slightly more generic version of Aeson's .:?, using `mzero' instead of
 --   `Nothing'.
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]

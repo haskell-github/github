@@ -379,3 +379,12 @@ data Contributor =
       Int    -- | Number of contributions.
       String -- | Name.
  deriving (Show, Data, Typeable, Eq, Ord)
+
+data Languages = Languages { getLanguages :: [Language] }
+  deriving (Show, Data, Typeable, Eq, Ord)
+
+data Language =
+  Language
+    String -- | Name of the language.
+    Int    -- | Number of characters written in that language.
+ deriving (Show, Data, Typeable, Eq, Ord)

@@ -4,6 +4,7 @@ module Github.Repos (
 ,userRepo
 ,contributors
 ,contributorsWithAnonymous
+,languagesFor
 ,module Github.Data
 ) where
 
@@ -37,3 +38,8 @@ contributorsWithAnonymous userName repoName =
   githubGetWithQueryString
     ["repos", userName, repoName, "contributors"]
     "anon=true"
+
+languagesFor :: String -> String -> IO (Either Error [Language])
+languagesFor userName repoName = do
+  result <- githubGet ["repos", userName, repoName, "languages"]
+  return $ either Left (Right . getLanguages) result
