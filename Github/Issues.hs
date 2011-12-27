@@ -1,3 +1,4 @@
+-- | The issues API as described on <http://developer.github.com/v3/issues/>.
 module Github.Issues (
  issue
 ,issuesForRepo
@@ -12,25 +13,35 @@ import Data.Time.Format (formatTime)
 import System.Locale (defaultTimeLocale)
 import Data.Time.Clock (UTCTime(..))
 
+-- | A data structure for describing how to filter issues. This is used by
+-- @issuesForRepo@.
 data IssueLimitation =
-      AnyMilestone
-    | NoMilestone
-    | MilestoneId Int
-    | Open
-    | OnlyClosed
-    | Unassigned
-    | AnyAssignment
-    | AssignedTo String
-    | Mentions String
-    | Labels [String]
-    | Ascending
-    | Descending
-    | Since UTCTime
+      AnyMilestone -- | Issues appearing in any milestone. [default]
+    | NoMilestone -- | Issues without a milestone.
+    | MilestoneId Int -- | Only issues that are in the milestone with the given id.
+    | Open -- | Only open issues. [default]
+    | OnlyClosed -- | Only closed issues.
+    | Unassigned -- | Issues to which no one has been assigned ownership.
+    | AnyAssignment -- | All issues regardless of assignment. [default]
+    | AssignedTo String -- | Only issues assigned to the user with the given login.
+    | Mentions String -- | Issues which mention the given string, taken to be a user's login.
+    | Labels [String] -- | A list of labels to filter by.
+    | Ascending -- | Sort ascending.
+    | Descending -- | Sort descending. [default]
+    | Since UTCTime -- | Only issues created since the specified date and time.
 
+-- | Details on a specific issue, given the repo owner and name, and the issue
+-- number.
+--
+-- > issue "thoughtbot" "paperclip" "462"
 issue :: String -> String -> Int -> IO (Either Error Issue)
 issue user repoName issueNumber =
   githubGet ["repos", user, repoName, "issues", show issueNumber]
 
+-- | All issues for a repo (given the repo owner and name), with optional
+-- restrictions as described in the @IssueLimitation@ data type.
+--
+-- > issuesForRepo "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
 issuesForRepo :: String -> String -> [IssueLimitation] -> IO (Either Error [Issue])
 issuesForRepo user repoName issueLimitations =
   githubGetWithQueryString

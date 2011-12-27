@@ -1,3 +1,5 @@
+-- | The organization members API as described on
+-- <http://developer.github.com/v3/orgs/members/>.
 module Github.Organizations.Members (
  membersOf
 ,module Github.Data
@@ -6,5 +8,8 @@ module Github.Organizations.Members (
 import Github.Data
 import Github.Private
 
+-- | All the users who are members of the specified organization.
+--
+-- > membersOf "thoughtbot"
 membersOf :: String -> IO (Either Error [GithubUser])
 membersOf organization = githubGet ["orgs", organization, "members"]

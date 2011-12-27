@@ -1,5 +1,9 @@
 {-# LANGUAGE DeriveDataTypeable, OverloadedStrings #-}
 
+-- | This module re-exports the @Github.Data.Definitions@ module, adding
+-- instances of @FromJSON@ to it. If you wish to use the data without the
+-- instances, use the @Github.Data.Definitions@ module instead.
+
 module Github.Data (module Github.Data.Definitions) where
 
 import Data.Time
@@ -452,8 +456,8 @@ instance FromJSON DetailedUser where
   parseJSON _ = fail "Could not build a DetailedUser"
 
 
--- | A slightly more generic version of Aeson's .:?, using `mzero' instead of
---   `Nothing'.
+-- | A slightly more generic version of Aeson's @(.:?)@, using `mzero' instead
+-- of `Nothing'.
 (.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
 obj .:< key = case Map.lookup key obj of
                    Nothing -> pure mzero
@@ -464,7 +468,7 @@ obj `values` key =
   let (Object children) = Map.findWithDefault (Object Map.empty) key obj in
     parseJSON $ Array $ V.fromList $ Map.elems children
 
--- | Produce the value for the last key, traversing.
+-- | Produce the value for the last key by traversing.
 obj <.:> [key] = obj .: key
 obj <.:> (key:keys) =
   let (Object nextObj) = Map.findWithDefault (Object Map.empty) key obj in

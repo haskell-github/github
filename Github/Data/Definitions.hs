@@ -9,13 +9,16 @@ import qualified Control.Exception as E
 
 deriving instance Eq Network.HTTP.Enumerator.HttpException
 
+-- | Errors have been tagged according to their source, so you can more easily
+-- dispatch and handle them.
 data Error =
-    HTTPConnectionError E.IOException
-  | ParseError String
-  | JsonError String
-  | UserError String
+    HTTPConnectionError E.IOException -- | A HTTP error occurred. The actual caught error is included, if available.
+  | ParseError String -- | An error in the parser itself.
+  | JsonError String -- | The JSON is malformed or unexpected.
+  | UserError String -- | Incorrect input.
   deriving (Show, Eq)
 
+-- | A date in the Github format, which is a special case of ISO-8601.
 newtype GithubDate = GithubDate { fromGithubDate :: UTCTime }
   deriving (Show, Data, Typeable, Eq, Ord)
 
@@ -223,6 +226,7 @@ data IssueComment = IssueComment {
   ,issueCommentId :: Int
 } deriving (Show, Data, Typeable, Eq, Ord)
 
+-- | Data describing an @Event@.
 data EventType =
     Mentioned     -- | The actor was @mentioned in an issue body.
   | Subscribed    -- | The actor subscribed to receive notifications for an issue.
@@ -359,14 +363,6 @@ data Repo = Repo {
   ,repoHasDownloads :: Maybe Bool
 } deriving (Show, Data, Typeable, Eq, Ord)
 
-data RepoPublicity =
-    All     -- | All repos accessible to the user.
-  | Owner   -- | Only repos owned by the user.
-  | Public  -- | Only public repos.
-  | Private -- | Only private repos.
-  | Member  -- | Only repos to which the user is a member but not an owner.
- deriving (Show, Eq)
-
 data Contributor =
     KnownContributor 
       Int    -- | Number of contributions.
@@ -380,6 +376,7 @@ data Contributor =
       String -- | Name.
  deriving (Show, Data, Typeable, Eq, Ord)
 
+-- | This is only used for the FromJSON instance.
 data Languages = Languages { getLanguages :: [Language] }
   deriving (Show, Data, Typeable, Eq, Ord)
 

@@ -1,3 +1,5 @@
+-- | The repo collaborators API as described on
+-- <http://developer.github.com/v3/repos/collaborators/>.
 module Github.Repos.Collaborators (
  collaboratorsOn
 ,isCollaboratorOn
@@ -10,10 +12,18 @@ import Github.Private
 import Data.ByteString.Char8 (pack)
 import Network.HTTP.Enumerator (statusCode)
 
+-- | All the users who have collaborated on a repo.
+--
+-- > collaboratorsOn "thoughtbot" "paperclip"
 collaboratorsOn :: String -> String -> IO (Either Error [GithubUser])
 collaboratorsOn userName repoName =
   githubGet ["repos", userName, repoName, "collaborators"]
 
+-- | Whether the user is collaborating on a repo. Takes the user in question,
+-- the user who owns the repo, and the repo name.
+--
+-- > isCollaboratorOn "mike-burns" "thoughtbot" "paperclip"
+-- > isCollaboratorOn "johnson" "thoughtbot" "paperclip"
 isCollaboratorOn :: String -> String -> String -> IO (Either Error Bool)
 isCollaboratorOn userName repoOwnerName repoName = do
   result <- doHttps (pack "GET")
