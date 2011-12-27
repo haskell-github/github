@@ -68,7 +68,8 @@ Library
                    Github.Repos.Commits,
                    Github.Repos.Forks,
                    Github.Repos.Watching,
-                   Github.Users
+                   Github.Users,
+                   Github.Users.Followers
 
 
   -- Packages needed in order to build this package.
