@@ -13,7 +13,10 @@ Version:             0.1
 Synopsis:            Access to the Github API, v3.
 
 -- A longer description of the package.
--- Description:         
+Description:         The Github API provides programmatic access to the full
+                     Github Web site, from Issues to Gists to repos down to the underlying git data
+                     like references and trees. This library wraps all of that, exposing a basic but
+                     Haskell-friendly set of functions and data structures.
 
 -- The license under which the package is released.
 License:             BSD3
@@ -37,17 +40,77 @@ Build-type:          Simple
 
 -- Extra files to be distributed with the package, such as examples or
 -- a README.
-Extra-source-files:  README.md, Sample.hs
+Extra-source-files:  README.md
+                    ,samples/Gists/Comments/ShowComment.hs
+                    ,samples/Gists/Comments/ShowComments.hs
+                    ,samples/Gists/ListGists.hs
+                    ,samples/Gists/ShowGist.hs
+                    ,samples/GitData/Blobs/GitHashObject.hs
+                    ,samples/GitData/Commits/GitShow.hs
+                    ,samples/GitData/References/GitLsRemote.hs
+                    ,samples/GitData/References/GitLsRemoteTags.hs
+                    ,samples/GitData/References/GitLsRemoteWithRef.hs
+                    ,samples/GitData/Trees/GitLsTree.hs
+                    ,samples/GitData/Trees/GitLsTreeRecursively.hs
+                    ,samples/Issues/Comments/ShowComment.hs
+                    ,samples/Issues/Comments/ShowComments.hs
+                    ,samples/Issues/Events/ShowEvent.hs
+                    ,samples/Issues/Events/ShowIssueEvents.hs
+                    ,samples/Issues/Events/ShowRepoEvents.hs
+                    ,samples/Issues/Labels/ShowIssueLabels.hs
+                    ,samples/Issues/Labels/ShowLabel.hs
+                    ,samples/Issues/Labels/ShowMilestoneLabels.hs
+                    ,samples/Issues/Labels/ShowRepoLabels.hs
+                    ,samples/Issues/Milestones/ShowMilestone.hs
+                    ,samples/Issues/Milestones/ShowMilestones.hs
+                    ,samples/Issues/ShowIssue.hs
+                    ,samples/Issues/ShowRepoIssues.hs
+                    ,samples/Organizations/Members/ShowMembers.hs
+                    ,samples/Organizations/ShowPublicOrganization.hs
+                    ,samples/Organizations/ShowPublicOrganizations.hs
+                    ,samples/Pulls/Diff.hs
+                    ,samples/Pulls/ListPulls.hs
+                    ,samples/Pulls/ReviewComments/ListComments.hs
+                    ,samples/Pulls/ReviewComments/ShowComment.hs
+                    ,samples/Pulls/ShowCommits.hs
+                    ,samples/Pulls/ShowPull.hs
+                    ,samples/Repos/Collaborators/IsCollaborator.hs
+                    ,samples/Repos/Collaborators/ListCollaborators.hs
+                    ,samples/Repos/Commits/CommitComment.hs
+                    ,samples/Repos/Commits/CommitComments.hs
+                    ,samples/Repos/Commits/GitDiff.hs
+                    ,samples/Repos/Commits/GitLog.hs
+                    ,samples/Repos/Commits/GitShow.hs
+                    ,samples/Repos/Commits/RepoComments.hs
+                    ,samples/Repos/Forks/ListForks.hs
+                    ,samples/Repos/ListBranches.hs
+                    ,samples/Repos/ListContributors.hs
+                    ,samples/Repos/ListContributorsWithAnonymous.hs
+                    ,samples/Repos/ListLanguages.hs
+                    ,samples/Repos/ListOrgRepos.hs
+                    ,samples/Repos/ListTags.hs
+                    ,samples/Repos/ListUserRepos.hs
+                    ,samples/Repos/ShowRepo.hs
+                    ,samples/Repos/Watching/ListWatched.hs
+                    ,samples/Repos/Watching/ListWatchers.hs
+                    ,samples/Users/Followers/ListFollowers.hs
+                    ,samples/Users/Followers/ListFollowing.hs
+                    ,samples/Users/ShowUser.hs
+                    ,LICENSE
+
 
 -- Constraint on the version of Cabal needed to build this package.
-Cabal-version:       >=1.2
+Cabal-version:       >=1.6
+
+source-repository head
+  type: git
+  location: git://github.com/mike-burns/github.git
 
 
 Library
   -- Modules exported by the library.
   Exposed-modules: Github.Data,
                    Github.Data.Definitions,
-                   Github.Private,
 
                    Github.Gists,
                    Github.Gists.Comments,
@@ -73,7 +136,7 @@ Library
 
 
   -- Packages needed in order to build this package.
-  Build-depends: base,
+  Build-depends: base >= 4.0 && < 5.0,
                  time,
                  aeson,
                  attoparsec,
@@ -90,7 +153,7 @@ Library
                  vector
   
   -- Modules not exported by this package.
-  -- Other-modules:       
+  Other-modules:       Github.Private
   
   -- Extra tools (e.g. alex, hsc2hs, ...) needed to build the source.
   -- Build-tools:         
