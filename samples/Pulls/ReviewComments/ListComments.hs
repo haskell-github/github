@@ -1,6 +1,6 @@
 module ListComments where
 
-import qualified Github.PullRequests as Github
+import qualified Github.PullRequests.ReviewComments as Github
 import Data.List
 
 main = do
