@@ -65,7 +65,8 @@ Library
                    Github.PullRequests,
                    Github.Repos,
                    Github.Repos.Collaborators,
-                   Github.Repos.Commits
+                   Github.Repos.Commits,
+                   Github.Repos.Forks
 
 
   -- Packages needed in order to build this package.
