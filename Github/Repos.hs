@@ -18,11 +18,11 @@ import Github.Private
 
 -- | Filter the list of the user's repos using any of these constructors.
 data RepoPublicity =
-    All     -- | All repos accessible to the user.
-  | Owner   -- | Only repos owned by the user.
-  | Public  -- | Only public repos.
-  | Private -- | Only private repos.
-  | Member  -- | Only repos to which the user is a member but not an owner.
+    All     -- ^ All repos accessible to the user.
+  | Owner   -- ^ Only repos owned by the user.
+  | Public  -- ^ Only public repos.
+  | Private -- ^ Only private repos.
+  | Member  -- ^ Only repos to which the user is a member but not an owner.
  deriving (Show, Eq)
 
 -- | The repos for a user, by their login. Can be restricted to just repos they

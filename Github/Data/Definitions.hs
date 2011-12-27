@@ -12,10 +12,10 @@ deriving instance Eq Network.HTTP.Enumerator.HttpException
 -- | Errors have been tagged according to their source, so you can more easily
 -- dispatch and handle them.
 data Error =
-    HTTPConnectionError E.IOException -- | A HTTP error occurred. The actual caught error is included, if available.
-  | ParseError String -- | An error in the parser itself.
-  | JsonError String -- | The JSON is malformed or unexpected.
-  | UserError String -- | Incorrect input.
+    HTTPConnectionError E.IOException -- ^ A HTTP error occurred. The actual caught error is included, if available.
+  | ParseError String -- ^ An error in the parser itself.
+  | JsonError String -- ^ The JSON is malformed or unexpected.
+  | UserError String -- ^ Incorrect input.
   deriving (Show, Eq)
 
 -- | A date in the Github format, which is a special case of ISO-8601.
@@ -228,14 +228,14 @@ data IssueComment = IssueComment {
 
 -- | Data describing an @Event@.
 data EventType =
-    Mentioned     -- | The actor was @mentioned in an issue body.
-  | Subscribed    -- | The actor subscribed to receive notifications for an issue.
-  | Unsubscribed  -- | The issue was unsubscribed from by the actor.
-  | Referenced    -- | The issue was referenced from a commit message. The commit_id attribute is the commit SHA1 of where that happened.
-  | Merged        -- | The issue was merged by the actor. The commit_id attribute is the SHA1 of the HEAD commit that was merged.
-  | Assigned      -- | The issue was assigned to the actor.
-  | Closed        -- | The issue was closed by the actor. When the commit_id is present, it identifies the commit that closed the issue using “closes / fixes #NN” syntax. 
-  | Reopened      -- | The issue was reopened by the actor.
+    Mentioned     -- ^ The actor was @mentioned in an issue body.
+  | Subscribed    -- ^ The actor subscribed to receive notifications for an issue.
+  | Unsubscribed  -- ^ The issue was unsubscribed from by the actor.
+  | Referenced    -- ^ The issue was referenced from a commit message. The commit_id attribute is the commit SHA1 of where that happened.
+  | Merged        -- ^ The issue was merged by the actor. The commit_id attribute is the SHA1 of the HEAD commit that was merged.
+  | Assigned      -- ^ The issue was assigned to the actor.
+  | Closed        -- ^ The issue was closed by the actor. When the commit_id is present, it identifies the commit that closed the issue using “closes / fixes #NN” syntax. 
+  | Reopened      -- ^ The issue was reopened by the actor.
   deriving (Show, Data, Typeable, Eq, Ord)
 
 data Event = Event {
@@ -363,27 +363,21 @@ data Repo = Repo {
   ,repoHasDownloads :: Maybe Bool
 } deriving (Show, Data, Typeable, Eq, Ord)
 
-data Contributor =
-    KnownContributor 
-      Int    -- | Number of contributions.
-      String -- | Avatar URL.
-      String -- | Login.
-      String -- | URL.
-      Int    -- | ID.
-      String -- | Gravatar ID.
-  | AnonymousContributor
-      Int    -- | Number of contributions.
-      String -- | Name.
+data Contributor
+  -- | An existing Github user, with their number of contributions, avatar
+  -- URL, login, URL, ID, and Gravatar ID.
+  = KnownContributor Int String String String Int String
+  -- | An unknown Github user with their number of contributions and recorded name.
+  | AnonymousContributor Int String
  deriving (Show, Data, Typeable, Eq, Ord)
 
 -- | This is only used for the FromJSON instance.
 data Languages = Languages { getLanguages :: [Language] }
   deriving (Show, Data, Typeable, Eq, Ord)
 
-data Language =
-  Language
-    String -- | Name of the language.
-    Int    -- | Number of characters written in that language.
+-- | A programming language with the name and number of characters written in
+-- it.
+data Language = Language String Int
  deriving (Show, Data, Typeable, Eq, Ord)
 
 data Tag = Tag {
