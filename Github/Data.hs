@@ -426,7 +426,30 @@ instance FromJSON Branch where
 
 instance FromJSON BranchCommit where
   parseJSON (Object o) = BranchCommit <$> o .: "sha" <*> o .: "url"
-  parseJSON _ = fail "Could not build BranchCommit"
+  parseJSON _ = fail "Could not build a BranchCommit"
+
+instance FromJSON DetailedUser where
+  parseJSON (Object o) =
+    DetailedUser <$> o .: "created_at"
+                 <*> o .: "type"
+                 <*> o .: "public_gists"
+                 <*> o .: "avatar_url"
+                 <*> o .: "followers"
+                 <*> o .: "following"
+                 <*> o .: "hireable"
+                 <*> o .: "gravatar_id"
+                 <*> o .:? "blog"
+                 <*> o .:? "bio"
+                 <*> o .: "public_repos"
+                 <*> o .:? "name"
+                 <*> o .:? "location"
+                 <*> o .:? "company"
+                 <*> o .: "email"
+                 <*> o .: "url"
+                 <*> o .: "id"
+                 <*> o .: "html_url"
+                 <*> o .: "login"
+  parseJSON _ = fail "Could not build a DetailedUser"
 
 
 -- | A slightly more generic version of Aeson's .:?, using `mzero' instead of

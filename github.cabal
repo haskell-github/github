@@ -67,7 +67,8 @@ Library
                    Github.Repos.Collaborators,
                    Github.Repos.Commits,
                    Github.Repos.Forks,
-                   Github.Repos.Watching
+                   Github.Repos.Watching,
+                   Github.Users
 
 
   -- Packages needed in order to build this package.
