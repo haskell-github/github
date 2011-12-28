@@ -9,12 +9,12 @@ module Github.Data (module Github.Data.Definitions) where
 import Data.Time
 import Control.Applicative
 import Control.Monad
-import qualified Data.Map as Map
 import qualified Data.Text as T
 import Data.Aeson.Types
 import System.Locale (defaultTimeLocale)
 import Data.Attoparsec.Number (Number(..))
 import qualified Data.Vector as V
+import qualified Data.HashMap.Lazy as Map
 
 import Github.Data.Definitions
 
@@ -465,15 +465,21 @@ obj .:< key = case Map.lookup key obj of
 
 -- | Produce all values for the given key.
 obj `values` key =
-  let (Object children) = Map.findWithDefault (Object Map.empty) key obj in
+  let (Object children) = findWithDefault (Object Map.empty) key obj in
     parseJSON $ Array $ V.fromList $ Map.elems children
 
 -- | Produce the value for the last key by traversing.
 obj <.:> [key] = obj .: key
 obj <.:> (key:keys) =
-  let (Object nextObj) = Map.findWithDefault (Object Map.empty) key obj in
+  let (Object nextObj) = findWithDefault (Object Map.empty) key obj in
       nextObj <.:> keys
 
 -- | Produce the value for the given key, maybe.
 at :: Object -> T.Text -> Maybe Value
 obj `at` key = Map.lookup key obj
+
+-- Taken from Data.Map:
+findWithDefault def k m =
+  case Map.lookup k m of
+    Nothing -> def
+    Just x  -> x

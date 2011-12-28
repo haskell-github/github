@@ -3,7 +3,7 @@ module Github.Private where
 
 import Github.Data
 import Data.Aeson
-import Data.Attoparsec
+import Data.Attoparsec.ByteString.Lazy
 import Control.Applicative
 import Data.List
 import qualified Data.ByteString.Char8 as BS
@@ -34,19 +34,9 @@ githubAPI :: (ToJSON a, Show a, FromJSON b, Show b) => BS.ByteString -> String -
 githubAPI method url body = do
   result <- doHttps method url (Just encodedBody)
   return $ either (Left . HTTPConnectionError)
-                  (parseJson . BS.pack . LBS.unpack . responseBody)
+                  (parseJson . responseBody)
                   result
   where encodedBody = RequestBodyLBS $ encode $ toJSON body
-
-parseJson :: (FromJSON b, Show b) => BS.ByteString -> Either Error b
-parseJson jsonString =
-  let parsed = parse (fromJSON <$> json) jsonString in
-  case parsed of
-       Data.Attoparsec.Done _ jsonResult -> do
-         case jsonResult of
-              (Success s) -> Right s
-              (Error e) -> Left $ JsonError $ e ++ " on the JSON: " ++ BS.unpack jsonString
-       (Fail _ _ e) -> Left $ ParseError e
 
 doHttps :: BS.ByteString -> String -> Maybe (RequestBody IO) -> IO (Either E.IOException Response)
 doHttps method url body = do
@@ -66,3 +56,13 @@ doHttps method url body = do
   (getResponse request >>= return . Right) `catch` (return . Left)
   where
     getResponse request = withManager $ \manager -> httpLbs request manager
+
+parseJson :: (FromJSON b, Show b) => LBS.ByteString -> Either Error b
+parseJson jsonString =
+  let parsed = parse (fromJSON <$> json) jsonString in
+  case parsed of
+       Data.Attoparsec.ByteString.Lazy.Done _ jsonResult -> do
+         case jsonResult of
+              (Success s) -> Right s
+              (Error e) -> Left $ JsonError $ e ++ " on the JSON: " ++ LBS.unpack jsonString
+       (Fail _ _ e) -> Left $ ParseError e
