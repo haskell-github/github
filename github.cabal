@@ -17,9 +17,9 @@ Description:         The Github API provides programmatic access to the full
                      Github Web site, from Issues to Gists to repos down to the underlying git data
                      like references and trees. This library wraps all of that, exposing a basic but
                      Haskell-friendly set of functions and data structures.
-
+                     .
                      /Currently this only supports read-only access/.
-
+                     .
                      For more of an overview please see the README: <https://github.com/mike-burns/github/blob/master/README.md>
 
 -- The license under which the package is released.
