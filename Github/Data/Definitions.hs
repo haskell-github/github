@@ -4,10 +4,10 @@ module Github.Data.Definitions where
 
 import Data.Time
 import Data.Data
-import Network.HTTP.Enumerator (HttpException(..))
+import Network.HTTP.Conduit (HttpException(..))
 import qualified Control.Exception as E
 
-deriving instance Eq Network.HTTP.Enumerator.HttpException
+deriving instance Eq Network.HTTP.Conduit.HttpException
 
 -- | Errors have been tagged according to their source, so you can more easily
 -- dispatch and handle them.

@@ -10,7 +10,8 @@ import Github.Data
 import Github.Private
 
 import Data.ByteString.Char8 (pack)
-import Network.HTTP.Enumerator (statusCode)
+import qualified Network.HTTP.Conduit as C (statusCode)
+import qualified Network.HTTP.Types as T (statusCode)
 
 -- | All the users who have collaborated on a repo.
 --
@@ -30,5 +31,5 @@ isCollaboratorOn userName repoOwnerName repoName = do
                     (buildUrl ["repos", repoOwnerName, repoName, "collaborators", userName])
                     Nothing
   return $ either (Left . HTTPConnectionError)
-                  (Right . (204 ==) . statusCode)
+                  (Right . (204 ==) . T.statusCode . C.statusCode)
                   result

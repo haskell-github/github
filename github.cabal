@@ -152,7 +152,7 @@ Library
                  old-locale,
                  HTTP,
                  network,
-                 http-enumerator == 0.7.2.1,
+                 http-conduit == 1.1.0.1,
                  uri,
                  failure,
                  http-types,
