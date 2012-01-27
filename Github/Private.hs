@@ -21,6 +21,10 @@ githubGet paths =
             (buildUrl paths)
             (Nothing :: Maybe Value)
 
+githubGetPage :: (FromJSON b, Show b) => [String] -> Int -> IO (Either Error b)
+githubGetPage paths page =
+  githubGetWithQueryString paths ("page=" ++ show page ++ "&" ++ "per_page=100")
+
 githubGetWithQueryString :: (FromJSON b, Show b) => [String] -> String -> IO (Either Error b)
 githubGetWithQueryString paths queryString =
   githubAPI (BS.pack "GET")
