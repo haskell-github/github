@@ -23,7 +23,7 @@ data RepoPublicity =
   | Public  -- ^ Only public repos.
   | Private -- ^ Only private repos.
   | Member  -- ^ Only repos to which the user is a member but not an owner.
- deriving (Show, Eq)
+ deriving (Show, Eq, Read)
 
 -- | The repos for a user, by their login. Can be restricted to just repos they
 -- own, are a member of, or publicize. Private repos are currently not
