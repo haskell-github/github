@@ -194,7 +194,7 @@ data Issue = Issue {
 
 data Milestone = Milestone {
    milestoneCreator :: GithubUser
-  ,milestoneDueOn :: GithubDate
+  ,milestoneDueOn :: Maybe GithubDate
   ,milestoneOpenIssues :: Int
   ,milestoneNumber :: Int
   ,milestoneClosedIssues :: Int
@@ -352,7 +352,7 @@ data Repo = Repo {
   ,repoWatchers :: Int
   ,repoOwner :: GithubUser
   ,repoName :: String
-  ,repoLanguage :: String
+  ,repoLanguage :: Maybe String
   ,repoMasterBranch :: Maybe String
   ,repoPushedAt :: GithubDate
   ,repoId :: Int
