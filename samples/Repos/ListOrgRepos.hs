@@ -15,9 +15,11 @@ formatRepo repo =
     (Github.repoHtmlUrl repo) ++ "\n" ++
     (Github.repoCloneUrl repo) ++ "\t" ++
     (formatDate $ Github.repoUpdatedAt repo) ++ "\n" ++
-    "language: " ++ (Github.repoLanguage repo) ++ "\t" ++
+    formatLanguage (Github.repoLanguage repo) ++
     "watchers: " ++ (show $ Github.repoWatchers repo) ++ "\t" ++
     "forks: " ++ (show $ Github.repoForks repo)
 
 formatDate = show . Github.fromGithubDate
 
+formatLanguage (Just language) = "language: " ++ language ++ "\t"
+formatLanguage Nothing = ""

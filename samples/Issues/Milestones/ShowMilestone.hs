@@ -13,10 +13,12 @@ main = do
 formatMilestone milestone =
   (Github.milestoneTitle milestone) ++ ", as created by " ++
     (loginName milestone) ++ " on " ++ (createdAt milestone) ++
-    ", is due on " ++ (dueOn milestone) ++ " and has the " ++
+    formatDueOn (Github.milestoneDueOn milestone) ++ " and has the " ++
     (Github.milestoneState milestone) ++ " status"
+
+formatDueOn Nothing = ""
+formatDueOn (Just milestoneDate) = ", is due on " ++ dueOn milestoneDate
 
 loginName = Github.githubUserLogin . Github.milestoneCreator
 createdAt = show . Github.fromGithubDate . Github.milestoneCreatedAt
-dueOn = show . Github.fromGithubDate . Github.milestoneDueOn
-
+dueOn = show . Github.fromGithubDate
