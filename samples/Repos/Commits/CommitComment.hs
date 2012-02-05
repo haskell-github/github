@@ -16,6 +16,6 @@ formatComment comment =
     (maybe "" ("\nURL: "++) $ Github.commentHtmlUrl comment) ++
     "\n\n" ++ (Github.commentBody comment)
 
-formatAuthor :: Github.GithubUser -> String
+formatAuthor :: Github.GithubOwner -> String
 formatAuthor user =
-  (Github.githubUserLogin user) ++ " (" ++ (Github.githubUserUrl user) ++ ")"
+  (Github.githubOwnerLogin user) ++ " (" ++ (Github.githubOwnerUrl user) ++ ")"

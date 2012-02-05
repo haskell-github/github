@@ -27,8 +27,8 @@ data Commit = Commit {
   ,commitParents   :: [Tree]
   ,commitUrl       :: String
   ,commitGitCommit :: GitCommit
-  ,commitCommitter :: Maybe GithubUser
-  ,commitAuthor    :: Maybe GithubUser
+  ,commitCommitter :: Maybe GithubOwner
+  ,commitAuthor    :: Maybe GithubOwner
   ,commitFiles     :: [File]
   ,commitStats     :: Maybe Stats
 } deriving (Show, Data, Typeable, Eq, Ord, Read)
@@ -58,12 +58,18 @@ data GitCommit = GitCommit {
   ,gitCommitParents :: [Tree]
 } deriving (Show, Data, Typeable, Eq, Ord, Read)
 
-data GithubUser = GithubUser {
-   githubUserAvatarUrl :: String
-  ,githubUserLogin :: String
-  ,githubUserUrl :: String
-  ,githubUserId :: Int
-  ,githubUserGravatarId :: String
+data GithubOwner = GithubUser {
+   githubOwnerAvatarUrl :: String
+  ,githubOwnerLogin :: String
+  ,githubOwnerUrl :: String
+  ,githubOwnerId :: Int
+  ,githubOwnerGravatarId :: String
+  }
+  | GithubOrganization {
+   githubOwnerAvatarUrl :: String
+  ,githubOwnerLogin :: String
+  ,githubOwnerUrl :: String
+  ,githubOwnerId :: Int
 } deriving (Show, Data, Typeable, Eq, Ord, Read)
 
 data GitUser = GitUser {
@@ -100,7 +106,7 @@ data Comment = Comment {
   ,commentUrl :: String
   ,commentCreatedAt :: UTCTime
   ,commentPath :: Maybe String
-  ,commentUser :: GithubUser
+  ,commentUser :: GithubOwner
   ,commentId :: Int
 } deriving (Show, Data, Typeable, Eq, Ord, Read)
 
@@ -120,7 +126,7 @@ data Diff = Diff {
 } deriving (Show, Data, Typeable, Eq, Ord, Read)
 
 data Gist = Gist {
-   gistUser :: GithubUser
+   gistUser :: GithubOwner
   ,gistGitPushUrl :: String
   ,gistUrl :: String
   ,gistDescription :: Maybe String
@@ -144,7 +150,7 @@ data GistFile = GistFile {
 } deriving (Show, Data, Typeable, Eq, Ord, Read)
 
 data GistComment = GistComment {
-   gistCommentUser :: GithubUser
+   gistCommentUser :: GithubOwner
   ,gistCommentUrl :: String
   ,gistCommentCreatedAt :: GithubDate
   ,gistCommentBody :: String
@@ -179,8 +185,8 @@ data Issue = Issue {
   ,issueClosedBy :: Maybe String
   ,issueLabels :: [IssueLabel]
   ,issueNumber :: Int
-  ,issueAssignee :: Maybe GithubUser
-  ,issueUser :: GithubUser
+  ,issueAssignee :: Maybe GithubOwner
+  ,issueUser :: GithubOwner
   ,issueTitle :: String
   ,issuePullRequest :: PullRequestReference
   ,issueUrl :: String
@@ -193,7 +199,7 @@ data Issue = Issue {
 } deriving (Show, Data, Typeable, Eq, Ord, Read)
 
 data Milestone = Milestone {
-   milestoneCreator :: GithubUser
+   milestoneCreator :: GithubOwner
   ,milestoneDueOn :: Maybe GithubDate
   ,milestoneOpenIssues :: Int
   ,milestoneNumber :: Int
@@ -219,7 +225,7 @@ data PullRequestReference = PullRequestReference {
 
 data IssueComment = IssueComment {
    issueCommentUpdatedAt :: GithubDate
-  ,issueCommentUser :: GithubUser
+  ,issueCommentUser :: GithubOwner
   ,issueCommentUrl :: String
   ,issueCommentCreatedAt :: GithubDate
   ,issueCommentBody :: String
@@ -239,7 +245,7 @@ data EventType =
   deriving (Show, Data, Typeable, Eq, Ord, Read)
 
 data Event = Event {
-   eventActor :: GithubUser
+   eventActor :: GithubOwner
   ,eventType :: EventType
   ,eventCommitId :: Maybe String
   ,eventUrl :: String
@@ -277,7 +283,7 @@ data Organization = Organization {
 data PullRequest = PullRequest {
    pullRequestClosedAt :: Maybe GithubDate
   ,pullRequestCreatedAt :: GithubDate
-  ,pullRequestUser :: GithubUser
+  ,pullRequestUser :: GithubOwner
   ,pullRequestPatchUrl :: String
   ,pullRequestState :: String
   ,pullRequestNumber :: Int
@@ -297,7 +303,7 @@ data DetailedPullRequest = DetailedPullRequest {
   -- this is a duplication of a PullRequest
    detailedPullRequestClosedAt :: Maybe GithubDate
   ,detailedPullRequestCreatedAt :: GithubDate
-  ,detailedPullRequestUser :: GithubUser
+  ,detailedPullRequestUser :: GithubOwner
   ,detailedPullRequestPatchUrl :: String
   ,detailedPullRequestState :: String
   ,detailedPullRequestNumber :: Int
@@ -312,7 +318,7 @@ data DetailedPullRequest = DetailedPullRequest {
   ,detailedPullRequestTitle :: String
   ,detailedPullRequestId :: Int
 
-  ,detailedPullRequestMergedBy :: Maybe GithubUser
+  ,detailedPullRequestMergedBy :: Maybe GithubOwner
   ,detailedPullRequestChangedFiles :: Int
   ,detailedPullRequestHead :: PullRequestCommit
   ,detailedPullRequestComments :: Int
@@ -350,7 +356,7 @@ data Repo = Repo {
   ,repoSize :: Int
   ,repoUpdatedAt :: GithubDate
   ,repoWatchers :: Int
-  ,repoOwner :: GithubUser
+  ,repoOwner :: GithubOwner
   ,repoName :: String
   ,repoLanguage :: Maybe String
   ,repoMasterBranch :: Maybe String

@@ -16,7 +16,7 @@ import qualified Network.HTTP.Types as T (statusCode)
 -- | All the users who have collaborated on a repo.
 --
 -- > collaboratorsOn "thoughtbot" "paperclip"
-collaboratorsOn :: String -> String -> IO (Either Error [GithubUser])
+collaboratorsOn :: String -> String -> IO (Either Error [GithubOwner])
 collaboratorsOn userName repoName =
   githubGet ["repos", userName, repoName, "collaborators"]
 

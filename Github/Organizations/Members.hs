@@ -11,5 +11,5 @@ import Github.Private
 -- | All the users who are members of the specified organization.
 --
 -- > membersOf "thoughtbot"
-membersOf :: String -> IO (Either Error [GithubUser])
+membersOf :: String -> IO (Either Error [GithubOwner])
 membersOf organization = githubGet ["orgs", organization, "members"]

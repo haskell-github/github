@@ -65,14 +65,20 @@ instance FromJSON GitCommit where
               <*> o .:< "parents"
   parseJSON _          = fail "Could not build a GitCommit"
 
-instance FromJSON GithubUser where
-  parseJSON (Object o) =
-    GithubUser <$> o .: "avatar_url"
-               <*> o .: "login"
-               <*> o .: "url"
-               <*> o .: "id"
-               <*> o .: "gravatar_id"
-  parseJSON v          = fail $ "Could not build a GithubUser out of " ++ (show v)
+instance FromJSON GithubOwner where
+  parseJSON (Object o)
+    | o `at` "gavatar_id" == Nothing =
+      GithubOrganization <$> o .: "avatar_url"
+                 <*> o .: "login"
+                 <*> o .: "url"
+                 <*> o .: "id"
+    | otherwise =
+      GithubUser <$> o .: "avatar_url"
+                 <*> o .: "login"
+                 <*> o .: "url"
+                 <*> o .: "id"
+                 <*> o .: "gravatar_id"
+  parseJSON v          = fail $ "Could not build a GithubOwner out of " ++ (show v)
 
 instance FromJSON GitUser where
   parseJSON (Object o) =

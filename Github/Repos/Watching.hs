@@ -12,7 +12,7 @@ import Github.Private
 -- | The list of users that are watching the specified Github repo.
 --
 -- > watchersFor "thoughtbot" "paperclip"
-watchersFor :: String -> String -> IO (Either Error [GithubUser])
+watchersFor :: String -> String -> IO (Either Error [GithubOwner])
 watchersFor userName repoName =
   githubGet ["repos", userName, repoName, "watchers"]
 

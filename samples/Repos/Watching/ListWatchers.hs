@@ -4,11 +4,11 @@ import qualified Github.Repos.Watching as Github
 import Data.List (intercalate)
 
 main = do
-  possibleWatchers <- Github.watchersFor "thoughtbot" "paperclip"
+  possibleWatchers <- Github.watchersFor "doubledrones" "git-annex"
   putStrLn $ either (("Error: "++) . show)
                     (intercalate "\n" . map formatWatcher)
                     possibleWatchers
 
-formatWatcher :: Github.GithubUser -> String
+formatWatcher :: Github.GithubOwner -> String
 formatWatcher user =
-  (Github.githubUserLogin user) ++ " (" ++ (Github.githubUserUrl user) ++ ")"
+  (Github.githubOwnerLogin user) ++ " (" ++ (Github.githubOwnerUrl user) ++ ")"

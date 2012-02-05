@@ -10,6 +10,6 @@ main = do
     (Right collaborators) ->
       putStrLn $ intercalate "\n" $ map formatAuthor collaborators
 
-formatAuthor :: Github.GithubUser -> String
+formatAuthor :: Github.GithubOwner -> String
 formatAuthor user =
-  (Github.githubUserLogin user) ++ " (" ++ (Github.githubUserUrl user) ++ ")"
+  (Github.githubOwnerLogin user) ++ " (" ++ (Github.githubOwnerUrl user) ++ ")"
