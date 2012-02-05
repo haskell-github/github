@@ -10,7 +10,7 @@ main = do
     (Right comments) -> putStrLn $ intercalate "\n\n" $ map formatComment comments
 
 formatComment comment =
-  (Github.githubUserLogin $ Github.gistCommentUser comment) ++ "\n" ++
+  (Github.githubOwnerLogin $ Github.gistCommentUser comment) ++ "\n" ++
     (formatGithubDate $ Github.gistCommentUpdatedAt comment) ++ "\n\n" ++
     (Github.gistCommentBody comment)
 

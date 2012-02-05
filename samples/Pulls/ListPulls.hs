@@ -13,7 +13,7 @@ main = do
 formatPullRequest pullRequest =
   (Github.pullRequestTitle pullRequest) ++ "\n" ++
     (take 80 $ Github.pullRequestBody pullRequest) ++ "\n" ++
-    (Github.githubUserLogin $ Github.pullRequestUser pullRequest) ++
+    (Github.githubOwnerLogin $ Github.pullRequestUser pullRequest) ++
     " submitted to thoughtbot/paperclip " ++
     (formatGithubDate $ Github.pullRequestCreatedAt pullRequest) ++
     " updated " ++

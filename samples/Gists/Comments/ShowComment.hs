@@ -9,7 +9,7 @@ main = do
     (Right comment) -> putStrLn $ formatComment comment
 
 formatComment comment =
-  (Github.githubUserLogin $ Github.gistCommentUser comment) ++ "\n" ++
+  (Github.githubOwnerLogin $ Github.gistCommentUser comment) ++ "\n" ++
     (formatGithubDate $ Github.gistCommentUpdatedAt comment) ++ "\n\n" ++
     (Github.gistCommentBody comment)
 

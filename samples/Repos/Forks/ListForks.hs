@@ -10,6 +10,6 @@ main = do
                     possibleForks
 
 formatFork fork =
-  (Github.githubUserLogin $ Github.repoOwner fork) ++ "\t" ++
+  (Github.githubOwnerLogin $ Github.repoOwner fork) ++ "\t" ++
   (show $ Github.fromGithubDate $ Github.repoPushedAt fork) ++ "\n" ++
   (Github.repoCloneUrl fork)

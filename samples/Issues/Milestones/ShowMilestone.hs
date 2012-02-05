@@ -19,6 +19,6 @@ formatMilestone milestone =
 formatDueOn Nothing = ""
 formatDueOn (Just milestoneDate) = ", is due on " ++ dueOn milestoneDate
 
-loginName = Github.githubUserLogin . Github.milestoneCreator
+loginName = Github.githubOwnerLogin . Github.milestoneCreator
 createdAt = show . Github.fromGithubDate . Github.milestoneCreatedAt
 dueOn = show . Github.fromGithubDate

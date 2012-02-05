@@ -10,7 +10,7 @@ main = do
        (Right pullRequest) -> putStrLn $ formatPullRequest pullRequest
 
 formatPullRequest p =
-  (Github.githubUserLogin $ Github.detailedPullRequestUser p) ++
+  (Github.githubOwnerLogin $ Github.detailedPullRequestUser p) ++
     " opened this pull request " ++
     (formatGithubDate $ Github.detailedPullRequestCreatedAt p) ++ "\n" ++
     (Github.detailedPullRequestTitle p) ++ "\n" ++

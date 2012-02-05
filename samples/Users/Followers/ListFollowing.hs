@@ -9,5 +9,5 @@ main = do
                     (intercalate "\n" . map formatUser)
                     possibleUsers
 
-formatUser = Github.githubUserLogin
+formatUser = Github.githubOwnerLogin
 

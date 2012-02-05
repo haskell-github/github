@@ -11,7 +11,7 @@ main = do
          putStrLn $ intercalate "\n\n" $ map formatComment issues
 
 formatComment comment =
-  (Github.githubUserLogin $ Github.issueCommentUser comment) ++
+  (Github.githubOwnerLogin $ Github.issueCommentUser comment) ++
     " commented " ++
     (show $ Github.fromGithubDate $ Github.issueCommentUpdatedAt comment) ++
     "\n" ++ (Github.issueCommentBody comment)

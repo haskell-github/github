@@ -8,4 +8,4 @@ main = do
   case possibleMembers of
        (Left error)  -> putStrLn $ "Error: " ++ (show error)
        (Right members) ->
-         putStrLn $ intercalate "\n" $ map Github.githubUserLogin members
+         putStrLn $ intercalate "\n" $ map Github.githubOwnerLogin members

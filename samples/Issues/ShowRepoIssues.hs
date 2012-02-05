@@ -12,7 +12,7 @@ main = do
          putStrLn $ intercalate "\n\n" $ map formatIssue issues
 
 formatIssue issue =
-  (Github.githubUserLogin $ Github.issueUser issue) ++
+  (Github.githubOwnerLogin $ Github.issueUser issue) ++
     " opened this issue " ++
     (show $ Github.fromGithubDate $ Github.issueCreatedAt issue) ++ "\n" ++
     (Github.issueState issue) ++ " with " ++
