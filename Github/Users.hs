@@ -11,5 +11,5 @@ import Github.Private
 -- | The information for a single user, by login name.
 --
 -- > userInfoFor "mike-burns"
-userInfoFor :: String -> IO (Either Error DetailedUser)
+userInfoFor :: String -> IO (Either Error DetailedOwner)
 userInfoFor userName = githubGet ["users", userName]

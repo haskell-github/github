@@ -403,24 +403,42 @@ data BranchCommit = BranchCommit {
   ,branchCommitUrl :: String
 } deriving (Show, Data, Typeable, Eq, Ord, Read)
 
-data DetailedUser = DetailedUser {
-   detailedUserCreatedAt :: GithubDate
-  ,detailedUserType :: String
-  ,detailedUserPublicGists :: Int
-  ,detailedUserAvatarUrl :: String
-  ,detailedUserFollowers :: Int
-  ,detailedUserFollowing :: Int
-  ,detailedUserHireable :: Bool
-  ,detailedUserGravatarId :: String
-  ,detailedUserBlog :: Maybe String
-  ,detailedUserBio :: Maybe String
-  ,detailedUserPublicRepos :: Int
-  ,detailedUserName :: Maybe String
-  ,detailedUserLocation :: Maybe String
-  ,detailedUserCompany :: Maybe String
-  ,detailedUserEmail :: String
-  ,detailedUserUrl :: String
-  ,detailedUserId :: Int
-  ,detailedUserHtmlUrl :: String
-  ,detailedUserLogin :: String
+data DetailedOwner = DetailedUser {
+   detailedOwnerCreatedAt :: GithubDate
+  ,detailedOwnerType :: String
+  ,detailedOwnerPublicGists :: Int
+  ,detailedOwnerAvatarUrl :: String
+  ,detailedOwnerFollowers :: Int
+  ,detailedOwnerFollowing :: Int
+  ,detailedOwnerHireable :: Bool
+  ,detailedOwnerGravatarId :: String
+  ,detailedOwnerBlog :: Maybe String
+  ,detailedOwnerBio :: Maybe String
+  ,detailedOwnerPublicRepos :: Int
+  ,detailedOwnerName :: Maybe String
+  ,detailedOwnerLocation :: Maybe String
+  ,detailedOwnerCompany :: Maybe String
+  ,detailedOwnerEmail :: String
+  ,detailedOwnerUrl :: String
+  ,detailedOwnerId :: Int
+  ,detailedOwnerHtmlUrl :: String
+  ,detailedOwnerLogin :: String
+  }
+  | DetailedOrganization {
+   detailedOwnerCreatedAt :: GithubDate
+  ,detailedOwnerType :: String
+  ,detailedOwnerPublicGists :: Int
+  ,detailedOwnerAvatarUrl :: String
+  ,detailedOwnerFollowers :: Int
+  ,detailedOwnerFollowing :: Int
+  ,detailedOwnerBlog :: Maybe String
+  ,detailedOwnerBio :: Maybe String
+  ,detailedOwnerPublicRepos :: Int
+  ,detailedOwnerName :: Maybe String
+  ,detailedOwnerLocation :: Maybe String
+  ,detailedOwnerCompany :: Maybe String
+  ,detailedOwnerUrl :: String
+  ,detailedOwnerId :: Int
+  ,detailedOwnerHtmlUrl :: String
+  ,detailedOwnerLogin :: String
 } deriving (Show, Data, Typeable, Eq, Ord, Read)
