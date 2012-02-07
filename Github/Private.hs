@@ -8,7 +8,7 @@ import Control.Applicative
 import Data.List
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.ByteString.Lazy.Char8 as LBS
-import qualified Network.HTTP.Types as Types
+import Network.HTTP.Types (Method)
 import Network.HTTP.Conduit
 import Text.URI
 import Control.Failure hiding (Error(..))
@@ -38,7 +38,7 @@ githubAPI method url body = do
                   result
   where encodedBody = RequestBodyLBS $ encode $ toJSON body
 
-doHttps :: BS.ByteString -> String -> Maybe (RequestBody IO) -> IO (Either E.IOException (Response LBS.ByteString))
+doHttps :: Method -> String -> Maybe (RequestBody IO) -> IO (Either E.IOException (Response LBS.ByteString))
 doHttps method url body = do
   let (Just uri) = parseURI url
       (Just host) = uriRegName uri
