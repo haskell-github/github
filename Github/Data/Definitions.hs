@@ -357,7 +357,7 @@ data Repo = Repo {
   ,repoName :: String
   ,repoLanguage :: Maybe String
   ,repoMasterBranch :: Maybe String
-  ,repoPushedAt :: GithubDate
+  ,repoPushedAt :: Maybe GithubDate   -- ^ this is Nothing for new repositories
   ,repoId :: Int
   ,repoUrl :: String
   ,repoOpenIssues :: Int
