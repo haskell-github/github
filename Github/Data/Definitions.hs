@@ -343,7 +343,7 @@ data PullRequestCommit = PullRequestCommit {
 
 data Repo = Repo {
    repoSshUrl :: String
-  ,repoDescription :: String
+  ,repoDescription :: Maybe String
   ,repoCreatedAt :: GithubDate
   ,repoHtmlUrl :: String
   ,repoSvnUrl :: String
