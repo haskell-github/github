@@ -16,6 +16,9 @@ module Github.Repos (
 ,def
 ,Edit(..)
 ,edit
+,CreateRepo(..)
+,repo
+,create
 ) where
 
 import Data.Default
@@ -102,6 +105,45 @@ branchesFor :: String -> String -> IO (Either Error [Branch])
 branchesFor userName repoName =
   githubGet ["repos", userName, repoName, "branches"]
 
+
+data CreateRepo = CreateRepo {
+  createRepoName         :: String
+, createRepoDescription  :: (Maybe String)
+, createRepoHomepage     :: (Maybe String)
+, createRepoPrivate      :: (Maybe Bool)
+, createRepoHasIssues    :: (Maybe Bool)
+, createRepoHasWiki      :: (Maybe Bool)
+, createRepoHasDownloads :: (Maybe Bool)
+} deriving Show
+
+instance ToJSON  CreateRepo where
+  toJSON (CreateRepo { createRepoName         = name
+                     , createRepoDescription  = description
+                     , createRepoHomepage     = homepage
+                     , createRepoPrivate      = private
+                     , createRepoHasIssues    = hasIssues
+                     , createRepoHasWiki      = hasWiki
+                     , createRepoHasDownloads = hasDownloads
+                     }) = object
+                     [ "name"                .= name
+                     , "description"         .= description
+                     , "homepage"            .= homepage
+                     , "private"             .= private
+                     , "has_issues"          .= hasIssues
+                     , "has_wiki"            .= hasWiki
+                     , "has_downloads"       .= hasDownloads
+                     ]
+
+repo :: String -> CreateRepo
+repo name = CreateRepo name Nothing Nothing Nothing Nothing Nothing Nothing
+
+-- | <http://developer.github.com/v3/repos/#create>
+--
+-- Example:
+--
+-- > create (user, password) (repo "some_repo") {createRepoHasIssues = Just False}
+create :: BasicAuth -> CreateRepo -> IO (Either Error Repo)
+create auth = githubPost auth ["user", "repos"]
 
 data Edit = Edit {
   editName         :: Maybe String
