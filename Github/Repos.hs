@@ -19,6 +19,7 @@ module Github.Repos (
 ,CreateRepo(..)
 ,repo
 ,create
+,createOrganization
 ) where
 
 import Data.Default
@@ -144,6 +145,9 @@ repo name = CreateRepo name Nothing Nothing Nothing Nothing Nothing Nothing
 -- > create (user, password) (repo "some_repo") {createRepoHasIssues = Just False}
 create :: BasicAuth -> CreateRepo -> IO (Either Error Repo)
 create auth = githubPost auth ["user", "repos"]
+
+createOrganization :: BasicAuth -> String -> CreateRepo -> IO (Either Error Repo)
+createOrganization auth org = githubPost auth ["orgs", org, "repos"]
 
 data Edit = Edit {
   editName         :: Maybe String
