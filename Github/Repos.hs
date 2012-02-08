@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 -- | The Github Repos API, as documented at
 -- <http://developer.github.com/v3/repos/>
 module Github.Repos (
@@ -11,8 +12,14 @@ module Github.Repos (
 ,branchesFor
 ,module Github.Data
 ,RepoPublicity(..)
+,BasicAuth
+,def
+,Edit(..)
+,edit
 ) where
 
+import Data.Default
+import Data.Aeson.Types
 import Github.Data
 import Github.Private
 
@@ -94,3 +101,47 @@ tagsFor userName repoName =
 branchesFor :: String -> String -> IO (Either Error [Branch])
 branchesFor userName repoName =
   githubGet ["repos", userName, repoName, "branches"]
+
+
+data Edit = Edit {
+  editName         :: Maybe String
+, editDescription  :: Maybe String
+, editHomepage     :: Maybe String
+, editPublic       :: Maybe Bool
+, editHasIssues    :: Maybe Bool
+, editHasWiki      :: Maybe Bool
+, editHasDownloads :: Maybe Bool
+} deriving Show
+
+instance Default Edit where
+  def = Edit def def def def def def def
+
+instance ToJSON  Edit where
+  toJSON (Edit { editName         = name
+               , editDescription  = description
+               , editHomepage     = homepage
+               , editPublic       = public
+               , editHasIssues    = hasIssues
+               , editHasWiki      = hasWiki
+               , editHasDownloads = hasDownloads
+               }) = object
+               [ "name"          .= name
+               , "description"   .= description
+               , "homepage"      .= homepage
+               , "public"        .= public
+               , "has_issues"    .= hasIssues
+               , "has_wiki"      .= hasWiki
+               , "has_downloads" .= hasDownloads
+               ]
+
+-- | <http://developer.github.com/v3/repos/#edit>
+--
+-- Example:
+--
+-- > edit (user, password) "some_user" "some_repo" def {editDescription = "some description"}
+edit :: BasicAuth
+     -> String      -- ^ user/organization
+     -> String      -- ^ repository name
+     -> Edit
+     -> IO (Either Error Repo)
+edit auth user repo body = githubPatch auth ["repos", user, repo] body
