@@ -2,6 +2,8 @@
 -- | The Github Repos API, as documented at
 -- <http://developer.github.com/v3/repos/>
 module Github.Repos (
+
+-- * Querying repositories
  userRepos
 ,organizationRepos
 ,userRepo
@@ -12,14 +14,25 @@ module Github.Repos (
 ,branchesFor
 ,module Github.Data
 ,RepoPublicity(..)
+
+-- * Modifying repositories
+-- |
+-- Only authenticated users may modify repositories.  Currently only
+-- /HTTP basic access authentication/ is implemented.
 ,BasicAuth
-,def
-,Edit(..)
-,edit
-,NewRepo(..)
-,newRepo
+
+-- ** Create
 ,create
 ,createOrganization
+,newRepo
+,NewRepo(..)
+
+-- ** Edit
+,edit
+,def
+,Edit(..)
+
+-- ** Delete
 ,deleteRepo
 ) where
 
@@ -143,14 +156,17 @@ instance ToJSON  NewRepo where
 newRepo :: String -> NewRepo
 newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing
 
--- | <http://developer.github.com/v3/repos/#create>
---
--- Example:
+-- |
+-- Create a new repository.
 --
 -- > create (user, password) (newRepo "some_repo") {newRepoHasIssues = Just False}
 create :: BasicAuth -> NewRepo -> IO (Either Error Repo)
 create auth = githubPost auth ["user", "repos"]
 
+-- |
+-- Create a new repository for an organization.
+--
+-- > createOrganization (user, password) "thoughtbot" (newRepo "some_repo") {newRepoHasIssues = Just False}
 createOrganization :: BasicAuth -> String -> NewRepo -> IO (Either Error Repo)
 createOrganization auth org = githubPost auth ["orgs", org, "repos"]
 
@@ -185,13 +201,12 @@ instance ToJSON  Edit where
                , "has_downloads" .= hasDownloads
                ]
 
--- | <http://developer.github.com/v3/repos/#edit>
+-- |
+-- Edit an existing repository.
 --
--- Example:
---
--- > edit (user, password) "some_user" "some_repo" def {editDescription = "some description"}
+-- > edit (user, password) "some_user" "some_repo" def {editDescription = Just "some description"}
 edit :: BasicAuth
-     -> String      -- ^ user/organization
+     -> String      -- ^ owner
      -> String      -- ^ repository name
      -> Edit
      -> IO (Either Error Repo)
@@ -200,6 +215,10 @@ edit auth user repo body = githubPatch auth ["repos", user, repo] b
     -- if no name is given, use curent name
     b = body {editName = editName body <|> Just repo}
 
+-- |
+-- Delete an existing repository.
+--
+-- > deleteRepo (user, password) "thoughtbot" "some_repo"
 deleteRepo :: BasicAuth
            -> String      -- ^ owner
            -> String      -- ^ repository name
@@ -207,6 +226,7 @@ deleteRepo :: BasicAuth
 deleteRepo auth owner repo = do
   requestToken >>= either (return . Left) (sendToken)
   where
+    -- APIv3 does not support deletion, so we use APIv2 for that
     url = "https://github.com/api/v2/json/repos/delete/" ++ owner ++ "/" ++ repo
 
     requestToken :: IO (Either Error DeleteToken)
