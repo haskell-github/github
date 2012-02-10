@@ -20,12 +20,17 @@ module Github.Repos (
 ,repo
 ,create
 ,createOrganization
+,deleteRepo
 ) where
 
 import Data.Default
 import Data.Aeson.Types
 import Github.Data
 import Github.Private
+import Network.HTTP.Conduit
+import qualified Data.ByteString.Char8 as BS
+import Control.Applicative
+import Network.HTTP.Types
 
 -- | Filter the list of the user's repos using any of these constructors.
 data RepoPublicity =
@@ -191,3 +196,29 @@ edit :: BasicAuth
      -> Edit
      -> IO (Either Error Repo)
 edit auth user repo body = githubPatch auth ["repos", user, repo] body
+
+deleteRepo :: BasicAuth
+           -> String      -- ^ owner
+           -> String      -- ^ repository name
+           -> IO (Either Error ())
+deleteRepo auth owner repo = do
+  requestToken >>= either (return . Left) (sendToken)
+  where
+    url = "https://github.com/api/v2/json/repos/delete/" ++ owner ++ "/" ++ repo
+
+    requestToken :: IO (Either Error DeleteToken)
+    requestToken = githubAPI "POST" url (Just auth) (Nothing :: Maybe Value)
+
+    sendToken (DeleteToken t) = do
+      let body = RequestBodyBS $ renderSimpleQuery False [("delete_token", t)]
+      result <- doHttps "POST" url (Just auth) (Just body)
+      return $ either (Left . HTTPConnectionError)
+                      (const $ Right ())
+                      result
+
+newtype DeleteToken = DeleteToken BS.ByteString
+  deriving Show
+
+instance FromJSON DeleteToken where
+  parseJSON (Object o) = DeleteToken <$> o .: "delete_token"
+  parseJSON _          = fail "Could not build a DeleteToken"
