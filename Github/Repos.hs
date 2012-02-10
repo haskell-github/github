@@ -16,8 +16,8 @@ module Github.Repos (
 ,def
 ,Edit(..)
 ,edit
-,CreateRepo(..)
-,repo
+,NewRepo(..)
+,newRepo
 ,create
 ,createOrganization
 ,deleteRepo
@@ -112,46 +112,46 @@ branchesFor userName repoName =
   githubGet ["repos", userName, repoName, "branches"]
 
 
-data CreateRepo = CreateRepo {
-  createRepoName         :: String
-, createRepoDescription  :: (Maybe String)
-, createRepoHomepage     :: (Maybe String)
-, createRepoPrivate      :: (Maybe Bool)
-, createRepoHasIssues    :: (Maybe Bool)
-, createRepoHasWiki      :: (Maybe Bool)
-, createRepoHasDownloads :: (Maybe Bool)
+data NewRepo = NewRepo {
+  newRepoName         :: String
+, newRepoDescription  :: (Maybe String)
+, newRepoHomepage     :: (Maybe String)
+, newRepoPrivate      :: (Maybe Bool)
+, newRepoHasIssues    :: (Maybe Bool)
+, newRepoHasWiki      :: (Maybe Bool)
+, newRepoHasDownloads :: (Maybe Bool)
 } deriving Show
 
-instance ToJSON  CreateRepo where
-  toJSON (CreateRepo { createRepoName         = name
-                     , createRepoDescription  = description
-                     , createRepoHomepage     = homepage
-                     , createRepoPrivate      = private
-                     , createRepoHasIssues    = hasIssues
-                     , createRepoHasWiki      = hasWiki
-                     , createRepoHasDownloads = hasDownloads
-                     }) = object
-                     [ "name"                .= name
-                     , "description"         .= description
-                     , "homepage"            .= homepage
-                     , "private"             .= private
-                     , "has_issues"          .= hasIssues
-                     , "has_wiki"            .= hasWiki
-                     , "has_downloads"       .= hasDownloads
-                     ]
+instance ToJSON  NewRepo where
+  toJSON (NewRepo { newRepoName         = name
+                  , newRepoDescription  = description
+                  , newRepoHomepage     = homepage
+                  , newRepoPrivate      = private
+                  , newRepoHasIssues    = hasIssues
+                  , newRepoHasWiki      = hasWiki
+                  , newRepoHasDownloads = hasDownloads
+                  }) = object
+                  [ "name"                .= name
+                  , "description"         .= description
+                  , "homepage"            .= homepage
+                  , "private"             .= private
+                  , "has_issues"          .= hasIssues
+                  , "has_wiki"            .= hasWiki
+                  , "has_downloads"       .= hasDownloads
+                  ]
 
-repo :: String -> CreateRepo
-repo name = CreateRepo name Nothing Nothing Nothing Nothing Nothing Nothing
+newRepo :: String -> NewRepo
+newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing
 
 -- | <http://developer.github.com/v3/repos/#create>
 --
 -- Example:
 --
--- > create (user, password) (repo "some_repo") {createRepoHasIssues = Just False}
-create :: BasicAuth -> CreateRepo -> IO (Either Error Repo)
+-- > create (user, password) (newRepo "some_repo") {newRepoHasIssues = Just False}
+create :: BasicAuth -> NewRepo -> IO (Either Error Repo)
 create auth = githubPost auth ["user", "repos"]
 
-createOrganization :: BasicAuth -> String -> CreateRepo -> IO (Either Error Repo)
+createOrganization :: BasicAuth -> String -> NewRepo -> IO (Either Error Repo)
 createOrganization auth org = githubPost auth ["orgs", org, "repos"]
 
 data Edit = Edit {
