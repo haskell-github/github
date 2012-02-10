@@ -58,7 +58,7 @@ githubAPI method url auth body = do
 -- | user/password for HTTP basic access authentication
 type BasicAuth = (BS.ByteString, BS.ByteString)
 
-doHttps :: Method -> String -> Maybe BasicAuth -> Maybe (RequestBody IO) -> IO (Either E.IOException (Response LBS.ByteString))
+doHttps :: Method -> String -> Maybe BasicAuth -> Maybe (RequestBody IO) -> IO (Either E.SomeException (Response LBS.ByteString))
 doHttps method url auth body = do
   let (Just uri) = parseURI url
       (Just host) = uriRegName uri
@@ -74,7 +74,15 @@ doHttps method url auth body = do
                     }
       authRequest = maybe id (uncurry applyBasicAuth) auth request
 
-  (getResponse authRequest >>= return . Right) `catch` (return . Left)
+  (getResponse authRequest >>= return . Right) `E.catches` [
+      -- Re-throw AsyncException, otherwise execution will not terminate on
+      -- SIGINT (ctrl-c).  All AsyncExceptions are re-thrown (not just
+      -- UserInterrupt) because all of them indicate severe conditions and
+      -- should not occur during normal operation.
+      E.Handler (\e -> E.throw (e :: E.AsyncException)),
+
+      E.Handler (\e -> (return . Left) (e :: E.SomeException))
+      ]
   where
     getResponse request = withManager $ \manager -> httpLbs request manager
 
