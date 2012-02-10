@@ -195,7 +195,10 @@ edit :: BasicAuth
      -> String      -- ^ repository name
      -> Edit
      -> IO (Either Error Repo)
-edit auth user repo body = githubPatch auth ["repos", user, repo] body
+edit auth user repo body = githubPatch auth ["repos", user, repo] b
+  where
+    -- if no name is given, use curent name
+    b = body {editName = editName body <|> Just repo}
 
 deleteRepo :: BasicAuth
            -> String      -- ^ owner
