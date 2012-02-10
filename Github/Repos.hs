@@ -22,13 +22,13 @@ module Github.Repos (
 ,BasicAuth
 
 -- ** Create
-,create
-,createOrganization
+,createRepo
+,createOrganizationRepo
 ,newRepo
 ,NewRepo(..)
 
 -- ** Edit
-,edit
+,editRepo
 ,def
 ,Edit(..)
 
@@ -159,16 +159,16 @@ newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing
 -- |
 -- Create a new repository.
 --
--- > create (user, password) (newRepo "some_repo") {newRepoHasIssues = Just False}
-create :: BasicAuth -> NewRepo -> IO (Either Error Repo)
-create auth = githubPost auth ["user", "repos"]
+-- > createRepo (user, password) (newRepo "some_repo") {newRepoHasIssues = Just False}
+createRepo :: BasicAuth -> NewRepo -> IO (Either Error Repo)
+createRepo auth = githubPost auth ["user", "repos"]
 
 -- |
 -- Create a new repository for an organization.
 --
--- > createOrganization (user, password) "thoughtbot" (newRepo "some_repo") {newRepoHasIssues = Just False}
-createOrganization :: BasicAuth -> String -> NewRepo -> IO (Either Error Repo)
-createOrganization auth org = githubPost auth ["orgs", org, "repos"]
+-- > createOrganizationRepo (user, password) "thoughtbot" (newRepo "some_repo") {newRepoHasIssues = Just False}
+createOrganizationRepo :: BasicAuth -> String -> NewRepo -> IO (Either Error Repo)
+createOrganizationRepo auth org = githubPost auth ["orgs", org, "repos"]
 
 data Edit = Edit {
   editName         :: Maybe String
@@ -204,13 +204,13 @@ instance ToJSON  Edit where
 -- |
 -- Edit an existing repository.
 --
--- > edit (user, password) "some_user" "some_repo" def {editDescription = Just "some description"}
-edit :: BasicAuth
+-- > editRepo (user, password) "some_user" "some_repo" def {editDescription = Just "some description"}
+editRepo :: BasicAuth
      -> String      -- ^ owner
      -> String      -- ^ repository name
      -> Edit
      -> IO (Either Error Repo)
-edit auth user repo body = githubPatch auth ["repos", user, repo] b
+editRepo auth user repo body = githubPatch auth ["repos", user, repo] b
   where
     -- if no name is given, use curent name
     b = body {editName = editName body <|> Just repo}
