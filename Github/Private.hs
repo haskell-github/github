@@ -37,7 +37,7 @@ githubAPI method url body = do
                   result
   where encodedBody = RequestBodyLBS $ encode $ toJSON body
 
-doHttps :: BS.ByteString -> String -> Maybe (RequestBody IO) -> IO (Either E.IOException (Response LBS.ByteString))
+doHttps :: BS.ByteString -> String -> Maybe (RequestBody IO) -> IO (Either E.SomeException (Response LBS.ByteString))
 doHttps method url body = do
   let (Just uri) = parseURI url
       (Just host) = uriRegName uri
@@ -52,7 +52,15 @@ doHttps method url body = do
                     , queryString = queryString
                     }
 
-  (getResponse request >>= return . Right) `catch` (return . Left)
+  (getResponse request >>= return . Right) `E.catches` [
+      -- Re-throw AsyncException, otherwise execution will not terminate on
+      -- SIGINT (ctrl-c).  All AsyncExceptions are re-thrown (not just
+      -- UserInterrupt) because all of them indicate severe conditions and
+      -- should not occur during normal operation.
+      E.Handler (\e -> E.throw (e :: E.AsyncException)),
+
+      E.Handler (\e -> (return . Left) (e :: E.SomeException))
+      ]
   where
     getResponse request = withManager $ \manager -> httpLbs request manager
 
