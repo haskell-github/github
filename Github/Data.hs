@@ -15,8 +15,15 @@ import System.Locale (defaultTimeLocale)
 import Data.Attoparsec.Number (Number(..))
 import qualified Data.Vector as V
 import qualified Data.HashMap.Lazy as Map
+import Data.Default
+import qualified Network.HTTP.Conduit as HC (def, newManager)
 
 import Github.Data.Definitions
+
+instance Data.Default.Default GithubConfig where
+  def = GithubConfig {
+          getHttpManager = HC.newManager HC.def
+        }
 
 instance FromJSON GithubDate where
   parseJSON (String t) =

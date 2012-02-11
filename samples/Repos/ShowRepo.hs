@@ -2,9 +2,10 @@ module ShowRepo where
 
 import qualified Github.Repos as Github
 import Data.List
+import Data.Default (def)
 
 main = do
-  possibleRepo <- Github.userRepo "mike-burns" "trylambda"
+  possibleRepo <- Github.userRepo def "mike-burns" "trylambda"
   case possibleRepo of
        (Left error) -> putStrLn $ "Error: " ++ (show error)
        (Right repo) -> putStrLn $ formatRepo repo

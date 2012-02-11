@@ -10,12 +10,12 @@ import Github.Private
 
 -- | The list of all public gists created by the user.
 --
--- > gists "mike-burns"
-gists :: String -> IO (Either Error [Gist])
-gists userName = githubGet ["users", userName, "gists"]
+-- > gists def "mike-burns"
+gists :: GithubConfig -> String -> IO (Either Error [Gist])
+gists c userName = githubGet c ["users", userName, "gists"]
 
 -- | A specific gist, given its id.
 --
--- > gist "225074"
-gist :: String -> IO (Either Error Gist)
-gist gistId = githubGet ["gists", gistId]
+-- > gist def "225074"
+gist :: GithubConfig -> String -> IO (Either Error Gist)
+gist c gistId = githubGet c ["gists", gistId]

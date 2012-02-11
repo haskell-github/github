@@ -2,9 +2,10 @@ module ShowGist where
 
 import qualified Github.Gists as Github
 import Data.List (intercalate)
+import Data.Default (def)
 
 main = do
-  possibleGist <- Github.gist "23084"
+  possibleGist <- Github.gist def "23084"
   case possibleGist of
     (Left error)  -> putStrLn $ "Error: " ++ (show error)
     (Right gist) -> putStrLn $ formatGist gist

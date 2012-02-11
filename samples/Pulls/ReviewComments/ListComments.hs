@@ -2,9 +2,10 @@ module ListComments where
 
 import qualified Github.PullRequests.ReviewComments as Github
 import Data.List
+import Data.Default (def)
 
 main = do
-  possiblePullRequestComments <- Github.pullRequestReviewComments "thoughtbot" "factory_girl" 256
+  possiblePullRequestComments <- Github.pullRequestReviewComments def "thoughtbot" "factory_girl" 256
   case possiblePullRequestComments of
        (Left error)     -> putStrLn $ "Error: " ++ (show error)
        (Right comments) -> putStrLn $ intercalate "\n\n" $ map formatComment comments

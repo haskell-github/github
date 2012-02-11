@@ -2,9 +2,10 @@ module ShowIssueEvents where
 
 import qualified Github.Issues.Events as Github
 import Data.List (intercalate)
+import Data.Default (def)
 
 main = do
-  possibleEvents <- Github.eventsForIssue "thoughtbot" "paperclip" 49
+  possibleEvents <- Github.eventsForIssue def "thoughtbot" "paperclip" 49
   case possibleEvents of
        (Left error) -> putStrLn $ "Error: " ++ show error
        (Right events) -> do

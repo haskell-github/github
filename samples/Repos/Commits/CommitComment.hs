@@ -2,9 +2,10 @@ module CommitComment where
 
 import qualified Github.Repos.Commits as Github
 import Data.Maybe (maybe)
+import Data.Default (def)
 
 main = do
-  possibleComment <- Github.commitCommentFor "thoughtbot" "paperclip" "669575"
+  possibleComment <- Github.commitCommentFor def "thoughtbot" "paperclip" "669575"
   case possibleComment of
     (Left error)    -> putStrLn $ "Error: " ++ (show error)
     (Right comment) -> putStrLn $ formatComment comment

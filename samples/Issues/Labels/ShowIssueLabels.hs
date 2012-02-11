@@ -2,9 +2,10 @@ module ShowIssueLabels where
 
 import qualified Github.Issues.Labels as Github
 import Data.List (intercalate)
+import Data.Default (def)
 
 main = do
-  possibleLabels <- Github.labelsOnIssue "thoughtbot" "paperclip" 585
+  possibleLabels <- Github.labelsOnIssue def "thoughtbot" "paperclip" 585
   case possibleLabels of
        (Left error) -> putStrLn $ "Error: " ++ show error
        (Right labels) -> do

@@ -2,9 +2,10 @@ module ListUserRepos where
 
 import qualified Github.Repos as Github
 import Data.List
+import Data.Default (def)
 
 main = do
-  possibleRepos <- Github.userRepos "mike-burns" Github.Owner
+  possibleRepos <- Github.userRepos def "mike-burns" Github.Owner
   case possibleRepos of
        (Left error)  -> putStrLn $ "Error: " ++ (show error)
        (Right repos) -> putStrLn $ intercalate "\n\n" $ map formatRepo repos

@@ -1,9 +1,10 @@
 module ShowPublicOrganization where
 
 import qualified Github.Organizations as Github
+import Data.Default (def)
 
 main = do
-  possibleOrganization <- Github.publicOrganization "thoughtbot"
+  possibleOrganization <- Github.publicOrganization def "thoughtbot"
   case possibleOrganization of
        (Left error)  -> putStrLn $ "Error: " ++ (show error)
        (Right organization) ->

@@ -11,13 +11,13 @@ import Github.Private
 
 -- | The list of users that are watching the specified Github repo.
 --
--- > watchersFor "thoughtbot" "paperclip"
-watchersFor :: String -> String -> IO (Either Error [GithubOwner])
-watchersFor userName repoName =
-  githubGet ["repos", userName, repoName, "watchers"]
+-- > watchersFor def "thoughtbot" "paperclip"
+watchersFor :: GithubConfig -> String -> String -> IO (Either Error [GithubOwner])
+watchersFor c userName repoName =
+  githubGet c ["repos", userName, repoName, "watchers"]
 
 -- | All the public repos watched by the specified user.
 --
--- > reposWatchedBy "croaky"
-reposWatchedBy :: String -> IO (Either Error [Repo])
-reposWatchedBy userName = githubGet ["users", userName, "watched"]
+-- > reposWatchedBy def "croaky"
+reposWatchedBy :: GithubConfig -> String -> IO (Either Error [Repo])
+reposWatchedBy c userName = githubGet c ["users", userName, "watched"]

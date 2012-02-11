@@ -2,9 +2,10 @@ module GitLog where
 
 import qualified Github.Repos.Commits as Github
 import Data.List
+import Data.Default (def)
 
 main = do
-  possibleCommits <- Github.commitsFor "thoughtbot" "paperclip"
+  possibleCommits <- Github.commitsFor def "thoughtbot" "paperclip"
   case possibleCommits of
     (Left error)    -> putStrLn $ "Error: " ++ (show error)
     (Right commits) -> putStrLn $ intercalate "\n\n" $ map formatCommit commits

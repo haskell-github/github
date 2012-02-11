@@ -11,14 +11,14 @@ import Github.Private
 
 -- | A specific comment, by ID.
 --
--- > comment "thoughtbot" "paperclip" 1468184
-comment :: String -> String -> Int -> IO (Either Error IssueComment)
-comment user repoName commentId =
-  githubGet ["repos", user, repoName, "issues", "comments", show commentId]
+-- > comment def "thoughtbot" "paperclip" 1468184
+comment :: GithubConfig -> String -> String -> Int -> IO (Either Error IssueComment)
+comment c user repoName commentId =
+  githubGet c ["repos", user, repoName, "issues", "comments", show commentId]
 
 -- | All comments on an issue, by the issue's number.
 --
--- > comments "thoughtbot" "paperclip" 635
-comments :: String -> String -> Int -> IO (Either Error [IssueComment])
-comments user repoName issueNumber =
-  githubGet ["repos", user, repoName, "issues", show issueNumber, "comments"]
+-- > comments def "thoughtbot" "paperclip" 635
+comments :: GithubConfig -> String -> String -> Int -> IO (Either Error [IssueComment])
+comments c user repoName issueNumber =
+  githubGet c ["repos", user, repoName, "issues", show issueNumber, "comments"]

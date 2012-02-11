@@ -10,12 +10,13 @@ import Github.Private
 
 -- | The public organizations for a user, given the user's login.
 --
--- > publicOrganizationsFor "mike-burns"
-publicOrganizationsFor :: String -> IO (Either Error [SimpleOrganization])
-publicOrganizationsFor userName = githubGet ["users", userName, "orgs"]
+-- > publicOrganizationsFor def "mike-burns"
+publicOrganizationsFor :: GithubConfig -> String -> IO (Either Error [SimpleOrganization])
+publicOrganizationsFor c userName = githubGet c ["users", userName, "orgs"]
 
 -- | Details on a public organization. Takes the organization's login.
 --
--- > publicOrganization "thoughtbot"
-publicOrganization :: String -> IO (Either Error Organization)
-publicOrganization organizationName = githubGet ["orgs", organizationName]
+-- > publicOrganization def "thoughtbot"
+publicOrganization :: GithubConfig -> String -> IO (Either Error Organization)
+publicOrganization c organizationName =
+  githubGet c ["orgs", organizationName]

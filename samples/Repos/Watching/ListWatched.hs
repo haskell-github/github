@@ -2,9 +2,10 @@ module ListWatched where
 
 import qualified Github.Repos.Watching as Github
 import Data.List (intercalate)
+import Data.Default (def)
 
 main = do
-  possibleRepos <- Github.reposWatchedBy "mike-burns"
+  possibleRepos <- Github.reposWatchedBy def "mike-burns"
   putStrLn $ either (("Error: "++) . show)
                     (intercalate "\n\n" . map formatRepo)
                     possibleRepos

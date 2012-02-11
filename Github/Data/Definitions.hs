@@ -4,8 +4,12 @@ module Github.Data.Definitions where
 
 import Data.Time
 import Data.Data
-import Network.HTTP.Conduit (HttpException(..))
+import Network.HTTP.Conduit (HttpException(..), Manager(..))
 import qualified Control.Exception as E
+
+data GithubConfig = GithubConfig {
+  getHttpManager :: IO Manager
+}
 
 deriving instance Eq Network.HTTP.Conduit.HttpException
 

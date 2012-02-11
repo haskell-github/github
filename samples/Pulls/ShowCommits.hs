@@ -3,9 +3,10 @@ module ShowCommits where
 import qualified Github.PullRequests as Github
 import Data.List
 import Data.Maybe
+import Data.Default (def)
 
 main = do
-  possiblePullRequestCommits <- Github.pullRequestCommits "thoughtbot" "paperclip" 575
+  possiblePullRequestCommits <- Github.pullRequestCommits def "thoughtbot" "paperclip" 575
   case possiblePullRequestCommits of
        (Left error)    -> putStrLn $ "Error: " ++ (show error)
        (Right commits) -> putStrLn $ intercalate "\n" $ map formatCommit commits

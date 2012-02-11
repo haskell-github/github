@@ -2,9 +2,10 @@ module ListContributors where
 
 import qualified Github.Repos as Github
 import Data.List
+import Data.Default (def)
 
 main = do
-  possibleContributors <- Github.contributors "thoughtbot" "paperclip"
+  possibleContributors <- Github.contributors def "thoughtbot" "paperclip"
   case possibleContributors of
        (Left error) -> putStrLn $ "Error: " ++ (show error)
        (Right contributors) ->

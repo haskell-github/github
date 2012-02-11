@@ -1,9 +1,10 @@
 module ShowLabel where
 
 import qualified Github.Issues.Labels as Github
+import Data.Default (def)
 
 main = do
-  possibleLabel <- Github.label "thoughtbot" "paperclip" "bug"
+  possibleLabel <- Github.label def "thoughtbot" "paperclip" "bug"
   case possibleLabel of
        (Left error) -> putStrLn $ "Error: " ++ show error
        (Right label) -> putStrLn $ formatLabel label

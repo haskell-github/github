@@ -11,12 +11,12 @@ import Github.Private
 
 -- | All the comments on a Gist, given the Gist ID.
 --
--- > commentsOn "1174060"
-commentsOn :: String -> IO (Either Error [GistComment])
-commentsOn gistId = githubGet ["gists", gistId, "comments"]
+-- > commentsOn def "1174060"
+commentsOn :: GithubConfig -> String -> IO (Either Error [GistComment])
+commentsOn c gistId = githubGet c ["gists", gistId, "comments"]
 
 -- | A specific comment, by the comment ID.
 --
--- > comment "62449"
-comment :: String -> IO (Either Error GistComment)
-comment commentId = githubGet ["gists", "comments", commentId]
+-- > comment def "62449"
+comment :: GithubConfig -> String -> IO (Either Error GistComment)
+comment c commentId = githubGet c ["gists", "comments", commentId]
