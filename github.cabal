@@ -153,13 +153,13 @@ Library
                  HTTP,
                  network,
                  http-conduit == 1.2.6,
-                 conduit,
                  uri,
                  failure,
                  http-types,
                  vector,
                  unordered-containers == 0.1.4.6,
-                 data-default
+                 data-default,
+                 conduit == 0.2.1
   
   -- Modules not exported by this package.
   Other-modules:       Github.Private
