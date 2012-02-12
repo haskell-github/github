@@ -144,7 +144,7 @@ Library
   -- Packages needed in order to build this package.
   Build-depends: base >= 4.0 && < 5.0,
                  time,
-                 aeson == 0.5.0.0,
+                 aeson == 0.6.0.0,
                  attoparsec == 0.10.1.0,
                  bytestring,
                  containers,
@@ -152,12 +152,13 @@ Library
                  old-locale,
                  HTTP,
                  network,
-                 http-conduit == 1.2.5,
+                 http-conduit == 1.2.6,
+                 conduit,
                  uri,
                  failure,
                  http-types,
                  vector,
-                 unordered-containers == 0.1.4.3,
+                 unordered-containers == 0.1.4.6,
                  data-default
   
   -- Modules not exported by this package.

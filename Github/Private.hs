@@ -11,7 +11,7 @@ import qualified Data.ByteString.Lazy.Char8 as LBS
 import qualified Network.HTTP.Types as Types
 import Network.HTTP.Conduit
 import Text.URI
-import Control.Failure
+import Control.Failure hiding (Error)
 import qualified Control.Exception as E
 import Data.Maybe (fromMaybe)
 import Control.Monad.Trans.Resource (runResourceT, withIO)
