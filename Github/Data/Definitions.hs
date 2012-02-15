@@ -4,19 +4,16 @@ module Github.Data.Definitions where
 
 import Data.Time
 import Data.Data
-import Network.HTTP.Conduit (HttpException(..))
 import qualified Control.Exception as E
-
-deriving instance Eq Network.HTTP.Conduit.HttpException
 
 -- | Errors have been tagged according to their source, so you can more easily
 -- dispatch and handle them.
 data Error =
-    HTTPConnectionError E.IOException -- ^ A HTTP error occurred. The actual caught error is included, if available.
+    HTTPConnectionError E.SomeException -- ^ A HTTP error occurred. The actual caught error is included.
   | ParseError String -- ^ An error in the parser itself.
   | JsonError String -- ^ The JSON is malformed or unexpected.
   | UserError String -- ^ Incorrect input.
-  deriving (Show, Eq)
+  deriving Show
 
 -- | A date in the Github format, which is a special case of ISO-8601.
 newtype GithubDate = GithubDate { fromGithubDate :: UTCTime }
@@ -343,7 +340,7 @@ data PullRequestCommit = PullRequestCommit {
 
 data Repo = Repo {
    repoSshUrl :: String
-  ,repoDescription :: String
+  ,repoDescription :: Maybe String
   ,repoCreatedAt :: GithubDate
   ,repoHtmlUrl :: String
   ,repoSvnUrl :: String
@@ -360,7 +357,7 @@ data Repo = Repo {
   ,repoName :: String
   ,repoLanguage :: Maybe String
   ,repoMasterBranch :: Maybe String
-  ,repoPushedAt :: GithubDate
+  ,repoPushedAt :: Maybe GithubDate   -- ^ this is Nothing for new repositories
   ,repoId :: Int
   ,repoUrl :: String
   ,repoOpenIssues :: Int
