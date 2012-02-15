@@ -20,7 +20,7 @@ data Error =
 
 -- | A date in the Github format, which is a special case of ISO-8601.
 newtype GithubDate = GithubDate { fromGithubDate :: UTCTime }
-  deriving (Show, Data, Typeable, Eq, Ord, Read)
+  deriving (Show, Data, Typeable, Eq, Ord)
 
 data Commit = Commit {
    commitSha       :: String
@@ -31,13 +31,13 @@ data Commit = Commit {
   ,commitAuthor    :: Maybe GithubOwner
   ,commitFiles     :: [File]
   ,commitStats     :: Maybe Stats
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data Tree = Tree {
    treeSha :: String
   ,treeUrl :: String
   ,treeGitTrees :: [GitTree]
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data GitTree = GitTree {
   gitTreeType :: String
@@ -46,7 +46,7 @@ data GitTree = GitTree {
   ,gitTreeSize :: Maybe Int
   ,gitTreePath :: String
   ,gitTreeMode :: String
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data GitCommit = GitCommit {
    gitCommitMessage :: String
@@ -56,7 +56,7 @@ data GitCommit = GitCommit {
   ,gitCommitTree :: Tree
   ,gitCommitSha :: Maybe String
   ,gitCommitParents :: [Tree]
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data GithubOwner = GithubUser {
    githubOwnerAvatarUrl :: String
@@ -70,13 +70,13 @@ data GithubOwner = GithubUser {
   ,githubOwnerLogin :: String
   ,githubOwnerUrl :: String
   ,githubOwnerId :: Int
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data GitUser = GitUser {
    gitUserName  :: String
   ,gitUserEmail :: String
   ,gitUserDate  :: GithubDate
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data File = File {
    fileBlobUrl :: String
@@ -88,13 +88,13 @@ data File = File {
   ,filePatch :: String
   ,fileFilename :: String
   ,fileDeletions :: Int
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data Stats = Stats {
    statsAdditions :: Int
   ,statsTotal :: Int
   ,statsDeletions :: Int
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data Comment = Comment {
    commentPosition :: Maybe Int
@@ -108,7 +108,7 @@ data Comment = Comment {
   ,commentPath :: Maybe String
   ,commentUser :: GithubOwner
   ,commentId :: Int
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data Diff = Diff {
    diffStatus :: String
@@ -123,7 +123,7 @@ data Diff = Diff {
   ,diffAheadBy :: Int
   ,diffDiffUrl :: String
   ,diffPermalinkUrl :: String
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data Gist = Gist {
    gistUser :: GithubOwner
@@ -138,7 +138,7 @@ data Gist = Gist {
   ,gistId :: String
   ,gistFiles :: [GistFile]
   ,gistGitPullUrl :: String
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data GistFile = GistFile {
    gistFileType :: String
@@ -147,7 +147,7 @@ data GistFile = GistFile {
   ,gistFileLanguage :: Maybe String
   ,gistFileFilename :: String
   ,gistFileContent :: Maybe String
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data GistComment = GistComment {
    gistCommentUser :: GithubOwner
@@ -156,7 +156,7 @@ data GistComment = GistComment {
   ,gistCommentBody :: String
   ,gistCommentUpdatedAt :: GithubDate
   ,gistCommentId :: Int
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data Blob = Blob {
    blobUrl :: String
@@ -164,19 +164,19 @@ data Blob = Blob {
   ,blobContent :: String
   ,blobSha :: String
   ,blobSize :: Int
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data GitReference = GitReference {
    gitReferenceObject :: GitObject
   ,gitReferenceUrl :: String
   ,gitReferenceRef :: String
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data GitObject = GitObject {
    gitObjectType :: String
   ,gitObjectSha :: String
   ,gitObjectUrl :: String
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data Issue = Issue {
    issueClosedAt :: Maybe GithubDate
@@ -196,7 +196,7 @@ data Issue = Issue {
   ,issueId :: Int
   ,issueComments :: Int
   ,issueMilestone :: Maybe Milestone
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data Milestone = Milestone {
    milestoneCreator :: GithubOwner
@@ -209,19 +209,19 @@ data Milestone = Milestone {
   ,milestoneUrl :: String
   ,milestoneCreatedAt :: GithubDate
   ,milestoneState :: String
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data IssueLabel = IssueLabel {
    labelColor :: String
   ,labelUrl :: String
   ,labelName :: String
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data PullRequestReference = PullRequestReference {
   pullRequestReferenceHtmlUrl :: Maybe String
   ,pullRequestReferencePatchUrl :: Maybe String
   ,pullRequestReferenceDiffUrl :: Maybe String
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data IssueComment = IssueComment {
    issueCommentUpdatedAt :: GithubDate
@@ -230,7 +230,7 @@ data IssueComment = IssueComment {
   ,issueCommentCreatedAt :: GithubDate
   ,issueCommentBody :: String
   ,issueCommentId :: Int
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 -- | Data describing an @Event@.
 data EventType =
@@ -242,7 +242,7 @@ data EventType =
   | Assigned      -- ^ The issue was assigned to the actor.
   | Closed        -- ^ The issue was closed by the actor. When the commit_id is present, it identifies the commit that closed the issue using “closes / fixes #NN” syntax. 
   | Reopened      -- ^ The issue was reopened by the actor.
-  deriving (Show, Data, Typeable, Eq, Ord, Read)
+  deriving (Show, Data, Typeable, Eq, Ord)
 
 data Event = Event {
    eventActor :: GithubOwner
@@ -252,14 +252,14 @@ data Event = Event {
   ,eventCreatedAt :: GithubDate
   ,eventId :: Int
   ,eventIssue :: Maybe Issue
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data SimpleOrganization = SimpleOrganization {
    simpleOrganizationUrl :: String
   ,simpleOrganizationAvatarUrl :: String
   ,simpleOrganizationId :: Int
   ,simpleOrganizationLogin :: String
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data Organization = Organization {
    organizationType :: String
@@ -278,7 +278,7 @@ data Organization = Organization {
   ,organizationCreatedAt :: GithubDate
   ,organizationName :: Maybe String
   ,organizationId :: Int
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data PullRequest = PullRequest {
    pullRequestClosedAt :: Maybe GithubDate
@@ -297,7 +297,7 @@ data PullRequest = PullRequest {
   ,pullRequestMergedAt :: Maybe GithubDate
   ,pullRequestTitle :: String
   ,pullRequestId :: Int
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data DetailedPullRequest = DetailedPullRequest {
   -- this is a duplication of a PullRequest
@@ -329,17 +329,17 @@ data DetailedPullRequest = DetailedPullRequest {
   ,detailedPullRequestCommits :: Int
   ,detailedPullRequestMerged :: Bool
   ,detailedPullRequestMergeable :: Bool
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data PullRequestLinks = PullRequestLinks {
    pullRequestLinksReviewComments :: String
   ,pullRequestLinksComments :: String
   ,pullRequestLinksHtml :: String
   ,pullRequestLinksSelf :: String
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data PullRequestCommit = PullRequestCommit {
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data Repo = Repo {
    repoSshUrl :: String
@@ -367,7 +367,7 @@ data Repo = Repo {
   ,repoHasWiki :: Maybe Bool
   ,repoHasIssues :: Maybe Bool
   ,repoHasDownloads :: Maybe Bool
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data Contributor
   -- | An existing Github user, with their number of contributions, avatar
@@ -375,33 +375,33 @@ data Contributor
   = KnownContributor Int String String String Int String
   -- | An unknown Github user with their number of contributions and recorded name.
   | AnonymousContributor Int String
- deriving (Show, Data, Typeable, Eq, Ord, Read)
+ deriving (Show, Data, Typeable, Eq, Ord)
 
 -- | This is only used for the FromJSON instance.
 data Languages = Languages { getLanguages :: [Language] }
-  deriving (Show, Data, Typeable, Eq, Ord, Read)
+  deriving (Show, Data, Typeable, Eq, Ord)
 
 -- | A programming language with the name and number of characters written in
 -- it.
 data Language = Language String Int
- deriving (Show, Data, Typeable, Eq, Ord, Read)
+ deriving (Show, Data, Typeable, Eq, Ord)
 
 data Tag = Tag {
    tagName :: String
   ,tagZipballUrl :: String
   ,tagTarballUrl :: String
   ,tagCommit :: BranchCommit
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data Branch = Branch {
    branchName :: String
   ,branchCommit :: BranchCommit
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data BranchCommit = BranchCommit {
    branchCommitSha :: String
   ,branchCommitUrl :: String
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data DetailedOwner = DetailedUser {
    detailedOwnerCreatedAt :: GithubDate
@@ -441,4 +441,4 @@ data DetailedOwner = DetailedUser {
   ,detailedOwnerId :: Int
   ,detailedOwnerHtmlUrl :: String
   ,detailedOwnerLogin :: String
-} deriving (Show, Data, Typeable, Eq, Ord, Read)
+} deriving (Show, Data, Typeable, Eq, Ord)
