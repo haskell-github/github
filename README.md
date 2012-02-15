@@ -3,12 +3,7 @@ Github
 
 The Github API v3 for Haskell.
 
-**This is currently a read-only API.** There is a `read-write` branch with
-ideas on how this can work for writing to Github, but I need ideas on how
-authentication should work. *You can help* if you [let me
-know](mailto:mike@mike-burns.com) how you are using this library or how you
-would like to use it, and which authentication method is best for you (HTTP
-basic, OAuth).
+**This is currently a read-only API.**
 
 Some functions which do not require authentication are also missing; these are functions where the Github API did not work as expected. The full Github API is in beta and constantly improving.
 
@@ -52,6 +47,6 @@ All functions produce an `IO (Either Error a)`, where `a` is the actual thing yo
 Copyright
 =========
 
-Copyright 2011 Mike Burns.
+Copyright 2011, 2012 Mike Burns.
 
 Available under the BSD 3-clause license.
