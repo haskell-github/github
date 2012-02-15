@@ -179,7 +179,7 @@ data Issue = Issue {
    issueClosedAt :: Maybe GithubDate
   ,issueUpdatedAt :: GithubDate
   ,issueHtmlUrl :: String
-  ,issueClosedBy :: Maybe String
+  ,issueClosedBy :: Maybe GithubOwner
   ,issueLabels :: [IssueLabel]
   ,issueNumber :: Int
   ,issueAssignee :: Maybe GithubOwner
