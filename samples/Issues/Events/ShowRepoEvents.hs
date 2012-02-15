@@ -3,10 +3,9 @@ module ShowRepoEvents where
 import qualified Github.Issues.Events as Github
 import Data.List (intercalate)
 import Data.Maybe (fromJust)
-import Data.Default (def)
 
 main = do
-  possibleEvents <- Github.eventsForRepo def "thoughtbot" "paperclip"
+  possibleEvents <- Github.eventsForRepo "thoughtbot" "paperclip"
   case possibleEvents of
        (Left error) -> putStrLn $ "Error: " ++ show error
        (Right events) -> do

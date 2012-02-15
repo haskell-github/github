@@ -2,10 +2,9 @@ module GitLsTreeRecursively where
 
 import qualified Github.GitData.Trees as Github
 import Data.List (intercalate)
-import Data.Default (def)
 
 main = do
-  possibleTree <- Github.nestedTree def "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
+  possibleTree <- Github.nestedTree "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
   case possibleTree of
        (Left error)  -> putStrLn $ "Error: " ++ show error
        (Right tree) -> putStrLn $ formatTree tree

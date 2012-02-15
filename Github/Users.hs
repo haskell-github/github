@@ -10,6 +10,6 @@ import Github.Private
 
 -- | The information for a single user, by login name.
 --
--- > userInfoFor def "mike-burns"
-userInfoFor :: GithubConfig -> String -> IO (Either Error DetailedOwner)
-userInfoFor c userName = githubGet c ["users", userName]
+-- > userInfoFor "mike-burns"
+userInfoFor :: String -> IO (Either Error DetailedOwner)
+userInfoFor userName = githubGet ["users", userName]

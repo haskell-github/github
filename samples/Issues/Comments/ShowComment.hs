@@ -1,10 +1,9 @@
 module ShowComment where
 
 import qualified Github.Issues.Comments as Github
-import Data.Default (def)
 
 main = do
-  possibleComment <- Github.comment def "thoughtbot" "paperclip" 1468184
+  possibleComment <- Github.comment "thoughtbot" "paperclip" 1468184
   putStrLn $ either (\e -> "Error: " ++ show e)
                     formatComment
                     possibleComment

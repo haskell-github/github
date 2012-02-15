@@ -33,19 +33,18 @@ data IssueLimitation =
 -- | Details on a specific issue, given the repo owner and name, and the issue
 -- number.
 --
--- > issue def "thoughtbot" "paperclip" "462"
-issue :: GithubConfig -> String -> String -> Int -> IO (Either Error Issue)
-issue c user repoName issueNumber =
-  githubGet c ["repos", user, repoName, "issues", show issueNumber]
+-- > issue "thoughtbot" "paperclip" "462"
+issue :: String -> String -> Int -> IO (Either Error Issue)
+issue user repoName issueNumber =
+  githubGet ["repos", user, repoName, "issues", show issueNumber]
 
 -- | All issues for a repo (given the repo owner and name), with optional
 -- restrictions as described in the @IssueLimitation@ data type.
 --
--- > issuesForRepo def "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
-issuesForRepo :: GithubConfig -> String -> String -> [IssueLimitation] -> IO (Either Error [Issue])
-issuesForRepo c user repoName issueLimitations =
+-- > issuesForRepo "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
+issuesForRepo :: String -> String -> [IssueLimitation] -> IO (Either Error [Issue])
+issuesForRepo user repoName issueLimitations =
   githubGetWithQueryString
-    c
     ["repos", user, repoName, "issues"]
     (queryStringFromLimitations issueLimitations)
   where

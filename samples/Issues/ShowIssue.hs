@@ -1,10 +1,9 @@
 module ShowIssue where
 
 import qualified Github.Issues as Github
-import Data.Default (def)
 
 main = do
-  possibleIssue <- Github.issue def "thoughtbot" "paperclip" 549
+  possibleIssue <- Github.issue "thoughtbot" "paperclip" 549
   putStrLn $ either (\e -> "Error: " ++ show e)
                     formatIssue
                     possibleIssue

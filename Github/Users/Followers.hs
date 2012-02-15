@@ -11,12 +11,12 @@ import Github.Private
 
 -- | All the users following the given user.
 --
--- > usersFollowing def "mike-burns"
-usersFollowing :: GithubConfig -> String -> IO (Either Error [GithubOwner])
-usersFollowing c userName = githubGet c ["users", userName, "followers"]
+-- > usersFollowing "mike-burns"
+usersFollowing :: String -> IO (Either Error [GithubOwner])
+usersFollowing userName = githubGet ["users", userName, "followers"]
 
 -- | All the users that the given user follows.
 --
--- > usersFollowedBy def "mike-burns"
-usersFollowedBy :: GithubConfig -> String -> IO (Either Error [GithubOwner])
-usersFollowedBy c userName = githubGet c ["users", userName, "following"]
+-- > usersFollowedBy "mike-burns"
+usersFollowedBy :: String -> IO (Either Error [GithubOwner])
+usersFollowedBy userName = githubGet ["users", userName, "following"]

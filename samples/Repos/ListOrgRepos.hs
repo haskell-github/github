@@ -2,10 +2,9 @@ module ListOrgRepos where
 
 import qualified Github.Repos as Github
 import Data.List
-import Data.Default (def)
 
 main = do
-  possibleRepos <- Github.organizationRepos def "thoughtbot"
+  possibleRepos <- Github.organizationRepos "thoughtbot"
   case possibleRepos of
        (Left error)  -> putStrLn $ "Error: " ++ (show error)
        (Right repos) -> putStrLn $ intercalate "\n\n" $ map formatRepo repos

@@ -2,10 +2,9 @@ module ShowComments where
 
 import qualified Github.Issues.Comments as Github
 import Data.List (intercalate)
-import Data.Default (def)
 
 main = do
-  possibleComments <- Github.comments def "thoughtbot" "paperclip" 635
+  possibleComments <- Github.comments "thoughtbot" "paperclip" 635
   case possibleComments of
        (Left error) -> putStrLn $ "Error: " ++ show error
        (Right issues) ->

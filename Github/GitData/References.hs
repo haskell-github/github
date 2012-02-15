@@ -13,21 +13,21 @@ import Github.Private
 
 -- | A single reference by the ref name.
 --
--- > reference def "mike-burns" "github" "heads/master"
-reference :: GithubConfig -> String -> String -> String -> IO (Either Error GitReference)
-reference c user repoName ref =
-  githubGet c ["repos", user, repoName, "git", "refs", ref]
+-- > reference "mike-burns" "github" "heads/master"
+reference :: String -> String -> String -> IO (Either Error GitReference)
+reference user repoName ref =
+  githubGet ["repos", user, repoName, "git", "refs", ref]
 
 -- | The history of references for a repo.
 --
--- > references def "mike-burns" "github"
-references :: GithubConfig -> String -> String -> IO (Either Error [GitReference])
-references c user repoName =
-  githubGet c ["repos", user, repoName, "git", "refs"]
+-- > references "mike-burns" "github"
+references :: String -> String -> IO (Either Error [GitReference])
+references user repoName =
+  githubGet ["repos", user, repoName, "git", "refs"]
 
 -- | Limited references by a namespace.
 --
--- > namespacedReferences def "thoughtbot" "paperclip" "tags"
-namespacedReferences :: GithubConfig -> String -> String -> String -> IO (Either Error [GitReference])
-namespacedReferences c user repoName namespace =
-  githubGet c ["repos", user, repoName, "git", "refs", namespace]
+-- > namespacedReferences "thoughtbot" "paperclip" "tags"
+namespacedReferences :: String -> String -> String -> IO (Either Error [GitReference])
+namespacedReferences user repoName namespace =
+  githubGet ["repos", user, repoName, "git", "refs", namespace]

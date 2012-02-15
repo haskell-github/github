@@ -2,10 +2,9 @@ module ShowUser where
 
 import qualified Github.Users as Github
 import Data.Maybe (fromMaybe)
-import Data.Default (def)
 
 main = do
-  possibleUser <- Github.userInfoFor def "mike-burns"
+  possibleUser <- Github.userInfoFor "mike-burns"
   putStrLn $ either (("Error: "++) . show) formatUser possibleUser
 
 formatUser user@(Github.DetailedOrganization {}) =

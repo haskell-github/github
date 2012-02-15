@@ -10,7 +10,7 @@ import Github.Private
 
 -- | All the repos that are forked off the given repo.
 --
--- > forksFor def "thoughtbot" "paperclip"
-forksFor :: GithubConfig -> String -> String -> IO (Either Error [Repo])
-forksFor c userName repoName =
-  githubGet c ["repos", userName, repoName, "forks"]
+-- > forksFor "thoughtbot" "paperclip"
+forksFor :: String -> String -> IO (Either Error [Repo])
+forksFor userName repoName =
+  githubGet ["repos", userName, repoName, "forks"]

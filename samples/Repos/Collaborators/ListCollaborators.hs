@@ -2,10 +2,9 @@ module ListCollaborators where
 
 import qualified Github.Repos.Collaborators as Github
 import Data.List
-import Data.Default (def)
 
 main = do
-  possibleCollaborators <- Github.collaboratorsOn def "thoughtbot" "paperclip"
+  possibleCollaborators <- Github.collaboratorsOn "thoughtbot" "paperclip"
   case possibleCollaborators of
     (Left error) -> putStrLn $ "Error: " ++ (show error)
     (Right collaborators) ->

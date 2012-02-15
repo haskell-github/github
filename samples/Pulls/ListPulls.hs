@@ -2,10 +2,9 @@ module ListPulls where
 
 import qualified Github.PullRequests as Github
 import Data.List
-import Data.Default (def)
 
 main = do
-  possiblePullRequests <- Github.pullRequestsFor def "thoughtbot" "paperclip"
+  possiblePullRequests <- Github.pullRequestsFor "thoughtbot" "paperclip"
   case possiblePullRequests of
        (Left error) -> putStrLn $ "Error: " ++ (show error)
        (Right pullRequests) ->

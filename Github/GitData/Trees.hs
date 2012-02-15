@@ -11,15 +11,15 @@ import Github.Private
 
 -- | A tree for a SHA1.
 --
--- > tree def "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
-tree :: GithubConfig -> String -> String -> String -> IO (Either Error Tree)
-tree c user repoName sha =
-  githubGet c ["repos", user, repoName, "git", "trees", sha]
+-- > tree "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
+tree :: String -> String -> String -> IO (Either Error Tree)
+tree user repoName sha =
+  githubGet ["repos", user, repoName, "git", "trees", sha]
 
 -- | A recursively-nested tree for a SHA1.
 --
--- > nestedTree def "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
-nestedTree :: GithubConfig -> String -> String -> String -> IO (Either Error Tree)
-nestedTree c user repoName sha =
-  githubGetWithQueryString c ["repos", user, repoName, "git", "trees", sha]
-                             "recursive=1"
+-- > nestedTree "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
+nestedTree :: String -> String -> String -> IO (Either Error Tree)
+nestedTree user repoName sha =
+  githubGetWithQueryString ["repos", user, repoName, "git", "trees", sha]
+                           "recursive=1"

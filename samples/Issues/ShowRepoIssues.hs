@@ -2,11 +2,10 @@ module ShowRepoIssue where
 
 import qualified Github.Issues as Github
 import Data.List (intercalate)
-import Data.Default (def)
 
 main = do
   let limitations = [Github.OnlyClosed, Github.Mentions "mike-burns", Github.AssignedTo "jyurek"]
-  possibleIssues <- Github.issuesForRepo def "thoughtbot" "paperclip" limitations
+  possibleIssues <- Github.issuesForRepo "thoughtbot" "paperclip" limitations
   case possibleIssues of
        (Left error) -> putStrLn $ "Error: " ++ show error
        (Right issues) ->

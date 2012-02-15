@@ -2,10 +2,9 @@ module ShowMilestone where
 
 import qualified Github.Issues.Milestones as Github
 import Data.List (intercalate)
-import Data.Default (def)
 
 main = do
-  possibleMilestone <- Github.milestone def "thoughtbot" "paperclip" 2
+  possibleMilestone <- Github.milestone "thoughtbot" "paperclip" 2
   case possibleMilestone of
        (Left error) -> putStrLn $ "Error: " ++ show error
        (Right milestone) ->

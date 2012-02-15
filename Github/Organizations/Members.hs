@@ -10,6 +10,6 @@ import Github.Private
 
 -- | All the users who are members of the specified organization.
 --
--- > membersOf def "thoughtbot"
-membersOf :: GithubConfig -> String -> IO (Either Error [GithubOwner])
-membersOf c organization = githubGet c ["orgs", organization, "members"]
+-- > membersOf "thoughtbot"
+membersOf :: String -> IO (Either Error [GithubOwner])
+membersOf organization = githubGet ["orgs", organization, "members"]

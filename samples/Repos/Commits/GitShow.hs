@@ -2,10 +2,9 @@ module GitShow where
 
 import qualified Github.Repos.Commits as Github
 import Data.List
-import Data.Default (def)
 
 main = do
-  possibleCommit <- Github.commit def "thoughtbot" "paperclip" "bc5c51d1ece1ee45f94b056a0f5a1674d7e8cba9"
+  possibleCommit <- Github.commit "thoughtbot" "paperclip" "bc5c51d1ece1ee45f94b056a0f5a1674d7e8cba9"
   case possibleCommit of
     (Left error)    -> putStrLn $ "Error: " ++ (show error)
     (Right commit) -> putStrLn $ formatCommit commit

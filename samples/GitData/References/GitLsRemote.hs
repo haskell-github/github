@@ -2,10 +2,9 @@ module GitLsRemote where
 
 import qualified Github.GitData.References as Github
 import Data.List (intercalate)
-import Data.Default (def)
 
 main = do
-  possibleReferences <- Github.references def "mike-burns" "github"
+  possibleReferences <- Github.references "mike-burns" "github"
   case possibleReferences of
        (Left error)       -> putStrLn $ "Error: " ++ show error
        (Right references) -> do

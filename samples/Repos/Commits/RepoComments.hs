@@ -3,10 +3,9 @@ module RepoComments where
 import qualified Github.Repos.Commits as Github
 import Data.List
 import Data.Maybe (maybe)
-import Data.Default (def)
 
 main = do
-  possibleComments <- Github.commentsFor def "thoughtbot" "paperclip"
+  possibleComments <- Github.commentsFor "thoughtbot" "paperclip"
   case possibleComments of
     (Left error)    -> putStrLn $ "Error: " ++ (show error)
     (Right comments) -> putStrLn $ intercalate "\n\n" $  map formatComment comments

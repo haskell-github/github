@@ -2,10 +2,9 @@ module ListWatchers where
 
 import qualified Github.Repos.Watching as Github
 import Data.List (intercalate)
-import Data.Default (def)
 
 main = do
-  possibleWatchers <- Github.watchersFor def "doubledrones" "git-annex"
+  possibleWatchers <- Github.watchersFor "doubledrones" "git-annex"
   putStrLn $ either (("Error: "++) . show)
                     (intercalate "\n" . map formatWatcher)
                     possibleWatchers
