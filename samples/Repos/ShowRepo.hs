@@ -2,6 +2,7 @@ module ShowRepo where
 
 import qualified Github.Repos as Github
 import Data.List
+import Data.Maybe
 
 main = do
   possibleRepo <- Github.userRepo "mike-burns" "trylambda"
@@ -11,7 +12,7 @@ main = do
 
 formatRepo repo =
   (Github.repoName repo) ++ "\t" ++
-    (Github.repoDescription repo) ++ "\n" ++
+    (fromMaybe "" $ Github.repoDescription repo) ++ "\n" ++
     (Github.repoHtmlUrl repo) ++ "\n" ++
     (Github.repoCloneUrl repo) ++ "\t" ++
     (formatDate $ Github.repoUpdatedAt repo) ++ "\n" ++
