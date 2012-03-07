@@ -154,6 +154,7 @@ Library
                  uri,
                  failure,
                  http-types,
+                 data-default,
                  vector,
                  unordered-containers >= 0.1 && < 0.2
   

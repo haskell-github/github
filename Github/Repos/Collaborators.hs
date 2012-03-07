@@ -30,6 +30,7 @@ isCollaboratorOn userName repoOwnerName repoName = do
   result <- doHttps (pack "GET")
                     (buildUrl ["repos", repoOwnerName, repoName, "collaborators", userName])
                     Nothing
+                    Nothing
   return $ either (Left . HTTPConnectionError)
                   (Right . (204 ==) . T.statusCode . C.statusCode)
                   result
