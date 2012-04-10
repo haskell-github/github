@@ -43,6 +43,10 @@ All functions produce an `IO (Either Error a)`, where `a` is the actual thing yo
                         (intercalate "\n" . map githubUserLogin)
                         possibleUsers
 
+Contributions
+=============
+
+Please see [CONTRIBUTING.md](https://github.com/mike-burns/github/tree/master/CONTRIBUTING.md) for details on how you can help.
 
 Copyright
 =========
