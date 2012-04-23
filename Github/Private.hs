@@ -13,6 +13,8 @@ import Network.HTTP.Conduit
 import Text.URI
 import qualified Control.Exception as E
 import Data.Maybe (fromMaybe)
+import Data.Conduit (MonadResource)
+import Control.Monad.Trans (lift)
 
 githubGet :: (FromJSON b, Show b) => [String] -> IO (Either Error b)
 githubGet paths =
@@ -56,6 +58,8 @@ githubAPI method url auth body = do
 -- | user/password for HTTP basic access authentication
 type BasicAuth = (BS.ByteString, BS.ByteString)
 
+instance MonadResource IO
+
 doHttps :: Method -> String -> Maybe BasicAuth -> Maybe (RequestBody IO) -> IO (Either E.SomeException (Response LBS.ByteString))
 doHttps method url auth body = do
   let (Just uri) = parseURI url
@@ -82,7 +86,7 @@ doHttps method url auth body = do
       E.Handler (\e -> (return . Left) (e :: E.SomeException))
       ]
   where
-    getResponse request = withManager $ \manager -> httpLbs request manager
+    getResponse request = withManager $ \manager -> lift $ httpLbs request manager
 
 parseJson :: (FromJSON b, Show b) => LBS.ByteString -> Either Error b
 parseJson jsonString =
