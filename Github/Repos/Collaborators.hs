@@ -10,7 +10,7 @@ import Github.Data
 import Github.Private
 
 import Data.ByteString.Char8 (pack)
-import qualified Network.HTTP.Conduit as C (statusCode)
+import qualified Network.HTTP.Conduit as C (responseStatus)
 import qualified Network.HTTP.Types as T (statusCode)
 
 -- | All the users who have collaborated on a repo.
@@ -32,5 +32,5 @@ isCollaboratorOn userName repoOwnerName repoName = do
                     Nothing
                     Nothing
   return $ either (Left . HTTPConnectionError)
-                  (Right . (204 ==) . T.statusCode . C.statusCode)
+                  (Right . (204 ==) . T.statusCode . C.responseStatus)
                   result
