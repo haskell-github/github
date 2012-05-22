@@ -36,7 +36,7 @@ data IssueLimitation =
 -- | Details on a specific issue, given the repo owner and name, and the issue
 -- number.'
 --
--- > issue "thoughtbot" "paperclip" "462"
+-- > issue authInfo "thoughtbot" "paperclip" "462"
 issue' :: Maybe BasicAuth -> String -> String -> Int -> IO (Either Error Issue)
 issue' auth user repoName issueNumber =
   githubGet' auth ["repos", user, repoName, "issues", show issueNumber]

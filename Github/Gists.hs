@@ -1,16 +1,18 @@
 -- | The gists API as described at <http://developer.github.com/v3/gists/>.
 module Github.Gists (
  gists
+,gists'
 ,gist
+,gist'
 ,module Github.Data
 ) where
 
 import Github.Data
 import Github.Private
 
--- | The list of all public gists created by the user.
---
--- > gists "mike-burns"
+-- | The list of all gists created by the user 
+-- 
+-- > gists authInfo "mike-burns"
 gists' :: Maybe BasicAuth -> String -> IO (Either Error [Gist])
 gists' auth userName = githubGet' auth ["users", userName, "gists"]
 
@@ -20,7 +22,7 @@ gists' auth userName = githubGet' auth ["users", userName, "gists"]
 gists :: String -> IO (Either Error [Gist])
 gists = gists' Nothing
 
--- | A specific gist, given its id.
+-- | A specific gist, given its id, with authentication credentials
 --
 -- > gist "225074"
 gist' :: Maybe BasicAuth -> String -> IO (Either Error Gist)
