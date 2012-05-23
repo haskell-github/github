@@ -12,7 +12,7 @@ import Github.Private
 
 -- | The public organizations for a user, given the user's login, with authorization
 --
--- > publicOrganizationsFor "mike-burns"
+-- > publicOrganizationsFor' (Just ("github-username", "github-password")) "mike-burns"
 publicOrganizationsFor' :: Maybe BasicAuth -> String -> IO (Either Error [SimpleOrganization])
 publicOrganizationsFor' auth userName = githubGet' auth ["users", userName, "orgs"]
 
@@ -24,7 +24,7 @@ publicOrganizationsFor = publicOrganizationsFor' Nothing
 
 -- | Details on a public organization. Takes the organization's login.
 --
--- > publicOrganization "thoughtbot"
+-- > publicOrganization' (Just ("github-username", "github-password")) "thoughtbot"
 publicOrganization' :: Maybe BasicAuth -> String -> IO (Either Error Organization)
 publicOrganization' auth organizationName = githubGet' auth ["orgs", organizationName]
 

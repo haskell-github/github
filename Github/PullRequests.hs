@@ -18,7 +18,7 @@ import Github.Private
 -- | All pull requests for the repo, by owner and repo name.
 -- | With authentification
 --
--- > pullRequestsFor authInfo "rails" "rails"
+-- > pullRequestsFor' (Just ("github-username", "github-password")) "rails" "rails"
 pullRequestsFor' :: Maybe BasicAuth -> String -> String -> IO (Either Error [PullRequest])
 pullRequestsFor' auth userName repoName =
   githubGet' auth ["repos", userName, repoName, "pulls"]
@@ -33,7 +33,7 @@ pullRequestsFor = pullRequestsFor' Nothing
 -- repo owner and name along with the number assigned to the pull request.
 -- | With authentification
 --
--- > pullRequest authInfo "thoughtbot" "paperclip" 562
+-- > pullRequest' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 562
 pullRequest' :: Maybe BasicAuth -> String -> String -> Int -> IO (Either Error DetailedPullRequest)
 pullRequest' auth userName repoName number =
   githubGet' auth ["repos", userName, repoName, "pulls", show number]
@@ -49,7 +49,7 @@ pullRequest = pullRequest' Nothing
 -- the number of the pull request.
 -- | With authentification
 --
--- > pullRequestCommits authInfo "thoughtbot" "paperclip" 688
+-- > pullRequestCommits' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 688
 pullRequestCommits' :: Maybe BasicAuth -> String -> String -> Int -> IO (Either Error [Commit])
 pullRequestCommits' auth userName repoName number =
   githubGet' auth ["repos", userName, repoName, "pulls", show number, "commits"]
@@ -65,7 +65,7 @@ pullRequestCommits = pullRequestCommits' Nothing
 -- name, plus the number assigned to the pull request.
 -- | With authentification
 --
--- > pullRequestFiles authInfo "thoughtbot" "paperclip" 688
+-- > pullRequestFiles' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 688
 pullRequestFiles' :: Maybe BasicAuth -> String -> String -> Int -> IO (Either Error [File])
 pullRequestFiles' auth userName repoName number =
   githubGet' auth ["repos", userName, repoName, "pulls", show number, "files"]

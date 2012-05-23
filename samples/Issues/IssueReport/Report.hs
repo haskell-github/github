@@ -59,4 +59,3 @@ toValue label
    | isValue label      = Just (convert label)
    | otherwise          = Nothing
 
-

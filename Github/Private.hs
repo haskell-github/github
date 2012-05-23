@@ -14,7 +14,6 @@ import Text.URI
 import qualified Control.Exception as E
 import Data.Maybe (fromMaybe)
 
-
 githubGet :: (FromJSON b, Show b) => [String] -> IO (Either Error b)
 githubGet = githubGet' Nothing
 

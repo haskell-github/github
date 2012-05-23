@@ -12,7 +12,7 @@ import Github.Private
 
 -- | The list of all gists created by the user 
 -- 
--- > gists authInfo "mike-burns"
+-- > gists' (Just ("github-username", "github-password")) "mike-burns"
 gists' :: Maybe BasicAuth -> String -> IO (Either Error [Gist])
 gists' auth userName = githubGet' auth ["users", userName, "gists"]
 
@@ -24,7 +24,7 @@ gists = gists' Nothing
 
 -- | A specific gist, given its id, with authentication credentials
 --
--- > gist "225074"
+-- > gist' (Just ("github-username", "github-password")) "225074"
 gist' :: Maybe BasicAuth -> String -> IO (Either Error Gist)
 gist' auth gistId = githubGet' auth ["gists", gistId]
 

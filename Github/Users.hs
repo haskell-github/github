@@ -12,7 +12,7 @@ import Github.Private
 -- | The information for a single user, by login name.
 -- | With authentification
 --
--- > userInfoFor authInfo "mike-burns"
+-- > userInfoFor' (Just ("github-username", "github-password")) "mike-burns"
 userInfoFor' :: Maybe BasicAuth -> String -> IO (Either Error DetailedOwner)
 userInfoFor' auth userName = githubGet' auth ["users", userName]
 
