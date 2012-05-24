@@ -4,6 +4,8 @@ module Main where
 import qualified Github.Issues as Github
 import qualified Data.ByteString as B
 import Report
+
+-- The example requires wl-pprint module "The Wadler/Leijen Pretty Printer"
 import Text.PrettyPrint.Leijen
 
 auth ::  Maybe (B.ByteString, B.ByteString)
