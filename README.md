@@ -3,9 +3,9 @@ Github
 
 The Github API v3 for Haskell.
 
-**This is currently a read-only API.**
-
-Some functions which do not require authentication are also missing; these are functions where the Github API did not work as expected. The full Github API is in beta and constantly improving.
+Some functions are missing; these are functions where the Github API did
+not work as expected. The full Github API is in beta and constantly
+improving.
 
 Installation
 ============
