@@ -1,7 +1,11 @@
 -- | The pull requests API as documented at
 -- <http://developer.github.com/v3/pulls/>.
 module Github.PullRequests (
- pullRequestsFor
+ pullRequestsFor'
+,pullRequest'
+,pullRequestCommits'
+,pullRequestFiles'
+,pullRequestsFor
 ,pullRequest
 ,pullRequestCommits
 ,pullRequestFiles
@@ -12,32 +16,62 @@ import Github.Data
 import Github.Private
 
 -- | All pull requests for the repo, by owner and repo name.
+-- | With authentification
+--
+-- > pullRequestsFor' (Just ("github-username", "github-password")) "rails" "rails"
+pullRequestsFor' :: Maybe BasicAuth -> String -> String -> IO (Either Error [PullRequest])
+pullRequestsFor' auth userName repoName =
+  githubGet' auth ["repos", userName, repoName, "pulls"]
+
+-- | All pull requests for the repo, by owner and repo name.
 --
 -- > pullRequestsFor "rails" "rails"
 pullRequestsFor :: String -> String -> IO (Either Error [PullRequest])
-pullRequestsFor userName repoName =
-  githubGet ["repos", userName, repoName, "pulls"]
+pullRequestsFor = pullRequestsFor' Nothing
+
+-- | A detailed pull request, which has much more information. This takes the
+-- repo owner and name along with the number assigned to the pull request.
+-- | With authentification
+--
+-- > pullRequest' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 562
+pullRequest' :: Maybe BasicAuth -> String -> String -> Int -> IO (Either Error DetailedPullRequest)
+pullRequest' auth userName repoName number =
+  githubGet' auth ["repos", userName, repoName, "pulls", show number]
 
 -- | A detailed pull request, which has much more information. This takes the
 -- repo owner and name along with the number assigned to the pull request.
 --
 -- > pullRequest "thoughtbot" "paperclip" 562
 pullRequest :: String -> String -> Int -> IO (Either Error DetailedPullRequest)
-pullRequest userName repoName number =
-  githubGet ["repos", userName, repoName, "pulls", show number]
+pullRequest = pullRequest' Nothing
+
+-- | All the commits on a pull request, given the repo owner, repo name, and
+-- the number of the pull request.
+-- | With authentification
+--
+-- > pullRequestCommits' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 688
+pullRequestCommits' :: Maybe BasicAuth -> String -> String -> Int -> IO (Either Error [Commit])
+pullRequestCommits' auth userName repoName number =
+  githubGet' auth ["repos", userName, repoName, "pulls", show number, "commits"]
 
 -- | All the commits on a pull request, given the repo owner, repo name, and
 -- the number of the pull request.
 --
 -- > pullRequestCommits "thoughtbot" "paperclip" 688
 pullRequestCommits :: String -> String -> Int -> IO (Either Error [Commit])
-pullRequestCommits userName repoName number =
-  githubGet ["repos", userName, repoName, "pulls", show number, "commits"]
+pullRequestCommits = pullRequestCommits' Nothing
 
+-- | The individual files that a pull request patches. Takes the repo owner and
+-- name, plus the number assigned to the pull request.
+-- | With authentification
+--
+-- > pullRequestFiles' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 688
+pullRequestFiles' :: Maybe BasicAuth -> String -> String -> Int -> IO (Either Error [File])
+pullRequestFiles' auth userName repoName number =
+  githubGet' auth ["repos", userName, repoName, "pulls", show number, "files"]
 -- | The individual files that a pull request patches. Takes the repo owner and
 -- name, plus the number assigned to the pull request.
 --
 -- > pullRequestFiles "thoughtbot" "paperclip" 688
 pullRequestFiles :: String -> String -> Int -> IO (Either Error [File])
-pullRequestFiles userName repoName number =
-  githubGet ["repos", userName, repoName, "pulls", show number, "files"]
+pullRequestFiles = pullRequestFiles' Nothing

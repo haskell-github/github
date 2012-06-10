@@ -1,7 +1,9 @@
 -- | The issues API as described on <http://developer.github.com/v3/issues/>.
 module Github.Issues (
  issue
+,issue'
 ,issuesForRepo
+,issuesForRepo'
 ,IssueLimitation(..)
 ,module Github.Data
 ) where
@@ -30,21 +32,30 @@ data IssueLimitation =
     | Descending -- ^ Sort descending. [default]
     | Since UTCTime -- ^ Only issues created since the specified date and time.
 
+
+-- | Details on a specific issue, given the repo owner and name, and the issue
+-- number.'
+--
+-- > issue' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" "462"
+issue' :: Maybe BasicAuth -> String -> String -> Int -> IO (Either Error Issue)
+issue' auth user repoName issueNumber =
+  githubGet' auth ["repos", user, repoName, "issues", show issueNumber]
+
 -- | Details on a specific issue, given the repo owner and name, and the issue
 -- number.
 --
 -- > issue "thoughtbot" "paperclip" "462"
 issue :: String -> String -> Int -> IO (Either Error Issue)
-issue user repoName issueNumber =
-  githubGet ["repos", user, repoName, "issues", show issueNumber]
+issue = issue' Nothing
 
 -- | All issues for a repo (given the repo owner and name), with optional
 -- restrictions as described in the @IssueLimitation@ data type.
 --
--- > issuesForRepo "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
-issuesForRepo :: String -> String -> [IssueLimitation] -> IO (Either Error [Issue])
-issuesForRepo user repoName issueLimitations =
-  githubGetWithQueryString
+-- > issuesForRepo' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
+issuesForRepo' :: Maybe BasicAuth -> String -> String -> [IssueLimitation] -> IO (Either Error [Issue])
+issuesForRepo' auth user repoName issueLimitations =
+  githubGetWithQueryString' 
+    auth
     ["repos", user, repoName, "issues"]
     (queryStringFromLimitations issueLimitations)
   where
@@ -64,3 +75,10 @@ issuesForRepo user repoName issueLimitations =
     convert Descending       = "direction=desc"
     convert (Since t)        =
       "since=" ++ formatTime defaultTimeLocale "%FT%TZ" t
+
+-- | All issues for a repo (given the repo owner and name), with optional
+-- restrictions as described in the @IssueLimitation@ data type.
+--
+-- > issuesForRepo "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
+issuesForRepo :: String -> String -> [IssueLimitation] -> IO (Either Error [Issue])
+issuesForRepo = issuesForRepo' Nothing

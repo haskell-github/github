@@ -15,17 +15,23 @@ import qualified Control.Exception as E
 import Data.Maybe (fromMaybe)
 
 githubGet :: (FromJSON b, Show b) => [String] -> IO (Either Error b)
-githubGet paths =
+githubGet = githubGet' Nothing
+
+githubGet' :: (FromJSON b, Show b) => Maybe BasicAuth -> [String] -> IO (Either Error b)
+githubGet' auth paths =
   githubAPI (BS.pack "GET")
             (buildUrl paths)
-            Nothing
+            auth
             (Nothing :: Maybe Value)
 
 githubGetWithQueryString :: (FromJSON b, Show b) => [String] -> String -> IO (Either Error b)
-githubGetWithQueryString paths queryString =
+githubGetWithQueryString = githubGetWithQueryString' Nothing
+
+githubGetWithQueryString' :: (FromJSON b, Show b) => Maybe BasicAuth -> [String] -> String -> IO (Either Error b)
+githubGetWithQueryString' auth paths queryString =
   githubAPI (BS.pack "GET")
             (buildUrl paths ++ "?" ++ queryString)
-            Nothing
+            auth
             (Nothing :: Maybe Value)
 
 githubPost :: (ToJSON a, Show a, FromJSON b, Show b) => BasicAuth -> [String] -> a -> IO (Either Error b)
