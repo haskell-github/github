@@ -8,8 +8,9 @@ import Control.Applicative
 import Data.List
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.ByteString.Lazy.Char8 as LBS
-import Network.HTTP.Types (Method)
+import Network.HTTP.Types (Method, Status(..))
 import Network.HTTP.Conduit
+import Data.Conduit (ResourceT)
 import Text.URI
 import qualified Control.Exception as E
 import Data.Maybe (fromMaybe)
@@ -62,19 +63,15 @@ githubAPI method url auth body = do
 -- | user/password for HTTP basic access authentication
 type BasicAuth = (BS.ByteString, BS.ByteString)
 
-doHttps :: Method -> String -> Maybe BasicAuth -> Maybe (RequestBody IO) -> IO (Either E.SomeException (Response LBS.ByteString))
+doHttps :: Method -> String -> Maybe BasicAuth -> Maybe (RequestBody (ResourceT IO)) -> IO (Either E.SomeException (Response LBS.ByteString))
 doHttps method url auth body = do
-  let (Just uri) = parseURI url
-      (Just host) = uriRegName uri
-      requestBody = fromMaybe (RequestBodyBS $ BS.pack "") body
-      queryString = BS.pack $ fromMaybe "" $ uriQuery uri
-      request = def { method = method
+  let requestBody = fromMaybe (RequestBodyBS $ BS.pack "") body
+      (Just uri) = parseUrl url
+      request = uri { method = method
                     , secure = True
-                    , host = BS.pack host
                     , port = 443
-                    , path = BS.pack $ uriPath uri
                     , requestBody = requestBody
-                    , queryString = queryString
+                    , checkStatus = successOrMissing
                     }
       authRequest = maybe id (uncurry applyBasicAuth) auth request
 
@@ -84,11 +81,14 @@ doHttps method url auth body = do
       -- UserInterrupt) because all of them indicate severe conditions and
       -- should not occur during normal operation.
       E.Handler (\e -> E.throw (e :: E.AsyncException)),
-
+  
       E.Handler (\e -> (return . Left) (e :: E.SomeException))
       ]
   where
     getResponse request = withManager $ \manager -> httpLbs request manager
+    successOrMissing s@(Status sci _) hs
+      | (200 <= sci && sci < 300) || sci == 404 = Nothing
+      | otherwise = Just $ E.toException $ StatusCodeException s hs
 
 parseJson :: (FromJSON b, Show b) => LBS.ByteString -> Either Error b
 parseJson jsonString =
