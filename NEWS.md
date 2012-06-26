@@ -1,3 +1,7 @@
+Changes for 0.4.0:
+
+* Use http-conduit version 1.4.1.10.
+
 Changes for 0.3.0:
 
 * Re-instantiate the Blobs API.
