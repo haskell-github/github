@@ -148,7 +148,7 @@ Library
                  old-locale,
                  HTTP,
                  network,
-                 http-conduit == 1.4.1.10,
+                 http-conduit >= 1.8,
                  conduit,
                  uri,
                  failure,
