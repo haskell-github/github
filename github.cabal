@@ -140,8 +140,8 @@ Library
   -- Packages needed in order to build this package.
   Build-depends: base >= 4.0 && < 5.0,
                  time,
-                 aeson == 0.6.0.0,
-                 attoparsec == 0.10.1.0,
+                 aeson >= 0.6.0.0,
+                 attoparsec >= 0.10.1.0,
                  bytestring,
                  containers,
                  text,
@@ -155,7 +155,7 @@ Library
                  http-types,
                  data-default,
                  vector,
-                 unordered-containers >= 0.1 && < 0.2
+                 unordered-containers >= 0.1
   
   -- Modules not exported by this package.
   Other-modules:       Github.Private
