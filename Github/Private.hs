@@ -11,7 +11,6 @@ import qualified Data.ByteString.Lazy.Char8 as LBS
 import Network.HTTP.Types (Method, Status(..))
 import Network.HTTP.Conduit
 import Data.Conduit (ResourceT)
-import Text.URI
 import qualified Control.Exception as E
 import Data.Maybe (fromMaybe)
 
