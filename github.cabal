@@ -150,7 +150,6 @@ Library
                  network,
                  http-conduit >= 1.8,
                  conduit,
-                 uri,
                  failure,
                  http-types,
                  data-default,
