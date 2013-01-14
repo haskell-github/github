@@ -1,3 +1,11 @@
+Changes for 0.4.1:
+
+* Stop using the uri package.
+* Use aeson version 0.6.1.0.
+* Use attoparsec version 0.10.3.0.
+* Use http-conduit over 1.8.
+* Use unordered-containers between 0.2 and 0.3.
+
 Changes for 0.4.0:
 
 * Use http-conduit version 1.4.1.10.
