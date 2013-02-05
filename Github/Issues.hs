@@ -37,7 +37,7 @@ data IssueLimitation =
 -- number.'
 --
 -- > issue' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" "462"
-issue' :: Maybe BasicAuth -> String -> String -> Int -> IO (Either Error Issue)
+issue' :: Maybe GithubAuth -> String -> String -> Int -> IO (Either Error Issue)
 issue' auth user repoName issueNumber =
   githubGet' auth ["repos", user, repoName, "issues", show issueNumber]
 
@@ -52,7 +52,7 @@ issue = issue' Nothing
 -- restrictions as described in the @IssueLimitation@ data type.
 --
 -- > issuesForRepo' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
-issuesForRepo' :: Maybe BasicAuth -> String -> String -> [IssueLimitation] -> IO (Either Error [Issue])
+issuesForRepo' :: Maybe GithubAuth -> String -> String -> [IssueLimitation] -> IO (Either Error [Issue])
 issuesForRepo' auth user repoName issueLimitations =
   githubGetWithQueryString' 
     auth
