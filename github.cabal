@@ -143,6 +143,7 @@ Library
                  aeson == 0.6.1.0,
                  attoparsec >= 0.10.3.0,
                  bytestring,
+                 case-insensitive >= 0.4.0.4,
                  containers,
                  text,
                  old-locale,

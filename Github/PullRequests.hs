@@ -19,7 +19,7 @@ import Github.Private
 -- | With authentification
 --
 -- > pullRequestsFor' (Just ("github-username", "github-password")) "rails" "rails"
-pullRequestsFor' :: Maybe BasicAuth -> String -> String -> IO (Either Error [PullRequest])
+pullRequestsFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [PullRequest])
 pullRequestsFor' auth userName repoName =
   githubGet' auth ["repos", userName, repoName, "pulls"]
 
@@ -34,7 +34,7 @@ pullRequestsFor = pullRequestsFor' Nothing
 -- | With authentification
 --
 -- > pullRequest' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 562
-pullRequest' :: Maybe BasicAuth -> String -> String -> Int -> IO (Either Error DetailedPullRequest)
+pullRequest' :: Maybe GithubAuth -> String -> String -> Int -> IO (Either Error DetailedPullRequest)
 pullRequest' auth userName repoName number =
   githubGet' auth ["repos", userName, repoName, "pulls", show number]
 
@@ -50,7 +50,7 @@ pullRequest = pullRequest' Nothing
 -- | With authentification
 --
 -- > pullRequestCommits' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 688
-pullRequestCommits' :: Maybe BasicAuth -> String -> String -> Int -> IO (Either Error [Commit])
+pullRequestCommits' :: Maybe GithubAuth -> String -> String -> Int -> IO (Either Error [Commit])
 pullRequestCommits' auth userName repoName number =
   githubGet' auth ["repos", userName, repoName, "pulls", show number, "commits"]
 
@@ -66,7 +66,7 @@ pullRequestCommits = pullRequestCommits' Nothing
 -- | With authentification
 --
 -- > pullRequestFiles' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 688
-pullRequestFiles' :: Maybe BasicAuth -> String -> String -> Int -> IO (Either Error [File])
+pullRequestFiles' :: Maybe GithubAuth -> String -> String -> Int -> IO (Either Error [File])
 pullRequestFiles' auth userName repoName number =
   githubGet' auth ["repos", userName, repoName, "pulls", show number, "files"]
 -- | The individual files that a pull request patches. Takes the repo owner and
