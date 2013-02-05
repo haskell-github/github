@@ -5,8 +5,9 @@ module Github.Repos (
 
 -- * Querying repositories
  userRepos
-,organizationRepos
 ,userRepo
+,organizationRepos
+,organizationRepo
 ,contributors
 ,contributorsWithAnonymous
 ,languagesFor
@@ -76,6 +77,12 @@ userRepos userName Private =
 -- > organizationRepos "thoughtbot"
 organizationRepos :: String -> IO (Either Error [Repo])
 organizationRepos orgName = githubGet ["orgs", orgName, "repos"]
+
+-- | A specific organization repo, by the organization name.
+--
+-- > organizationRepo "thoughtbot" "github"
+organizationRepo :: String -> String -> IO (Either Error Repo)
+organizationRepo orgName repoName = githubGet ["orgs", orgName, repoName]
 
 -- | Details on a specific repo, given the owner and repo name.
 --
