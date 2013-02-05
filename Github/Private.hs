@@ -1,11 +1,13 @@
-{-# LANGUAGE OverloadedStrings, StandaloneDeriving #-}
+{-# LANGUAGE OverloadedStrings, StandaloneDeriving, DeriveDataTypeable #-}
 module Github.Private where
 
 import Github.Data
 import Data.Aeson
 import Data.Attoparsec.ByteString.Lazy
+import Data.Data
 import Control.Applicative
 import Data.List
+import Data.CaseInsensitive (mk)
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.ByteString.Lazy.Char8 as LBS
 import Network.HTTP.Types (Method, Status(..))
@@ -14,10 +16,15 @@ import Data.Conduit (ResourceT)
 import qualified Control.Exception as E
 import Data.Maybe (fromMaybe)
 
+-- | user/password for HTTP basic access authentication
+data GithubAuth = GithubBasicAuth BS.ByteString BS.ByteString
+                | GithubOAuth String
+                deriving (Show, Data, Typeable, Eq, Ord)
+
 githubGet :: (FromJSON b, Show b) => [String] -> IO (Either Error b)
 githubGet = githubGet' Nothing
 
-githubGet' :: (FromJSON b, Show b) => Maybe BasicAuth -> [String] -> IO (Either Error b)
+githubGet' :: (FromJSON b, Show b) => Maybe GithubAuth -> [String] -> IO (Either Error b)
 githubGet' auth paths =
   githubAPI (BS.pack "GET")
             (buildUrl paths)
@@ -27,21 +34,21 @@ githubGet' auth paths =
 githubGetWithQueryString :: (FromJSON b, Show b) => [String] -> String -> IO (Either Error b)
 githubGetWithQueryString = githubGetWithQueryString' Nothing
 
-githubGetWithQueryString' :: (FromJSON b, Show b) => Maybe BasicAuth -> [String] -> String -> IO (Either Error b)
+githubGetWithQueryString' :: (FromJSON b, Show b) => Maybe GithubAuth -> [String] -> String -> IO (Either Error b)
 githubGetWithQueryString' auth paths queryString =
   githubAPI (BS.pack "GET")
             (buildUrl paths ++ "?" ++ queryString)
             auth
             (Nothing :: Maybe Value)
 
-githubPost :: (ToJSON a, Show a, FromJSON b, Show b) => BasicAuth -> [String] -> a -> IO (Either Error b)
+githubPost :: (ToJSON a, Show a, FromJSON b, Show b) => GithubAuth -> [String] -> a -> IO (Either Error b)
 githubPost auth paths body =
   githubAPI (BS.pack "POST")
             (buildUrl paths)
             (Just auth)
             (Just body)
 
-githubPatch :: (ToJSON a, Show a, FromJSON b, Show b) => BasicAuth -> [String] -> a -> IO (Either Error b)
+githubPatch :: (ToJSON a, Show a, FromJSON b, Show b) => GithubAuth -> [String] -> a -> IO (Either Error b)
 githubPatch auth paths body =
   githubAPI (BS.pack "PATCH")
             (buildUrl paths)
@@ -51,7 +58,7 @@ githubPatch auth paths body =
 buildUrl :: [String] -> String
 buildUrl paths = "https://api.github.com/" ++ intercalate "/" paths
 
-githubAPI :: (ToJSON a, Show a, FromJSON b, Show b) => BS.ByteString -> String -> Maybe BasicAuth -> Maybe a -> IO (Either Error b)
+githubAPI :: (ToJSON a, Show a, FromJSON b, Show b) => BS.ByteString -> String -> Maybe GithubAuth -> Maybe a -> IO (Either Error b)
 githubAPI method url auth body = do
   result <- doHttps method url auth (Just encodedBody)
   return $ either (Left . HTTPConnectionError)
@@ -59,20 +66,19 @@ githubAPI method url auth body = do
                   result
   where encodedBody = RequestBodyLBS $ encode $ toJSON body
 
--- | user/password for HTTP basic access authentication
-type BasicAuth = (BS.ByteString, BS.ByteString)
-
-doHttps :: Method -> String -> Maybe BasicAuth -> Maybe (RequestBody (ResourceT IO)) -> IO (Either E.SomeException (Response LBS.ByteString))
+doHttps :: Method -> String -> Maybe GithubAuth -> Maybe (RequestBody (ResourceT IO)) -> IO (Either E.SomeException (Response LBS.ByteString))
 doHttps method url auth body = do
   let requestBody = fromMaybe (RequestBodyBS $ BS.pack "") body
+      requestHeaders = maybe [] getOAuth auth
       (Just uri) = parseUrl url
       request = uri { method = method
                     , secure = True
                     , port = 443
                     , requestBody = requestBody
+                    , requestHeaders = requestHeaders
                     , checkStatus = successOrMissing
                     }
-      authRequest = maybe id (uncurry applyBasicAuth) auth request
+      authRequest = getAuthRequest auth request
 
   (getResponse authRequest >>= return . Right) `E.catches` [
       -- Re-throw AsyncException, otherwise execution will not terminate on
@@ -80,10 +86,16 @@ doHttps method url auth body = do
       -- UserInterrupt) because all of them indicate severe conditions and
       -- should not occur during normal operation.
       E.Handler (\e -> E.throw (e :: E.AsyncException)),
-  
       E.Handler (\e -> (return . Left) (e :: E.SomeException))
       ]
   where
+    getAuthRequest (Just (GithubBasicAuth user pass)) = applyBasicAuth user pass
+    getAuthRequest _ = id
+    getBasicAuth (GithubBasicAuth user pass) = applyBasicAuth user pass
+    getBasicAuth _ = id
+    getOAuth (GithubOAuth token) = [(mk (BS.pack "Authorization"),
+                                     BS.pack ("token " ++ token))]
+    getOAuth _ = []
     getResponse request = withManager $ \manager -> httpLbs request manager
     successOrMissing s@(Status sci _) hs
       | (200 <= sci && sci < 300) || sci == 404 = Nothing

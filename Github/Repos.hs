@@ -5,8 +5,9 @@ module Github.Repos (
 
 -- * Querying repositories
  userRepos
-,organizationRepos
 ,userRepo
+,organizationRepos
+,organizationRepo
 ,contributors
 ,contributorsWithAnonymous
 ,languagesFor
@@ -19,7 +20,7 @@ module Github.Repos (
 -- |
 -- Only authenticated users may modify repositories.  Currently only
 -- /HTTP basic access authentication/ is implemented.
-,BasicAuth
+,GithubAuth(..)
 
 -- ** Create
 ,createRepo
@@ -77,6 +78,12 @@ userRepos userName Private =
 organizationRepos :: String -> IO (Either Error [Repo])
 organizationRepos orgName = githubGet ["orgs", orgName, "repos"]
 
+-- | A specific organization repo, by the organization name.
+--
+-- > organizationRepo "thoughtbot" "github"
+organizationRepo :: String -> String -> IO (Either Error Repo)
+organizationRepo orgName repoName = githubGet ["orgs", orgName, repoName]
+
 -- | Details on a specific repo, given the owner and repo name.
 --
 -- > userRepo "mike-burns" "github"
@@ -133,6 +140,7 @@ data NewRepo = NewRepo {
 , newRepoHasIssues    :: (Maybe Bool)
 , newRepoHasWiki      :: (Maybe Bool)
 , newRepoHasDownloads :: (Maybe Bool)
+, newRepoAutoInit     :: (Maybe Bool)
 } deriving Show
 
 instance ToJSON  NewRepo where
@@ -143,6 +151,7 @@ instance ToJSON  NewRepo where
                   , newRepoHasIssues    = hasIssues
                   , newRepoHasWiki      = hasWiki
                   , newRepoHasDownloads = hasDownloads
+                  , newRepoAutoInit     = autoInit
                   }) = object
                   [ "name"                .= name
                   , "description"         .= description
@@ -150,24 +159,24 @@ instance ToJSON  NewRepo where
                   , "private"             .= private
                   , "has_issues"          .= hasIssues
                   , "has_wiki"            .= hasWiki
-                  , "has_downloads"       .= hasDownloads
+                  , "auto_init"           .= autoInit
                   ]
 
 newRepo :: String -> NewRepo
-newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing
+newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing Nothing
 
 -- |
 -- Create a new repository.
 --
 -- > createRepo (user, password) (newRepo "some_repo") {newRepoHasIssues = Just False}
-createRepo :: BasicAuth -> NewRepo -> IO (Either Error Repo)
+createRepo :: GithubAuth -> NewRepo -> IO (Either Error Repo)
 createRepo auth = githubPost auth ["user", "repos"]
 
 -- |
 -- Create a new repository for an organization.
 --
 -- > createOrganizationRepo (user, password) "thoughtbot" (newRepo "some_repo") {newRepoHasIssues = Just False}
-createOrganizationRepo :: BasicAuth -> String -> NewRepo -> IO (Either Error Repo)
+createOrganizationRepo :: GithubAuth -> String -> NewRepo -> IO (Either Error Repo)
 createOrganizationRepo auth org = githubPost auth ["orgs", org, "repos"]
 
 data Edit = Edit {
@@ -205,7 +214,7 @@ instance ToJSON  Edit where
 -- Edit an existing repository.
 --
 -- > editRepo (user, password) "some_user" "some_repo" def {editDescription = Just "some description"}
-editRepo :: BasicAuth
+editRepo :: GithubAuth
      -> String      -- ^ owner
      -> String      -- ^ repository name
      -> Edit
@@ -219,7 +228,7 @@ editRepo auth user repo body = githubPatch auth ["repos", user, repo] b
 -- Delete an existing repository.
 --
 -- > deleteRepo (user, password) "thoughtbot" "some_repo"
-deleteRepo :: BasicAuth
+deleteRepo :: GithubAuth
            -> String      -- ^ owner
            -> String      -- ^ repository name
            -> IO (Either Error ())
