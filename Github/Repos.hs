@@ -44,6 +44,7 @@ import Github.Private
 import Network.HTTP.Conduit
 import qualified Data.ByteString.Char8 as BS
 import Control.Applicative
+import qualified Control.Exception as E
 import Network.HTTP.Types
 
 -- | Filter the list of the user's repos using any of these constructors.
@@ -233,24 +234,19 @@ deleteRepo :: GithubAuth
            -> String      -- ^ repository name
            -> IO (Either Error ())
 deleteRepo auth owner repo = do
-  requestToken >>= either (return . Left) (sendToken)
+  result <- doHttps "DELETE" url (Just auth) Nothing
+  case result of
+      Left e -> return (Left (HTTPConnectionError e))
+      Right resp ->
+          let status = responseStatus resp
+              headers = responseHeaders resp
+          in if status == notFound404
+                -- doHttps silently absorbs 404 errors, but for this operation
+                -- we want the user to know if they've tried to delete a
+                -- non-existent repository
+             then return (Left (HTTPConnectionError
+                                (E.toException
+                                 (StatusCodeException status headers))))
+             else return (Right ())
   where
-    -- APIv3 does not support deletion, so we use APIv2 for that
-    url = "https://github.com/api/v2/json/repos/delete/" ++ owner ++ "/" ++ repo
-
-    requestToken :: IO (Either Error DeleteToken)
-    requestToken = githubAPI "POST" url (Just auth) (Nothing :: Maybe Value)
-
-    sendToken (DeleteToken t) = do
-      let body = RequestBodyBS $ renderSimpleQuery False [("delete_token", t)]
-      result <- doHttps "POST" url (Just auth) (Just body)
-      return $ either (Left . HTTPConnectionError)
-                      (const $ Right ())
-                      result
-
-newtype DeleteToken = DeleteToken BS.ByteString
-  deriving Show
-
-instance FromJSON DeleteToken where
-  parseJSON (Object o) = DeleteToken <$> o .: "delete_token"
-  parseJSON _          = fail "Could not build a DeleteToken"
+    url = "https://api.github.com/repos/" ++ owner ++ "/" ++ repo
