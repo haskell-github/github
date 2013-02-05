@@ -168,14 +168,14 @@ newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing Noth
 -- |
 -- Create a new repository.
 --
--- > createRepo (user, password) (newRepo "some_repo") {newRepoHasIssues = Just False}
+-- > createRepo (GithubUser (user, password)) (newRepo "some_repo") {newRepoHasIssues = Just False}
 createRepo :: GithubAuth -> NewRepo -> IO (Either Error Repo)
 createRepo auth = githubPost auth ["user", "repos"]
 
 -- |
 -- Create a new repository for an organization.
 --
--- > createOrganizationRepo (user, password) "thoughtbot" (newRepo "some_repo") {newRepoHasIssues = Just False}
+-- > createOrganizationRepo (GithubUser (user, password)) "thoughtbot" (newRepo "some_repo") {newRepoHasIssues = Just False}
 createOrganizationRepo :: GithubAuth -> String -> NewRepo -> IO (Either Error Repo)
 createOrganizationRepo auth org = githubPost auth ["orgs", org, "repos"]
 
@@ -213,7 +213,7 @@ instance ToJSON  Edit where
 -- |
 -- Edit an existing repository.
 --
--- > editRepo (user, password) "some_user" "some_repo" def {editDescription = Just "some description"}
+-- > editRepo (GithubUser (user, password)) "some_user" "some_repo" def {editDescription = Just "some description"}
 editRepo :: GithubAuth
      -> String      -- ^ owner
      -> String      -- ^ repository name
@@ -227,7 +227,7 @@ editRepo auth user repo body = githubPatch auth ["repos", user, repo] b
 -- |
 -- Delete an existing repository.
 --
--- > deleteRepo (user, password) "thoughtbot" "some_repo"
+-- > deleteRepo (GithubUser (user, password)) "thoughtbot" "some_repo"
 deleteRepo :: GithubAuth
            -> String      -- ^ owner
            -> String      -- ^ repository name
