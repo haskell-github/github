@@ -1,3 +1,11 @@
+Changes for 0.5.0:
+
+* OAuth.
+* New function: `Github.Repos.organizationRepo`, to get the repo for a specific organization.
+* Introduce a new `newRepoAutoInit` flag to `NewRepo`, for whether to initialize a repo while creating it.
+* Relax the attoparsec version requirements.
+* The above by [John Wiegley](https://github.com/jwiegley).
+
 Changes for 0.4.1:
 
 * Stop using the uri package.
