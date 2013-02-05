@@ -27,7 +27,7 @@ See the samples in the [samples/](https://github.com/mike-burns/github/tree/mast
 Documentation
 =============
 
-For details see the reference documentation on Hackage. Later.
+For details see the reference documentation on Hackage.
 
 Each module lines up with the hierarchy of [documentation from the Github API](http://developer.github.com/v3/).
 

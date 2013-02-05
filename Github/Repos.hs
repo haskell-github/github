@@ -18,8 +18,7 @@ module Github.Repos (
 
 -- * Modifying repositories
 -- |
--- Only authenticated users may modify repositories.  Currently only
--- /HTTP basic access authentication/ is implemented.
+-- Only authenticated users may modify repositories.
 ,GithubAuth(..)
 
 -- ** Create
