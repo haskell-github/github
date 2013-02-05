@@ -140,6 +140,7 @@ data NewRepo = NewRepo {
 , newRepoHasIssues    :: (Maybe Bool)
 , newRepoHasWiki      :: (Maybe Bool)
 , newRepoHasDownloads :: (Maybe Bool)
+, newRepoAutoInit     :: (Maybe Bool)
 } deriving Show
 
 instance ToJSON  NewRepo where
@@ -150,6 +151,7 @@ instance ToJSON  NewRepo where
                   , newRepoHasIssues    = hasIssues
                   , newRepoHasWiki      = hasWiki
                   , newRepoHasDownloads = hasDownloads
+                  , newRepoAutoInit     = autoInit
                   }) = object
                   [ "name"                .= name
                   , "description"         .= description
@@ -157,11 +159,11 @@ instance ToJSON  NewRepo where
                   , "private"             .= private
                   , "has_issues"          .= hasIssues
                   , "has_wiki"            .= hasWiki
-                  , "has_downloads"       .= hasDownloads
+                  , "auto_init"           .= autoInit
                   ]
 
 newRepo :: String -> NewRepo
-newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing
+newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing Nothing
 
 -- |
 -- Create a new repository.
