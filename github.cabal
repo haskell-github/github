@@ -141,7 +141,7 @@ Library
   Build-depends: base >= 4.0 && < 5.0,
                  time,
                  aeson == 0.6.1.0,
-                 attoparsec == 0.10.3.0,
+                 attoparsec >= 0.10.3.0,
                  bytestring,
                  containers,
                  text,
