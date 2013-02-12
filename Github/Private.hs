@@ -66,7 +66,8 @@ githubAPI method url auth body = do
   result <- doHttps method url auth (encodeBody body)
   case result of
       Left e     -> return (Left (HTTPConnectionError e))
-      Right resp -> either Left (jsonResultToE "<response body>" . fromJSON)
+      Right resp -> either Left (\x -> jsonResultToE (LBS.pack (show x))
+                                                   (fromJSON x))
                           <$> handleBody resp
 
   where
