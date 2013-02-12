@@ -67,7 +67,7 @@ githubAPI method url auth body = do
   case result of
       Left e     -> return (Left (HTTPConnectionError e))
       Right resp -> either Left (jsonResultToE "<response body>" . fromJSON)
-                    <$> handleBody resp
+                          <$> handleBody resp
 
   where
     encodeBody = Just . RequestBodyLBS . encode . toJSON
@@ -80,7 +80,7 @@ githubAPI method url auth body = do
     -- Maybe, applies f, and return an IO (Either Error b).
     forE :: b -> Maybe a -> (a -> IO (Either Error b))
          -> IO (Either Error b)
-    forE esc v f = flip (maybe (return (Right esc))) v f
+    forE = flip . maybe . return . Right
 
     handleJson resp json@(Array ary) =
         -- Determine whether the output was paginated, and if so, we must
