@@ -109,10 +109,15 @@ doHttps :: Method -> String -> Maybe GithubAuth
 doHttps method url auth body = do
   let requestBody = fromMaybe (RequestBodyBS $ BS.pack "") body
       requestHeaders = maybe [] getOAuth auth
-      (Just uri) = parseUrl url
+      Just uri = parseUrl url
       request = uri { method = method
                     , secure = True
                     , port = 443
+                    , queryString =
+                        let x = queryString uri
+                        in if BS.null x || x == "?"
+                           then "?per_page=100"
+                           else x
                     , requestBody = requestBody
                     , requestHeaders = requestHeaders
                     , checkStatus = successOrMissing
