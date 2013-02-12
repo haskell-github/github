@@ -2,9 +2,11 @@
 module Github.Private where
 
 import Github.Data
+import Data.Char (isDigit)
 import Data.Aeson
 import Data.Attoparsec.ByteString.Lazy
 import Data.Data
+import Data.Monoid
 import Control.Applicative
 import Data.List
 import Data.CaseInsensitive (mk)
@@ -58,15 +60,52 @@ githubPatch auth paths body =
 buildUrl :: [String] -> String
 buildUrl paths = "https://api.github.com/" ++ intercalate "/" paths
 
-githubAPI :: (ToJSON a, Show a, FromJSON b, Show b) => BS.ByteString -> String -> Maybe GithubAuth -> Maybe a -> IO (Either Error b)
+githubAPI :: (ToJSON a, Show a, FromJSON b, Show b) => BS.ByteString -> String
+          -> Maybe GithubAuth -> Maybe a -> IO (Either Error b)
 githubAPI method url auth body = do
-  result <- doHttps method url auth (Just encodedBody)
-  return $ either (Left . HTTPConnectionError)
-                  (parseJson . responseBody)
-                  result
-  where encodedBody = RequestBodyLBS $ encode $ toJSON body
+  result <- doHttps method url auth (encodeBody body)
+  case result of
+      Left e     -> return (Left (HTTPConnectionError e))
+      Right resp -> either Left (jsonResultToE "<response body>" . fromJSON)
+                    <$> handleBody resp
 
-doHttps :: Method -> String -> Maybe GithubAuth -> Maybe (RequestBody (ResourceT IO)) -> IO (Either E.SomeException (Response LBS.ByteString))
+  where
+    encodeBody = Just . RequestBodyLBS . encode . toJSON
+
+    handleBody resp = either (return . Left) (handleJson resp)
+                             (parseJsonRaw (responseBody resp))
+
+    -- This is an "escaping" version of "for", which returns (Right esc) if
+    -- the value 'v' is Nothing; otherwise, it extracts the value from the
+    -- Maybe, applies f, and return an IO (Either Error b).
+    forE :: b -> Maybe a -> (a -> IO (Either Error b))
+         -> IO (Either Error b)
+    forE esc v f = flip (maybe (return (Right esc))) v f
+
+    handleJson resp json@(Array ary) =
+        -- Determine whether the output was paginated, and if so, we must
+        -- recurse to obtain the subsequent pages, and append those result
+        -- bodies to the current one.  The aggregate will then be parsed.
+        forE json (lookup "Link" (responseHeaders resp)) $ \l ->
+            forE json (getNextUrl (BS.unpack l)) $ \nu ->
+                either (return . Left . HTTPConnectionError)
+                       (\nextResp -> do
+                             nextJson <- handleBody nextResp
+                             return $ (\(Array x) -> Array (ary <> x))
+                                          <$> nextJson)
+                       =<< doHttps method nu auth Nothing
+    handleJson _ json = return (Right json)
+
+    getNextUrl l =
+        if "rel=\"next\"" `isInfixOf` l
+        then let s  = l
+                 s' = Data.List.tail $ Data.List.dropWhile (/= '<') s
+             in Just (Data.List.takeWhile (/= '>') s')
+        else Nothing
+
+doHttps :: Method -> String -> Maybe GithubAuth
+        -> Maybe (RequestBody (ResourceT IO))
+        -> IO (Either E.SomeException (Response LBS.ByteString))
 doHttps method url auth body = do
   let requestBody = fromMaybe (RequestBodyBS $ BS.pack "") body
       requestHeaders = maybe [] getOAuth auth
@@ -101,12 +140,20 @@ doHttps method url auth body = do
       | (200 <= sci && sci < 300) || sci == 404 = Nothing
       | otherwise = Just $ E.toException $ StatusCodeException s hs
 
-parseJson :: (FromJSON b, Show b) => LBS.ByteString -> Either Error b
-parseJson jsonString =
-  let parsed = parse (fromJSON <$> json) jsonString in
+parseJsonRaw :: LBS.ByteString -> Either Error Value
+parseJsonRaw jsonString =
+  let parsed = parse json jsonString in
   case parsed of
-       Data.Attoparsec.ByteString.Lazy.Done _ jsonResult -> do
-         case jsonResult of
-              (Success s) -> Right s
-              (Error e) -> Left $ JsonError $ e ++ " on the JSON: " ++ LBS.unpack jsonString
+       Data.Attoparsec.ByteString.Lazy.Done _ jsonResult -> Right jsonResult
        (Fail _ _ e) -> Left $ ParseError e
+
+jsonResultToE :: Show b => LBS.ByteString -> Data.Aeson.Result b
+              -> Either Error b
+jsonResultToE jsonString result = case result of
+    Success s -> Right s
+    Error e   -> Left $ JsonError $
+                 e ++ " on the JSON: " ++ LBS.unpack jsonString
+
+parseJson :: (FromJSON b, Show b) => LBS.ByteString -> Either Error b
+parseJson jsonString = either Left (jsonResultToE jsonString . fromJSON)
+                              (parseJsonRaw jsonString)
