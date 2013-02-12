@@ -178,7 +178,7 @@ data GitObject = GitObject {
 data Issue = Issue {
    issueClosedAt :: Maybe GithubDate
   ,issueUpdatedAt :: GithubDate
-  ,issueHtmlUrl :: String
+  ,issueHtmlUrl :: Maybe String
   ,issueClosedBy :: Maybe GithubOwner
   ,issueLabels :: [IssueLabel]
   ,issueNumber :: Int
@@ -188,7 +188,7 @@ data Issue = Issue {
   ,issuePullRequest :: PullRequestReference
   ,issueUrl :: String
   ,issueCreatedAt :: GithubDate
-  ,issueBody :: String
+  ,issueBody :: Maybe String
   ,issueState :: String
   ,issueId :: Int
   ,issueComments :: Int
