@@ -31,6 +31,7 @@ data IssueLimitation =
     | Ascending -- ^ Sort ascending.
     | Descending -- ^ Sort descending. [default]
     | Since UTCTime -- ^ Only issues created since the specified date and time.
+    | PerPage Int -- ^ Download this many issues per query
 
 
 -- | Details on a specific issue, given the repo owner and name, and the issue
@@ -73,6 +74,7 @@ issuesForRepo' auth user repoName issueLimitations =
     convert (Labels l)       = "labels=" ++ intercalate "," l
     convert Ascending        = "direction=asc"
     convert Descending       = "direction=desc"
+    convert (PerPage n)      = "per_page=" ++ show n
     convert (Since t)        =
       "since=" ++ formatTime defaultTimeLocale "%FT%TZ" t
 

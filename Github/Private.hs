@@ -113,11 +113,6 @@ doHttps method url auth body = do
       request = uri { method = method
                     , secure = True
                     , port = 443
-                    , queryString =
-                        let x = queryString uri
-                        in if BS.null x || x == "?"
-                           then "?per_page=100"
-                           else x
                     , requestBody = requestBody
                     , requestHeaders = requestHeaders
                     , checkStatus = successOrMissing
