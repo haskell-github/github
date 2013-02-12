@@ -2,6 +2,7 @@
 -- <http://developer.github.com/v3/issues/milestones/>.
 module Github.Issues.Milestones (
  milestones
+,milestones'
 ,milestone
 ,module Github.Data
 ) where
@@ -13,7 +14,13 @@ import Github.Private
 --
 -- > milestones "thoughtbot" "paperclip"
 milestones :: String -> String -> IO (Either Error [Milestone])
-milestones user repoName = githubGet ["repos", user, repoName, "milestones"]
+milestones = milestones' Nothing
+
+-- | All milestones in the repo, using authentication.
+--
+-- > milestones' (GithubUser (user, password)) "thoughtbot" "paperclip"
+milestones' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Milestone])
+milestones' auth user repoName = githubGet' auth ["repos", user, repoName, "milestones"]
 
 -- | Details on a specific milestone, given it's milestone number.
 --

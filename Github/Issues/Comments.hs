@@ -3,6 +3,7 @@
 module Github.Issues.Comments (
  comment
 ,comments
+,comments'
 ,module Github.Data
 ) where
 
@@ -22,3 +23,11 @@ comment user repoName commentId =
 comments :: String -> String -> Int -> IO (Either Error [IssueComment])
 comments user repoName issueNumber =
   githubGet ["repos", user, repoName, "issues", show issueNumber, "comments"]
+
+-- | All comments on an issue, by the issue's number, using authentication.
+--
+-- > comments' (GithubUser (user, password)) "thoughtbot" "paperclip" 635
+comments' :: Maybe GithubAuth -> String -> String -> Int -> IO (Either Error [IssueComment])
+comments' auth user repoName issueNumber =
+  githubGet' auth ["repos", user, repoName, "issues", show issueNumber, "comments"]
+
