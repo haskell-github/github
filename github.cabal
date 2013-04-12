@@ -7,7 +7,7 @@ Name:                github
 -- The package version. See the Haskell package versioning policy
 -- (http://www.haskell.org/haskellwiki/Package_versioning_policy) for
 -- standards guiding when and how versions should be incremented.
-Version:             0.5.1
+Version:             0.6.0
 
 -- A short (one-line) description of the package.
 Synopsis:            Access to the Github API, v3.
@@ -18,7 +18,7 @@ Description:         The Github API provides programmatic access to the full
                      like references and trees. This library wraps all of that, exposing a basic but
                      Haskell-friendly set of functions and data structures.
                      .
-                     For more of an overview please see the README: <https://github.com/mike-burns/github/blob/master/README.md>
+                     For more of an overview please see the README: <https://github.com/fpco/github/blob/master/README.md>
 
 -- The license under which the package is released.
 License:             BSD3
@@ -27,16 +27,16 @@ License:             BSD3
 License-file:        LICENSE
 
 -- The package author(s).
-Author:              Mike Burns
+Author:              Mike Burns, John Wiegley
 
 -- An email address to which users can send suggestions, bug reports,
 -- and patches.
-Maintainer:          mike@mike-burns.com
+Maintainer:          johnw@fpcomplete.com
 
-Homepage:            https://github.com/mike-burns/github
+Homepage:            https://github.com/fpco/github
 
 -- A copyright notice.
-Copyright:           Copyright 2012-2013 Mike Burns
+Copyright:           Copyright 2012-2013 Mike Burns, Copyright 2013 John Wiegley
 
 Category:            Network APIs
 
@@ -107,7 +107,7 @@ Cabal-version:       >=1.6
 
 source-repository head
   type: git
-  location: git://github.com/mike-burns/github.git
+  location: git://github.com/fpco/github.git
 
 
 Library
