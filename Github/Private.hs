@@ -116,7 +116,8 @@ doHttps method url auth body = do
                     , secure = True
                     , port = 443
                     , requestBody = requestBody
-                    , requestHeaders = requestHeaders
+                    , requestHeaders = requestHeaders <>
+                                       [("User-Agent", "github.hs/0.7.0")]
                     , checkStatus = successOrMissing
                     }
       authRequest = getAuthRequest auth request
