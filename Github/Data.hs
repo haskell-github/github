@@ -472,7 +472,7 @@ instance FromJSON DetailedOwner where
                    <*> o .:? "name"
                    <*> o .:? "location"
                    <*> o .:? "company"
-                   <*> o .: "email"
+                   <*> o .:? "email" .!= ""
                    <*> o .: "url"
                    <*> o .: "id"
                    <*> o .: "html_url"
