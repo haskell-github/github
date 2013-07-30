@@ -4,6 +4,14 @@ module Github.Issues.Comments (
  comment
 ,comments
 ,comments'
+
+-- * Modifying Comments
+-- |
+-- Only authenticated users may create and edit comments.
+,GithubAuth(..)
+
+,createComment
+,editComment
 ,module Github.Data
 ) where
 
@@ -31,3 +39,27 @@ comments' :: Maybe GithubAuth -> String -> String -> Int -> IO (Either Error [Is
 comments' auth user repoName issueNumber =
   githubGet' auth ["repos", user, repoName, "issues", show issueNumber, "comments"]
 
+
+
+-- |
+-- Create a new comment.
+--
+-- > createComment (GithubUser (user, password)) user repo issue
+-- >  "some words"
+createComment :: GithubAuth -> String -> String -> Int -> String
+            -> IO (Either Error Comment)
+createComment auth user repo iss body =
+  githubPost auth
+  ["repos", user, repo, "issues", show iss, "comments"] (NewComment body)
+
+
+-- |
+-- Edit a comment.
+--
+-- > editComment (GithubUser (user, password)) user repo commentid
+-- >  "new words"
+editComment :: GithubAuth -> String -> String -> Int -> String
+            -> IO (Either Error Comment)
+editComment auth user repo commid body =
+  githubPatch auth ["repos", user, repo, "issues", "comments", show commid]
+  (EditComment body)

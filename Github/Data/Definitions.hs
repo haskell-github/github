@@ -107,6 +107,14 @@ data Comment = Comment {
   ,commentId :: Int
 } deriving (Show, Data, Typeable, Eq, Ord)
 
+data NewComment = NewComment {
+   newCommentBody :: String
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data EditComment = EditComment {
+   editCommentBody :: String
+} deriving (Show, Data, Typeable, Eq, Ord)
+
 data Diff = Diff {
    diffStatus :: String
   ,diffBehindBy :: Int
@@ -194,6 +202,24 @@ data Issue = Issue {
   ,issueComments :: Int
   ,issueMilestone :: Maybe Milestone
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data NewIssue = NewIssue {
+  newIssueTitle :: String
+, newIssueBody :: Maybe String
+, newIssueAssignee :: Maybe String
+, newIssueMilestone :: Maybe Int
+, newIssueLabels :: Maybe [String]
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data EditIssue = EditIssue {
+  editIssueTitle :: Maybe String
+, editIssueBody :: Maybe String
+, editIssueAssignee :: Maybe String
+, editIssueState :: Maybe String
+, editIssueMilestone :: Maybe Int
+, editIssueLabels :: Maybe [String]
+} deriving  (Show, Data, Typeable, Eq, Ord)
+
 
 data Milestone = Milestone {
    milestoneCreator :: GithubOwner

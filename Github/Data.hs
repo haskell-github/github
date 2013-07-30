@@ -122,6 +122,12 @@ instance FromJSON Comment where
             <*> o .: "id"
   parseJSON _          = fail "Could not build a Comment"
 
+instance ToJSON NewComment where
+  toJSON (NewComment b) = object [ "body" .= b ]
+
+instance ToJSON EditComment where
+  toJSON (EditComment b) = object [ "body" .= b ]
+
 instance FromJSON Diff where
   parseJSON (Object o) =
     Diff <$> o .: "status"
@@ -217,6 +223,26 @@ instance FromJSON Issue where
           <*> o .: "comments"
           <*> o .:? "milestone"
   parseJSON _          = fail "Could not build an Issue"
+
+instance ToJSON NewIssue where
+  toJSON (NewIssue t b a m ls) =
+    object
+    [ "title"     .= t
+    , "body"      .= b
+    , "assignee"  .= a
+    , "milestone" .= m
+    , "labels"    .= ls ]
+
+instance ToJSON EditIssue where
+  toJSON (EditIssue t b a s m ls) =
+    object $ filter notNull $ [ "title" .= t
+                              , "body" .= b
+                              , "assignee" .= a
+                              , "state" .= s
+                              , "milestone" .= m
+                              , "labels" .= ls ]
+    where notNull (_, Null) = False
+          notNull (_, _)    = True
 
 instance FromJSON Milestone where
   parseJSON (Object o) =
