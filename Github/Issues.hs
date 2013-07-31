@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 -- | The issues API as described on <http://developer.github.com/v3/issues/>.
 module Github.Issues (
  issue
@@ -5,11 +6,23 @@ module Github.Issues (
 ,issuesForRepo
 ,issuesForRepo'
 ,IssueLimitation(..)
+
+-- * Modifying Issues
+-- |
+-- Only authenticated users may create and edit issues.
+,GithubAuth(..)
+
+,createIssue
+,newIssue
+,editIssue
+,editOfIssue
 ,module Github.Data
 ) where
 
 import Github.Data
 import Github.Private
+import Data.Aeson.Types
+import qualified Data.Aeson as A
 import Data.List (intercalate)
 import Data.Time.Format (formatTime)
 import System.Locale (defaultTimeLocale)
@@ -84,3 +97,36 @@ issuesForRepo' auth user repoName issueLimitations =
 -- > issuesForRepo "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
 issuesForRepo :: String -> String -> [IssueLimitation] -> IO (Either Error [Issue])
 issuesForRepo = issuesForRepo' Nothing
+
+
+-- Creating new issues.
+
+newIssue :: String -> NewIssue
+newIssue title = NewIssue title Nothing Nothing Nothing Nothing
+
+
+-- |
+-- Create a new issue.
+--
+-- > createIssue (GithubUser (user, password)) user repo
+-- >  (newIssue "some_repo") {...}
+createIssue :: GithubAuth -> String -> String -> NewIssue
+            -> IO (Either Error Issue)
+createIssue auth user repo = githubPost auth ["repos", user, repo, "issues"]
+
+
+-- Editing issues.
+
+editOfIssue :: EditIssue
+editOfIssue = EditIssue Nothing Nothing Nothing Nothing Nothing Nothing
+
+
+-- |
+-- Edit an issue.
+--
+-- > editIssue (GithubUser (user, password)) user repo issue
+-- >  editOfIssue {...}
+editIssue :: GithubAuth -> String -> String -> Int -> EditIssue
+            -> IO (Either Error Issue)
+editIssue auth user repo iss =
+  githubPatch auth ["repos", user, repo, "issues", show iss]
