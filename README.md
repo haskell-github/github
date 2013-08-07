@@ -22,7 +22,7 @@ Or from the command line:
 Example Usage
 =============
 
-See the samples in the [samples/](https://github.com/mike-burns/github/tree/master/samples) directory.
+See the samples in the [samples/](https://github.com/fpco/github/tree/master/samples) directory.
 
 Documentation
 =============
@@ -46,7 +46,7 @@ All functions produce an `IO (Either Error a)`, where `a` is the actual thing yo
 Contributions
 =============
 
-Please see [CONTRIBUTING.md](https://github.com/mike-burns/github/tree/master/CONTRIBUTING.md) for details on how you can help.
+Please see [CONTRIBUTING.md](https://github.com/fpco/github/blob/master/CONTRIBUTING.md) for details on how you can help.
 
 Copyright
 =========
