@@ -120,6 +120,7 @@ Library
                    Github.GitData.Commits,
                    Github.GitData.References,
                    Github.GitData.Trees,
+                   Github.GitData.Blobs,
                    Github.Issues,
                    Github.Issues.Comments,
                    Github.Issues.Events,
