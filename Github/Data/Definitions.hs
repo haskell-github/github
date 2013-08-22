@@ -60,7 +60,7 @@ data GithubOwner = GithubUser {
   ,githubOwnerLogin :: String
   ,githubOwnerUrl :: String
   ,githubOwnerId :: Int
-  ,githubOwnerGravatarId :: String
+  ,githubOwnerGravatarId :: Maybe String
   }
   | GithubOrganization {
    githubOwnerAvatarUrl :: String
@@ -434,7 +434,7 @@ data DetailedOwner = DetailedUser {
   ,detailedOwnerFollowers :: Int
   ,detailedOwnerFollowing :: Int
   ,detailedOwnerHireable :: Bool
-  ,detailedOwnerGravatarId :: String
+  ,detailedOwnerGravatarId :: Maybe String
   ,detailedOwnerBlog :: Maybe String
   ,detailedOwnerBio :: Maybe String
   ,detailedOwnerPublicRepos :: Int
