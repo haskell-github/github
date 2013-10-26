@@ -118,6 +118,7 @@ doHttps method url auth body = do
                     , requestBody = requestBody
                     , requestHeaders = requestHeaders <>
                                        [("User-Agent", "github.hs/0.7.0")]
+                                       <> [("Accept", "application/vnd.github.preview")]
                     , checkStatus = successOrMissing
                     }
       authRequest = getAuthRequest auth request
