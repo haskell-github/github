@@ -110,12 +110,10 @@ source-repository head
   type: git
   location: git://github.com/fpco/github.git
 
-
 Library
   -- Modules exported by the library.
   Exposed-modules: Github.Data,
                    Github.Data.Definitions,
-
                    Github.Gists,
                    Github.Gists.Comments,
                    Github.GitData.Commits,
@@ -138,7 +136,6 @@ Library
                    Github.Users,
                    Github.Users.Followers
                    Github.Search
-
 
   -- Packages needed in order to build this package.
   Build-depends: base >= 4.0 && < 5.0,
