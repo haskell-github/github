@@ -10,7 +10,9 @@ module Github.Repos (
 ,userRepo
 ,userRepo'
 ,organizationRepos
+,organizationRepos'
 ,organizationRepo
+,organizationRepo'
 ,contributors
 ,contributorsWithAnonymous
 ,languagesFor
@@ -86,13 +88,27 @@ userRepos' _auth userName Private =
 --
 -- > organizationRepos "thoughtbot"
 organizationRepos :: String -> IO (Either Error [Repo])
-organizationRepos orgName = githubGet ["orgs", orgName, "repos"]
+organizationRepos = organizationRepos' Nothing
+
+-- | The repos for an organization, by the organization name.
+-- | With authentication
+--
+-- > organizationRepos (Just (GithubUser (user, password))) "thoughtbot"
+organizationRepos' :: Maybe GithubAuth -> String -> IO (Either Error [Repo])
+organizationRepos' auth orgName = githubGet' auth ["orgs", orgName, "repos"]
 
 -- | A specific organization repo, by the organization name.
 --
 -- > organizationRepo "thoughtbot" "github"
 organizationRepo :: String -> String -> IO (Either Error Repo)
-organizationRepo orgName repoName = githubGet ["orgs", orgName, repoName]
+organizationRepo = organizationRepo' Nothing
+
+-- | A specific organization repo, by the organization name.
+-- | With authentication
+--
+-- > organizationRepo (Just (GithubUser (user, password))) "thoughtbot" "github"
+organizationRepo' :: Maybe GithubAuth -> String -> String -> IO (Either Error Repo)
+organizationRepo' auth orgName repoName = githubGet' auth ["orgs", orgName, repoName]
 
 -- | Details on a specific repo, given the owner and repo name.
 --
