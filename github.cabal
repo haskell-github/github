@@ -96,6 +96,7 @@ Extra-source-files:  README.md
                     ,samples/Repos/ShowRepo.hs
                     ,samples/Repos/Watching/ListWatched.hs
                     ,samples/Repos/Watching/ListWatchers.hs
+                    ,samples/Repos/Starring/ListStarred.hs
                     ,samples/Users/Followers/ListFollowers.hs
                     ,samples/Users/Followers/ListFollowing.hs
                     ,samples/Users/ShowUser.hs
@@ -134,6 +135,7 @@ Library
                    Github.Repos.Commits,
                    Github.Repos.Forks,
                    Github.Repos.Watching,
+                   Github.Repos.Starring,
                    Github.Users,
                    Github.Users.Followers
 
