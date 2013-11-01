@@ -6,7 +6,9 @@ module Github.Repos (
 
 -- * Querying repositories
  userRepos
+,userRepos'
 ,userRepo
+,userRepo'
 ,organizationRepos
 ,organizationRepo
 ,contributors
@@ -62,15 +64,22 @@ data RepoPublicity =
 --
 -- > userRepos "mike-burns" All
 userRepos :: String -> RepoPublicity -> IO (Either Error [Repo])
-userRepos userName All =
-  githubGetWithQueryString ["users", userName, "repos"] "type=all"
-userRepos userName Owner =
-  githubGetWithQueryString ["users", userName, "repos"] "type=owner"
-userRepos userName Member =
-  githubGetWithQueryString ["users", userName, "repos"] "type=member"
-userRepos userName Public =
-  githubGetWithQueryString ["users", userName, "repos"] "type=public"
-userRepos userName Private =
+userRepos = userRepos' Nothing
+
+-- | The repos for a user, by their login.
+-- | With authentication, but note that private repos are currently not supported.
+--
+-- > userRepos' (Just (GithubUser (user, password))) "mike-burns" All
+userRepos' :: Maybe GithubAuth -> String -> RepoPublicity -> IO (Either Error [Repo])
+userRepos' auth userName All =
+  githubGetWithQueryString' auth ["users", userName, "repos"] "type=all"
+userRepos' auth userName Owner =
+  githubGetWithQueryString' auth ["users", userName, "repos"] "type=owner"
+userRepos' auth userName Member =
+  githubGetWithQueryString' auth ["users", userName, "repos"] "type=member"
+userRepos' auth userName Public =
+  githubGetWithQueryString' auth ["users", userName, "repos"] "type=public"
+userRepos' _auth userName Private =
   return $ Left $ UserError "Cannot access private repos using userRepos"
 
 -- | The repos for an organization, by the organization name.
@@ -89,7 +98,14 @@ organizationRepo orgName repoName = githubGet ["orgs", orgName, repoName]
 --
 -- > userRepo "mike-burns" "github"
 userRepo :: String -> String -> IO (Either Error Repo)
-userRepo userName repoName = githubGet ["repos", userName, repoName]
+userRepo = userRepo' Nothing
+
+-- | Details on a specific repo, given the owner and repo name.
+-- | With authentication
+--
+-- > userRepo' (Just (GithubUser (user, password))) "mike-burns" "github"
+userRepo' :: Maybe GithubAuth -> String -> String -> IO (Either Error Repo)
+userRepo' auth userName repoName = githubGet ["repos", userName, repoName]
 
 -- | The contributors to a repo, given the owner and repo name.
 --
