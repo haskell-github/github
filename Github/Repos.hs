@@ -121,7 +121,7 @@ userRepo = userRepo' Nothing
 --
 -- > userRepo' (Just (GithubUser (user, password))) "mike-burns" "github"
 userRepo' :: Maybe GithubAuth -> String -> String -> IO (Either Error Repo)
-userRepo' auth userName repoName = githubGet ["repos", userName, repoName]
+userRepo' auth userName repoName = githubGet' auth ["repos", userName, repoName]
 
 -- | The contributors to a repo, given the owner and repo name.
 --
