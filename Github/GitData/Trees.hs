@@ -13,13 +13,13 @@ import Github.Private
 --
 -- > tree "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
 tree :: String -> String -> String -> IO (Either Error Tree)
-tree user repoName sha =
-  githubGet ["repos", user, repoName, "git", "trees", sha]
+tree user reqRepoName sha =
+  githubGet ["repos", user, reqRepoName, "git", "trees", sha]
 
 -- | A recursively-nested tree for a SHA1.
 --
 -- > nestedTree "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
 nestedTree :: String -> String -> String -> IO (Either Error Tree)
-nestedTree user repoName sha =
-  githubGetWithQueryString ["repos", user, repoName, "git", "trees", sha]
+nestedTree user reqRepoName sha =
+  githubGetWithQueryString ["repos", user, reqRepoName, "git", "trees", sha]
                            "recursive=1"

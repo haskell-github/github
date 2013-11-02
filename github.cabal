@@ -148,6 +148,7 @@ Library
                  bytestring,
                  case-insensitive >= 0.4.0.4,
                  containers,
+                 hashable,
                  text,
                  old-locale,
                  HTTP,
@@ -166,3 +167,4 @@ Library
   -- Extra tools (e.g. alex, hsc2hs, ...) needed to build the source.
   -- Build-tools:         
   
+  GHC-Options: -Wall -fno-warn-orphans

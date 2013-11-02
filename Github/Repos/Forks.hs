@@ -20,5 +20,5 @@ forksFor = forksFor' Nothing
 --
 -- > forksFor' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
 forksFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Repo])
-forksFor' auth userName repoName =
-  githubGet' auth ["repos", userName, repoName, "forks"]
+forksFor' auth userName reqRepoName =
+  githubGet' auth ["repos", userName, reqRepoName, "forks"]

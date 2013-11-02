@@ -12,5 +12,5 @@ import Github.Private
 --
 -- > commit "thoughtbot" "paperclip" "bc5c51d1ece1ee45f94b056a0f5a1674d7e8cba9"
 commit :: String -> String -> String -> IO (Either Error GitCommit)
-commit user repoName sha =
-  githubGet ["repos", user, repoName, "git", "commits", sha]
+commit user reqRepoName sha =
+  githubGet ["repos", user, reqRepoName, "git", "commits", sha]

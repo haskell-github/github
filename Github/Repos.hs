@@ -46,7 +46,6 @@ import Data.Aeson.Types
 import Github.Data
 import Github.Private
 import Network.HTTP.Conduit
-import qualified Data.ByteString.Char8 as BS
 import Control.Applicative
 import qualified Control.Exception as E
 import Network.HTTP.Types
@@ -81,7 +80,7 @@ userRepos' auth userName Member =
   githubGetWithQueryString' auth ["users", userName, "repos"] "type=member"
 userRepos' auth userName Public =
   githubGetWithQueryString' auth ["users", userName, "repos"] "type=public"
-userRepos' _auth userName Private =
+userRepos' _auth _userName Private =
   return $ Left $ UserError "Cannot access private repos using userRepos"
 
 -- | The repos for an organization, by the organization name.
@@ -108,7 +107,7 @@ organizationRepo = organizationRepo' Nothing
 --
 -- > organizationRepo (Just (GithubUser (user, password))) "thoughtbot" "github"
 organizationRepo' :: Maybe GithubAuth -> String -> String -> IO (Either Error Repo)
-organizationRepo' auth orgName repoName = githubGet' auth ["orgs", orgName, repoName]
+organizationRepo' auth orgName reqRepoName = githubGet' auth ["orgs", orgName, reqRepoName]
 
 -- | Details on a specific repo, given the owner and repo name.
 --
@@ -121,14 +120,14 @@ userRepo = userRepo' Nothing
 --
 -- > userRepo' (Just (GithubUser (user, password))) "mike-burns" "github"
 userRepo' :: Maybe GithubAuth -> String -> String -> IO (Either Error Repo)
-userRepo' auth userName repoName = githubGet' auth ["repos", userName, repoName]
+userRepo' auth userName reqRepoName = githubGet' auth ["repos", userName, reqRepoName]
 
 -- | The contributors to a repo, given the owner and repo name.
 --
 -- > contributors "thoughtbot" "paperclip"
 contributors :: String -> String -> IO (Either Error [Contributor])
-contributors userName repoName =
-  githubGet ["repos", userName, repoName, "contributors"]
+contributors userName reqRepoName =
+  githubGet ["repos", userName, reqRepoName, "contributors"]
 
 -- | The contributors to a repo, including anonymous contributors (such as
 -- deleted users or git commits with unknown email addresses), given the owner
@@ -136,9 +135,9 @@ contributors userName repoName =
 --
 -- > contributorsWithAnonymous "thoughtbot" "paperclip"
 contributorsWithAnonymous :: String -> String -> IO (Either Error [Contributor])
-contributorsWithAnonymous userName repoName =
+contributorsWithAnonymous userName reqRepoName =
   githubGetWithQueryString
-    ["repos", userName, repoName, "contributors"]
+    ["repos", userName, reqRepoName, "contributors"]
     "anon=true"
 
 -- | The programming languages used in a repo along with the number of
@@ -146,23 +145,23 @@ contributorsWithAnonymous userName repoName =
 --
 -- > languagesFor "mike-burns" "ohlaunch"
 languagesFor :: String -> String -> IO (Either Error [Language])
-languagesFor userName repoName = do
-  result <- githubGet ["repos", userName, repoName, "languages"]
+languagesFor userName reqRepoName = do
+  result <- githubGet ["repos", userName, reqRepoName, "languages"]
   return $ either Left (Right . getLanguages) result
 
 -- | The git tags on a repo, given the repo owner and name.
 --
 -- > tagsFor "thoughtbot" "paperclip"
 tagsFor :: String -> String -> IO (Either Error [Tag])
-tagsFor userName repoName =
-  githubGet ["repos", userName, repoName, "tags"]
+tagsFor userName reqRepoName =
+  githubGet ["repos", userName, reqRepoName, "tags"]
 
 -- | The git branches on a repo, given the repo owner and name.
 --
 -- > branchesFor "thoughtbot" "paperclip"
 branchesFor :: String -> String -> IO (Either Error [Branch])
-branchesFor userName repoName =
-  githubGet ["repos", userName, repoName, "branches"]
+branchesFor userName reqRepoName =
+  githubGet ["repos", userName, reqRepoName, "branches"]
 
 
 data NewRepo = NewRepo {
@@ -172,7 +171,6 @@ data NewRepo = NewRepo {
 , newRepoPrivate      :: (Maybe Bool)
 , newRepoHasIssues    :: (Maybe Bool)
 , newRepoHasWiki      :: (Maybe Bool)
-, newRepoHasDownloads :: (Maybe Bool)
 , newRepoAutoInit     :: (Maybe Bool)
 } deriving Show
 
@@ -183,7 +181,6 @@ instance ToJSON  NewRepo where
                   , newRepoPrivate      = private
                   , newRepoHasIssues    = hasIssues
                   , newRepoHasWiki      = hasWiki
-                  , newRepoHasDownloads = hasDownloads
                   , newRepoAutoInit     = autoInit
                   }) = object
                   [ "name"                .= name
@@ -196,7 +193,7 @@ instance ToJSON  NewRepo where
                   ]
 
 newRepo :: String -> NewRepo
-newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing Nothing
+newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing
 
 -- |
 -- Create a new repository.

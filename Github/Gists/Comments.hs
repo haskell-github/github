@@ -13,10 +13,10 @@ import Github.Private
 --
 -- > commentsOn "1174060"
 commentsOn :: String -> IO (Either Error [GistComment])
-commentsOn gistId = githubGet ["gists", gistId, "comments"]
+commentsOn reqGistId = githubGet ["gists", reqGistId, "comments"]
 
 -- | A specific comment, by the comment ID.
 --
 -- > comment "62449"
 comment :: String -> IO (Either Error GistComment)
-comment commentId = githubGet ["gists", "comments", commentId]
+comment reqCommentId = githubGet ["gists", "comments", reqCommentId]

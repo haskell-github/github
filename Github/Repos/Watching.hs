@@ -22,8 +22,8 @@ watchersFor = watchersFor' Nothing
 --
 -- > watchersFor' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
 watchersFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [GithubOwner])
-watchersFor' auth userName repoName =
-  githubGet' auth ["repos", userName, repoName, "watchers"]
+watchersFor' auth userName reqRepoName =
+  githubGet' auth ["repos", userName, reqRepoName, "watchers"]
 
 -- | All the public repos watched by the specified user.
 --

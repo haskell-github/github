@@ -15,25 +15,25 @@ import Github.Private
 --
 -- > labelsOnRepo "thoughtbot" "paperclip"
 labelsOnRepo :: String -> String -> IO (Either Error [IssueLabel])
-labelsOnRepo user repoName = githubGet ["repos", user, repoName, "labels"]
+labelsOnRepo user reqRepoName = githubGet ["repos", user, reqRepoName, "labels"]
 
 -- | The labels on an issue in a repo.
 --
 -- > labelsOnIssue "thoughtbot" "paperclip" 585
 labelsOnIssue :: String -> String -> Int ->  IO (Either Error [IssueLabel])
-labelsOnIssue user repoName issueId =
-  githubGet ["repos", user, repoName, "issues", show issueId, "labels"]
+labelsOnIssue user reqRepoName reqIssueId =
+  githubGet ["repos", user, reqRepoName, "issues", show reqIssueId, "labels"]
 
 -- | All the labels on a repo's milestone, given the milestone ID.
 --
 -- > labelsOnMilestone "thoughtbot" "paperclip" 2
 labelsOnMilestone :: String -> String -> Int ->  IO (Either Error [IssueLabel])
-labelsOnMilestone user repoName milestoneId =
-  githubGet ["repos", user, repoName, "milestones", show milestoneId, "labels"]
+labelsOnMilestone user reqRepoName milestoneId =
+  githubGet ["repos", user, reqRepoName, "milestones", show milestoneId, "labels"]
 
 -- | A label, by name.
 --
 -- > Github.label "thoughtbot" "paperclip" "bug"
 label :: String -> String -> String -> IO (Either Error IssueLabel)
-label user repoName labelName =
-  githubGet ["repos", user, repoName, "labels", labelName]
+label user reqRepoName reqLabelName =
+  githubGet ["repos", user, reqRepoName, "labels", reqLabelName]

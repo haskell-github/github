@@ -22,22 +22,22 @@ import Github.Private
 --
 -- > comment "thoughtbot" "paperclip" 1468184
 comment :: String -> String -> Int -> IO (Either Error IssueComment)
-comment user repoName commentId =
-  githubGet ["repos", user, repoName, "issues", "comments", show commentId]
+comment user reqRepoName reqCommentId =
+  githubGet ["repos", user, reqRepoName, "issues", "comments", show reqCommentId]
 
 -- | All comments on an issue, by the issue's number.
 --
 -- > comments "thoughtbot" "paperclip" 635
 comments :: String -> String -> Int -> IO (Either Error [IssueComment])
-comments user repoName issueNumber =
-  githubGet ["repos", user, repoName, "issues", show issueNumber, "comments"]
+comments user reqRepoName reqIssueNumber =
+  githubGet ["repos", user, reqRepoName, "issues", show reqIssueNumber, "comments"]
 
 -- | All comments on an issue, by the issue's number, using authentication.
 --
 -- > comments' (GithubUser (user, password)) "thoughtbot" "paperclip" 635
 comments' :: Maybe GithubAuth -> String -> String -> Int -> IO (Either Error [IssueComment])
-comments' auth user repoName issueNumber =
-  githubGet' auth ["repos", user, repoName, "issues", show issueNumber, "comments"]
+comments' auth user reqRepoName reqIssueNumber =
+  githubGet' auth ["repos", user, reqRepoName, "issues", show reqIssueNumber, "comments"]
 
 
 

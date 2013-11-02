@@ -12,5 +12,5 @@ import Github.Private
 --
 -- > blob "thoughtbot" "paperclip" "bc5c51d1ece1ee45f94b056a0f5a1674d7e8cba9"
 blob :: String -> String -> String -> IO (Either Error Blob)
-blob user repoName sha =
-  githubGet ["repos", user, repoName, "git", "blobs", sha]
+blob user reqRepoName sha =
+  githubGet ["repos", user, reqRepoName, "git", "blobs", sha]

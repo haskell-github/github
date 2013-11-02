@@ -17,8 +17,8 @@ import qualified Network.HTTP.Types as T (statusCode)
 --
 -- > collaboratorsOn "thoughtbot" "paperclip"
 collaboratorsOn :: String -> String -> IO (Either Error [GithubOwner])
-collaboratorsOn userName repoName =
-  githubGet ["repos", userName, repoName, "collaborators"]
+collaboratorsOn userName reqRepoName =
+  githubGet ["repos", userName, reqRepoName, "collaborators"]
 
 -- | Whether the user is collaborating on a repo. Takes the user in question,
 -- the user who owns the repo, and the repo name.
@@ -26,9 +26,9 @@ collaboratorsOn userName repoName =
 -- > isCollaboratorOn "mike-burns" "thoughtbot" "paperclip"
 -- > isCollaboratorOn "johnson" "thoughtbot" "paperclip"
 isCollaboratorOn :: String -> String -> String -> IO (Either Error Bool)
-isCollaboratorOn userName repoOwnerName repoName = do
+isCollaboratorOn userName repoOwnerName reqRepoName = do
    result <- doHttps (pack "GET")
-                     (buildUrl ["repos", repoOwnerName, repoName, "collaborators", userName])
+                     (buildUrl ["repos", repoOwnerName, reqRepoName, "collaborators", userName])
                      Nothing
                      Nothing
    return $ either (Left . HTTPConnectionError)

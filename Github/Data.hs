@@ -12,9 +12,9 @@ import Control.Monad
 import qualified Data.Text as T
 import Data.Aeson.Types
 import System.Locale (defaultTimeLocale)
-import Data.Attoparsec.Number (Number(..))
 import qualified Data.Vector as V
 import qualified Data.HashMap.Lazy as Map
+import Data.Hashable (Hashable)
 
 import Github.Data.Definitions
 
@@ -394,7 +394,7 @@ instance FromJSON PullRequestLinks where
   parseJSON _ = fail "Could not build a PullRequestLinks"
 
 instance FromJSON PullRequestCommit where
-  parseJSON (Object o) =
+  parseJSON (Object _) =
     return PullRequestCommit
   parseJSON _ = fail "Could not build a PullRequestCommit"
 
@@ -433,6 +433,7 @@ instance FromJSON RepoRef where
   parseJSON (Object o) =
     RepoRef <$> o .: "owner"
             <*> o .: "name"
+  parseJSON _ = fail "Could not build a RepoRef"
 
 instance FromJSON Contributor where
   parseJSON (Object o)
@@ -521,11 +522,13 @@ obj .:< key = case Map.lookup key obj of
                    Just v  -> parseJSON v
 
 -- | Produce all values for the given key.
+values :: (Eq k, Hashable k, FromJSON v) => Map.HashMap k Value -> k -> Parser v
 obj `values` key =
   let (Object children) = findWithDefault (Object Map.empty) key obj in
     parseJSON $ Array $ V.fromList $ Map.elems children
 
 -- | Produce the value for the last key by traversing.
+(<.:>) :: (FromJSON v) => Object => [T.Text] -> Parser v
 obj <.:> [key] = obj .: key
 obj <.:> (key:keys) =
   let (Object nextObj) = findWithDefault (Object Map.empty) key obj in
@@ -536,6 +539,7 @@ at :: Object -> T.Text -> Maybe Value
 obj `at` key = Map.lookup key obj
 
 -- Taken from Data.Map:
+findWithDefault :: (Eq k, Hashable k) => v -> k -> Map.HashMap k v -> v
 findWithDefault def k m =
   case Map.lookup k m of
     Nothing -> def
