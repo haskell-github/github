@@ -425,7 +425,14 @@ instance FromJSON Repo where
          <*> o .:? "has_wiki"
          <*> o .:? "has_issues"
          <*> o .:? "has_downloads"
+	 <*> o .:? "parent"
+	 <*> o .:? "source"
   parseJSON _ = fail "Could not build a Repo"
+
+instance FromJSON RepoRef where
+  parseJSON (Object o) =
+    RepoRef <$> o .: "owner"
+            <*> o .: "name"
 
 instance FromJSON Contributor where
   parseJSON (Object o)
