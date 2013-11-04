@@ -2,6 +2,7 @@
 -- <http://developer.github.com/v3/repos/forks/>.
 module Github.Repos.Forks (
  forksFor
+,forksFor'
 ,module Github.Data
 ) where
 
@@ -12,5 +13,12 @@ import Github.Private
 --
 -- > forksFor "thoughtbot" "paperclip"
 forksFor :: String -> String -> IO (Either Error [Repo])
-forksFor userName repoName =
-  githubGet ["repos", userName, repoName, "forks"]
+forksFor = forksFor' Nothing
+
+-- | All the repos that are forked off the given repo.
+-- | With authentication
+--
+-- > forksFor' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
+forksFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Repo])
+forksFor' auth userName repoName =
+  githubGet' auth ["repos", userName, repoName, "forks"]
