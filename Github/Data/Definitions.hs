@@ -390,7 +390,12 @@ data Repo = Repo {
   ,repoHasWiki :: Maybe Bool
   ,repoHasIssues :: Maybe Bool
   ,repoHasDownloads :: Maybe Bool
+  ,repoParent :: Maybe RepoRef
+  ,repoSource :: Maybe RepoRef
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data RepoRef = RepoRef GithubOwner String -- Repo owner and name
+ deriving (Show, Data, Typeable, Eq, Ord)
 
 data Contributor
   -- | An existing Github user, with their number of contributions, avatar

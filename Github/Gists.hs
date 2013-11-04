@@ -26,7 +26,7 @@ gists = gists' Nothing
 --
 -- > gist' (Just ("github-username", "github-password")) "225074"
 gist' :: Maybe GithubAuth -> String -> IO (Either Error Gist)
-gist' auth gistId = githubGet' auth ["gists", gistId]
+gist' auth reqGistId = githubGet' auth ["gists", reqGistId]
 
 -- | A specific gist, given its id.
 --

@@ -8,15 +8,14 @@ module Github.Repos.Starring (
 ) where
 
 import Github.Data
-import Github.Data.Definitions
 import Github.Private
 
 -- | The list of users that have starred the specified Github repo.
 --
 -- > userInfoFor' Nothing "mike-burns"
 stargazersFor :: Maybe GithubAuth -> String -> String -> IO (Either Error [GithubOwner])
-stargazersFor auth userName repoName =
-  githubGet' auth ["repos", userName, repoName, "stargazers"]
+stargazersFor auth userName reqRepoName =
+  githubGet' auth ["repos", userName, reqRepoName, "stargazers"]
 
 -- | All the public repos starred by the specified user.
 --

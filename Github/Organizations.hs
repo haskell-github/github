@@ -26,7 +26,7 @@ publicOrganizationsFor = publicOrganizationsFor' Nothing
 --
 -- > publicOrganization' (Just ("github-username", "github-password")) "thoughtbot"
 publicOrganization' :: Maybe GithubAuth -> String -> IO (Either Error Organization)
-publicOrganization' auth organizationName = githubGet' auth ["orgs", organizationName]
+publicOrganization' auth reqOrganizationName = githubGet' auth ["orgs", reqOrganizationName]
 
 -- | Details on a public organization. Takes the organization's login.
 --

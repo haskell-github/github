@@ -21,8 +21,6 @@ module Github.Issues (
 
 import Github.Data
 import Github.Private
-import Data.Aeson.Types
-import qualified Data.Aeson as A
 import Data.List (intercalate)
 import Data.Time.Format (formatTime)
 import System.Locale (defaultTimeLocale)
@@ -52,8 +50,8 @@ data IssueLimitation =
 --
 -- > issue' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" "462"
 issue' :: Maybe GithubAuth -> String -> String -> Int -> IO (Either Error Issue)
-issue' auth user repoName issueNumber =
-  githubGet' auth ["repos", user, repoName, "issues", show issueNumber]
+issue' auth user reqRepoName reqIssueNumber =
+  githubGet' auth ["repos", user, reqRepoName, "issues", show reqIssueNumber]
 
 -- | Details on a specific issue, given the repo owner and name, and the issue
 -- number.
@@ -67,10 +65,10 @@ issue = issue' Nothing
 --
 -- > issuesForRepo' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
 issuesForRepo' :: Maybe GithubAuth -> String -> String -> [IssueLimitation] -> IO (Either Error [Issue])
-issuesForRepo' auth user repoName issueLimitations =
+issuesForRepo' auth user reqRepoName issueLimitations =
   githubGetWithQueryString' 
     auth
-    ["repos", user, repoName, "issues"]
+    ["repos", user, reqRepoName, "issues"]
     (queryStringFromLimitations issueLimitations)
   where
     queryStringFromLimitations = intercalate "&" . map convert

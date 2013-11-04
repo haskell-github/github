@@ -42,12 +42,12 @@ commitCommentsFor user repo sha1 =
 --
 -- > commitCommentFor "thoughtbot" "paperclip" "669575"
 commitCommentFor :: String -> String -> String -> IO (Either Error Comment)
-commitCommentFor user repo commentId =
-  githubGet ["repos", user, repo, "comments", commentId]
+commitCommentFor user repo reqCommentId =
+  githubGet ["repos", user, repo, "comments", reqCommentId]
 
 -- | The diff between two treeishes on a repo.
 --
 -- > diff "thoughtbot" "paperclip" "41f685f6e01396936bb8cd98e7cca517e2c7d96b" "HEAD"
 diff :: String -> String -> String -> String -> IO (Either Error Diff)
-diff user repo base head =
-  githubGet ["repos", user, repo, "compare", base ++ "..." ++ head]
+diff user repo base headref =
+  githubGet ["repos", user, repo, "compare", base ++ "..." ++ headref]
