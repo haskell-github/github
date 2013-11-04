@@ -15,19 +15,19 @@ import Github.Private
 --
 -- > reference "mike-burns" "github" "heads/master"
 reference :: String -> String -> String -> IO (Either Error GitReference)
-reference user repoName ref =
-  githubGet ["repos", user, repoName, "git", "refs", ref]
+reference user reqRepoName ref =
+  githubGet ["repos", user, reqRepoName, "git", "refs", ref]
 
 -- | The history of references for a repo.
 --
 -- > references "mike-burns" "github"
 references :: String -> String -> IO (Either Error [GitReference])
-references user repoName =
-  githubGet ["repos", user, repoName, "git", "refs"]
+references user reqRepoName =
+  githubGet ["repos", user, reqRepoName, "git", "refs"]
 
 -- | Limited references by a namespace.
 --
 -- > namespacedReferences "thoughtbot" "paperclip" "tags"
 namespacedReferences :: String -> String -> String -> IO (Either Error [GitReference])
-namespacedReferences user repoName namespace =
-  githubGet ["repos", user, repoName, "git", "refs", namespace]
+namespacedReferences user reqRepoName namespace =
+  githubGet ["repos", user, reqRepoName, "git", "refs", namespace]

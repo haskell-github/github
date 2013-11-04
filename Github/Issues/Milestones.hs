@@ -20,11 +20,11 @@ milestones = milestones' Nothing
 --
 -- > milestones' (GithubUser (user, password)) "thoughtbot" "paperclip"
 milestones' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Milestone])
-milestones' auth user repoName = githubGet' auth ["repos", user, repoName, "milestones"]
+milestones' auth user reqRepoName = githubGet' auth ["repos", user, reqRepoName, "milestones"]
 
 -- | Details on a specific milestone, given it's milestone number.
 --
 -- > milestone "thoughtbot" "paperclip" 2
 milestone :: String -> String -> Int -> IO (Either Error Milestone)
-milestone user repoName milestoneNumber =
-  githubGet ["repos", user, repoName, "milestones", show milestoneNumber]
+milestone user reqRepoName reqMilestoneNumber =
+  githubGet ["repos", user, reqRepoName, "milestones", show reqMilestoneNumber]

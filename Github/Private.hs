@@ -3,7 +3,6 @@
 module Github.Private where
 
 import Github.Data
-import Data.Char (isDigit)
 import Data.Aeson
 import Data.Attoparsec.ByteString.Lazy
 import Data.Data
@@ -38,9 +37,9 @@ githubGetWithQueryString :: (FromJSON b, Show b) => [String] -> String -> IO (Ei
 githubGetWithQueryString = githubGetWithQueryString' Nothing
 
 githubGetWithQueryString' :: (FromJSON b, Show b) => Maybe GithubAuth -> [String] -> String -> IO (Either Error b)
-githubGetWithQueryString' auth paths queryString =
+githubGetWithQueryString' auth paths qs =
   githubAPI (BS.pack "GET")
-            (buildUrl paths ++ "?" ++ queryString)
+            (buildUrl paths ++ "?" ++ qs)
             auth
             (Nothing :: Maybe Value)
 
@@ -63,8 +62,8 @@ buildUrl paths = "https://api.github.com/" ++ intercalate "/" paths
 
 githubAPI :: (ToJSON a, Show a, FromJSON b, Show b) => BS.ByteString -> String
           -> Maybe GithubAuth -> Maybe a -> IO (Either Error b)
-githubAPI method url auth body = do
-  result <- doHttps method url auth (encodeBody body)
+githubAPI apimethod url auth body = do
+  result <- doHttps apimethod url auth (encodeBody body)
   case result of
       Left e     -> return (Left (HTTPConnectionError e))
       Right resp -> either Left (\x -> jsonResultToE (LBS.pack (show x))
@@ -84,19 +83,19 @@ githubAPI method url auth body = do
          -> IO (Either Error b)
     forE = flip . maybe . return . Right
 
-    handleJson resp json@(Array ary) =
+    handleJson resp gotjson@(Array ary) =
         -- Determine whether the output was paginated, and if so, we must
         -- recurse to obtain the subsequent pages, and append those result
         -- bodies to the current one.  The aggregate will then be parsed.
-        forE json (lookup "Link" (responseHeaders resp)) $ \l ->
-            forE json (getNextUrl (BS.unpack l)) $ \nu ->
+        forE gotjson (lookup "Link" (responseHeaders resp)) $ \l ->
+            forE gotjson (getNextUrl (BS.unpack l)) $ \nu ->
                 either (return . Left . HTTPConnectionError)
                        (\nextResp -> do
                              nextJson <- handleBody nextResp
                              return $ (\(Array x) -> Array (ary <> x))
                                           <$> nextJson)
-                       =<< doHttps method nu auth Nothing
-    handleJson _ json = return (Right json)
+                       =<< doHttps apimethod nu auth Nothing
+    handleJson _ gotjson = return (Right gotjson)
 
     getNextUrl l =
         if "rel=\"next\"" `isInfixOf` l
@@ -108,15 +107,15 @@ githubAPI method url auth body = do
 doHttps :: Method -> String -> Maybe GithubAuth
         -> Maybe (RequestBody (ResourceT IO))
         -> IO (Either E.SomeException (Response LBS.ByteString))
-doHttps method url auth body = do
-  let requestBody = fromMaybe (RequestBodyBS $ BS.pack "") body
-      requestHeaders = maybe [] getOAuth auth
+doHttps reqMethod url auth body = do
+  let reqBody = fromMaybe (RequestBodyBS $ BS.pack "") body
+      reqHeaders = maybe [] getOAuth auth
       Just uri = parseUrl url
-      request = uri { method = method
+      request = uri { method = reqMethod
                     , secure = True
                     , port = 443
-                    , requestBody = requestBody
-                    , requestHeaders = requestHeaders <>
+                    , requestBody = reqBody
+                    , requestHeaders = reqHeaders <>
                                        [("User-Agent", "github.hs/0.7.0")]
                     , checkStatus = successOrMissing
                     }
@@ -133,8 +132,6 @@ doHttps method url auth body = do
   where
     getAuthRequest (Just (GithubBasicAuth user pass)) = applyBasicAuth user pass
     getAuthRequest _ = id
-    getBasicAuth (GithubBasicAuth user pass) = applyBasicAuth user pass
-    getBasicAuth _ = id
     getOAuth (GithubOAuth token) = [(mk (BS.pack "Authorization"),
                                      BS.pack ("token " ++ token))]
     getOAuth _ = []
