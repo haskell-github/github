@@ -398,6 +398,12 @@ instance FromJSON PullRequestCommit where
     return PullRequestCommit
   parseJSON _ = fail "Could not build a PullRequestCommit"
 
+instance FromJSON SearchReposResult where
+  parseJSON (Object o) =
+    SearchReposResult <$> o .: "total_count"
+                      <*> o .:< "items"
+  parseJSON _ = fail "Could not build a SearchReposResult"
+
 instance FromJSON Repo where
   parseJSON (Object o) =
     Repo <$> o .: "ssh_url"

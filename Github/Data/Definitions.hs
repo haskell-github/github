@@ -364,6 +364,11 @@ data PullRequestLinks = PullRequestLinks {
 data PullRequestCommit = PullRequestCommit {
 } deriving (Show, Data, Typeable, Eq, Ord)
 
+data SearchReposResult = SearchReposResult {
+  searchReposTotalCount :: Int
+  ,searchReposRepos :: [ Repo ]
+} deriving (Show, Data, Typeable, Eq, Ord)
+
 data Repo = Repo {
    repoSshUrl :: String
   ,repoDescription :: Maybe String
