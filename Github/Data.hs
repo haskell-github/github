@@ -534,7 +534,7 @@ obj `values` key =
     parseJSON $ Array $ V.fromList $ Map.elems children
 
 -- | Produce the value for the last key by traversing.
-(<.:>) :: (FromJSON v) => Object => [T.Text] -> Parser v
+(<.:>) :: (FromJSON v) => Object -> [T.Text] -> Parser v
 obj <.:> [key] = obj .: key
 obj <.:> (key:keys) =
   let (Object nextObj) = findWithDefault (Object Map.empty) key obj in
