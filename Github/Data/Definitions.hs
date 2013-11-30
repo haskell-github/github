@@ -451,7 +451,7 @@ data DetailedOwner = DetailedUser {
   ,detailedOwnerName :: Maybe String
   ,detailedOwnerLocation :: Maybe String
   ,detailedOwnerCompany :: Maybe String
-  ,detailedOwnerEmail :: String
+  ,detailedOwnerEmail :: Maybe String
   ,detailedOwnerUrl :: String
   ,detailedOwnerId :: Int
   ,detailedOwnerHtmlUrl :: String

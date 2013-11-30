@@ -27,7 +27,7 @@ formatUser user@(Github.DetailedOrganization {}) =
 formatUser user@(Github.DetailedUser {}) =
   (formatName userName login) ++ "\t" ++ (fromMaybe "" company) ++ "\t" ++
     (fromMaybe "" location) ++ "\n" ++
-    (fromMaybe "" blog) ++ "\t" ++ "<" ++ email ++ ">" ++ "\n" ++
+    (fromMaybe "" blog) ++ "\t" ++ "<" ++ (fromMaybe "" email) ++ ">" ++ "\n" ++
     htmlUrl ++ "\t" ++ (formatDate createdAt) ++ "\n" ++
     "hireable: " ++ (formatHireable isHireable) ++ "\n\n" ++
     (fromMaybe "" bio)
