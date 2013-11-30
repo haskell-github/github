@@ -443,7 +443,7 @@ data DetailedOwner = DetailedUser {
   ,detailedOwnerAvatarUrl :: String
   ,detailedOwnerFollowers :: Int
   ,detailedOwnerFollowing :: Int
-  ,detailedOwnerHireable :: Bool
+  ,detailedOwnerHireable :: Maybe Bool
   ,detailedOwnerGravatarId :: Maybe String
   ,detailedOwnerBlog :: Maybe String
   ,detailedOwnerBio :: Maybe String

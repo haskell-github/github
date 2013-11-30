@@ -29,7 +29,7 @@ formatUser user@(Github.DetailedUser {}) =
     (fromMaybe "" location) ++ "\n" ++
     (fromMaybe "" blog) ++ "\t" ++ "<" ++ (fromMaybe "" email) ++ ">" ++ "\n" ++
     htmlUrl ++ "\t" ++ (formatDate createdAt) ++ "\n" ++
-    "hireable: " ++ (formatHireable isHireable) ++ "\n\n" ++
+    "hireable: " ++ (formatHireable (fromMaybe False isHireable)) ++ "\n\n" ++
     (fromMaybe "" bio)
   where
     userName = Github.detailedOwnerName user
