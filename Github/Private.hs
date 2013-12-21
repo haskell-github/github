@@ -104,9 +104,9 @@ githubAPI apimethod url auth body = do
              in Just (Data.List.takeWhile (/= '>') s')
         else Nothing
 
-doHttps :: Method -> String -> Maybe GithubAuth
-        -> Maybe (RequestBody (ResourceT IO))
-        -> IO (Either E.SomeException (Response LBS.ByteString))
+-- doHttps :: Method -> String -> Maybe GithubAuth
+--         -> Maybe (RequestBody (ResourceT IO))
+--         -> IO (Either E.SomeException (Response LBS.ByteString))
 doHttps reqMethod url auth body = do
   let reqBody = fromMaybe (RequestBodyBS $ BS.pack "") body
       reqHeaders = maybe [] getOAuth auth
