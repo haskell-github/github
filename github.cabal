@@ -159,11 +159,11 @@ Library
                  data-default,
                  vector,
                  unordered-containers >= 0.2 && < 0.3
-  
+
   -- Modules not exported by this package.
   Other-modules:       Github.Private
-  
+
   -- Extra tools (e.g. alex, hsc2hs, ...) needed to build the source.
-  -- Build-tools:         
-  
+  -- Build-tools:
+
   GHC-Options: -Wall -fno-warn-orphans
