@@ -227,7 +227,7 @@ data Milestone = Milestone {
   ,milestoneOpenIssues :: Int
   ,milestoneNumber :: Int
   ,milestoneClosedIssues :: Int
-  ,milestoneDescription :: String
+  ,milestoneDescription :: Maybe String
   ,milestoneTitle :: String
   ,milestoneUrl :: String
   ,milestoneCreatedAt :: GithubDate
