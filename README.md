@@ -35,13 +35,16 @@ Each function has a sample written for it.
 
 All functions produce an `IO (Either Error a)`, where `a` is the actual thing you want. You must call the function using IO goodness, then dispatch on the possible error message. Here's an example from the samples:
 
-    import Github.Users.Followers
+    import qualified Github.Users.Followers as Github
     import Data.List (intercalate)
+
     main = do
-      possibleUsers <- usersFollowing "mike-burns"
-      putStrLn $ either (\error -> "Error: " ++ $ show error)
-                        (intercalate "\n" . map githubUserLogin)
+      possibleUsers <- Github.usersFollowing "mike-burns"
+      putStrLn $ either (("Error: "++) . show)
+                        (intercalate "\n" . map formatUser)
                         possibleUsers
+
+    formatUser = Github.githubOwnerLogin
 
 Contributions
 =============
