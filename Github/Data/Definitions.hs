@@ -193,7 +193,7 @@ data Issue = Issue {
   ,issueAssignee :: Maybe GithubOwner
   ,issueUser :: GithubOwner
   ,issueTitle :: String
-  ,issuePullRequest :: PullRequestReference
+  ,issuePullRequest :: Maybe PullRequestReference
   ,issueUrl :: String
   ,issueCreatedAt :: GithubDate
   ,issueBody :: Maybe String

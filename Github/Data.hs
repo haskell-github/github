@@ -215,7 +215,7 @@ instance FromJSON Issue where
           <*> o .:? "assignee"
           <*> o .: "user"
           <*> o .: "title"
-          <*> o .: "pull_request"
+          <*> o .:? "pull_request"
           <*> o .: "url"
           <*> o .: "created_at"
           <*> o .: "body"
