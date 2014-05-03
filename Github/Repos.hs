@@ -16,8 +16,11 @@ module Github.Repos (
 ,contributors
 ,contributorsWithAnonymous
 ,languagesFor
+,languagesFor'
 ,tagsFor
+,tagsFor'
 ,branchesFor
+,branchesFor'
 ,module Github.Data
 ,RepoPublicity(..)
 
@@ -145,23 +148,45 @@ contributorsWithAnonymous userName reqRepoName =
 --
 -- > languagesFor "mike-burns" "ohlaunch"
 languagesFor :: String -> String -> IO (Either Error [Language])
-languagesFor userName reqRepoName = do
-  result <- githubGet ["repos", userName, reqRepoName, "languages"]
+languagesFor = languagesFor' Nothing
+
+-- | The programming languages used in a repo along with the number of
+-- characters written in that language. Takes the repo owner and name.
+-- | With authentication
+--
+-- > languagesFor' (Just (GithubUser (user, password))) "mike-burns" "ohlaunch"
+languagesFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Language])
+languagesFor' auth userName reqRepoName = do
+  result <- githubGet' auth ["repos", userName, reqRepoName, "languages"]
   return $ either Left (Right . getLanguages) result
 
 -- | The git tags on a repo, given the repo owner and name.
 --
 -- > tagsFor "thoughtbot" "paperclip"
 tagsFor :: String -> String -> IO (Either Error [Tag])
-tagsFor userName reqRepoName =
-  githubGet ["repos", userName, reqRepoName, "tags"]
+tagsFor = tagsFor' Nothing
+
+-- | The git tags on a repo, given the repo owner and name.
+-- | With authentication
+--
+-- > tagsFor' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
+tagsFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Tag])
+tagsFor' auth userName reqRepoName =
+  githubGet' auth ["repos", userName, reqRepoName, "tags"]
 
 -- | The git branches on a repo, given the repo owner and name.
 --
 -- > branchesFor "thoughtbot" "paperclip"
 branchesFor :: String -> String -> IO (Either Error [Branch])
-branchesFor userName reqRepoName =
-  githubGet ["repos", userName, reqRepoName, "branches"]
+branchesFor = branchesFor' Nothing
+
+-- | The git branches on a repo, given the repo owner and name.
+-- | With authentication
+--
+-- > branchesFor' (Just (GithubUser (user, password)))"thoughtbot" "paperclip"
+branchesFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Branch])
+branchesFor' auth userName reqRepoName =
+  githubGet' auth ["repos", userName, reqRepoName, "branches"]
 
 
 data NewRepo = NewRepo {
