@@ -14,7 +14,9 @@ module Github.Repos (
 ,organizationRepo
 ,organizationRepo'
 ,contributors
+,contributors'
 ,contributorsWithAnonymous
+,contributorsWithAnonymous'
 ,languagesFor
 ,languagesFor'
 ,tagsFor
@@ -129,8 +131,15 @@ userRepo' auth userName reqRepoName = githubGet' auth ["repos", userName, reqRep
 --
 -- > contributors "thoughtbot" "paperclip"
 contributors :: String -> String -> IO (Either Error [Contributor])
-contributors userName reqRepoName =
-  githubGet ["repos", userName, reqRepoName, "contributors"]
+contributors = contributors' Nothing
+
+-- | The contributors to a repo, given the owner and repo name.
+-- | With authentication
+--
+-- > contributors' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
+contributors' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Contributor])
+contributors' auth userName reqRepoName =
+  githubGet' auth ["repos", userName, reqRepoName, "contributors"]
 
 -- | The contributors to a repo, including anonymous contributors (such as
 -- deleted users or git commits with unknown email addresses), given the owner
@@ -138,10 +147,20 @@ contributors userName reqRepoName =
 --
 -- > contributorsWithAnonymous "thoughtbot" "paperclip"
 contributorsWithAnonymous :: String -> String -> IO (Either Error [Contributor])
-contributorsWithAnonymous userName reqRepoName =
-  githubGetWithQueryString
+contributorsWithAnonymous = contributorsWithAnonymous' Nothing
+
+-- | The contributors to a repo, including anonymous contributors (such as
+-- deleted users or git commits with unknown email addresses), given the owner
+-- and repo name.
+-- | With authentication
+--
+-- > contributorsWithAnonymous' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
+contributorsWithAnonymous' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Contributor])
+contributorsWithAnonymous' auth userName reqRepoName =
+  githubGetWithQueryString' auth
     ["repos", userName, reqRepoName, "contributors"]
     "anon=true"
+
 
 -- | The programming languages used in a repo along with the number of
 -- characters written in that language. Takes the repo owner and name.
