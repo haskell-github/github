@@ -202,7 +202,7 @@ branchesFor = branchesFor' Nothing
 -- | The git branches on a repo, given the repo owner and name.
 -- | With authentication
 --
--- > branchesFor' (Just (GithubUser (user, password)))"thoughtbot" "paperclip"
+-- > branchesFor' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
 branchesFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Branch])
 branchesFor' auth userName reqRepoName =
   githubGet' auth ["repos", userName, reqRepoName, "branches"]
