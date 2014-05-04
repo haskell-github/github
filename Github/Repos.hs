@@ -73,7 +73,7 @@ userRepos :: String -> RepoPublicity -> IO (Either Error [Repo])
 userRepos = userRepos' Nothing
 
 -- | The repos for a user, by their login.
--- | With authentication, but note that private repos are currently not supported.
+-- With authentication, but note that private repos are currently not supported.
 --
 -- > userRepos' (Just (GithubUser (user, password))) "mike-burns" All
 userRepos' :: Maybe GithubAuth -> String -> RepoPublicity -> IO (Either Error [Repo])
@@ -95,7 +95,7 @@ organizationRepos :: String -> IO (Either Error [Repo])
 organizationRepos = organizationRepos' Nothing
 
 -- | The repos for an organization, by the organization name.
--- | With authentication
+-- With authentication.
 --
 -- > organizationRepos (Just (GithubUser (user, password))) "thoughtbot"
 organizationRepos' :: Maybe GithubAuth -> String -> IO (Either Error [Repo])
@@ -108,7 +108,7 @@ organizationRepo :: String -> String -> IO (Either Error Repo)
 organizationRepo = organizationRepo' Nothing
 
 -- | A specific organization repo, by the organization name.
--- | With authentication
+-- With authentication.
 --
 -- > organizationRepo (Just (GithubUser (user, password))) "thoughtbot" "github"
 organizationRepo' :: Maybe GithubAuth -> String -> String -> IO (Either Error Repo)
@@ -121,7 +121,7 @@ userRepo :: String -> String -> IO (Either Error Repo)
 userRepo = userRepo' Nothing
 
 -- | Details on a specific repo, given the owner and repo name.
--- | With authentication
+-- With authentication.
 --
 -- > userRepo' (Just (GithubUser (user, password))) "mike-burns" "github"
 userRepo' :: Maybe GithubAuth -> String -> String -> IO (Either Error Repo)
@@ -134,7 +134,7 @@ contributors :: String -> String -> IO (Either Error [Contributor])
 contributors = contributors' Nothing
 
 -- | The contributors to a repo, given the owner and repo name.
--- | With authentication
+-- With authentication.
 --
 -- > contributors' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
 contributors' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Contributor])
@@ -152,7 +152,7 @@ contributorsWithAnonymous = contributorsWithAnonymous' Nothing
 -- | The contributors to a repo, including anonymous contributors (such as
 -- deleted users or git commits with unknown email addresses), given the owner
 -- and repo name.
--- | With authentication
+-- With authentication.
 --
 -- > contributorsWithAnonymous' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
 contributorsWithAnonymous' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Contributor])
@@ -171,7 +171,7 @@ languagesFor = languagesFor' Nothing
 
 -- | The programming languages used in a repo along with the number of
 -- characters written in that language. Takes the repo owner and name.
--- | With authentication
+-- With authentication.
 --
 -- > languagesFor' (Just (GithubUser (user, password))) "mike-burns" "ohlaunch"
 languagesFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Language])
@@ -186,7 +186,7 @@ tagsFor :: String -> String -> IO (Either Error [Tag])
 tagsFor = tagsFor' Nothing
 
 -- | The git tags on a repo, given the repo owner and name.
--- | With authentication
+-- With authentication.
 --
 -- > tagsFor' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
 tagsFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Tag])
@@ -200,7 +200,7 @@ branchesFor :: String -> String -> IO (Either Error [Branch])
 branchesFor = branchesFor' Nothing
 
 -- | The git branches on a repo, given the repo owner and name.
--- | With authentication
+-- With authentication.
 --
 -- > branchesFor' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
 branchesFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Branch])
