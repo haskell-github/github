@@ -75,7 +75,7 @@ userRepos = userRepos' Nothing
 -- | The repos for a user, by their login.
 -- With authentication, but note that private repos are currently not supported.
 --
--- > userRepos' (Just (GithubUser (user, password))) "mike-burns" All
+-- > userRepos' (Just (GithubBasicAuth (user, password))) "mike-burns" All
 userRepos' :: Maybe GithubAuth -> String -> RepoPublicity -> IO (Either Error [Repo])
 userRepos' auth userName All =
   githubGetWithQueryString' auth ["users", userName, "repos"] "type=all"
@@ -97,7 +97,7 @@ organizationRepos = organizationRepos' Nothing
 -- | The repos for an organization, by the organization name.
 -- With authentication.
 --
--- > organizationRepos (Just (GithubUser (user, password))) "thoughtbot"
+-- > organizationRepos (Just (GithubBasicAuth (user, password))) "thoughtbot"
 organizationRepos' :: Maybe GithubAuth -> String -> IO (Either Error [Repo])
 organizationRepos' auth orgName = githubGet' auth ["orgs", orgName, "repos"]
 
@@ -110,7 +110,7 @@ organizationRepo = organizationRepo' Nothing
 -- | A specific organization repo, by the organization name.
 -- With authentication.
 --
--- > organizationRepo (Just (GithubUser (user, password))) "thoughtbot" "github"
+-- > organizationRepo (Just (GithubBasicAuth (user, password))) "thoughtbot" "github"
 organizationRepo' :: Maybe GithubAuth -> String -> String -> IO (Either Error Repo)
 organizationRepo' auth orgName reqRepoName = githubGet' auth ["orgs", orgName, reqRepoName]
 
@@ -123,7 +123,7 @@ userRepo = userRepo' Nothing
 -- | Details on a specific repo, given the owner and repo name.
 -- With authentication.
 --
--- > userRepo' (Just (GithubUser (user, password))) "mike-burns" "github"
+-- > userRepo' (Just (GithubBasicAuth (user, password))) "mike-burns" "github"
 userRepo' :: Maybe GithubAuth -> String -> String -> IO (Either Error Repo)
 userRepo' auth userName reqRepoName = githubGet' auth ["repos", userName, reqRepoName]
 
@@ -136,7 +136,7 @@ contributors = contributors' Nothing
 -- | The contributors to a repo, given the owner and repo name.
 -- With authentication.
 --
--- > contributors' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
+-- > contributors' (Just (GithubBasicAuth (user, password))) "thoughtbot" "paperclip"
 contributors' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Contributor])
 contributors' auth userName reqRepoName =
   githubGet' auth ["repos", userName, reqRepoName, "contributors"]
@@ -154,7 +154,7 @@ contributorsWithAnonymous = contributorsWithAnonymous' Nothing
 -- and repo name.
 -- With authentication.
 --
--- > contributorsWithAnonymous' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
+-- > contributorsWithAnonymous' (Just (GithubBasicAuth (user, password))) "thoughtbot" "paperclip"
 contributorsWithAnonymous' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Contributor])
 contributorsWithAnonymous' auth userName reqRepoName =
   githubGetWithQueryString' auth
@@ -173,7 +173,7 @@ languagesFor = languagesFor' Nothing
 -- characters written in that language. Takes the repo owner and name.
 -- With authentication.
 --
--- > languagesFor' (Just (GithubUser (user, password))) "mike-burns" "ohlaunch"
+-- > languagesFor' (Just (GithubBasicAuth (user, password))) "mike-burns" "ohlaunch"
 languagesFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Language])
 languagesFor' auth userName reqRepoName = do
   result <- githubGet' auth ["repos", userName, reqRepoName, "languages"]
@@ -188,7 +188,7 @@ tagsFor = tagsFor' Nothing
 -- | The git tags on a repo, given the repo owner and name.
 -- With authentication.
 --
--- > tagsFor' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
+-- > tagsFor' (Just (GithubBasicAuth (user, password))) "thoughtbot" "paperclip"
 tagsFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Tag])
 tagsFor' auth userName reqRepoName =
   githubGet' auth ["repos", userName, reqRepoName, "tags"]
@@ -202,7 +202,7 @@ branchesFor = branchesFor' Nothing
 -- | The git branches on a repo, given the repo owner and name.
 -- With authentication.
 --
--- > branchesFor' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
+-- > branchesFor' (Just (GithubBasicAuth (user, password))) "thoughtbot" "paperclip"
 branchesFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Branch])
 branchesFor' auth userName reqRepoName =
   githubGet' auth ["repos", userName, reqRepoName, "branches"]
@@ -242,14 +242,14 @@ newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing
 -- |
 -- Create a new repository.
 --
--- > createRepo (GithubUser (user, password)) (newRepo "some_repo") {newRepoHasIssues = Just False}
+-- > createRepo (GithubBasicAuth (user, password)) (newRepo "some_repo") {newRepoHasIssues = Just False}
 createRepo :: GithubAuth -> NewRepo -> IO (Either Error Repo)
 createRepo auth = githubPost auth ["user", "repos"]
 
 -- |
 -- Create a new repository for an organization.
 --
--- > createOrganizationRepo (GithubUser (user, password)) "thoughtbot" (newRepo "some_repo") {newRepoHasIssues = Just False}
+-- > createOrganizationRepo (GithubBasicAuth (user, password)) "thoughtbot" (newRepo "some_repo") {newRepoHasIssues = Just False}
 createOrganizationRepo :: GithubAuth -> String -> NewRepo -> IO (Either Error Repo)
 createOrganizationRepo auth org = githubPost auth ["orgs", org, "repos"]
 
@@ -287,7 +287,7 @@ instance ToJSON  Edit where
 -- |
 -- Edit an existing repository.
 --
--- > editRepo (GithubUser (user, password)) "some_user" "some_repo" def {editDescription = Just "some description"}
+-- > editRepo (GithubBasicAuth (user, password)) "some_user" "some_repo" def {editDescription = Just "some description"}
 editRepo :: GithubAuth
      -> String      -- ^ owner
      -> String      -- ^ repository name
@@ -301,7 +301,7 @@ editRepo auth user repo body = githubPatch auth ["repos", user, repo] b
 -- |
 -- Delete an existing repository.
 --
--- > deleteRepo (GithubUser (user, password)) "thoughtbot" "some_repo"
+-- > deleteRepo (GithubBasicAuth (user, password)) "thoughtbot" "some_repo"
 deleteRepo :: GithubAuth
            -> String      -- ^ owner
            -> String      -- ^ repository name
