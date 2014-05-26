@@ -6,12 +6,6 @@ module Github.Issues (
 ,issuesForRepo
 ,issuesForRepo'
 ,IssueLimitation(..)
-
--- * Modifying Issues
--- |
--- Only authenticated users may create and edit issues.
-,GithubAuth(..)
-
 ,createIssue
 ,newIssue
 ,editIssue

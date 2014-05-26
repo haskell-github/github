@@ -12,7 +12,7 @@ import Data.List
 import Data.CaseInsensitive (mk)
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.ByteString.Lazy.Char8 as LBS
-import Network.HTTP.Types (Method, Status(..))
+import Network.HTTP.Types (Status(..))
 import Network.HTTP.Conduit
 -- import Data.Conduit (ResourceT)
 import qualified Control.Exception as E

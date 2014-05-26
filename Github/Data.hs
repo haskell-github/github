@@ -11,7 +11,6 @@ import Control.Applicative
 import Control.Monad
 import qualified Data.Text as T
 import Data.Aeson.Types
-import Data.Monoid
 import System.Locale (defaultTimeLocale)
 import qualified Data.Vector as V
 import qualified Data.HashMap.Lazy as Map
@@ -540,6 +539,7 @@ obj <.:> [key] = obj .: key
 obj <.:> (key:keys) =
   let (Object nextObj) = findWithDefault (Object Map.empty) key obj in
       nextObj <.:> keys
+_ <.:> [] = fail "must have a pair"
 
 -- | Produce the value for the given key, maybe.
 at :: Object -> T.Text -> Maybe Value

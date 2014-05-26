@@ -4,12 +4,6 @@ module Github.Issues.Comments (
  comment
 ,comments
 ,comments'
-
--- * Modifying Comments
--- |
--- Only authenticated users may create and edit comments.
-,GithubAuth(..)
-
 ,createComment
 ,editComment
 ,module Github.Data

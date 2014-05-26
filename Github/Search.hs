@@ -4,7 +4,6 @@ module Github.Search(
  searchRepos'
 ,searchRepos
 ,module Github.Data
-,GithubAuth(..)
 ) where
 
 import Github.Data
