@@ -21,6 +21,12 @@ module Github.Repos (
 ,module Github.Data
 ,RepoPublicity(..)
 
+-- ** Create
+,createRepo
+,createOrganizationRepo
+,newRepo
+,NewRepo(..)
+
 -- ** Edit
 ,editRepo
 ,def
