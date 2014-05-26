@@ -21,11 +21,6 @@ module Github.Repos (
 ,module Github.Data
 ,RepoPublicity(..)
 
--- * Modifying repositories
--- |
--- Only authenticated users may modify repositories.
-,GithubAuth(..)
-
 -- ** Create
 ,createRepo
 ,createOrganizationRepo

@@ -113,7 +113,8 @@ source-repository head
 
 Library
   -- Modules exported by the library.
-  Exposed-modules: Github.Data,
+  Exposed-modules: Github.Auth,
+                   Github.Data,
                    Github.Data.Definitions,
                    Github.Gists,
                    Github.Gists.Comments,
