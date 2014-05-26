@@ -115,6 +115,7 @@ doHttps reqMethod url auth body = do
                     , secure = True
                     , port = 443
                     , requestBody = reqBody
+                    , responseTimeout = Just 20000000
                     , requestHeaders = reqHeaders <>
                                        [("User-Agent", "github.hs/0.7.4")]
                                        <> [("Accept", "application/vnd.github.preview")]
