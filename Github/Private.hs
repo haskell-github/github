@@ -12,7 +12,7 @@ import Data.List
 import Data.CaseInsensitive (mk)
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.ByteString.Lazy.Char8 as LBS
-import Network.HTTP.Types (Status(..))
+import Network.HTTP.Types (Status(..), notFound404)
 import Network.HTTP.Conduit
 -- import Data.Conduit (ResourceT)
 import qualified Control.Exception as E
@@ -149,6 +149,27 @@ doHttps reqMethod url auth body = do
 #else
       | otherwise = Just $ E.toException $ StatusCodeException s hs
 #endif
+
+doHttpsStatus :: BS.ByteString -> String -> GithubAuth -> Maybe RequestBody -> IO (Either Error Status)
+doHttpsStatus reqMethod url auth payload = do
+  result <- doHttps reqMethod url (Just auth) payload
+  case result of
+    Left e -> return (Left (HTTPConnectionError e))
+    Right resp ->
+      let status = responseStatus resp
+          headers = responseHeaders resp
+      in if status == notFound404
+            -- doHttps silently absorbs 404 errors, but for this operation
+            -- we want the user to know if they've tried to delete a
+            -- non-existent repository
+         then return (Left (HTTPConnectionError
+                            (E.toException
+                             (StatusCodeException status headers
+#if MIN_VERSION_http_conduit(1, 9, 0)
+                                 (responseCookieJar resp)
+#endif
+                                 ))))
+             else return (Right status)
 
 parseJsonRaw :: LBS.ByteString -> Either Error Value
 parseJsonRaw jsonString =

@@ -98,6 +98,13 @@ Extra-source-files:  README.md
                     ,samples/Repos/Watching/ListWatched.hs
                     ,samples/Repos/Watching/ListWatchers.hs
                     ,samples/Repos/Starring/ListStarred.hs
+                    ,samples/Repos/Webhooks/CreateWebhook.hs
+                    ,samples/Repos/Webhooks/DeleteWebhook.hs
+                    ,samples/Repos/Webhooks/EditWebhook.hs
+                    ,samples/Repos/Webhooks/ListWebhook.hs
+                    ,samples/Repos/Webhooks/ListWebhooks.hs
+                    ,samples/Repos/Webhooks/PingWebhook.hs
+                    ,samples/Repos/Webhooks/TestPushWebhook.hs
                     ,samples/Users/Followers/ListFollowers.hs
                     ,samples/Users/Followers/ListFollowing.hs
                     ,samples/Users/ShowUser.hs
@@ -136,6 +143,7 @@ Library
                    Github.Repos.Forks,
                    Github.Repos.Watching,
                    Github.Repos.Starring,
+                   Github.Repos.Webhooks
                    Github.Users,
                    Github.Users.Followers
                    Github.Search
