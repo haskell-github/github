@@ -351,7 +351,7 @@ data DetailedPullRequest = DetailedPullRequest {
   ,detailedPullRequestBase :: PullRequestCommit
   ,detailedPullRequestCommits :: Int
   ,detailedPullRequestMerged :: Bool
-  ,detailedPullRequestMergeable :: Bool
+  ,detailedPullRequestMergeable :: Maybe Bool
 } deriving (Show, Data, Typeable, Eq, Ord)
 
 data PullRequestLinks = PullRequestLinks {

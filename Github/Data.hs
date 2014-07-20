@@ -382,7 +382,7 @@ instance FromJSON DetailedPullRequest where
         <*> o .: "base"
         <*> o .: "commits"
         <*> o .: "merged"
-        <*> o .: "mergeable"
+        <*> o .:? "mergeable"
   parseJSON _ = fail "Could not build a DetailedPullRequest"
 
 instance FromJSON PullRequestLinks where
