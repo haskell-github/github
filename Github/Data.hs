@@ -394,8 +394,12 @@ instance FromJSON PullRequestLinks where
   parseJSON _ = fail "Could not build a PullRequestLinks"
 
 instance FromJSON PullRequestCommit where
-  parseJSON (Object _) =
-    return PullRequestCommit
+  parseJSON (Object o) =
+    PullRequestCommit <$> o .: "label"
+                      <*> o .: "ref"
+                      <*> o .: "sha"
+                      <*> o .: "user"
+                      <*> o .: "repo"
   parseJSON _ = fail "Could not build a PullRequestCommit"
 
 instance FromJSON SearchReposResult where
