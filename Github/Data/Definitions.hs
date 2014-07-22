@@ -362,6 +362,10 @@ data PullRequestLinks = PullRequestLinks {
 } deriving (Show, Data, Typeable, Eq, Ord)
 
 data PullRequestCommit = PullRequestCommit {
+   pullRequestCommitLabel :: String
+  ,pullRequestCommitRef :: String
+  ,pullRequestCommitSha :: String
+  ,pullRequestCommitUser :: GithubOwner
 } deriving (Show, Data, Typeable, Eq, Ord)
 
 data SearchReposResult = SearchReposResult {
