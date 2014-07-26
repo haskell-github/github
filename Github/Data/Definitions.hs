@@ -409,6 +409,22 @@ data Repo = Repo {
 data RepoRef = RepoRef GithubOwner String -- Repo owner and name
  deriving (Show, Data, Typeable, Eq, Ord)
 
+data Content = ContentFile ContentData | ContentDirectory [ContentData]
+ deriving (Show, Data, Typeable, Eq, Ord)
+
+data ContentData = ContentData {
+   contentType :: String
+  ,contentEncoding :: String
+  ,contentSize :: Int
+  ,contentName :: String
+  ,contentPath :: String
+  ,contentData :: String
+  ,contentSha :: String
+  ,contentUrl :: String
+  ,contentGitUrl :: String
+  ,contentHtmlUrl :: String
+} deriving (Show, Data, Typeable, Eq, Ord)
+
 data Contributor
   -- | An existing Github user, with their number of contributions, avatar
   -- URL, login, URL, ID, and Gravatar ID.
