@@ -123,6 +123,7 @@ Library
   Exposed-modules: Github.Auth,
                    Github.Data,
                    Github.Data.Definitions,
+                   Github.Events,
                    Github.Gists,
                    Github.Gists.Comments,
                    Github.GitData.Commits,

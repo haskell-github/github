@@ -501,3 +501,24 @@ data RepoWebhookResponse = RepoWebhookResponse {
   ,repoWebhookResponseStatus :: String
   ,repoWebhookResponseMessage :: Maybe String
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data PullRequestEvent = PullRequestEvent {
+   pullRequestEventAction :: PullRequestEventType
+  ,pullRequestEventNumber :: Int
+  ,pullRequestEventPullRequest :: DetailedPullRequest
+  ,pullRequestRepository :: Repo
+  ,pullRequestSender :: GithubOwner
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data PullRequestEventType =
+    PullRequestOpened
+  | PullRequestClosed
+  | PullRequestSynchronized
+  | PullRequestReopened
+  deriving (Show, Data, Typeable, Eq, Ord)
+
+data PingEvent = PingEvent {
+   pingEventZen :: String
+  ,pingEventHook :: RepoWebhook
+  ,pingEventHookId :: Int
+} deriving (Show, Data, Typeable, Eq, Ord)

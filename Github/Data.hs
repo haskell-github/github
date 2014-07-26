@@ -402,6 +402,29 @@ instance FromJSON PullRequestCommit where
                       <*> o .: "repo"
   parseJSON _ = fail "Could not build a PullRequestCommit"
 
+instance FromJSON PullRequestEvent where
+  parseJSON (Object o) =
+    PullRequestEvent <$> o .: "action"
+                     <*> o .: "number"
+                     <*> o .: "pull_request"
+                     <*> o .: "repository"
+                     <*> o .: "sender"
+  parseJSON _ = fail "Could not build a PullRequestEvent"
+
+instance FromJSON PullRequestEventType where
+  parseJSON (String "opened") = pure PullRequestOpened
+  parseJSON (String "closed") = pure PullRequestClosed
+  parseJSON (String "synchronize") = pure PullRequestSynchronized
+  parseJSON (String "reopened") = pure PullRequestReopened
+  parseJSON _ = fail "Could not build a PullRequestEventType"
+
+instance FromJSON PingEvent where
+  parseJSON (Object o) =
+    PingEvent <$> o .: "zen"
+              <*> o .: "hook"
+              <*> o .: "hook_id"
+  parseJSON _ = fail "Could not build a PingEvent"
+
 instance FromJSON SearchReposResult where
   parseJSON (Object o) =
     SearchReposResult <$> o .: "total_count"
