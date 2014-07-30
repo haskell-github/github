@@ -437,6 +437,7 @@ instance FromJSON Repo where
          <*> o .:? "has_downloads"
 	 <*> o .:? "parent"
 	 <*> o .:? "source"
+         <*> o .: "hooks_url"
   parseJSON _ = fail "Could not build a Repo"
 
 instance FromJSON RepoRef where
@@ -523,6 +524,27 @@ instance FromJSON DetailedOwner where
                    <*> o .: "login"
   parseJSON _ = fail "Could not build a DetailedOwner"
 
+instance FromJSON RepoWebhook where
+  parseJSON (Object o) =
+    RepoWebhook <$> o .: "url"
+                <*> o .: "test_url"
+                <*> o .: "id"
+                <*> o .: "name"
+                <*> o .: "active"
+                <*> o .: "events"
+                <*> o .: "config"
+                <*> o .: "last_response"
+                <*> o .: "updated_at"
+                <*> o .: "created_at"
+  parseJSON _          = fail "Could not build a RepoWebhook"
+
+instance FromJSON RepoWebhookResponse where
+  parseJSON (Object o) =
+    RepoWebhookResponse <$> o .: "code"
+                        <*> o .: "status"
+                        <*> o .: "message"
+  parseJSON _          = fail "Could not build a RepoWebhookResponse"
+  
 
 -- | A slightly more generic version of Aeson's @(.:?)@, using `mzero' instead
 -- of `Nothing'.

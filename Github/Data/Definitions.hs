@@ -5,6 +5,7 @@ module Github.Data.Definitions where
 import Data.Time
 import Data.Data
 import qualified Control.Exception as E
+import qualified Data.Map as M
 
 -- | Errors have been tagged according to their source, so you can more easily
 -- dispatch and handle them.
@@ -402,6 +403,7 @@ data Repo = Repo {
   ,repoHasDownloads :: Maybe Bool
   ,repoParent :: Maybe RepoRef
   ,repoSource :: Maybe RepoRef
+  ,repoHooksUrl :: String
 } deriving (Show, Data, Typeable, Eq, Ord)
 
 data RepoRef = RepoRef GithubOwner String -- Repo owner and name
@@ -479,4 +481,23 @@ data DetailedOwner = DetailedUser {
   ,detailedOwnerId :: Int
   ,detailedOwnerHtmlUrl :: String
   ,detailedOwnerLogin :: String
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data RepoWebhook = RepoWebhook {
+   repoWebhookUrl :: String
+  ,repoWebhookTestUrl :: String
+  ,repoWebhookId :: Integer
+  ,repoWebhookName :: String
+  ,repoWebhookActive :: Bool
+  ,repoWebhookEvents :: [String]
+  ,repoWebhookConfig :: M.Map String String
+  ,repoWebhookLastResponse :: RepoWebhookResponse
+  ,repoWebhookUpdatedAt :: GithubDate
+  ,repoWebhookCreatedAt :: GithubDate
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data RepoWebhookResponse = RepoWebhookResponse {
+   repoWebhookResponseCode :: Maybe Int
+  ,repoWebhookResponseStatus :: String
+  ,repoWebhookResponseMessage :: Maybe String
 } deriving (Show, Data, Typeable, Eq, Ord)
