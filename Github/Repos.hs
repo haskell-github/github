@@ -23,6 +23,8 @@ module Github.Repos (
 ,tagsFor'
 ,branchesFor
 ,branchesFor'
+,contentsFor
+,contentsFor'
 ,module Github.Data
 ,RepoPublicity(..)
 
@@ -201,6 +203,22 @@ branchesFor = branchesFor' Nothing
 branchesFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Branch])
 branchesFor' auth userName reqRepoName =
   githubGet' auth ["repos", userName, reqRepoName, "branches"]
+
+-- | The contents of a file or directory in a repo, given the repo owner, name, and path to the file
+--
+-- > contentsFor "thoughtbot" "paperclip" "README.md"
+contentsFor :: String -> String -> String -> Maybe String -> IO (Either Error Content)
+contentsFor = contentsFor' Nothing
+
+-- | The contents of a file or directory in a repo, given the repo owner, name, and path to the file
+-- With Authentication
+--
+-- > contentsFor' (Just (GithubBasicAuth (user, password))) "thoughtbot" "paperclip" "README.md"
+contentsFor' :: Maybe GithubAuth ->  String -> String -> String -> Maybe String -> IO (Either Error Content)
+contentsFor' auth userName repoName path ref =
+  githubGetWithQueryString' auth
+  ["repos", userName, repoName, "contents", path] $
+  maybe "" ("ref="++) ref
 
 
 data NewRepo = NewRepo {

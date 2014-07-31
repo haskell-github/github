@@ -544,7 +544,25 @@ instance FromJSON RepoWebhookResponse where
                         <*> o .: "status"
                         <*> o .: "message"
   parseJSON _          = fail "Could not build a RepoWebhookResponse"
-  
+
+instance FromJSON Content where
+  parseJSON o@(Object _) = ContentFile <$> parseJSON o
+  parseJSON (Array os) = ContentDirectory <$> (mapM parseJSON $ V.toList os)
+  parseJSON _ = fail "Could not build a Content"
+
+instance FromJSON ContentData where
+  parseJSON (Object o) =
+    ContentData <$> o .: "type"
+                <*> o .: "encoding"
+                <*> o .: "size"
+                <*> o .: "name"
+                <*> o .: "path"
+                <*> o .: "content"
+                <*> o .: "sha"
+                <*> o .: "url"
+                <*> o .: "git_url"
+                <*> o .: "html_url"
+  parseJSON _ = fail "Could not build a ContentData"
 
 -- | A slightly more generic version of Aeson's @(.:?)@, using `mzero' instead
 -- of `Nothing'.
