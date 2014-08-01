@@ -48,7 +48,7 @@ instance FromJSON GitTree where
   parseJSON (Object o) =
     GitTree <$> o .: "type"
          <*> o .: "sha"
-         <*> o .: "url"
+         <*> o .:? "url"
          <*> o .:? "size"
          <*> o .: "path"
          <*> o .: "mode"

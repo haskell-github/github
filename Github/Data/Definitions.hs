@@ -40,7 +40,8 @@ data Tree = Tree {
 data GitTree = GitTree {
   gitTreeType :: String
   ,gitTreeSha :: String
-  ,gitTreeUrl :: String
+  -- Can be empty for submodule
+  ,gitTreeUrl :: Maybe String
   ,gitTreeSize :: Maybe Int
   ,gitTreePath :: String
   ,gitTreeMode :: String
