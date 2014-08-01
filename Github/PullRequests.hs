@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 -- | The pull requests API as documented at
 -- <http://developer.github.com/v3/pulls/>.
 module Github.PullRequests (
@@ -9,11 +10,17 @@ module Github.PullRequests (
 ,pullRequest
 ,pullRequestCommits
 ,pullRequestFiles
+,isPullRequestMerged
+,mergePullRequest
 ,module Github.Data
 ) where
 
 import Github.Data
 import Github.Private
+import Network.HTTP.Types
+import qualified Data.Map as M
+import Network.HTTP.Conduit (RequestBody(RequestBodyLBS))
+import Data.Aeson
 
 -- | All pull requests for the repo, by owner and repo name.
 -- | With authentification
@@ -75,3 +82,17 @@ pullRequestFiles' auth userName reqRepoName number =
 -- > pullRequestFiles "thoughtbot" "paperclip" 688
 pullRequestFiles :: String -> String -> Int -> IO (Either Error [File])
 pullRequestFiles = pullRequestFiles' Nothing
+
+-- | Check if pull request has been merged
+isPullRequestMerged :: GithubAuth -> String -> String -> Int -> IO(Either Error Status)
+isPullRequestMerged auth reqRepoOwner reqRepoName reqPullRequestNumber =
+  doHttpsStatus "GET" (buildUrl ["repos", reqRepoOwner, reqRepoName, "pulls", (show reqPullRequestNumber), "merge"]) auth Nothing
+
+-- | Merge a pull request
+mergePullRequest :: GithubAuth -> String -> String -> Int -> Maybe String -> IO(Either Error Status)
+mergePullRequest auth reqRepoOwner reqRepoName reqPullRequestNumber commitMessage =
+  doHttpsStatus "PUT" (buildUrl ["repos", reqRepoOwner, reqRepoName, "pulls", (show reqPullRequestNumber), "merge"]) auth (Just . RequestBodyLBS . encode . toJSON $ (buildCommitMessageMap commitMessage))
+
+buildCommitMessageMap :: Maybe String -> M.Map String String
+buildCommitMessageMap (Just commitMessage) = M.singleton "commit_message" commitMessage
+buildCommitMessageMap _ = M.empty
