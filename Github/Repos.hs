@@ -215,9 +215,9 @@ contentsFor = contentsFor' Nothing
 --
 -- > contentsFor' (Just (GithubBasicAuth (user, password))) "thoughtbot" "paperclip" "README.md"
 contentsFor' :: Maybe GithubAuth ->  String -> String -> String -> Maybe String -> IO (Either Error Content)
-contentsFor' auth userName repoName path ref =
+contentsFor' auth userName reqRepoName reqContentPath ref =
   githubGetWithQueryString' auth
-  ["repos", userName, repoName, "contents", path] $
+  ["repos", userName, reqRepoName, "contents", reqContentPath] $
   maybe "" ("ref="++) ref
 
 
