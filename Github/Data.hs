@@ -416,6 +416,10 @@ instance FromJSON PullRequestEventType where
   parseJSON (String "closed") = pure PullRequestClosed
   parseJSON (String "synchronize") = pure PullRequestSynchronized
   parseJSON (String "reopened") = pure PullRequestReopened
+  parseJSON (String "assigned") = pure PullRequestAssigned
+  parseJSON (String "unassigned") = pure PullRequestUnassigned
+  parseJSON (String "labeled") = pure PullRequestLabeled
+  parseJSON (String "unlabeled") = pure PullRequestUnlabeled
   parseJSON _ = fail "Could not build a PullRequestEventType"
 
 instance FromJSON PingEvent where

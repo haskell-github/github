@@ -532,6 +532,10 @@ data PullRequestEventType =
   | PullRequestClosed
   | PullRequestSynchronized
   | PullRequestReopened
+  | PullRequestAssigned
+  | PullRequestUnassigned
+  | PullRequestLabeled
+  | PullRequestUnlabeled
   deriving (Show, Data, Typeable, Eq, Ord)
 
 data PingEvent = PingEvent {
