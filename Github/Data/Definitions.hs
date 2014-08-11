@@ -99,7 +99,7 @@ data Comment = Comment {
    commentPosition :: Maybe Int
   ,commentLine :: Maybe Int
   ,commentBody :: String
-  ,commentCommitId :: String
+  ,commentCommitId :: Maybe String
   ,commentUpdatedAt :: UTCTime
   ,commentHtmlUrl :: Maybe String
   ,commentUrl :: String
