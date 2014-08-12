@@ -356,6 +356,12 @@ data DetailedPullRequest = DetailedPullRequest {
   ,detailedPullRequestMergeable :: Maybe Bool
 } deriving (Show, Data, Typeable, Eq, Ord)
 
+data EditPullRequest = EditPullRequest {
+   editPullRequestTitle :: Maybe String
+  ,editPullRequestBody :: Maybe String
+  ,editPullRequestState :: Maybe EditPullRequestState
+} deriving (Show)
+
 data PullRequestLinks = PullRequestLinks {
    pullRequestLinksReviewComments :: String
   ,pullRequestLinksComments :: String
@@ -543,3 +549,8 @@ data PingEvent = PingEvent {
   ,pingEventHook :: RepoWebhook
   ,pingEventHookId :: Int
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data EditPullRequestState =
+    EditPullRequestStateOpen
+  | EditPullRequestStateClosed
+  deriving Show

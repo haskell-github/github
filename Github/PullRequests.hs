@@ -12,6 +12,7 @@ module Github.PullRequests (
 ,pullRequestFiles
 ,isPullRequestMerged
 ,mergePullRequest
+,updatePullRequest
 ,module Github.Data
 ) where
 
@@ -92,6 +93,12 @@ isPullRequestMerged auth reqRepoOwner reqRepoName reqPullRequestNumber =
 mergePullRequest :: GithubAuth -> String -> String -> Int -> Maybe String -> IO(Either Error Status)
 mergePullRequest auth reqRepoOwner reqRepoName reqPullRequestNumber commitMessage =
   doHttpsStatus "PUT" (buildUrl ["repos", reqRepoOwner, reqRepoName, "pulls", (show reqPullRequestNumber), "merge"]) auth (Just . RequestBodyLBS . encode . toJSON $ (buildCommitMessageMap commitMessage))
+
+-- | Update a pull request
+updatePullRequest :: GithubAuth -> String -> String -> Int -> EditPullRequest -> IO (Either Error DetailedPullRequest)
+updatePullRequest auth reqRepoOwner reqRepoName reqPullRequestNumber editPullRequest =
+  githubPatch auth ["repos", reqRepoOwner, reqRepoName, "pulls", show reqPullRequestNumber] editPullRequest
+
 
 buildCommitMessageMap :: Maybe String -> M.Map String String
 buildCommitMessageMap (Just commitMessage) = M.singleton "commit_message" commitMessage
