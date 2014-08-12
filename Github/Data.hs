@@ -353,6 +353,16 @@ instance FromJSON PullRequest where
         <*> o .: "id"
   parseJSON _ = fail "Could not build a PullRequest"
 
+instance ToJSON EditPullRequestState where
+  toJSON (EditPullRequestStateOpen) = String "open"
+  toJSON (EditPullRequestStateClosed) = String "closed"
+
+instance ToJSON EditPullRequest where
+  toJSON (EditPullRequest t b s) =
+    object $ filter notNull [ "title" .= t, "body" .= b, "state" .= s ]
+    where notNull (_, Null) = False
+          notNull (_, _) = True
+
 instance FromJSON DetailedPullRequest where
   parseJSON (Object o) =
       DetailedPullRequest
