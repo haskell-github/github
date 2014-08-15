@@ -39,19 +39,19 @@ import Data.Aeson
 type RepoOwner = String
 type RepoName = String
 type RepoWebhookId = Int
-
+    
 data NewRepoWebhook = NewRepoWebhook {
   newRepoWebhookName :: String
  ,newRepoWebhookConfig :: M.Map String String
- ,newRepoWebhookEvents :: Maybe [String]
+ ,newRepoWebhookEvents :: Maybe [RepoWebhookEvent]
  ,newRepoWebhookActive :: Maybe Bool
 } deriving Show
 
 data EditRepoWebhook = EditRepoWebhook {
   editRepoWebhookConfig :: Maybe (M.Map String String)
- ,editRepoWebhookEvents :: Maybe [String]
- ,editRepoWebhookAddEvents :: Maybe [String]
- ,editRepoWebhookRemoveEvents :: Maybe [String]
+ ,editRepoWebhookEvents :: Maybe [RepoWebhookEvent]
+ ,editRepoWebhookAddEvents :: Maybe [RepoWebhookEvent]
+ ,editRepoWebhookRemoveEvents :: Maybe [RepoWebhookEvent]
  ,editRepoWebhookActive :: Maybe Bool
 } deriving Show
                   

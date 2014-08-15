@@ -432,6 +432,51 @@ instance FromJSON PullRequestEventType where
   parseJSON (String "unlabeled") = pure PullRequestUnlabeled
   parseJSON _ = fail "Could not build a PullRequestEventType"
 
+instance FromJSON RepoWebhookEvent where
+  parseJSON (String "*") = pure WebhookWildcardEvent
+  parseJSON (String "commit_comment") = pure WebhookCommitCommentEvent
+  parseJSON (String "create") = pure WebhookCreateEvent
+  parseJSON (String "delete") = pure WebhookDeleteEvent
+  parseJSON (String "deployment") = pure WebhookDeploymentEvent
+  parseJSON (String "deployment_status") = pure WebhookDeploymentStatusEvent
+  parseJSON (String "fork") = pure WebhookForkEvent
+  parseJSON (String "gollum") = pure WebhookGollumEvent
+  parseJSON (String "issue_comment") = pure WebhookIssueCommentEvent
+  parseJSON (String "issues") = pure WebhookIssuesEvent
+  parseJSON (String "member") = pure WebhookMemberEvent
+  parseJSON (String "page_build") = pure WebhookPageBuildEvent
+  parseJSON (String "public") = pure WebhookPublicEvent
+  parseJSON (String "pull_request_review_comment") = pure WebhookPullRequestReviewCommentEvent
+  parseJSON (String "pull_request") = pure WebhookPullRequestEvent
+  parseJSON (String "push") = pure WebhookPushEvent
+  parseJSON (String "release") = pure WebhookReleaseEvent
+  parseJSON (String "status") = pure WebhookStatusEvent
+  parseJSON (String "team_add") = pure WebhookTeamAddEvent
+  parseJSON (String "watch") = pure WebhookWatchEvent
+  parseJSON _ = fail "Could not build a Webhook event"
+
+instance ToJSON RepoWebhookEvent where
+  toJSON (WebhookWildcardEvent) = String "*"
+  toJSON (WebhookCommitCommentEvent) = String "commit_comment"
+  toJSON (WebhookCreateEvent) = String "create"
+  toJSON (WebhookDeleteEvent) = String "delete"
+  toJSON (WebhookDeploymentEvent) = String "deployment"
+  toJSON (WebhookDeploymentStatusEvent) = String "deployment_status"
+  toJSON (WebhookForkEvent) = String "fork"
+  toJSON (WebhookGollumEvent) = String "gollum"
+  toJSON (WebhookIssueCommentEvent) = String "issue_comment"
+  toJSON (WebhookIssuesEvent) = String "issues"
+  toJSON (WebhookMemberEvent) = String "member"
+  toJSON (WebhookPageBuildEvent) = String "page_build"
+  toJSON (WebhookPublicEvent) = String "public"
+  toJSON (WebhookPullRequestReviewCommentEvent) = String "pull_request_review_comment"
+  toJSON (WebhookPullRequestEvent) = String "pull_request"
+  toJSON (WebhookPushEvent) = String "push"
+  toJSON (WebhookReleaseEvent) = String "release"
+  toJSON (WebhookStatusEvent) = String "status"
+  toJSON (WebhookTeamAddEvent) = String "team_add"
+  toJSON (WebhookWatchEvent) = String "watch"
+
 instance FromJSON PingEvent where
   parseJSON (Object o) =
     PingEvent <$> o .: "zen"

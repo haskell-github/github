@@ -8,8 +8,8 @@ main :: IO ()
 main = do
   let auth = Auth.GithubOAuth "oauthtoken"
   let editWebhookDef = EditRepoWebhook {
-        editRepoWebhookRemoveEvents = Just ["*"],
-        editRepoWebhookAddEvents = Just ["commit_comment"],
+        editRepoWebhookRemoveEvents = Just [WebhookWildcardEvent],
+        editRepoWebhookAddEvents = Just [WebhookCommitCommentEvent, WebhookGollumEvent],
         editRepoWebhookConfig = Nothing,
         editRepoWebhookEvents = Nothing,
         editRepoWebhookActive = Just True
