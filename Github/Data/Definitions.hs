@@ -512,12 +512,35 @@ data RepoWebhook = RepoWebhook {
   ,repoWebhookId :: Integer
   ,repoWebhookName :: String
   ,repoWebhookActive :: Bool
-  ,repoWebhookEvents :: [String]
+  ,repoWebhookEvents :: [RepoWebhookEvent]
   ,repoWebhookConfig :: M.Map String String
   ,repoWebhookLastResponse :: RepoWebhookResponse
   ,repoWebhookUpdatedAt :: GithubDate
   ,repoWebhookCreatedAt :: GithubDate
 } deriving (Show, Data, Typeable, Eq, Ord)
+
+data RepoWebhookEvent =
+   WebhookWildcardEvent
+ | WebhookCommitCommentEvent
+ | WebhookCreateEvent
+ | WebhookDeleteEvent
+ | WebhookDeploymentEvent
+ | WebhookDeploymentStatusEvent
+ | WebhookForkEvent
+ | WebhookGollumEvent
+ | WebhookIssueCommentEvent
+ | WebhookIssuesEvent
+ | WebhookMemberEvent
+ | WebhookPageBuildEvent
+ | WebhookPublicEvent
+ | WebhookPullRequestReviewCommentEvent
+ | WebhookPullRequestEvent
+ | WebhookPushEvent
+ | WebhookReleaseEvent
+ | WebhookStatusEvent
+ | WebhookTeamAddEvent
+ | WebhookWatchEvent
+   deriving (Show, Data, Typeable, Eq, Ord)
 
 data RepoWebhookResponse = RepoWebhookResponse {
    repoWebhookResponseCode :: Maybe Int

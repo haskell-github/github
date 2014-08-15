@@ -12,7 +12,7 @@ main = do
   let webhookDef = NewRepoWebhook {
         newRepoWebhookName = "web",
         newRepoWebhookConfig = config,
-        newRepoWebhookEvents = Just ["*"],
+        newRepoWebhookEvents = Just [WebhookWildcardEvent],
         newRepoWebhookActive = Just True
       }
   newWebhook <- createRepoWebhook' auth "repoOwner" "repoName" webhookDef
