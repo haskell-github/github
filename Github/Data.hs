@@ -207,6 +207,7 @@ instance FromJSON Issue where
   parseJSON (Object o) =
     Issue <$> o .:? "closed_at"
           <*> o .: "updated_at"
+          <*> o .: "events_url"
           <*> o .: "html_url"
           <*> o .:? "closed_by"
           <*> o .: "labels"
@@ -302,6 +303,16 @@ instance FromJSON EventType where
   parseJSON (String "mentioned") = pure Mentioned
   parseJSON (String "assigned") = pure Assigned
   parseJSON (String "unsubscribed") = pure Unsubscribed
+  parseJSON (String "unassigned") = pure ActorUnassigned
+  parseJSON (String "labeled") = pure Labeled
+  parseJSON (String "unlabeled") = pure Unlabeled
+  parseJSON (String "milestoned") = pure Milestoned
+  parseJSON (String "demilestoned") = pure Demilestoned
+  parseJSON (String "renamed") = pure Renamed
+  parseJSON (String "locked") = pure Locked
+  parseJSON (String "unlocked") = pure Unlocked
+  parseJSON (String "head_ref_deleted") = pure HeadRefDeleted
+  parseJSON (String "head_ref_restored") = pure HeadRefRestored
   parseJSON _ = fail "Could not build an EventType"
 
 instance FromJSON SimpleOrganization where
