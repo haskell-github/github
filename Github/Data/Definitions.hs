@@ -188,6 +188,7 @@ data GitObject = GitObject {
 data Issue = Issue {
    issueClosedAt :: Maybe GithubDate
   ,issueUpdatedAt :: GithubDate
+  ,issueEventsUrl :: String
   ,issueHtmlUrl :: Maybe String
   ,issueClosedBy :: Maybe GithubOwner
   ,issueLabels :: [IssueLabel]
@@ -267,6 +268,16 @@ data EventType =
   | Assigned      -- ^ The issue was assigned to the actor.
   | Closed        -- ^ The issue was closed by the actor. When the commit_id is present, it identifies the commit that closed the issue using “closes / fixes #NN” syntax. 
   | Reopened      -- ^ The issue was reopened by the actor.
+  | ActorUnassigned    -- ^ The issue was unassigned to the actor
+  | Labeled       -- ^ A label was added to the issue.
+  | Unlabeled     -- ^ A label was removed from the issue.
+  | Milestoned    -- ^ The issue was added to a milestone.
+  | Demilestoned  -- ^ The issue was removed from a milestone.
+  | Renamed       -- ^ The issue title was changed.
+  | Locked        -- ^ The issue was locked by the actor.
+  | Unlocked      -- ^ The issue was unlocked by the actor.
+  | HeadRefDeleted -- ^ The pull request’s branch was deleted.
+  | HeadRefRestored -- ^ The pull request’s branch was restored.
   deriving (Show, Data, Typeable, Eq, Ord)
 
 data Event = Event {
