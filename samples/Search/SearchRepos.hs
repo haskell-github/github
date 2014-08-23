@@ -42,7 +42,7 @@ formatRepo r =
   let fields = [ ("Name", Github.repoName)
                  ,("URL",  Github.repoHtmlUrl)
                  ,("Description", orEmpty . Github.repoDescription)
-                 ,("Created-At", formatDate . Github.repoCreatedAt)
+                 ,("Created-At", formatMaybeDate . Github.repoCreatedAt)
                  ,("Pushed-At", formatMaybeDate . Github.repoPushedAt)
                ]
   in intercalate "\n" $ map fmt fields

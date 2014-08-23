@@ -12,7 +12,10 @@ main = do
 formatFork fork =
   (Github.githubOwnerLogin $ Github.repoOwner fork) ++ "\t" ++
   (formatPushedAt $ Github.repoPushedAt fork) ++ "\n" ++
-  (Github.repoCloneUrl fork)
+  (formatCloneUrl $ Github.repoCloneUrl fork)
 
 formatPushedAt Nothing         = ""
 formatPushedAt (Just pushedAt) = show $ Github.fromGithubDate pushedAt
+
+formatCloneUrl Nothing         = ""
+formatCloneUrl (Just cloneUrl) = cloneUrl

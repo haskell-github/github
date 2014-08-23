@@ -503,28 +503,28 @@ instance FromJSON SearchReposResult where
 
 instance FromJSON Repo where
   parseJSON (Object o) =
-    Repo <$> o .: "ssh_url"
+    Repo <$> o .:? "ssh_url"
          <*> o .: "description"
-         <*> o .: "created_at"
+         <*> o .:? "created_at"
          <*> o .: "html_url"
-         <*> o .: "svn_url"
-         <*> o .: "forks"
+         <*> o .:? "svn_url"
+         <*> o .:? "forks"
          <*> o .:? "homepage"
          <*> o .: "fork"
-         <*> o .: "git_url"
+         <*> o .:? "git_url"
          <*> o .: "private"
-         <*> o .: "clone_url"
-         <*> o .: "size"
-         <*> o .: "updated_at"
-         <*> o .: "watchers"
+         <*> o .:? "clone_url"
+         <*> o .:? "size"
+         <*> o .:? "updated_at"
+         <*> o .:? "watchers"
          <*> o .: "owner"
          <*> o .: "name"
-         <*> o .: "language"
+         <*> o .:? "language"
          <*> o .:? "master_branch"
-         <*> o .: "pushed_at"
+         <*> o .:? "pushed_at"
          <*> o .: "id"
          <*> o .: "url"
-         <*> o .: "open_issues"
+         <*> o .:? "open_issues"
          <*> o .:? "has_wiki"
          <*> o .:? "has_issues"
          <*> o .:? "has_downloads"
@@ -532,6 +532,23 @@ instance FromJSON Repo where
 	 <*> o .:? "source"
          <*> o .: "hooks_url"
   parseJSON _ = fail "Could not build a Repo"
+
+instance FromJSON SearchCodeResult where
+  parseJSON (Object o) =
+    SearchCodeResult <$> o .: "total_count"
+                     <*> o .:< "items"
+  parseJSON _ = fail "Could not build a SearchCodeResult"
+
+instance FromJSON Code where
+  parseJSON (Object o ) =
+    Code <$> o .: "name"
+         <*> o .: "path"
+         <*> o .: "sha"
+         <*> o .: "url"
+         <*> o .: "git_url"
+         <*> o .: "html_url"
+         <*> o .: "repository"
+  parseJSON _ = fail "Could not build a Code"
 
 instance FromJSON RepoRef where
   parseJSON (Object o) =

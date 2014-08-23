@@ -103,7 +103,7 @@ data Comment = Comment {
   ,commentUpdatedAt :: UTCTime
   ,commentHtmlUrl :: Maybe String
   ,commentUrl :: String
-  ,commentCreatedAt :: UTCTime
+  ,commentCreatedAt :: Maybe UTCTime
   ,commentPath :: Maybe String
   ,commentUser :: GithubOwner
   ,commentId :: Int
@@ -390,24 +390,24 @@ data PullRequestCommit = PullRequestCommit {
 
 data SearchReposResult = SearchReposResult {
   searchReposTotalCount :: Int
-  ,searchReposRepos :: [ Repo ]
+  ,searchReposRepos :: [Repo]
 } deriving (Show, Data, Typeable, Eq, Ord)
 
 data Repo = Repo {
-   repoSshUrl :: String
+   repoSshUrl :: Maybe String
   ,repoDescription :: Maybe String
-  ,repoCreatedAt :: GithubDate
+  ,repoCreatedAt :: Maybe GithubDate
   ,repoHtmlUrl :: String
-  ,repoSvnUrl :: String
-  ,repoForks :: Int
+  ,repoSvnUrl :: Maybe String
+  ,repoForks :: Maybe Int
   ,repoHomepage :: Maybe String
-  ,repoFork :: Bool
-  ,repoGitUrl :: String
+  ,repoFork :: Maybe Bool
+  ,repoGitUrl :: Maybe String
   ,repoPrivate :: Bool
-  ,repoCloneUrl :: String
-  ,repoSize :: Int
-  ,repoUpdatedAt :: GithubDate
-  ,repoWatchers :: Int
+  ,repoCloneUrl :: Maybe String
+  ,repoSize :: Maybe Int
+  ,repoUpdatedAt :: Maybe GithubDate
+  ,repoWatchers :: Maybe Int
   ,repoOwner :: GithubOwner
   ,repoName :: String
   ,repoLanguage :: Maybe String
@@ -415,7 +415,7 @@ data Repo = Repo {
   ,repoPushedAt :: Maybe GithubDate   -- ^ this is Nothing for new repositories
   ,repoId :: Int
   ,repoUrl :: String
-  ,repoOpenIssues :: Int
+  ,repoOpenIssues :: Maybe Int
   ,repoHasWiki :: Maybe Bool
   ,repoHasIssues :: Maybe Bool
   ,repoHasDownloads :: Maybe Bool
@@ -426,6 +426,21 @@ data Repo = Repo {
 
 data RepoRef = RepoRef GithubOwner String -- Repo owner and name
  deriving (Show, Data, Typeable, Eq, Ord)
+
+data SearchCodeResult = SearchCodeResult {
+  searchCodeTotalCount :: Int
+  ,searchCodeCodes :: [Code]
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data Code = Code {
+   codeName :: String
+  ,codePath :: String
+  ,codeSha :: String
+  ,codeUrl :: String
+  ,codeGitUrl :: String
+  ,codeHtmlUrl :: String
+  ,codeRepo :: Repo
+} deriving (Show, Data, Typeable, Eq, Ord)
 
 data Content = ContentFile ContentData | ContentDirectory [ContentData]
  deriving (Show, Data, Typeable, Eq, Ord)
