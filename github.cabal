@@ -145,6 +145,7 @@ Library
                    Github.Repos.Watching,
                    Github.Repos.Starring,
                    Github.Repos.Webhooks
+                   Github.Repos.Webhooks.Validate,
                    Github.Users,
                    Github.Users.Followers
                    Github.Search
@@ -168,7 +169,8 @@ Library
                  http-types,
                  data-default,
                  vector,
-                 unordered-containers >= 0.2 && < 0.3
+                 unordered-containers >= 0.2 && < 0.3,
+                 cryptohash >= 0.11
 
   -- Modules not exported by this package.
   Other-modules:       Github.Private
