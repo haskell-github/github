@@ -7,7 +7,7 @@ Name:                github
 -- The package version. See the Haskell package versioning policy
 -- (http://www.haskell.org/haskellwiki/Package_versioning_policy) for
 -- standards guiding when and how versions should be incremented.
-Version:             0.12
+Version:             0.13
 
 -- A short (one-line) description of the package.
 Synopsis:            Access to the Github API, v3.
@@ -50,6 +50,7 @@ Extra-source-files:  README.md
                     ,samples/Gists/ListGists.hs
                     ,samples/Gists/ShowGist.hs
                     ,samples/GitData/Commits/GitShow.hs
+                    ,samples/GitData/References/GitCreateReference.hs
                     ,samples/GitData/References/GitLsRemote.hs
                     ,samples/GitData/References/GitLsRemoteTags.hs
                     ,samples/GitData/References/GitLsRemoteWithRef.hs

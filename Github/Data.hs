@@ -189,6 +189,9 @@ instance FromJSON Blob where
          <*> o .: "size"
   parseJSON _          = fail "Could not build a Blob"
 
+instance ToJSON NewGitReference where
+  toJSON (NewGitReference r s) = object [ "ref" .= r, "sha" .= s  ]
+
 instance FromJSON GitReference where
   parseJSON (Object o) =
     GitReference <$> o .: "object"
