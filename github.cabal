@@ -170,7 +170,9 @@ Library
                  data-default,
                  vector,
                  unordered-containers >= 0.2 && < 0.3,
-                 cryptohash >= 0.11
+                 cryptohash >= 0.11,
+                 byteable >= 0.1.0,
+                 base16-bytestring >= 0.1.1.6
 
   -- Modules not exported by this package.
   Other-modules:       Github.Private

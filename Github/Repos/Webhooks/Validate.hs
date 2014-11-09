@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- | Verification of incomming webhook payloads, as described at
 -- <https://developer.github.com/webhooks/securing/>
 
@@ -5,8 +7,12 @@ module Github.Repos.Webhooks.Validate (
   isValidPayload
 ) where
 
+import Control.Applicative
 import Crypto.Hash
 import qualified Data.ByteString.Char8 as BS
+import Data.Byteable (constEqBytes, toBytes)
+import qualified Data.ByteString.Base16 as Hex
+import Data.Monoid
 
 
 -- | Validates a given payload against a given HMAC hexdigest using a given
@@ -20,7 +26,10 @@ isValidPayload
                         -- including the 'sha1=...' prefix
   -> BS.ByteString      -- ^ the body
   -> Bool
-isValidPayload secret shaOpt payload = Just sign == shaOpt
+isValidPayload secret shaOpt payload = maybe False (constEqBytes sign) shaOptBS
   where
+    shaOptBS = BS.pack <$> shaOpt
+    hexDigest = Hex.encode . toBytes . hmacGetDigest
+
     hm = hmac (BS.pack secret) payload :: HMAC SHA1
-    sign = "sha1=" ++ (show . hmacGetDigest $ hm)
+    sign = "sha1=" <> hexDigest hm
