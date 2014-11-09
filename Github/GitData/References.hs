@@ -4,6 +4,7 @@
 module Github.GitData.References (
  reference
 ,references
+,createReference
 ,namespacedReferences
 ,module Github.Data
 ) where
@@ -24,6 +25,10 @@ reference user reqRepoName ref =
 references :: String -> String -> IO (Either Error [GitReference])
 references user reqRepoName =
   githubGet ["repos", user, reqRepoName, "git", "refs"]
+
+createReference :: GithubAuth -> String -> String -> NewGitReference -> IO (Either Error GitReference)
+createReference auth owner reqRepoName newRef =
+  githubPost auth ["repos", owner, reqRepoName, "git", "refs"] newRef
 
 -- | Limited references by a namespace.
 --

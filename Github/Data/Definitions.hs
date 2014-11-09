@@ -173,6 +173,11 @@ data Blob = Blob {
   ,blobSize :: Int
 } deriving (Show, Data, Typeable, Eq, Ord)
 
+data NewGitReference = NewGitReference {
+   newGitReferenceRef :: String
+  ,newGitReferenceSha :: String
+} deriving (Show, Data, Typeable, Eq, Ord)
+
 data GitReference = GitReference {
    gitReferenceObject :: GitObject
   ,gitReferenceUrl :: String
