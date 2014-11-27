@@ -145,6 +145,7 @@ Library
                    Github.Repos.Forks,
                    Github.Repos.Watching,
                    Github.Repos.Starring,
+                   Github.Repos.Subscribing,
                    Github.Repos.Webhooks
                    Github.Repos.Webhooks.Validate,
                    Github.Users,
