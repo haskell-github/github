@@ -7,7 +7,7 @@ Name:                github
 -- The package version. See the Haskell package versioning policy
 -- (http://www.haskell.org/haskellwiki/Package_versioning_policy) for
 -- standards guiding when and how versions should be incremented.
-Version:             0.13
+Version:             0.13.1
 
 -- A short (one-line) description of the package.
 Synopsis:            Access to the Github API, v3.
@@ -145,6 +145,7 @@ Library
                    Github.Repos.Forks,
                    Github.Repos.Watching,
                    Github.Repos.Starring,
+                   Github.Repos.Subscribing,
                    Github.Repos.Webhooks
                    Github.Repos.Webhooks.Validate,
                    Github.Users,
