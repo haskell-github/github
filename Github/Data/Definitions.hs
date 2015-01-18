@@ -378,6 +378,20 @@ data EditPullRequest = EditPullRequest {
   ,editPullRequestState :: Maybe EditPullRequestState
 } deriving (Show)
 
+data CreatePullRequest =
+      CreatePullRequest
+      { createPullRequestTitle :: String
+      , createPullRequestBody  :: String
+      , createPullRequestHead  :: String
+      , createPullRequestBase  :: String
+      }
+    | CreatePullRequestIssue
+      { createPullRequestIssueNum :: Int
+      , createPullRequestHead     :: String
+      , createPullRequestBase     :: String
+      }
+    deriving (Show)
+
 data PullRequestLinks = PullRequestLinks {
    pullRequestLinksReviewComments :: String
   ,pullRequestLinksComments :: String

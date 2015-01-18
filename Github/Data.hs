@@ -377,6 +377,12 @@ instance ToJSON EditPullRequest where
     where notNull (_, Null) = False
           notNull (_, _) = True
 
+instance ToJSON CreatePullRequest where
+  toJSON (CreatePullRequest t b headPR basePR) =
+    object [ "title" .= t, "body" .= b, "head" .= headPR, "base" .= basePR ]
+  toJSON (CreatePullRequestIssue issueNum headPR basePR) =
+    object [ "issue" .= issueNum, "head" .= headPR, "base" .= basePR]
+
 instance FromJSON DetailedPullRequest where
   parseJSON (Object o) =
       DetailedPullRequest
