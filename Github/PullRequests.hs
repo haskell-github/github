@@ -12,6 +12,7 @@ module Github.PullRequests (
 ,pullRequestFiles
 ,isPullRequestMerged
 ,mergePullRequest
+,createPullRequest
 ,updatePullRequest
 ,module Github.Data
 ) where
@@ -103,3 +104,11 @@ updatePullRequest auth reqRepoOwner reqRepoName reqPullRequestNumber editPullReq
 buildCommitMessageMap :: Maybe String -> M.Map String String
 buildCommitMessageMap (Just commitMessage) = M.singleton "commit_message" commitMessage
 buildCommitMessageMap _ = M.empty
+
+createPullRequest :: GithubAuth
+                  -> String
+                  -> String
+                  -> CreatePullRequest
+                  -> IO (Either Error DetailedPullRequest)
+createPullRequest auth reqUserName reqRepoName createPR =
+    githubPost auth ["repos", reqUserName, reqRepoName, "pulls"] createPR
