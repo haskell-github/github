@@ -14,8 +14,8 @@ formatRepo repo =
   (Github.repoName repo) ++ "\t" ++
     (fromMaybe "" $ Github.repoDescription repo) ++ "\n" ++
     (Github.repoHtmlUrl repo) ++ "\n" ++
-    (Github.repoCloneUrl repo) ++ "\t" ++
-    (formatDate $ Github.repoUpdatedAt repo) ++ "\n" ++
+    (fromMaybe "" $ Github.repoCloneUrl repo) ++ "\t" ++
+    (fromMaybe "" $ formatDate `fmap` Github.repoUpdatedAt repo) ++ "\n" ++
     formatLanguage (Github.repoLanguage repo) ++
     "watchers: " ++ (show $ Github.repoWatchers repo) ++ "\t" ++
     "forks: " ++ (show $ Github.repoForks repo)

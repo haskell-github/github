@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module EditIssue where
 
+import qualified Github.Auth as Github
 import qualified Github.Issues as Github
 
 main = do
