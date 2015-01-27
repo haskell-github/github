@@ -98,19 +98,19 @@ editRepoWebhook' auth owner reqRepoName webhookId edit = githubPatch auth ["repo
                                                             
 testPushRepoWebhook' :: GithubAuth -> RepoOwner -> RepoName -> RepoWebhookId -> IO (Either Error Status)
 testPushRepoWebhook' auth owner reqRepoName webhookId =
-  doHttpsStatus "POST" (createWebhookOpUrl owner reqRepoName webhookId (Just "tests")) auth (Just . RequestBodyLBS . encode $ (decode "{}" :: Maybe (M.Map String Int))) 
+  doHttpsStatus "POST" (createWebhookOpPath owner reqRepoName webhookId (Just "tests")) auth (Just . RequestBodyLBS . encode $ (decode "{}" :: Maybe (M.Map String Int)))
 
 pingRepoWebhook' :: GithubAuth -> RepoOwner -> RepoName -> RepoWebhookId -> IO (Either Error Status)
 pingRepoWebhook' auth owner reqRepoName webhookId =
-  doHttpsStatus "POST" (createWebhookOpUrl owner reqRepoName webhookId (Just "pings")) auth Nothing
+  doHttpsStatus "POST" (createWebhookOpPath owner reqRepoName webhookId (Just "pings")) auth Nothing
 
 deleteRepoWebhook' :: GithubAuth -> RepoOwner -> RepoName -> RepoWebhookId -> IO (Either Error Status)
 deleteRepoWebhook' auth owner reqRepoName webhookId =
-  doHttpsStatus "DELETE" (createWebhookOpUrl owner reqRepoName webhookId Nothing) auth Nothing
+  doHttpsStatus "DELETE" (createWebhookOpPath owner reqRepoName webhookId Nothing) auth Nothing
 
-createBaseWebhookUrl :: RepoOwner -> RepoName -> RepoWebhookId -> String
-createBaseWebhookUrl owner reqRepoName webhookId = "https://api.github.com/repos/" ++ owner ++ "/" ++ reqRepoName ++ "/hooks/" ++ (show webhookId)
+createBaseWebhookPath :: RepoOwner -> RepoName -> RepoWebhookId -> String
+createBaseWebhookPath owner reqRepoName webhookId = buildPath ["repos", owner, reqRepoName, "hooks", show webhookId]
 
-createWebhookOpUrl :: RepoOwner -> RepoName -> RepoWebhookId -> Maybe String -> String
-createWebhookOpUrl owner reqRepoName webhookId Nothing = createBaseWebhookUrl owner reqRepoName webhookId
-createWebhookOpUrl owner reqRepoName webhookId (Just operation) = createBaseWebhookUrl owner reqRepoName webhookId ++ "/" ++ operation
+createWebhookOpPath :: RepoOwner -> RepoName -> RepoWebhookId -> Maybe String -> String
+createWebhookOpPath owner reqRepoName webhookId Nothing = createBaseWebhookPath owner reqRepoName webhookId
+createWebhookOpPath owner reqRepoName webhookId (Just operation) = createBaseWebhookPath owner reqRepoName webhookId ++ "/" ++ operation

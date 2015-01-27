@@ -320,7 +320,10 @@ deleteRepo :: GithubAuth
            -> String      -- ^ repository name
            -> IO (Either Error ())
 deleteRepo auth owner repo = do
-  result <- doHttps "DELETE" url (Just auth) Nothing
+  result <- doHttps "DELETE"
+                    (apiEndpoint (Just auth) ++ buildPath ["repos", owner, repo])
+                    (Just auth)
+                    Nothing
   case result of
       Left e -> return (Left (HTTPConnectionError e))
       Right resp ->
@@ -338,5 +341,3 @@ deleteRepo auth owner repo = do
 #endif
                                  ))))
              else return (Right ())
-  where
-    url = "https://api.github.com/repos/" ++ owner ++ "/" ++ repo

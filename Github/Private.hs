@@ -20,7 +20,10 @@ import Data.Maybe (fromMaybe)
 
 -- | user/password for HTTP basic access authentication
 data GithubAuth = GithubBasicAuth BS.ByteString BS.ByteString
-                | GithubOAuth String
+                | GithubOAuth String -- ^ token
+                | GithubEnterpriseOAuth String  -- ^ custom API endpoint without
+                                                --   trailing slash
+                                        String  -- ^ token
                 deriving (Show, Data, Typeable, Eq, Ord)
 
 githubGet :: (FromJSON b, Show b) => [String] -> IO (Either Error b)
@@ -29,7 +32,7 @@ githubGet = githubGet' Nothing
 githubGet' :: (FromJSON b, Show b) => Maybe GithubAuth -> [String] -> IO (Either Error b)
 githubGet' auth paths =
   githubAPI (BS.pack "GET")
-            (buildUrl paths)
+            (buildPath paths)
             auth
             (Nothing :: Maybe Value)
 
@@ -39,31 +42,35 @@ githubGetWithQueryString = githubGetWithQueryString' Nothing
 githubGetWithQueryString' :: (FromJSON b, Show b) => Maybe GithubAuth -> [String] -> String -> IO (Either Error b)
 githubGetWithQueryString' auth paths qs =
   githubAPI (BS.pack "GET")
-            (buildUrl paths ++ "?" ++ qs)
+            (buildPath paths ++ "?" ++ qs)
             auth
             (Nothing :: Maybe Value)
 
 githubPost :: (ToJSON a, Show a, FromJSON b, Show b) => GithubAuth -> [String] -> a -> IO (Either Error b)
 githubPost auth paths body =
   githubAPI (BS.pack "POST")
-            (buildUrl paths)
+            (buildPath paths)
             (Just auth)
             (Just body)
 
 githubPatch :: (ToJSON a, Show a, FromJSON b, Show b) => GithubAuth -> [String] -> a -> IO (Either Error b)
 githubPatch auth paths body =
   githubAPI (BS.pack "PATCH")
-            (buildUrl paths)
+            (buildPath paths)
             (Just auth)
             (Just body)
 
-buildUrl :: [String] -> String
-buildUrl paths = "https://api.github.com/" ++ intercalate "/" paths
+apiEndpoint :: Maybe GithubAuth -> String
+apiEndpoint (Just (GithubEnterpriseOAuth endpoint _)) = endpoint
+apiEndpoint _ = "https://api.github.com"
+
+buildPath :: [String] -> String
+buildPath paths = '/' : intercalate "/" paths
 
 githubAPI :: (ToJSON a, Show a, FromJSON b, Show b) => BS.ByteString -> String
           -> Maybe GithubAuth -> Maybe a -> IO (Either Error b)
-githubAPI apimethod url auth body = do
-  result <- doHttps apimethod url auth (encodeBody body)
+githubAPI apimethod path auth body = do
+  result <- doHttps apimethod (apiEndpoint auth ++ path) auth (encodeBody body)
   case result of
       Left e     -> return (Left (HTTPConnectionError e))
       Right resp -> either Left (\x -> jsonResultToE (LBS.pack (show x))
@@ -153,8 +160,8 @@ doHttps reqMethod url auth body = do
 #endif
 
 doHttpsStatus :: BS.ByteString -> String -> GithubAuth -> Maybe RequestBody -> IO (Either Error Status)
-doHttpsStatus reqMethod url auth payload = do
-  result <- doHttps reqMethod url (Just auth) payload
+doHttpsStatus reqMethod path auth payload = do
+  result <- doHttps reqMethod (apiEndpoint (Just auth) ++ path) (Just auth) payload
   case result of
     Left e -> return (Left (HTTPConnectionError e))
     Right resp ->

@@ -23,12 +23,12 @@ collaboratorsOn userName reqRepoName =
 -- | Whether the user is collaborating on a repo. Takes the user in question,
 -- the user who owns the repo, and the repo name.
 --
--- > isCollaboratorOn "mike-burns" "thoughtbot" "paperclip"
--- > isCollaboratorOn "johnson" "thoughtbot" "paperclip"
-isCollaboratorOn :: String -> String -> String -> IO (Either Error Bool)
-isCollaboratorOn userName repoOwnerName reqRepoName = do
+-- > isCollaboratorOn Nothing "mike-burns" "thoughtbot" "paperclip"
+-- > isCollaboratorOn Nothing "johnson" "thoughtbot" "paperclip"
+isCollaboratorOn :: Maybe GithubAuth -> String -> String -> String -> IO (Either Error Bool)
+isCollaboratorOn auth userName repoOwnerName reqRepoName = do
    result <- doHttps (pack "GET")
-                     (buildUrl ["repos", repoOwnerName, reqRepoName, "collaborators", userName])
+                     (apiEndpoint auth ++ buildPath ["repos", repoOwnerName, reqRepoName, "collaborators", userName])
                      Nothing
                      Nothing
    return $ either (Left . HTTPConnectionError)
