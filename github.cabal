@@ -183,3 +183,35 @@ Library
   -- Build-tools:
 
   GHC-Options: -Wall -fno-warn-orphans
+
+
+test-suite github-test
+  type: exitcode-stdio-1.0
+  hs-source-dirs: spec, .
+  main-is: Spec.hs
+  build-depends: base >= 4.0 && < 5.0,
+                 time,
+                 aeson >= 0.6.1.0,
+                 attoparsec >= 0.10.3.0,
+                 bytestring,
+                 case-insensitive >= 0.4.0.4,
+                 containers,
+                 hashable,
+                 text,
+                 old-locale,
+                 HTTP,
+                 network,
+                 http-conduit >= 1.8,
+                 conduit,
+                 failure,
+                 http-types,
+                 data-default,
+                 vector,
+                 unordered-containers >= 0.2 && < 0.3,
+                 cryptohash >= 0.11,
+                 byteable >= 0.1.0,
+                 base16-bytestring >= 0.1.1.6
+
+                 , hspec
+
+  ghc-options: -Wall -fno-warn-orphans
