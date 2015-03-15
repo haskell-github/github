@@ -461,16 +461,31 @@ data Code = Code {
   ,codeRepo :: Repo
 } deriving (Show, Data, Typeable, Eq, Ord)
 
-data Content = ContentFile ContentData | ContentDirectory [ContentData]
+data Content
+  = ContentFile ContentFileData
+  | ContentDirectory [ContentItem]
  deriving (Show, Data, Typeable, Eq, Ord)
 
-data ContentData = ContentData {
-   contentType :: String
-  ,contentEncoding :: String
-  ,contentSize :: Int
-  ,contentName :: String
+data ContentFileData = ContentFileData {
+   contentFileInfo :: ContentInfo
+  ,contentFileEncoding :: String
+  ,contentFileSize :: Int
+  ,contentFileContent :: String
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+-- | An item in a directory listing.
+data ContentItem = ContentItem {
+   contentItemType :: ContentItemType
+  ,contentItemInfo :: ContentInfo
+} deriving (Show, Data, Typeable, Eq, Ord)
+
+data ContentItemType = ItemFile | ItemDir
+  deriving (Show, Data, Typeable, Eq, Ord)
+
+-- | Information common to both kinds of Content: files and directories.
+data ContentInfo = ContentInfo {
+   contentName :: String
   ,contentPath :: String
-  ,contentData :: String
   ,contentSha :: String
   ,contentUrl :: String
   ,contentGitUrl :: String
