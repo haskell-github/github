@@ -441,6 +441,7 @@ data Repo = Repo {
   ,repoParent :: Maybe RepoRef
   ,repoSource :: Maybe RepoRef
   ,repoHooksUrl :: String
+  ,repoStargazersCount :: Int
 } deriving (Show, Data, Typeable, Eq, Ord)
 
 data RepoRef = RepoRef GithubOwner String -- Repo owner and name
