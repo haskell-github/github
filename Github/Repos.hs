@@ -25,6 +25,8 @@ module Github.Repos (
 ,branchesFor'
 ,contentsFor
 ,contentsFor'
+,readmeFor
+,readmeFor'
 ,module Github.Data
 ,RepoPublicity(..)
 
@@ -220,6 +222,21 @@ contentsFor' auth userName reqRepoName reqContentPath ref =
   ["repos", userName, reqRepoName, "contents", reqContentPath] $
   maybe "" ("ref="++) ref
 
+-- | The contents of a README file in a repo, given the repo owner and name
+--
+-- > readmeFor "thoughtbot" "paperclip"
+readmeFor :: String -> String -> IO (Either Error Content)
+readmeFor = readmeFor' Nothing
+
+-- | The contents of a README file in a repo, given the repo owner and name
+-- With Authentication
+--
+-- > readmeFor' (Just (GithubBasicAuth (user, password))) "thoughtbot" "paperclip"
+readmeFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error Content)
+readmeFor' auth userName reqRepoName =
+  githubGetWithQueryString' auth
+  ["repos", userName, reqRepoName, "readme"] $
+  ""
 
 data NewRepo = NewRepo {
   newRepoName         :: String
