@@ -17,8 +17,8 @@ import Github.Data
 import Github.Private
 import Data.List (intercalate)
 import Data.Time.Format (formatTime)
-import System.Locale (defaultTimeLocale)
 import Data.Time.Clock (UTCTime(..))
+import Data.Time (defaultTimeLocale)
 
 -- | A data structure for describing how to filter issues. This is used by
 -- @issuesForRepo@.
