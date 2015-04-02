@@ -1,8 +1,10 @@
 -- | The repo commits API as described on
 -- <http://developer.github.com/v3/repos/commits/>.
 module Github.Repos.Commits (
- commitsFor
+ CommitQueryOption(..)
+,commitsFor
 ,commitsFor'
+,commitsWithOptionsFor'
 ,commit
 ,commit'
 ,commentsFor
@@ -19,6 +21,22 @@ module Github.Repos.Commits (
 import Github.Data
 import Github.Private
 
+import Data.Time.Format (iso8601DateFormat, formatTime)
+import Data.Time (defaultTimeLocale)
+import Data.List (intercalate)
+
+githubFormat :: GithubDate -> String
+githubFormat = formatTime defaultTimeLocale (iso8601DateFormat $ Just "%H:%M:%S") . fromGithubDate
+
+renderCommitQueryOption :: CommitQueryOption -> String
+renderCommitQueryOption (CommitQuerySha sha) = "sha=" ++ sha
+renderCommitQueryOption (CommitQueryPath path) = "path=" ++ path
+renderCommitQueryOption (CommitQueryAuthor author) = "author=" ++ author
+renderCommitQueryOption (CommitQuerySince date) = "since=" ++ ds ++ "Z"
+    where ds = show $ githubFormat date
+renderCommitQueryOption (CommitQueryUntil date) = "until=" ++ ds ++ "Z"
+    where ds = show $ githubFormat date
+
 -- | The commit history for a repo.
 --
 -- > commitsFor "mike-burns" "github"
@@ -32,11 +50,31 @@ commitsFor = commitsFor' Nothing
 commitsFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Commit])
 commitsFor' auth user repo = githubGet' auth ["repos", user, repo, "commits"]
 
+commitsWithOptionsFor :: String -> String -> [CommitQueryOption] -> IO (Either Error [Commit])
+commitsWithOptionsFor = commitsWithOptionsFor' Nothing
+
+-- | The commit history for a repo, with commits filtered to satisfy a list of
+-- query options.
+-- With authentication.
+--
+-- > commitsWithOptionsFor' (Just (GithubBasicAuth (user, password))) "mike-burns" "github" [CommitQueryAuthor "djeik"]
+commitsWithOptionsFor' :: Maybe GithubAuth -> String -> String -> [CommitQueryOption] -> IO (Either Error [Commit])
+commitsWithOptionsFor' auth user repo opts = githubGetWithQueryString' auth ["repos", user, repo, "commits"] qs
+    where qs = intercalate "&" $ map renderCommitQueryOption opts
+
 -- | Details on a specific SHA1 for a repo.
 --
 -- > commit "mike-burns" "github" "9d1a9a361266c3c890b1108ad2fdf52f824b1b81"
 commit :: String -> String -> String -> IO (Either Error Commit)
 commit = commit' Nothing
+
+-- | Details on a specific SHA1 for a repo.
+-- With authentication.
+--
+-- > commit (Just $ GithubBasicAuth (username, password)) "mike-burns" "github" "9d1a9a361266c3c890b1108ad2fdf52f824b1b81"
+commit' :: Maybe GithubAuth -> String -> String -> String -> IO (Either Error Commit)
+commit' auth user repo sha1 = githubGet' auth ["repos", user, repo, "commits", sha1]
+
 
 -- | Details on a specific SHA1 for a repo.
 -- With authentication.

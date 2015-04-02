@@ -7,6 +7,14 @@ import Data.Data
 import qualified Control.Exception as E
 import qualified Data.Map as M
 
+-- | The options for querying commits.
+data CommitQueryOption = CommitQuerySha String
+                       | CommitQueryPath String
+                       | CommitQueryAuthor String
+                       | CommitQuerySince GithubDate
+                       | CommitQueryUntil GithubDate
+                       deriving (Show, Eq, Ord)
+
 -- | Errors have been tagged according to their source, so you can more easily
 -- dispatch and handle them.
 data Error =
