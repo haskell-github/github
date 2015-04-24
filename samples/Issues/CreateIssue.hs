@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 module CreateIssue where
 
+import qualified Github.Auth   as Github
 import qualified Github.Issues as Github
-
 main = do
   let auth = Github.GithubBasicAuth "user" "password"
       newiss = (Github.newIssue "A new issue") {

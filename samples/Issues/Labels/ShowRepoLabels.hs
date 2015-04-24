@@ -1,7 +1,7 @@
 module ShowRepoLabels where
 
+import           Data.List            (intercalate)
 import qualified Github.Issues.Labels as Github
-import Data.List (intercalate)
 
 main = do
   possibleLabels <- Github.labelsOnRepo "thoughtbot" "paperclip"

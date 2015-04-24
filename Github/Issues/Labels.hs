@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 -- | The API for dealing with labels on Github issues, as described on
 -- <http://developer.github.com/v3/issues/labels/>.
 module Github.Issues.Labels (
@@ -5,12 +6,13 @@ module Github.Issues.Labels (
 ,labelsOnRepo
 ,labelsOnIssue
 ,labelsOnMilestone
+,createLabel
 ,module Github.Data
 ) where
 
-import Github.Data
-import Github.Private
-
+import           Data.Aeson     (object, (.=))
+import           Github.Data
+import           Github.Private
 -- | All the labels available to use on any issue in the repo.
 --
 -- > labelsOnRepo "thoughtbot" "paperclip"
@@ -37,3 +39,16 @@ labelsOnMilestone user reqRepoName milestoneId =
 label :: String -> String -> String -> IO (Either Error IssueLabel)
 label user reqRepoName reqLabelName =
   githubGet ["repos", user, reqRepoName, "labels", reqLabelName]
+-- | Create a label
+
+createLabel :: GithubAuth
+            -> String
+            -> String
+            -> String
+            -> String
+            -> IO (Either Error IssueLabel)
+createLabel auth reqUserName reqRepoName reqLabelName reqLabelColor = githubPost auth paths body
+  where
+    paths = ["repos", reqUserName, reqRepoName, "labels"]
+    body = object ["name" .= reqLabelName
+                  ,"color" .= reqLabelColor]

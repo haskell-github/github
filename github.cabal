@@ -65,6 +65,7 @@ Extra-source-files:  README.md
                     ,samples/Issues/Labels/ShowLabel.hs
                     ,samples/Issues/Labels/ShowMilestoneLabels.hs
                     ,samples/Issues/Labels/ShowRepoLabels.hs
+                    ,samples/Issues/Labels/CreateLabels.hs
                     ,samples/Issues/Milestones/ShowMilestone.hs
                     ,samples/Issues/Milestones/ShowMilestones.hs
                     ,samples/Issues/ShowIssue.hs
@@ -134,7 +135,7 @@ Library
                    Github.Issues,
                    Github.Issues.Comments,
                    Github.Issues.Events,
-                   Github.Issues.Labels,
+                   Github.Issues.Labels,                   
                    Github.Issues.Milestones,
                    Github.Organizations,
                    Github.Organizations.Members,
