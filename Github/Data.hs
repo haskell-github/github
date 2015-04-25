@@ -11,7 +11,6 @@ import Control.Applicative
 import Control.Monad
 import qualified Data.Text as T
 import Data.Aeson.Types
-import System.Locale (defaultTimeLocale)
 import qualified Data.Vector as V
 import qualified Data.HashMap.Lazy as Map
 import Data.Hashable (Hashable)

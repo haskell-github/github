@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings, StandaloneDeriving, DeriveDataTypeable #-}
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP, FlexibleContexts #-}
 module Github.Private where
 
 import Github.Data
