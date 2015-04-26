@@ -1,4 +1,4 @@
-{-# LANGUAGE DeriveDataTypeable, OverloadedStrings #-}
+{-# LANGUAGE CPP, DeriveDataTypeable, OverloadedStrings #-}
 
 -- | This module re-exports the @Github.Data.Definitions@ module, adding
 -- instances of @FromJSON@ to it. If you wish to use the data without the
@@ -6,15 +6,20 @@
 
 module Github.Data (module Github.Data.Definitions) where
 
-import Data.Time
 import Control.Applicative
 import Control.Monad
 import qualified Data.Text as T
 import Data.Aeson.Types
-import System.Locale (defaultTimeLocale)
 import qualified Data.Vector as V
 import qualified Data.HashMap.Lazy as Map
 import Data.Hashable (Hashable)
+
+#if MIN_VERSION_base(4,8,0)
+import Data.Time
+#else
+import Data.Time
+import System.Locale (defaultTimeLocale)
+#endif
 
 import Github.Data.Definitions
 

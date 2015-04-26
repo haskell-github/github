@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE CPP, OverloadedStrings #-}
 -- | The issues API as described on <http://developer.github.com/v3/issues/>.
 module Github.Issues (
  issue
@@ -16,8 +16,13 @@ module Github.Issues (
 import Github.Data
 import Github.Private
 import Data.List (intercalate)
-import Data.Time.Format (formatTime)
+#if MIN_VERSION_base(4, 8, 0)
+import Data.Time (defaultTimeLocale)
+#else
 import System.Locale (defaultTimeLocale)
+#endif
+
+import Data.Time.Format (formatTime)
 import Data.Time.Clock (UTCTime(..))
 
 -- | A data structure for describing how to filter issues. This is used by
