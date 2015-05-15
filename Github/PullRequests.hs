@@ -2,7 +2,8 @@
 -- | The pull requests API as documented at
 -- <http://developer.github.com/v3/pulls/>.
 module Github.PullRequests (
- pullRequestsFor'
+ pullRequestsFor''
+,pullRequestsFor'
 ,pullRequest'
 ,pullRequestCommits'
 ,pullRequestFiles'
@@ -24,19 +25,30 @@ import qualified Data.Map as M
 import Network.HTTP.Conduit (RequestBody(RequestBodyLBS))
 import Data.Aeson
 
+-- | All pull requests for the repo, by owner, repo name, and pull request state.
+-- | With authentification
+--
+-- > pullRequestsFor' (Just ("github-username", "github-password")) "rails" "rails" (Just "open")
+--
+-- State can be one of @all@, @open@, or @closed@. Default is @open@.
+--
+pullRequestsFor'' :: Maybe GithubAuth -> Maybe String -> String -> String -> IO (Either Error [PullRequest])
+pullRequestsFor'' auth state userName reqRepoName =
+  githubGetWithQueryString' auth ["repos", userName, reqRepoName, "pulls"] $
+    maybe "" ("state=" ++) state
+
 -- | All pull requests for the repo, by owner and repo name.
 -- | With authentification
 --
 -- > pullRequestsFor' (Just ("github-username", "github-password")) "rails" "rails"
 pullRequestsFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [PullRequest])
-pullRequestsFor' auth userName reqRepoName =
-  githubGet' auth ["repos", userName, reqRepoName, "pulls"]
+pullRequestsFor' auth = pullRequestsFor'' auth Nothing
 
 -- | All pull requests for the repo, by owner and repo name.
 --
 -- > pullRequestsFor "rails" "rails"
 pullRequestsFor :: String -> String -> IO (Either Error [PullRequest])
-pullRequestsFor = pullRequestsFor' Nothing
+pullRequestsFor = pullRequestsFor'' Nothing Nothing
 
 -- | A detailed pull request, which has much more information. This takes the
 -- repo owner and name along with the number assigned to the pull request.
