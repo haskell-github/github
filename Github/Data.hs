@@ -286,6 +286,7 @@ instance FromJSON IssueComment where
     IssueComment <$> o .: "updated_at"
                  <*> o .: "user"
                  <*> o .: "url"
+                 <*> o .: "html_url"
                  <*> o .: "created_at"
                  <*> o .: "body"
                  <*> o .: "id"

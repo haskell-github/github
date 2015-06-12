@@ -258,6 +258,7 @@ data IssueComment = IssueComment {
    issueCommentUpdatedAt :: GithubDate
   ,issueCommentUser :: GithubOwner
   ,issueCommentUrl :: String
+  ,issueCommentHtmlUrl :: String
   ,issueCommentCreatedAt :: GithubDate
   ,issueCommentBody :: String
   ,issueCommentId :: Int
