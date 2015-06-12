@@ -1,5 +1,13 @@
 {-# LANGUAGE OverloadedStrings, StandaloneDeriving, DeriveDataTypeable #-}
 {-# LANGUAGE CPP, FlexibleContexts #-}
+
+-- | This module is /private/. It is exposed to facilitate customization
+-- and extension of the /public/ API of this package without explicitely
+-- forking the package.
+--
+-- This module is not part of the /public/ API and as such changes in this
+-- module may not be reflected in the version of the package.
+--
 module Github.Private where
 
 import Github.Data

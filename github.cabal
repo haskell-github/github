@@ -153,6 +153,9 @@ Library
                    Github.Users.Followers
                    Github.Search
 
+                   -- Private
+                   Github.Private
+
   -- Packages needed in order to build this package.
   Build-depends: base >= 4.0 && < 5.0,
                  time,
@@ -176,9 +179,6 @@ Library
                  cryptohash >= 0.11,
                  byteable >= 0.1.0,
                  base16-bytestring >= 0.1.1.6
-
-  -- Modules not exported by this package.
-  Other-modules:       Github.Private
 
   -- Extra tools (e.g. alex, hsc2hs, ...) needed to build the source.
   -- Build-tools:
