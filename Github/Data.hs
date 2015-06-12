@@ -14,7 +14,7 @@ import qualified Data.Vector as V
 import qualified Data.HashMap.Lazy as Map
 import Data.Hashable (Hashable)
 
-#if MIN_VERSION_base(4,8,0)
+#if MIN_VERSION_time(1,5,0)
 import Data.Time
 #else
 import Data.Time

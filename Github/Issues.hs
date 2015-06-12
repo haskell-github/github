@@ -16,7 +16,7 @@ module Github.Issues (
 import Github.Data
 import Github.Private
 import Data.List (intercalate)
-#if MIN_VERSION_base(4, 8, 0)
+#if MIN_VERSION_time(1,5,0)
 import Data.Time (defaultTimeLocale)
 #else
 import System.Locale (defaultTimeLocale)
