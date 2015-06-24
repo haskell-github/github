@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, DeriveGeneric, DeriveDataTypeable #-}
 {-# LANGUAGE CPP #-}
 -- | The Github Repos API, as documented at
 -- <http://developer.github.com/v3/repos/>
@@ -43,12 +43,15 @@ module Github.Repos (
 ,deleteRepo
 ) where
 
+import Data.Data
 import Data.Default
 import Data.Aeson.Types
 import Github.Data
 import Github.Private
+import GHC.Generics (Generic)
 import Network.HTTP.Conduit
 import Control.Applicative
+import Control.DeepSeq (NFData)
 import qualified Control.Exception as E
 import Network.HTTP.Types
 
@@ -59,7 +62,9 @@ data RepoPublicity =
   | Public  -- ^ Only public repos.
   | Private -- ^ Only private repos.
   | Member  -- ^ Only repos to which the user is a member but not an owner.
- deriving (Show, Eq)
+ deriving (Show, Eq, Ord, Typeable, Data, Generic)
+
+instance NFData RepoPublicity
 
 -- | The repos for a user, by their login. Can be restricted to just repos they
 -- own, are a member of, or publicize. Private repos are currently not
@@ -229,7 +234,9 @@ data NewRepo = NewRepo {
 , newRepoHasIssues    :: (Maybe Bool)
 , newRepoHasWiki      :: (Maybe Bool)
 , newRepoAutoInit     :: (Maybe Bool)
-} deriving Show
+} deriving (Eq, Ord, Show, Data, Typeable, Generic)
+
+instance NFData NewRepo
 
 instance ToJSON  NewRepo where
   toJSON (NewRepo { newRepoName         = name
@@ -274,7 +281,9 @@ data Edit = Edit {
 , editHasIssues    :: Maybe Bool
 , editHasWiki      :: Maybe Bool
 , editHasDownloads :: Maybe Bool
-} deriving Show
+} deriving (Eq, Ord, Show, Data, Typeable, Generic)
+
+instance NFData Edit
 
 instance Default Edit where
   def = Edit def def def def def def def

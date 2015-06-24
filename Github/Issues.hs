@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, OverloadedStrings #-}
+{-# LANGUAGE CPP, OverloadedStrings, DeriveGeneric, DeriveDataTypeable #-}
 -- | The issues API as described on <http://developer.github.com/v3/issues/>.
 module Github.Issues (
  issue
@@ -15,15 +15,19 @@ module Github.Issues (
 
 import Github.Data
 import Github.Private
+import Control.DeepSeq (NFData)
 import Data.List (intercalate)
+import Data.Data
 #if MIN_VERSION_time(1,5,0)
 import Data.Time (defaultTimeLocale)
 #else
 import System.Locale (defaultTimeLocale)
 #endif
+import GHC.Generics (Generic)
 
 import Data.Time.Format (formatTime)
 import Data.Time.Clock (UTCTime(..))
+
 
 -- | A data structure for describing how to filter issues. This is used by
 -- @issuesForRepo@.
@@ -42,7 +46,9 @@ data IssueLimitation =
     | Descending -- ^ Sort descending. [default]
     | Since UTCTime -- ^ Only issues created since the specified date and time.
     | PerPage Int -- ^ Download this many issues per query
+  deriving (Eq, Ord, Show, Typeable, Data, Generic)
 
+instance NFData IssueLimitation
 
 -- | Details on a specific issue, given the repo owner and name, and the issue
 -- number.'
