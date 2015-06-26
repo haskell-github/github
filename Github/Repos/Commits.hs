@@ -22,7 +22,7 @@ commitsFor = commitsFor' Nothing
 
 -- | The commit history for a repo, with authorization.
 --
--- > commitsFor "mike-burns" "github"
+-- > commitsFor' (Just ("github-username", "github-password")) "mike-burns" "github"
 commitsFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Commit])
 commitsFor' auth user repo = githubGet' auth ["repos", user, repo, "commits"]
 
