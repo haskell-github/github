@@ -2,6 +2,7 @@
 -- <http://developer.github.com/v3/repos/commits/>.
 module Github.Repos.Commits (
  commitsFor
+,commitsFor'
 ,commit
 ,commentsFor
 ,commitCommentsFor
@@ -17,7 +18,13 @@ import Github.Private
 --
 -- > commitsFor "mike-burns" "github"
 commitsFor :: String -> String -> IO (Either Error [Commit])
-commitsFor user repo = githubGet ["repos", user, repo, "commits"]
+commitsFor = commitsFor' Nothing
+
+-- | The commit history for a repo, with authorization.
+--
+-- > commitsFor "mike-burns" "github"
+commitsFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Commit])
+commitsFor' auth user repo = githubGet' auth ["repos", user, repo, "commits"]
 
 -- | Details on a specific SHA1 for a repo.
 --
