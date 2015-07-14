@@ -18,7 +18,7 @@ Description:         The Github API provides programmatic access to the full
                      like references and trees. This library wraps all of that, exposing a basic but
                      Haskell-friendly set of functions and data structures.
                      .
-                     For more of an overview please see the README: <https://github.com/fpco/github/blob/master/README.md>
+                     For more of an overview please see the README: <https://github.com/jwiegley/github/blob/master/README.md>
 
 -- The license under which the package is released.
 License:             BSD3
@@ -31,12 +31,12 @@ Author:              Mike Burns, John Wiegley
 
 -- An email address to which users can send suggestions, bug reports,
 -- and patches.
-Maintainer:          johnw@fpcomplete.com
+Maintainer:          johnw@newartisans.com
 
-Homepage:            https://github.com/fpco/github
+Homepage:            https://github.com/jwiegley/github
 
 -- A copyright notice.
-Copyright:           Copyright 2012-2013 Mike Burns, Copyright 2013 John Wiegley
+Copyright:           Copyright 2012-2013 Mike Burns, Copyright 2013-2015 John Wiegley
 
 Category:            Network APIs
 
@@ -114,14 +114,15 @@ Extra-source-files:  README.md
 
 
 -- Constraint on the version of Cabal needed to build this package.
-Cabal-version:       >=1.6
+Cabal-version:       >=1.10
 
 source-repository head
   type: git
-  location: git://github.com/fpco/github.git
+  location: git://github.com/jwiegley/github.git
 
 Library
   -- Modules exported by the library.
+  Default-Language: Haskell2010
   Exposed-modules: Github.Auth,
                    Github.Data,
                    Github.Data.Definitions,
@@ -187,6 +188,7 @@ Library
 
 
 test-suite github-test
+  default-language: Haskell2010
   type: exitcode-stdio-1.0
   hs-source-dirs: spec, .
   main-is: Spec.hs
