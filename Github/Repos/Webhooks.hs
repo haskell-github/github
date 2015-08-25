@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, DeriveGeneric, DeriveDataTypeable #-}
 {-# LANGUAGE CPP #-}
 -- | The webhooks API, as described at
 -- <https://developer.github.com/v3/repos/hooks/>
@@ -31,10 +31,13 @@ module Github.Repos.Webhooks (
 
 import Github.Data
 import Github.Private
+import Control.DeepSeq (NFData)
+import Data.Data
 import qualified Data.Map as M
 import Network.HTTP.Conduit
 import Network.HTTP.Types
 import Data.Aeson
+import GHC.Generics (Generic)
 
 type RepoOwner = String
 type RepoName = String
@@ -45,7 +48,9 @@ data NewRepoWebhook = NewRepoWebhook {
  ,newRepoWebhookConfig :: M.Map String String
  ,newRepoWebhookEvents :: Maybe [RepoWebhookEvent]
  ,newRepoWebhookActive :: Maybe Bool
-} deriving Show
+} deriving (Eq, Ord, Show, Typeable, Data, Generic)
+
+instance NFData NewRepoWebhook
 
 data EditRepoWebhook = EditRepoWebhook {
   editRepoWebhookConfig :: Maybe (M.Map String String)
@@ -53,8 +58,10 @@ data EditRepoWebhook = EditRepoWebhook {
  ,editRepoWebhookAddEvents :: Maybe [RepoWebhookEvent]
  ,editRepoWebhookRemoveEvents :: Maybe [RepoWebhookEvent]
  ,editRepoWebhookActive :: Maybe Bool
-} deriving Show
-                  
+} deriving (Eq, Ord, Show, Typeable, Data, Generic)
+                
+instance NFData EditRepoWebhook
+
 instance ToJSON NewRepoWebhook where
   toJSON (NewRepoWebhook { newRepoWebhookName = name
                          , newRepoWebhookConfig = config

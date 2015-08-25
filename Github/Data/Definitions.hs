@@ -1,9 +1,11 @@
-{-# LANGUAGE DeriveDataTypeable, StandaloneDeriving #-}
+{-# LANGUAGE DeriveDataTypeable, StandaloneDeriving, DeriveGeneric #-}
 
 module Github.Data.Definitions where
 
+import Control.DeepSeq (NFData)
 import Data.Time
 import Data.Data
+import GHC.Generics (Generic)
 import qualified Control.Exception as E
 import qualified Data.Map as M
 
@@ -18,7 +20,9 @@ data Error =
 
 -- | A date in the Github format, which is a special case of ISO-8601.
 newtype GithubDate = GithubDate { fromGithubDate :: UTCTime }
-  deriving (Show, Data, Typeable, Eq, Ord)
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData GithubDate
 
 data Commit = Commit {
    commitSha       :: String
@@ -31,11 +35,15 @@ data Commit = Commit {
   ,commitStats     :: Maybe Stats
 } deriving (Show, Data, Typeable, Eq, Ord)
 
+instance NFData Commit
+
 data Tree = Tree {
    treeSha :: String
   ,treeUrl :: String
   ,treeGitTrees :: [GitTree]
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Tree
 
 data GitTree = GitTree {
   gitTreeType :: String
@@ -45,7 +53,9 @@ data GitTree = GitTree {
   ,gitTreeSize :: Maybe Int
   ,gitTreePath :: String
   ,gitTreeMode :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData GitTree
 
 data GitCommit = GitCommit {
    gitCommitMessage :: String
@@ -55,7 +65,9 @@ data GitCommit = GitCommit {
   ,gitCommitTree :: Tree
   ,gitCommitSha :: Maybe String
   ,gitCommitParents :: [Tree]
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData GitCommit
 
 data GithubOwner = GithubUser {
    githubOwnerAvatarUrl :: String
@@ -69,13 +81,17 @@ data GithubOwner = GithubUser {
   ,githubOwnerLogin :: String
   ,githubOwnerUrl :: String
   ,githubOwnerId :: Int
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData GithubOwner
 
 data GitUser = GitUser {
    gitUserName  :: String
   ,gitUserEmail :: String
   ,gitUserDate  :: GithubDate
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData GitUser
 
 data File = File {
    fileBlobUrl :: String
@@ -87,13 +103,17 @@ data File = File {
   ,filePatch :: String
   ,fileFilename :: String
   ,fileDeletions :: Int
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData File
 
 data Stats = Stats {
    statsAdditions :: Int
   ,statsTotal :: Int
   ,statsDeletions :: Int
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Stats
 
 data Comment = Comment {
    commentPosition :: Maybe Int
@@ -107,15 +127,21 @@ data Comment = Comment {
   ,commentPath :: Maybe String
   ,commentUser :: GithubOwner
   ,commentId :: Int
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Comment
 
 data NewComment = NewComment {
    newCommentBody :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData NewComment
 
 data EditComment = EditComment {
    editCommentBody :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData EditComment
 
 data Diff = Diff {
    diffStatus :: String
@@ -130,7 +156,9 @@ data Diff = Diff {
   ,diffAheadBy :: Int
   ,diffDiffUrl :: String
   ,diffPermalinkUrl :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Diff
 
 data Gist = Gist {
    gistUser :: GithubOwner
@@ -145,7 +173,9 @@ data Gist = Gist {
   ,gistId :: String
   ,gistFiles :: [GistFile]
   ,gistGitPullUrl :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Gist
 
 data GistFile = GistFile {
    gistFileType :: String
@@ -154,7 +184,9 @@ data GistFile = GistFile {
   ,gistFileLanguage :: Maybe String
   ,gistFileFilename :: String
   ,gistFileContent :: Maybe String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData GistFile
 
 data GistComment = GistComment {
    gistCommentUser :: GithubOwner
@@ -163,7 +195,9 @@ data GistComment = GistComment {
   ,gistCommentBody :: String
   ,gistCommentUpdatedAt :: GithubDate
   ,gistCommentId :: Int
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData GistComment
 
 data Blob = Blob {
    blobUrl :: String
@@ -171,24 +205,32 @@ data Blob = Blob {
   ,blobContent :: String
   ,blobSha :: String
   ,blobSize :: Int
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Blob
 
 data NewGitReference = NewGitReference {
    newGitReferenceRef :: String
   ,newGitReferenceSha :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData NewGitReference
 
 data GitReference = GitReference {
    gitReferenceObject :: GitObject
   ,gitReferenceUrl :: String
   ,gitReferenceRef :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData GitReference
 
 data GitObject = GitObject {
    gitObjectType :: String
   ,gitObjectSha :: String
   ,gitObjectUrl :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData GitObject
 
 data Issue = Issue {
    issueClosedAt :: Maybe GithubDate
@@ -209,7 +251,9 @@ data Issue = Issue {
   ,issueId :: Int
   ,issueComments :: Int
   ,issueMilestone :: Maybe Milestone
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Issue
 
 data NewIssue = NewIssue {
   newIssueTitle :: String
@@ -217,7 +261,9 @@ data NewIssue = NewIssue {
 , newIssueAssignee :: Maybe String
 , newIssueMilestone :: Maybe Int
 , newIssueLabels :: Maybe [String]
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData NewIssue
 
 data EditIssue = EditIssue {
   editIssueTitle :: Maybe String
@@ -226,8 +272,9 @@ data EditIssue = EditIssue {
 , editIssueState :: Maybe String
 , editIssueMilestone :: Maybe Int
 , editIssueLabels :: Maybe [String]
-} deriving  (Show, Data, Typeable, Eq, Ord)
+} deriving  (Show, Data, Typeable, Eq, Ord, Generic)
 
+instance NFData EditIssue
 
 data Milestone = Milestone {
    milestoneCreator :: GithubOwner
@@ -240,19 +287,25 @@ data Milestone = Milestone {
   ,milestoneUrl :: String
   ,milestoneCreatedAt :: GithubDate
   ,milestoneState :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Milestone
 
 data IssueLabel = IssueLabel {
    labelColor :: String
   ,labelUrl :: String
   ,labelName :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData IssueLabel
 
 data PullRequestReference = PullRequestReference {
   pullRequestReferenceHtmlUrl :: Maybe String
   ,pullRequestReferencePatchUrl :: Maybe String
   ,pullRequestReferenceDiffUrl :: Maybe String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData PullRequestReference
 
 data IssueComment = IssueComment {
    issueCommentUpdatedAt :: GithubDate
@@ -262,7 +315,9 @@ data IssueComment = IssueComment {
   ,issueCommentCreatedAt :: GithubDate
   ,issueCommentBody :: String
   ,issueCommentId :: Int
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData IssueComment
 
 -- | Data describing an @Event@.
 data EventType =
@@ -284,7 +339,9 @@ data EventType =
   | Unlocked      -- ^ The issue was unlocked by the actor.
   | HeadRefDeleted -- ^ The pull request’s branch was deleted.
   | HeadRefRestored -- ^ The pull request’s branch was restored.
-  deriving (Show, Data, Typeable, Eq, Ord)
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData EventType
 
 data Event = Event {
    eventActor :: GithubOwner
@@ -294,14 +351,18 @@ data Event = Event {
   ,eventCreatedAt :: GithubDate
   ,eventId :: Int
   ,eventIssue :: Maybe Issue
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Event
 
 data SimpleOrganization = SimpleOrganization {
    simpleOrganizationUrl :: String
   ,simpleOrganizationAvatarUrl :: String
   ,simpleOrganizationId :: Int
   ,simpleOrganizationLogin :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData SimpleOrganization
 
 data Organization = Organization {
    organizationType :: String
@@ -320,7 +381,9 @@ data Organization = Organization {
   ,organizationCreatedAt :: GithubDate
   ,organizationName :: Maybe String
   ,organizationId :: Int
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Organization
 
 data PullRequest = PullRequest {
    pullRequestClosedAt :: Maybe GithubDate
@@ -339,7 +402,9 @@ data PullRequest = PullRequest {
   ,pullRequestMergedAt :: Maybe GithubDate
   ,pullRequestTitle :: String
   ,pullRequestId :: Int
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData PullRequest
 
 data DetailedPullRequest = DetailedPullRequest {
   -- this is a duplication of a PullRequest
@@ -371,13 +436,17 @@ data DetailedPullRequest = DetailedPullRequest {
   ,detailedPullRequestCommits :: Int
   ,detailedPullRequestMerged :: Bool
   ,detailedPullRequestMergeable :: Maybe Bool
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData DetailedPullRequest
 
 data EditPullRequest = EditPullRequest {
    editPullRequestTitle :: Maybe String
   ,editPullRequestBody :: Maybe String
   ,editPullRequestState :: Maybe EditPullRequestState
 } deriving (Show)
+
+instance NFData EditPullRequest
 
 data CreatePullRequest =
       CreatePullRequest
@@ -393,12 +462,16 @@ data CreatePullRequest =
       }
     deriving (Show)
 
+instance NFData CreatePullRequest
+
 data PullRequestLinks = PullRequestLinks {
    pullRequestLinksReviewComments :: String
   ,pullRequestLinksComments :: String
   ,pullRequestLinksHtml :: String
   ,pullRequestLinksSelf :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData PullRequestLinks
 
 data PullRequestCommit = PullRequestCommit {
    pullRequestCommitLabel :: String
@@ -406,12 +479,16 @@ data PullRequestCommit = PullRequestCommit {
   ,pullRequestCommitSha :: String
   ,pullRequestCommitUser :: GithubOwner
   ,pullRequestCommitRepo :: Repo
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData PullRequestCommit
 
 data SearchReposResult = SearchReposResult {
   searchReposTotalCount :: Int
   ,searchReposRepos :: [Repo]
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData SearchReposResult
 
 data Repo = Repo {
    repoSshUrl :: Maybe String
@@ -442,15 +519,21 @@ data Repo = Repo {
   ,repoParent :: Maybe RepoRef
   ,repoSource :: Maybe RepoRef
   ,repoHooksUrl :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Repo
 
 data RepoRef = RepoRef GithubOwner String -- Repo owner and name
- deriving (Show, Data, Typeable, Eq, Ord)
+ deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData RepoRef
 
 data SearchCodeResult = SearchCodeResult {
-  searchCodeTotalCount :: Int
+   searchCodeTotalCount :: Int
   ,searchCodeCodes :: [Code]
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData SearchCodeResult
 
 data Code = Code {
    codeName :: String
@@ -460,10 +543,14 @@ data Code = Code {
   ,codeGitUrl :: String
   ,codeHtmlUrl :: String
   ,codeRepo :: Repo
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Code
 
 data Content = ContentFile ContentData | ContentDirectory [ContentData]
- deriving (Show, Data, Typeable, Eq, Ord)
+ deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Content
 
 data ContentData = ContentData {
    contentType :: String
@@ -476,7 +563,9 @@ data ContentData = ContentData {
   ,contentUrl :: String
   ,contentGitUrl :: String
   ,contentHtmlUrl :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData ContentData
 
 data Contributor
   -- | An existing Github user, with their number of contributions, avatar
@@ -484,33 +573,45 @@ data Contributor
   = KnownContributor Int String String String Int String
   -- | An unknown Github user with their number of contributions and recorded name.
   | AnonymousContributor Int String
- deriving (Show, Data, Typeable, Eq, Ord)
+ deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Contributor
 
 -- | This is only used for the FromJSON instance.
 data Languages = Languages { getLanguages :: [Language] }
-  deriving (Show, Data, Typeable, Eq, Ord)
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Languages
 
 -- | A programming language with the name and number of characters written in
 -- it.
 data Language = Language String Int
- deriving (Show, Data, Typeable, Eq, Ord)
+ deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Language
 
 data Tag = Tag {
    tagName :: String
   ,tagZipballUrl :: String
   ,tagTarballUrl :: String
   ,tagCommit :: BranchCommit
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Tag
 
 data Branch = Branch {
    branchName :: String
   ,branchCommit :: BranchCommit
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Branch
 
 data BranchCommit = BranchCommit {
    branchCommitSha :: String
   ,branchCommitUrl :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData BranchCommit
 
 data DetailedOwner = DetailedUser {
    detailedOwnerCreatedAt :: GithubDate
@@ -550,7 +651,9 @@ data DetailedOwner = DetailedUser {
   ,detailedOwnerId :: Int
   ,detailedOwnerHtmlUrl :: String
   ,detailedOwnerLogin :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData DetailedOwner
 
 data RepoWebhook = RepoWebhook {
    repoWebhookUrl :: String
@@ -563,7 +666,9 @@ data RepoWebhook = RepoWebhook {
   ,repoWebhookLastResponse :: RepoWebhookResponse
   ,repoWebhookUpdatedAt :: GithubDate
   ,repoWebhookCreatedAt :: GithubDate
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData RepoWebhook
 
 data RepoWebhookEvent =
    WebhookWildcardEvent
@@ -586,13 +691,17 @@ data RepoWebhookEvent =
  | WebhookStatusEvent
  | WebhookTeamAddEvent
  | WebhookWatchEvent
-   deriving (Show, Data, Typeable, Eq, Ord)
+   deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData RepoWebhookEvent
 
 data RepoWebhookResponse = RepoWebhookResponse {
    repoWebhookResponseCode :: Maybe Int
   ,repoWebhookResponseStatus :: String
   ,repoWebhookResponseMessage :: Maybe String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData RepoWebhookResponse
 
 data PullRequestEvent = PullRequestEvent {
    pullRequestEventAction :: PullRequestEventType
@@ -600,7 +709,9 @@ data PullRequestEvent = PullRequestEvent {
   ,pullRequestEventPullRequest :: DetailedPullRequest
   ,pullRequestRepository :: Repo
   ,pullRequestSender :: GithubOwner
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData PullRequestEvent
 
 data PullRequestEventType =
     PullRequestOpened
@@ -611,15 +722,21 @@ data PullRequestEventType =
   | PullRequestUnassigned
   | PullRequestLabeled
   | PullRequestUnlabeled
-  deriving (Show, Data, Typeable, Eq, Ord)
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData PullRequestEventType
 
 data PingEvent = PingEvent {
    pingEventZen :: String
   ,pingEventHook :: RepoWebhook
   ,pingEventHookId :: Int
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData PingEvent
 
 data EditPullRequestState =
     EditPullRequestStateOpen
   | EditPullRequestStateClosed
   deriving Show
+
+instance NFData EditPullRequestState
