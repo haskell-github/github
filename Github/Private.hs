@@ -81,8 +81,8 @@ buildPath paths = '/' : intercalate "/" paths
 
 githubAPI :: (ToJSON a, Show a, FromJSON b, Show b) => BS.ByteString -> String
           -> Maybe GithubAuth -> Maybe a -> IO (Either Error b)
-githubAPI apimethod path auth body = do
-  result <- doHttps apimethod (apiEndpoint auth ++ path) auth (encodeBody body)
+githubAPI apimethod p auth body = do
+  result <- doHttps apimethod (apiEndpoint auth ++ p) auth (encodeBody body)
   case result of
       Left e     -> return (Left (HTTPConnectionError e))
       Right resp -> either Left (\x -> jsonResultToE (LBS.pack (show x))
@@ -172,8 +172,8 @@ doHttps reqMethod url auth body = do
 #endif
 
 doHttpsStatus :: BS.ByteString -> String -> GithubAuth -> Maybe RequestBody -> IO (Either Error Status)
-doHttpsStatus reqMethod path auth payload = do
-  result <- doHttps reqMethod (apiEndpoint (Just auth) ++ path) (Just auth) payload
+doHttpsStatus reqMethod p auth payload = do
+  result <- doHttps reqMethod (apiEndpoint (Just auth) ++ p) (Just auth) payload
   case result of
     Left e -> return (Left (HTTPConnectionError e))
     Right resp ->

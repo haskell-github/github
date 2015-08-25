@@ -27,7 +27,6 @@ import GHC.Generics (Generic)
 
 import Data.Time.Format (formatTime)
 import Data.Time.Clock (UTCTime(..))
-import Data.Time (defaultTimeLocale)
 
 
 -- | A data structure for describing how to filter issues. This is used by

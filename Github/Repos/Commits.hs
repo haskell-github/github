@@ -4,6 +4,7 @@ module Github.Repos.Commits (
  CommitQueryOption(..)
 ,commitsFor
 ,commitsFor'
+,commitsWithOptionsFor
 ,commitsWithOptionsFor'
 ,commit
 ,commit'
@@ -67,14 +68,6 @@ commitsWithOptionsFor' auth user repo opts = githubGetWithQueryString' auth ["re
 -- > commit "mike-burns" "github" "9d1a9a361266c3c890b1108ad2fdf52f824b1b81"
 commit :: String -> String -> String -> IO (Either Error Commit)
 commit = commit' Nothing
-
--- | Details on a specific SHA1 for a repo.
--- With authentication.
---
--- > commit (Just $ GithubBasicAuth (username, password)) "mike-burns" "github" "9d1a9a361266c3c890b1108ad2fdf52f824b1b81"
-commit' :: Maybe GithubAuth -> String -> String -> String -> IO (Either Error Commit)
-commit' auth user repo sha1 = githubGet' auth ["repos", user, repo, "commits", sha1]
-
 
 -- | Details on a specific SHA1 for a repo.
 -- With authentication.
