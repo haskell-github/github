@@ -546,6 +546,7 @@ instance FromJSON Repo where
          <*> o .:? "parent"
          <*> o .:? "source"
          <*> o .: "hooks_url"
+         <*> o .: "stargazers_count"
   parseJSON _ = fail "Could not build a Repo"
 
 instance FromJSON SearchCodeResult where

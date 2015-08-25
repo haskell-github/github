@@ -519,6 +519,7 @@ data Repo = Repo {
   ,repoParent :: Maybe RepoRef
   ,repoSource :: Maybe RepoRef
   ,repoHooksUrl :: String
+  ,repoStargazersCount :: Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Repo

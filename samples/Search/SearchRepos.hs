@@ -44,6 +44,7 @@ formatRepo r =
                  ,("Description", orEmpty . Github.repoDescription)
                  ,("Created-At", formatMaybeDate . Github.repoCreatedAt)
                  ,("Pushed-At", formatMaybeDate . Github.repoPushedAt)
+                 ,("Stars", show . Github.repoStargazersCount)
                ]
   in intercalate "\n" $ map fmt fields
     where fmt (s,f) = fill 12 (s ++ ":") ++ " " ++ f r
@@ -52,5 +53,4 @@ formatRepo r =
             where n' = max 0 (n - length s) 
 
 formatMaybeDate = maybe "???" formatDate
-
 formatDate = show . Github.fromGithubDate
