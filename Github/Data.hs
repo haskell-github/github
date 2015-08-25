@@ -543,8 +543,8 @@ instance FromJSON Repo where
          <*> o .:? "has_wiki"
          <*> o .:? "has_issues"
          <*> o .:? "has_downloads"
-	 <*> o .:? "parent"
-	 <*> o .:? "source"
+         <*> o .:? "parent"
+         <*> o .:? "source"
          <*> o .: "hooks_url"
   parseJSON _ = fail "Could not build a Repo"
 
