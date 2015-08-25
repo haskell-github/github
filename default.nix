@@ -6,7 +6,7 @@
 }:
 mkDerivation {
   pname = "github";
-  version = "0.13.2";
+  version = "0.14.0";
   src = ./.;
   buildDepends = [
     aeson attoparsec base base16-bytestring byteable bytestring

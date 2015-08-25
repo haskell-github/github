@@ -33,7 +33,7 @@ data Commit = Commit {
   ,commitAuthor    :: Maybe GithubOwner
   ,commitFiles     :: [File]
   ,commitStats     :: Maybe Stats
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Commit
 
@@ -444,7 +444,7 @@ data EditPullRequest = EditPullRequest {
    editPullRequestTitle :: Maybe String
   ,editPullRequestBody :: Maybe String
   ,editPullRequestState :: Maybe EditPullRequestState
-} deriving (Show)
+} deriving (Show, Generic)
 
 instance NFData EditPullRequest
 
@@ -460,7 +460,7 @@ data CreatePullRequest =
       , createPullRequestHead     :: String
       , createPullRequestBase     :: String
       }
-    deriving (Show)
+    deriving (Show, Generic)
 
 instance NFData CreatePullRequest
 
@@ -737,6 +737,6 @@ instance NFData PingEvent
 data EditPullRequestState =
     EditPullRequestStateOpen
   | EditPullRequestStateClosed
-  deriving Show
+  deriving (Show, Generic)
 
 instance NFData EditPullRequestState
