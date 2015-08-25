@@ -2,6 +2,7 @@ module MergePullRequest where
 
 import qualified Github.PullRequests as Github
 import Github.Auth
+import Github.Data
 
 main :: IO ()
 main = do

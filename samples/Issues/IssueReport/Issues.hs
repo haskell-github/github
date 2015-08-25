@@ -1,15 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
+import qualified Github.Auth as Github
 import qualified Github.Issues as Github
-import qualified Data.ByteString as B
 import Report
 
 -- The example requires wl-pprint module "The Wadler/Leijen Pretty Printer"
-import Text.PrettyPrint.Leijen
+import Text.PrettyPrint.ANSI.Leijen
 
-auth ::  Maybe (B.ByteString, B.ByteString)
-auth = Just ("yourgithub id", "somepassword")
+auth ::  Maybe Github.GithubAuth
+auth = Just $ Github.GithubBasicAuth "yourgithub id" "somepassword"
 
 mkIssue :: ReportedIssue -> Doc
 mkIssue (Issue n t h) = hsep [

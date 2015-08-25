@@ -141,6 +141,7 @@ Library
                    Github.Organizations,
                    Github.Organizations.Members,
                    Github.PullRequests,
+                   Github.PullRequests.ReviewComments,
                    Github.Repos,
                    Github.Repos.Collaborators,
                    Github.Repos.Commits,
