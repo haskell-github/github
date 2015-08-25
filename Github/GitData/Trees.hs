@@ -2,7 +2,9 @@
 -- described on <http://developer.github.com/v3/git/trees/>.
 module Github.GitData.Trees (
  tree
+,tree'
 ,nestedTree
+,nestedTree'
 ,module Github.Data
 ) where
 
