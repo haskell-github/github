@@ -5,7 +5,7 @@ import Data.List
 
 main = do
   let userName = "ubuwaits"
-  possiblyIsCollaborator <- Github.isCollaboratorOn userName "thoughtbot" "paperclip"
+  possiblyIsCollaborator <- Github.isCollaboratorOn Nothing userName "thoughtbot" "paperclip"
   case possiblyIsCollaborator of
     (Left error) -> putStrLn $ "Error: " ++ (show error)
     (Right True) ->

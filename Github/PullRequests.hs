@@ -100,12 +100,12 @@ pullRequestFiles = pullRequestFiles' Nothing
 -- | Check if pull request has been merged
 isPullRequestMerged :: GithubAuth -> String -> String -> Int -> IO(Either Error Status)
 isPullRequestMerged auth reqRepoOwner reqRepoName reqPullRequestNumber =
-  doHttpsStatus "GET" (buildUrl ["repos", reqRepoOwner, reqRepoName, "pulls", (show reqPullRequestNumber), "merge"]) auth Nothing
+  doHttpsStatus "GET" (buildPath ["repos", reqRepoOwner, reqRepoName, "pulls", (show reqPullRequestNumber), "merge"]) auth Nothing
 
 -- | Merge a pull request
 mergePullRequest :: GithubAuth -> String -> String -> Int -> Maybe String -> IO(Either Error Status)
 mergePullRequest auth reqRepoOwner reqRepoName reqPullRequestNumber commitMessage =
-  doHttpsStatus "PUT" (buildUrl ["repos", reqRepoOwner, reqRepoName, "pulls", (show reqPullRequestNumber), "merge"]) auth (Just . RequestBodyLBS . encode . toJSON $ (buildCommitMessageMap commitMessage))
+  doHttpsStatus "PUT" (buildPath ["repos", reqRepoOwner, reqRepoName, "pulls", (show reqPullRequestNumber), "merge"]) auth (Just . RequestBodyLBS . encode . toJSON $ (buildCommitMessageMap commitMessage))
 
 -- | Update a pull request
 updatePullRequest :: GithubAuth -> String -> String -> Int -> EditPullRequest -> IO (Either Error DetailedPullRequest)
