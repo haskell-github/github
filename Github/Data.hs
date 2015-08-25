@@ -676,19 +676,34 @@ instance FromJSON Content where
   parseJSON (Array os) = ContentDirectory <$> (mapM parseJSON $ V.toList os)
   parseJSON _ = fail "Could not build a Content"
 
-instance FromJSON ContentData where
+instance FromJSON ContentFileData where
   parseJSON (Object o) =
-    ContentData <$> o .: "type"
-                <*> o .: "encoding"
-                <*> o .: "size"
-                <*> o .: "name"
+    ContentFileData <$> parseJSON (Object o)
+                    <*> o .: "encoding"
+                    <*> o .: "size"
+                    <*> o .: "content"
+  parseJSON _ = fail "Could not build a ContentFileData"
+
+instance FromJSON ContentItem where
+  parseJSON (Object o) =
+    ContentItem <$> o .: "type"
+                <*> parseJSON (Object o)
+  parseJSON _ = fail "Could not build a ContentItem"
+
+instance FromJSON ContentItemType where
+  parseJSON (String "file") = return ItemFile
+  parseJSON (String "dir")  = return ItemDir
+  parseJSON _ = fail "Could not build a ContentItemType"
+
+instance FromJSON ContentInfo where
+  parseJSON (Object o) =
+    ContentInfo <$> o .: "name"
                 <*> o .: "path"
-                <*> o .: "content"
                 <*> o .: "sha"
                 <*> o .: "url"
                 <*> o .: "git_url"
                 <*> o .: "html_url"
-  parseJSON _ = fail "Could not build a ContentData"
+  parseJSON _ = fail "Could not build a ContentInfo"
 
 -- | A slightly more generic version of Aeson's @(.:?)@, using `mzero' instead
 -- of `Nothing'.
