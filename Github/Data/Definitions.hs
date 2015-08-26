@@ -568,16 +568,22 @@ data ContentFileData = ContentFileData {
   ,contentFileEncoding :: String
   ,contentFileSize :: Int
   ,contentFileContent :: String
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData ContentFileData
 
 -- | An item in a directory listing.
 data ContentItem = ContentItem {
    contentItemType :: ContentItemType
   ,contentItemInfo :: ContentInfo
-} deriving (Show, Data, Typeable, Eq, Ord)
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData ContentItem
 
 data ContentItemType = ItemFile | ItemDir
-  deriving (Show, Data, Typeable, Eq, Ord)
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData ContentItemType
 
 -- | Information common to both kinds of Content: files and directories.
 data ContentInfo = ContentInfo {
@@ -589,7 +595,7 @@ data ContentInfo = ContentInfo {
   ,contentHtmlUrl :: String
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData ContentData
+instance NFData ContentInfo
 
 data Contributor
   -- | An existing Github user, with their number of contributions, avatar
