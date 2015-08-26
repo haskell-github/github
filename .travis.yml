@@ -1,16 +1,17 @@
 # NB: don't set `language: haskell` here
 
 # See also https://github.com/hvr/multi-ghc-travis for more information
-# Keep this in sync with the Stackage LTS which provides cabal.config below.
 env:
-# - GHCVER=7.6.3 CABALVER=1.16
- - GHCVER=7.8.4 CABALVER=1.18 STACKAGEURL=https://www.stackage.org/lts/cabal.config
- - GHCVER=7.10.1 CABALVER=1.22 STACKAGEURL=https://www.stackage.org/nightly/cabal.config
- - GHCVER=head CABALVER=head STACKAGEURL=https://www.stackage.org/nightly/cabal.config
+ - GHCVER=7.8.4 CABALVER=1.18
+ - GHCVER=7.10.2 CABALVER=1.22
+ # github isn't buildable with lts-2.22 (needs at least time>=1.5)
+ - GHCVER=7.10.2 CABALVER=1.22 STACKAGEURL=https://www.stackage.org/lts-3/cabal.config
+ - GHCVER=7.10.2 CABALVER=1.22 STACKAGEURL=https://www.stackage.org/nightly/cabal.config
+ - GHCVER=head CABALVER=head
 
 matrix:
   allow_failures:
-   - env: GHCVER=head CABALVER=head STACKAGEURL=https://www.stackage.org/nightly/cabal.config
+   - env: GHCVER=head CABALVER=head
 
 # Note: the distinction between `before_install` and `install` is not
 #       important.
@@ -22,7 +23,7 @@ before_install:
  - cabal --version
 
 install:
- - wget $STACKAGEURL
+ - if [ -n "$STACKAGEURL" ]; then wget $STACKAGEURL; fi
  - travis_retry cabal update
  - cabal install --only-dependencies --enable-tests
 
