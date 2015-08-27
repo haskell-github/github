@@ -3,6 +3,7 @@
 module Github.Users (
  userInfoFor
 ,userInfoFor'
+,userInfoCurrent'
 ,module Github.Data
 ) where
 
@@ -21,3 +22,9 @@ userInfoFor' auth userName = githubGet' auth ["users", userName]
 -- > userInfoFor "mike-burns"
 userInfoFor :: String -> IO (Either Error DetailedOwner)
 userInfoFor = userInfoFor' Nothing
+
+-- | Retrieve information about the user associated with the supplied authentication.
+--
+-- > userInfoCurrent' (GithubOAuth "...")
+userInfoCurrent' :: Maybe GithubAuth -> IO (Either Error DetailedOwner)
+userInfoCurrent' auth = githubGet' auth ["user"]
