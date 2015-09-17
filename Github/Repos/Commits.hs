@@ -1,3 +1,5 @@
+{-# LANGUAGE CPP #-}
+
 -- | The repo commits API as described on
 -- <http://developer.github.com/v3/repos/commits/>.
 module Github.Repos.Commits (
@@ -22,12 +24,21 @@ module Github.Repos.Commits (
 import Github.Data
 import Github.Private
 
-import Data.Time.Format (iso8601DateFormat, formatTime)
+import Data.Time.Format (formatTime)
+#if MIN_VERSION_time (1,5,0)
+import Data.Time.Format (iso8601DateFormat)
 import Data.Time (defaultTimeLocale)
+#else
+import System.Locale (defaultTimeLocale)
+#endif
 import Data.List (intercalate)
 
 githubFormat :: GithubDate -> String
+#if MIN_VERSION_time (1,5,0)
 githubFormat = formatTime defaultTimeLocale (iso8601DateFormat $ Just "%H:%M:%S") . fromGithubDate
+#else
+githubFormat = formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%S" . fromGithubDate
+#endif
 
 renderCommitQueryOption :: CommitQueryOption -> String
 renderCommitQueryOption (CommitQuerySha sha) = "sha=" ++ sha
