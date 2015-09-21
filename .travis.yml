@@ -3,8 +3,8 @@
 # See also https://github.com/hvr/multi-ghc-travis for more information
 env:
  - GHCVER=7.8.4 CABALVER=1.18
+ - GHCVER=7.8.4 CABALVER=1.18 STACKAGEURL=https://www.stackage.org/lts-2.22/cabal.config
  - GHCVER=7.10.2 CABALVER=1.22
- # github isn't buildable with lts-2.22 (needs at least time>=1.5)
  - GHCVER=7.10.2 CABALVER=1.22 STACKAGEURL=https://www.stackage.org/lts-3/cabal.config
  - GHCVER=7.10.2 CABALVER=1.22 STACKAGEURL=https://www.stackage.org/nightly/cabal.config
  - GHCVER=head CABALVER=head
