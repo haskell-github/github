@@ -650,6 +650,122 @@ instance FromJSON DetailedOwner where
                    <*> o .: "login"
   parseJSON _ = fail "Could not build a DetailedOwner"
 
+instance FromJSON Privacy where
+  parseJSON (String attr) =
+    case attr of
+      "secret" -> return PrivacySecret
+      "closed" -> return PrivacyClosed
+      _        -> fail "Unknown Privacy Attribute"
+  parseJSON _ = fail "Could not build Privacy"
+
+instance ToJSON Privacy where
+  toJSON attr =
+    String $
+      case attr of
+        PrivacySecret -> "secret"
+        PrivacyClosed -> "closed"
+
+instance FromJSON Permission where
+  parseJSON (String attr) =
+    case attr of
+      "pull"  -> return PermissionPull
+      "push"  -> return PermissionPush
+      "admin" -> return PermissionAdmin
+      _       -> fail "Unknown Permission Attribute"
+  parseJSON _ = fail "Could not build Permission"
+
+instance ToJSON Permission where
+  toJSON attr =
+    String $
+      case attr of
+        PermissionPull  -> "pull"
+        PermissionPush  -> "push"
+        PermissionAdmin -> "admin"
+
+instance FromJSON Team where
+  parseJSON (Object o) =
+    Team <$> o .: "id"
+         <*> o .: "url"
+         <*> o .: "name"
+         <*> o .: "slug"
+         <*> o .:?"description" .!= Nothing
+         <*> o .:?"privacy" .!= Nothing
+         <*> o .: "permission"
+         <*> o .: "members_url"
+         <*> o .: "repositories_url"
+  parseJSON _ = fail "Could not build Team"
+
+instance FromJSON DetailedTeam where
+  parseJSON (Object o) =
+    DetailedTeam <$> o .: "id"
+                 <*> o .: "url"
+                 <*> o .: "name"
+                 <*> o .: "slug"
+                 <*> o .:?"description" .!= Nothing
+                 <*> o .:?"privacy" .!= Nothing
+                 <*> o .: "permission"
+                 <*> o .: "members_url"
+                 <*> o .: "repositories_url"
+                 <*> o .: "members_count"
+                 <*> o .: "repos_count"
+                 <*> o .: "organization"
+  parseJSON _ = fail "Could not build a DetailedTeam"
+
+instance ToJSON CreateTeam where
+  toJSON (CreateTeam name desc repo_names {-privacy-} permissions) =
+    object [ "name"        .= name
+           , "description" .= desc
+           , "repo_names"  .= repo_names
+           {-, "privacy" .= privacy-}
+           , "permissions" .= permissions ]
+
+instance ToJSON EditTeam where
+  toJSON (EditTeam name desc {-privacy-} permissions) =
+    object [ "name"        .= name
+           , "description" .= desc
+           {-, "privacy" .= privacy-}
+           , "permissions" .= permissions ]
+
+instance FromJSON Role where
+  parseJSON (String attr) =
+    case attr of
+      "maintainer" -> return RoleMaintainer
+      "member"     -> return RoleMember
+      _            -> fail "Unknown Role"
+  parseJSON _ = fail "Could not build Role"
+
+instance ToJSON Role where
+  toJSON RoleMaintainer = String "maintainer"
+  toJSON RoleMember     = String "member"
+
+instance FromJSON ReqState where
+  parseJSON (String attr) =
+    case attr of
+      "active"  -> return StateActive
+      "pending" -> return StatePending
+      _         -> fail "Unknown ReqState"
+  parseJSON _ = fail "Could not build ReqState"
+
+instance ToJSON ReqState where
+  toJSON StateActive  = String "active"
+  toJSON StatePending = String "pending"
+
+instance FromJSON TeamMembership where
+  parseJSON (Object o) =
+    TeamMembership <$> o .: "url"
+                   <*> o .: "role"
+                   <*> o .: "state"
+  parseJSON _ = fail "Could not build TeamMembership"
+
+instance FromJSON CreateTeamMembership where
+  parseJSON (Object o) =
+    CreateTeamMembership <$> o .: "role"
+  parseJSON _ = fail "Could not build CreateTeamMembership"
+
+instance ToJSON CreateTeamMembership where
+  toJSON (CreateTeamMembership { createTeamMembershipRole = role }) =
+    object [ "role" .= role ]
+
 instance FromJSON RepoWebhook where
   parseJSON (Object o) =
     RepoWebhook <$> o .: "url"

@@ -73,6 +73,8 @@ Extra-source-files:  README.md
                     ,samples/Organizations/Members/ShowMembers.hs
                     ,samples/Organizations/ShowPublicOrganization.hs
                     ,samples/Organizations/ShowPublicOrganizations.hs
+                    ,samples/Organizations/Teams/CreateTeamFor.hs
+                    ,samples/Organizations/Teams/ListTeamsForOrganization.hs
                     ,samples/Pulls/Diff.hs
                     ,samples/Pulls/ListPulls.hs
                     ,samples/Pulls/ReviewComments/ListComments.hs
@@ -107,6 +109,13 @@ Extra-source-files:  README.md
                     ,samples/Repos/Webhooks/ListWebhooks.hs
                     ,samples/Repos/Webhooks/PingWebhook.hs
                     ,samples/Repos/Webhooks/TestPushWebhook.hs
+                    ,samples/Teams/DeleteTeam.hs
+                    ,samples/Teams/EditTeam.hs
+                    ,samples/Teams/ListTeamsCurrent.hs
+                    ,samples/Teams/TeamInfoFor.hs
+                    ,samples/Teams/Memberships/AddTeamMembershipFor.hs
+                    ,samples/Teams/Memberships/DeleteTeamMembershipFor.hs
+                    ,samples/Teams/Memberships/TeamMembershipInfoFor.hs
                     ,samples/Users/Followers/ListFollowers.hs
                     ,samples/Users/Followers/ListFollowing.hs
                     ,samples/Users/ShowUser.hs
@@ -140,6 +149,7 @@ Library
                    Github.Issues.Milestones,
                    Github.Organizations,
                    Github.Organizations.Members,
+                   Github.Organizations.Teams,
                    Github.PullRequests,
                    Github.PullRequests.ReviewComments,
                    Github.Repos,
@@ -151,6 +161,8 @@ Library
                    Github.Repos.Subscribing,
                    Github.Repos.Webhooks
                    Github.Repos.Webhooks.Validate,
+                   Github.Teams
+                   Github.Teams.Memberships,
                    Github.Users,
                    Github.Users.Followers
                    Github.Search
