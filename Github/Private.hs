@@ -72,6 +72,17 @@ githubPatch auth paths body =
             (Just auth)
             (Just body)
 
+githubPut :: (ToJSON a, Show a, FromJSON b, Show b) => GithubAuth -> [String] -> a -> IO (Either Error b)
+githubPut auth paths body =
+  githubAPI (BS.pack "PUT")
+            (buildPath paths)
+            (Just auth)
+            (Just body)
+
+githubDelete :: GithubAuth -> [String] -> IO (Either Error ())
+githubDelete auth paths =
+  githubAPIDelete auth (buildPath paths)
+
 apiEndpoint :: Maybe GithubAuth -> String
 apiEndpoint (Just (GithubEnterpriseOAuth endpoint _)) = endpoint
 apiEndpoint _ = "https://api.github.com"
@@ -127,7 +138,7 @@ doHttps :: BS.ByteString
            -> [Char]
            -> Maybe GithubAuth
            -> Maybe RequestBody
-           -> IO (Either E.SomeException (Response LBS.ByteString))    
+           -> IO (Either E.SomeException (Response LBS.ByteString))
 doHttps reqMethod url auth body = do
   let reqBody = fromMaybe (RequestBodyBS $ BS.pack "") body
       reqHeaders = maybe [] getOAuth auth
@@ -209,3 +220,32 @@ jsonResultToE jsonString result = case result of
 parseJson :: (FromJSON b, Show b) => LBS.ByteString -> Either Error b
 parseJson jsonString = either Left (jsonResultToE jsonString . fromJSON)
                               (parseJsonRaw jsonString)
+
+-- | Generically delete something
+--
+-- > githubApiDelete (GithubBasicAuth (user, password)) ["some", "path"]
+githubAPIDelete :: GithubAuth
+                -> String     -- ^ paths
+                -> IO (Either Error ())
+githubAPIDelete auth paths = do
+  result <- doHttps "DELETE"
+                    (apiEndpoint (Just auth) ++ paths)
+                    (Just auth)
+                    Nothing
+  case result of
+      Left e -> return (Left (HTTPConnectionError e))
+      Right resp ->
+          let status = responseStatus resp
+              headers = responseHeaders resp
+          in if status == notFound404
+                -- doHttps silently absorbs 404 errors, but for this operation
+                -- we want the user to know if they've tried to delete a
+                -- non-existent repository
+             then return (Left (HTTPConnectionError
+                                (E.toException
+                                 (StatusCodeException status headers
+#if MIN_VERSION_http_conduit(1, 9, 0)
+                                 (responseCookieJar resp)
+#endif
+                                 ))))
+             else return (Right ())
