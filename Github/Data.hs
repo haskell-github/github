@@ -9,7 +9,8 @@ module Github.Data (module Github.Data.Definitions) where
 import Control.Applicative
 import Control.Monad
 import qualified Data.Text as T
-import Data.Aeson.Types
+import Data.Aeson.Compat
+import Data.Aeson.Types hiding ((.:?))
 import qualified Data.Vector as V
 import qualified Data.HashMap.Lazy as Map
 import Data.Hashable (Hashable)
