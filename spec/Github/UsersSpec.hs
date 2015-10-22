@@ -5,13 +5,13 @@ import Github.Data.Definitions (DetailedOwner(..))
 
 import Test.Hspec (it, describe, shouldBe, Spec)
 
-fromRight :: Either a b -> b
-fromRight (Right b) = b
-fromRight (Left _) = error "Expected a Right and got a Left"
+fromRightS :: Show a => Either a b -> b
+fromRightS (Right b) = b
+fromRightS (Left a) = error $ "Expected a Right and got a Left" ++ show a
 
 spec :: Spec
 spec =
   describe "userInfoFor" $ do
     it "returns information about the user" $ do
       userInfo <- userInfoFor "mike-burns"
-      detailedOwnerLogin (fromRight userInfo) `shouldBe` "mike-burns"
+      detailedOwnerLogin (fromRightS userInfo) `shouldBe` "mike-burns"
