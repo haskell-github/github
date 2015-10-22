@@ -31,9 +31,9 @@ import Data.Maybe (fromMaybe)
 -- | user/password for HTTP basic access authentication
 data GithubAuth = GithubBasicAuth BS.ByteString BS.ByteString
                 | GithubOAuth String -- ^ token
-                | GithubEnterpriseOAuth String  -- ^ custom API endpoint without
-                                                --   trailing slash
-                                        String  -- ^ token
+                | GithubEnterpriseOAuth String  -- custom API endpoint without
+                                                -- trailing slash
+                                        String  -- token
                 deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData GithubAuth

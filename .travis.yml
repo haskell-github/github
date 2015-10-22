@@ -39,6 +39,10 @@ script:
  - cabal build
  - cabal test
 
+ # Various checks
+ - if [ "$CABALVER" = "1.22" ]; then cabal check; fi
+ - if [ "$CABALVER" = "1.22" ]; then cabal haddock; fi
+
  # tests that a source-distribution can be generated
  - cabal sdist
 
