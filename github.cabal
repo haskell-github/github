@@ -42,6 +42,8 @@ Category:            Network APIs
 
 Build-type:          Simple
 
+Tested-with:         GHC==7.8.4, GHC==7.10.2
+
 -- Extra files to be distributed with the package, such as examples or
 -- a README.
 Extra-source-files:  README.md
@@ -135,6 +137,11 @@ Library
   Exposed-modules: Github.Auth,
                    Github.Data,
                    Github.Data.Definitions,
+                   Github.Data.GitData,
+                   Github.Data.Gists,
+                   Github.Data.Issues,
+                   Github.Data.PullRequests,
+                   Github.Data.Teams,
                    Github.Events,
                    Github.Gists,
                    Github.Gists.Comments,
@@ -174,6 +181,7 @@ Library
   Build-depends: base >= 4.0 && < 5.0,
                  time >=1.4 && <1.6,
                  aeson >= 0.6.1.0,
+                 aeson-extra >= 0.2.0.0,
                  attoparsec >= 0.10.3.0,
                  bytestring,
                  case-insensitive >= 0.4.0.4,
@@ -200,28 +208,10 @@ Library
 test-suite github-test
   default-language: Haskell2010
   type: exitcode-stdio-1.0
-  hs-source-dirs: spec, .
+  hs-source-dirs: spec
   main-is: Spec.hs
   build-depends: base >= 4.0 && < 5.0,
-                 time,
-                 aeson >= 0.6.1.0,
-                 attoparsec >= 0.10.3.0,
-                 bytestring,
-                 case-insensitive >= 0.4.0.4,
-                 containers,
-                 hashable,
-                 text,
-                 old-locale,
-                 http-conduit >= 1.8,
-                 http-types,
-                 data-default,
-                 vector,
-                 deepseq,
-                 unordered-containers >= 0.2 && < 0.3,
-                 cryptohash >= 0.11,
-                 byteable >= 0.1.0,
-                 base16-bytestring >= 0.1.1.6
-
-                 , hspec
+                 github,
+                 hspec
 
   ghc-options: -Wall -fno-warn-orphans

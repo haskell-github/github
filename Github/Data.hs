@@ -4,12 +4,20 @@
 -- instances of @FromJSON@ to it. If you wish to use the data without the
 -- instances, use the @Github.Data.Definitions@ module instead.
 
-module Github.Data (module Github.Data.Definitions) where
+module Github.Data (
+  module Github.Data.Definitions,
+  module Github.Data.Gists,
+  module Github.Data.GitData,
+  module Github.Data.Issues,
+  module Github.Data.PullRequests,
+  module Github.Data.Teams,
+  ) where
 
 import Control.Applicative
 import Control.Monad
 import qualified Data.Text as T
-import Data.Aeson.Types
+import Data.Aeson.Compat
+import Data.Aeson.Types (Parser)
 import qualified Data.Vector as V
 import qualified Data.HashMap.Lazy as Map
 import Data.Hashable (Hashable)
@@ -22,6 +30,11 @@ import System.Locale (defaultTimeLocale)
 #endif
 
 import Github.Data.Definitions
+import Github.Data.Gists
+import Github.Data.GitData
+import Github.Data.Issues
+import Github.Data.PullRequests
+import Github.Data.Teams
 
 instance FromJSON GithubDate where
   parseJSON (String t) =
