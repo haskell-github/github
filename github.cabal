@@ -42,6 +42,8 @@ Category:            Network APIs
 
 Build-type:          Simple
 
+Tested-with:         GHC==7.8.4, GHC==7.10.2
+
 -- Extra files to be distributed with the package, such as examples or
 -- a README.
 Extra-source-files:  README.md
