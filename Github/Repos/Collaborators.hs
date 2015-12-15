@@ -2,6 +2,7 @@
 -- <http://developer.github.com/v3/repos/collaborators/>.
 module Github.Repos.Collaborators (
  collaboratorsOn
+,collaboratorsOn'
 ,isCollaboratorOn
 ,module Github.Data
 ) where
@@ -19,6 +20,12 @@ import qualified Network.HTTP.Types as T (statusCode)
 collaboratorsOn :: String -> String -> IO (Either Error [GithubOwner])
 collaboratorsOn userName reqRepoName =
   githubGet ["repos", userName, reqRepoName, "collaborators"]
+
+-- | All the users who have collaborated on a repo.
+-- With authentication.
+collaboratorsOn' :: Maybe GithubAuth -> String -> String -> IO (Either Error [GithubOwner])
+collaboratorsOn' auth userName reqRepoName =
+  githubGet' auth ["repos", userName, reqRepoName, "collaborators"]
 
 -- | Whether the user is collaborating on a repo. Takes the user in question,
 -- the user who owns the repo, and the repo name.

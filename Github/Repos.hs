@@ -68,42 +68,44 @@ data RepoPublicity =
 
 instance NFData RepoPublicity
 
+repoPublicityQueryString :: RepoPublicity -> String
+repoPublicityQueryString All     = "type=all"
+repoPublicityQueryString Owner   = "type=owner"
+repoPublicityQueryString Member  = "type=member"
+repoPublicityQueryString Public  = "type=public"
+repoPublicityQueryString Private = "type=private"
+
 -- | The repos for a user, by their login. Can be restricted to just repos they
--- own, are a member of, or publicize. Private repos are currently not
--- supported.
+-- own, are a member of, or publicize. Private repos will return empty list.
 --
 -- > userRepos "mike-burns" All
 userRepos :: String -> RepoPublicity -> IO (Either Error [Repo])
 userRepos = userRepos' Nothing
 
 -- | The repos for a user, by their login.
--- With authentication, but note that private repos are currently not supported.
+-- With authentication.
 --
 -- > userRepos' (Just (GithubBasicAuth (user, password))) "mike-burns" All
 userRepos' :: Maybe GithubAuth -> String -> RepoPublicity -> IO (Either Error [Repo])
-userRepos' auth userName All =
-  githubGetWithQueryString' auth ["users", userName, "repos"] "type=all"
-userRepos' auth userName Owner =
-  githubGetWithQueryString' auth ["users", userName, "repos"] "type=owner"
-userRepos' auth userName Member =
-  githubGetWithQueryString' auth ["users", userName, "repos"] "type=member"
-userRepos' auth userName Public =
-  githubGetWithQueryString' auth ["users", userName, "repos"] "type=public"
-userRepos' _auth _userName Private =
-  return $ Left $ UserError "Cannot access private repos using userRepos"
+userRepos' auth userName publicity =
+  githubGetWithQueryString' auth ["users", userName, "repos"] qs
+  where qs = repoPublicityQueryString publicity
 
 -- | The repos for an organization, by the organization name.
 --
 -- > organizationRepos "thoughtbot"
 organizationRepos :: String -> IO (Either Error [Repo])
-organizationRepos = organizationRepos' Nothing
+organizationRepos org = organizationRepos' Nothing org All
 
 -- | The repos for an organization, by the organization name.
 -- With authentication.
 --
--- > organizationRepos (Just (GithubBasicAuth (user, password))) "thoughtbot"
-organizationRepos' :: Maybe GithubAuth -> String -> IO (Either Error [Repo])
-organizationRepos' auth orgName = githubGet' auth ["orgs", orgName, "repos"]
+-- > organizationRepos (Just (GithubBasicAuth (user, password))) "thoughtbot" All
+organizationRepos' :: Maybe GithubAuth -> String -> RepoPublicity -> IO (Either Error [Repo])
+organizationRepos' auth orgName publicity =
+  githubGetWithQueryString' auth ["orgs", orgName, "repos"] qs
+  where qs = repoPublicityQueryString publicity
+
 
 -- | A specific organization repo, by the organization name.
 --
