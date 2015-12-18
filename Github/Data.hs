@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP, DeriveDataTypeable, OverloadedStrings #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 
 -- | This module re-exports the @Github.Data.Definitions@ module, adding
 -- instances of @FromJSON@ to it. If you wish to use the data without the
@@ -13,7 +14,9 @@ module Github.Data (
   module Github.Data.Teams,
   ) where
 
+#if !MIN_VERSION_base(4,8,0)
 import Control.Applicative
+#endif
 import Control.Monad
 import qualified Data.Text as T
 import Data.Aeson.Compat
@@ -38,9 +41,15 @@ import Github.Data.Teams
 
 instance FromJSON GithubDate where
   parseJSON (String t) =
-    case parseTime defaultTimeLocale "%FT%T%Z" (T.unpack t) of
+    case pt defaultTimeLocale "%FT%T%Z" (T.unpack t) of
          Just d -> pure $ GithubDate d
          _      -> fail "could not parse Github datetime"
+    where
+#if MIN_VERSION_time(1,5,0)
+      pt = parseTimeM True
+#else
+      pt = parseTime
+#endif
   parseJSON _          = fail "Given something besides a String"
 
 instance FromJSON Commit where

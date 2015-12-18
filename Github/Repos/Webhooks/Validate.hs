@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | Verification of incomming webhook payloads, as described at
@@ -7,7 +8,9 @@ module Github.Repos.Webhooks.Validate (
   isValidPayload
 ) where
 
+#if !MIN_VERSION_base(4,8,0)
 import Control.Applicative
+#endif
 import Crypto.Hash
 import qualified Data.ByteString.Char8 as BS
 import Data.Byteable (constEqBytes, toBytes)

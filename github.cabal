@@ -191,6 +191,7 @@ Library
                  text,
                  old-locale,
                  http-conduit >= 1.8,
+                 http-client,
                  http-types,
                  data-default,
                  vector,

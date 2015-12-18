@@ -10,13 +10,15 @@
 --
 module Github.Private where
 
+#if !MIN_VERSION_base(4,8,0)
+import Control.Applicative
+#endif
 import Github.Data
 import Control.DeepSeq (NFData)
 import Data.Aeson
 import Data.Attoparsec.ByteString.Lazy
 import Data.Data
 import Data.Monoid
-import Control.Applicative
 import Data.List
 import Data.CaseInsensitive (mk)
 import qualified Data.ByteString.Char8 as BS
@@ -169,7 +171,13 @@ doHttps reqMethod url auth body = do
     getOAuth (GithubOAuth token) = [(mk (BS.pack "Authorization"),
                                      BS.pack ("token " ++ token))]
     getOAuth _ = []
-    getResponse request = withManager $ \manager -> httpLbs request manager
+    getResponse request = do
+      manager <- newManager tlsManagerSettings
+      x <- httpLbs request manager
+#if !MIN_VERSION_http_client(0, 4, 18)
+      closeManager manager
+#endif
+      pure x
 #if MIN_VERSION_http_conduit(1, 9, 0)
     successOrMissing s@(Status sci _) hs cookiejar
 #else
