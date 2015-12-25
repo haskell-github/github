@@ -11,6 +11,10 @@ before_cache:
   - rm -fv $HOME/.cabal/packages/hackage.haskell.org/build-reports.log
   - rm -fv $HOME/.cabal/packages/hackage.haskell.org/00-index.tar
 
+env:
+  global:
+    secure: "J522iO9HE8yIMwcbBBCXYiAJ0bZSzMjq9nue6oockCIZc3kSoF/IGhfBMns3KRrzMR7nD0IirpHB0jjSXIQLA+51SaWS8HG2+pI+U3qvCoeDIaB85Iyhk932GIymdySCH7ypw71AeuJTErvZ67TR3m+o98BBk8WgMCcLkGykWKA="
+
 matrix:
   include:
     - env: CABALVER=1.18 GHCVER=7.8.4
@@ -73,7 +77,7 @@ script:
  - if [ -f configure.ac ]; then autoreconf -i; fi
  - cabal configure --enable-tests --enable-benchmarks -v2  # -v2 provides useful information for debugging
  - cabal build   # this builds all libraries and executables (including tests/benchmarks)
- - cabal test
+ - cabal test --show-details=always
 
  - if [ "$CABALVER" = "1.22" ]; then cabal check; fi
  - if [ "$CABALVER" = "1.22" ]; then cabal haddock; fi
