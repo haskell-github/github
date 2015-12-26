@@ -28,7 +28,7 @@ import Github.Private
 --
 -- > labelsOnRepo "thoughtbot" "paperclip"
 labelsOnRepo :: String -> String -> IO (Either Error [IssueLabel])
-labelsOnRepo user reqRepoName = githubGet ["repos", user, reqRepoName, "labels"]
+labelsOnRepo = labelsOnRepo' Nothing
 
 -- | All the labels available to use on any issue in the repo, using authentication.
 --
@@ -41,8 +41,7 @@ labelsOnRepo' auth user reqRepoName =
 --
 -- > label "thoughtbot" "paperclip" "bug"
 label :: String -> String -> String -> IO (Either Error IssueLabel)
-label user reqRepoName reqLabelName =
-  githubGet ["repos", user, reqRepoName, "labels", reqLabelName]
+label = label' Nothing
 
 -- | A label, by name, using authentication.
 --
@@ -81,8 +80,7 @@ deleteLabel auth reqUserName reqRepoName reqLabelName = githubDelete auth paths
 --
 -- > labelsOnIssue "thoughtbot" "paperclip" 585
 labelsOnIssue :: String -> String -> Int -> IO (Either Error [IssueLabel])
-labelsOnIssue user reqRepoName reqIssueId =
-  githubGet ["repos", user, reqRepoName, "issues", show reqIssueId, "labels"]
+labelsOnIssue = labelsOnIssue' Nothing
 
 -- | The labels on an issue in a repo, using authentication.
 --
@@ -127,8 +125,7 @@ removeAllLabelsFromIssue auth user reqRepoName reqIssueId = githubDelete auth pa
 --
 -- > labelsOnMilestone "thoughtbot" "paperclip" 2
 labelsOnMilestone :: String -> String -> Int ->  IO (Either Error [IssueLabel])
-labelsOnMilestone user reqRepoName milestoneId =
-  githubGet ["repos", user, reqRepoName, "milestones", show milestoneId, "labels"]
+labelsOnMilestone = labelsOnMilestone' Nothing
 
 -- | All the labels on a repo's milestone, given the milestone ID, using authentication.
 --
