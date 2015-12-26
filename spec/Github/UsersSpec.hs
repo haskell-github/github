@@ -1,14 +1,16 @@
 {-# LANGUAGE TemplateHaskell #-}
 module Github.UsersSpec where
 
-import Github.Auth (GithubAuth(..))
-import Github.Users (userInfoFor')
-import Github.Data.Definitions (DetailedOwner(..))
-
-import Data.Aeson.Compat (eitherDecodeStrict)
-import Test.Hspec (it, describe, shouldBe, pendingWith, Spec)
+import Data.Aeson.Compat  (eitherDecodeStrict)
+import Data.Either.Compat (isRight)
+import Data.FileEmbed     (embedFile)
 import System.Environment (lookupEnv)
-import Data.FileEmbed (embedFile)
+import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe,
+                           shouldSatisfy)
+
+import Github.Auth             (GithubAuth (..))
+import Github.Data.Definitions (DetailedOwner (..))
+import Github.Users            (userInfoCurrent', userInfoFor')
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -22,12 +24,17 @@ withAuth action = do
     Just token -> action (GithubOAuth token)
 
 spec :: Spec
-spec =
+spec = do
   describe "userInfoFor" $ do
     it "decodes user json" $ do
-      let userInfo = eitherDecodeStrict $(embedFile "fixtures/user.json") :: Either String DetailedOwner
+      let userInfo = eitherDecodeStrict $(embedFile "fixtures/user.json")
       detailedOwnerLogin (fromRightS userInfo) `shouldBe` "mike-burns"
 
     it "returns information about the user" $ withAuth $ \auth -> do
       userInfo <- userInfoFor' (Just auth) "mike-burns"
       detailedOwnerLogin (fromRightS userInfo) `shouldBe` "mike-burns"
+
+  describe "userInfoCurrent'" $ do
+    it "returns information about the autenticated user" $ withAuth $ \auth -> do
+      userInfo <- userInfoCurrent' (Just auth)
+      userInfo `shouldSatisfy` isRight

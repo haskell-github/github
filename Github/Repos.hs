@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings, DeriveGeneric, DeriveDataTypeable #-}
-{-# LANGUAGE CPP #-}
 -- | The Github Repos API, as documented at
 -- <http://developer.github.com/v3/repos/>
 module Github.Repos (
@@ -51,11 +50,8 @@ import Data.Aeson.Types
 import Github.Data
 import Github.Private
 import GHC.Generics (Generic)
-import Network.HTTP.Conduit
 import Control.Applicative
 import Control.DeepSeq (NFData)
-import qualified Control.Exception as E
-import Network.HTTP.Types
 
 -- | Filter the list of the user's repos using any of these constructors.
 data RepoPublicity =
@@ -347,25 +343,5 @@ deleteRepo :: GithubAuth
            -> String      -- ^ owner
            -> String      -- ^ repository name
            -> IO (Either Error ())
-deleteRepo auth owner repo = do
-  result <- doHttps "DELETE"
-                    (apiEndpoint (Just auth) ++ buildPath ["repos", owner, repo])
-                    (Just auth)
-                    Nothing
-  case result of
-      Left e -> return (Left (HTTPConnectionError e))
-      Right resp ->
-          let status = responseStatus resp
-              headers = responseHeaders resp
-          in if status == notFound404
-                -- doHttps silently absorbs 404 errors, but for this operation
-                -- we want the user to know if they've tried to delete a
-                -- non-existent repository
-             then return (Left (HTTPConnectionError
-                                (E.toException
-                                 (StatusCodeException status headers
-#if MIN_VERSION_http_conduit(1, 9, 0)
-                                 (responseCookieJar resp)
-#endif
-                                 ))))
-             else return (Right ())
+deleteRepo auth owner repo =
+    githubAPIDelete auth $ buildPath ["repos", owner, repo]
