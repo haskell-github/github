@@ -32,10 +32,10 @@ labelsOnRepo user reqRepoName = githubGet ["repos", user, reqRepoName, "labels"]
 
 -- | All the labels available to use on any issue in the repo, using authentication.
 --
--- > labelsOnRepo' (GithubUser (user, password)) "thoughtbot" "paperclip"
-labelsOnRepo' :: GithubAuth -> String -> String -> IO (Either Error [IssueLabel])
+-- > labelsOnRepo' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
+labelsOnRepo' :: Maybe GithubAuth -> String -> String -> IO (Either Error [IssueLabel])
 labelsOnRepo' auth user reqRepoName =
-  githubGet' (Just auth) ["repos", user, reqRepoName, "labels"]
+  githubGet' auth ["repos", user, reqRepoName, "labels"]
 
 -- | A label, by name.
 --
@@ -46,10 +46,10 @@ label user reqRepoName reqLabelName =
 
 -- | A label, by name, using authentication.
 --
--- > label' (GithubUser (user, password)) "thoughtbot" "paperclip" "bug"
-label' :: GithubAuth -> String -> String -> String -> IO (Either Error IssueLabel)
+-- > label' (Just (GithubUser (user, password))) "thoughtbot" "paperclip" "bug"
+label' :: Maybe GithubAuth -> String -> String -> String -> IO (Either Error IssueLabel)
 label' auth user reqRepoName reqLabelName =
-  githubGet' (Just auth) ["repos", user, reqRepoName, "labels", reqLabelName]
+  githubGet' auth ["repos", user, reqRepoName, "labels", reqLabelName]
 
 -- | Create a label
 --
@@ -86,10 +86,10 @@ labelsOnIssue user reqRepoName reqIssueId =
 
 -- | The labels on an issue in a repo, using authentication.
 --
--- > labelsOnIssue' (GithubUser (user, password)) "thoughtbot" "paperclip" 585
-labelsOnIssue' :: GithubAuth -> String -> String -> Int -> IO (Either Error [IssueLabel])
+-- > labelsOnIssue' (Just (GithubUser (user, password))) "thoughtbot" "paperclip" 585
+labelsOnIssue' :: Maybe GithubAuth -> String -> String -> Int -> IO (Either Error [IssueLabel])
 labelsOnIssue' auth user reqRepoName reqIssueId =
-  githubGet' (Just auth) ["repos", user, reqRepoName, "issues", show reqIssueId, "labels"]
+  githubGet' auth ["repos", user, reqRepoName, "issues", show reqIssueId, "labels"]
 
 -- | Add labels to an issue.
 --
@@ -132,7 +132,7 @@ labelsOnMilestone user reqRepoName milestoneId =
 
 -- | All the labels on a repo's milestone, given the milestone ID, using authentication.
 --
--- > labelsOnMilestone' (GithubUser (user, password)) "thoughtbot" "paperclip" 2
-labelsOnMilestone' :: GithubAuth -> String -> String -> Int ->  IO (Either Error [IssueLabel])
+-- > labelsOnMilestone' (Just (GithubUser (user, password))) "thoughtbot" "paperclip" 2
+labelsOnMilestone' :: Maybe GithubAuth -> String -> String -> Int ->  IO (Either Error [IssueLabel])
 labelsOnMilestone' auth user reqRepoName milestoneId =
-  githubGet' (Just auth) ["repos", user, reqRepoName, "milestones", show milestoneId, "labels"]
+  githubGet' auth ["repos", user, reqRepoName, "milestones", show milestoneId, "labels"]
