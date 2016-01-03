@@ -143,6 +143,7 @@ Library
                    Github.Data.PullRequests,
                    Github.Data.Teams,
                    Github.Data.Name,
+                   Github.Data.Id,
                    Github.Events,
                    Github.Gists,
                    Github.Gists.Comments,
