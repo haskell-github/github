@@ -13,10 +13,15 @@ module Github.Data (
   module Github.Data.Issues,
   module Github.Data.PullRequests,
   module Github.Data.Teams,
-  -- * Name
+  -- * Tagged types
+  -- ** Name
   Name,
   mkName,
   untagName,
+  -- ** Id
+  Id,
+  mkId,
+  untagId,
   ) where
 
 #if !MIN_VERSION_base(4,8,0)
@@ -40,6 +45,7 @@ import System.Locale (defaultTimeLocale)
 import Github.Data.Definitions
 import Github.Data.Gists
 import Github.Data.GitData
+import Github.Data.Id
 import Github.Data.Issues
 import Github.Data.Name
 import Github.Data.PullRequests

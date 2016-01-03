@@ -9,6 +9,7 @@ import GHC.Generics (Generic)
 import qualified Control.Exception as E
 import qualified Data.Map as M
 
+import Github.Data.Id
 import Github.Data.Name
 
 -- | The options for querying commits.
@@ -38,14 +39,14 @@ data GithubOwner = GithubUser {
    githubOwnerAvatarUrl :: String
   ,githubOwnerLogin :: Name GithubOwner
   ,githubOwnerUrl :: String
-  ,githubOwnerId :: Int
+  ,githubOwnerId :: Id GithubOwner
   ,githubOwnerGravatarId :: Maybe String
   }
   | GithubOrganization {
    githubOwnerAvatarUrl :: String
   ,githubOwnerLogin :: Name GithubOwner
   ,githubOwnerUrl :: String
-  ,githubOwnerId :: Int
+  ,githubOwnerId :: Id GithubOwner
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData GithubOwner
@@ -69,7 +70,7 @@ data Comment = Comment {
   ,commentCreatedAt :: Maybe UTCTime
   ,commentPath :: Maybe String
   ,commentUser :: GithubOwner
-  ,commentId :: Int
+  ,commentId :: Id Comment
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Comment
@@ -89,7 +90,7 @@ instance NFData EditComment
 data SimpleOrganization = SimpleOrganization {
    simpleOrganizationUrl :: String
   ,simpleOrganizationAvatarUrl :: String
-  ,simpleOrganizationId :: Int
+  ,simpleOrganizationId :: Id Organization
   ,simpleOrganizationLogin :: String
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -111,7 +112,7 @@ data Organization = Organization {
   ,organizationUrl :: String
   ,organizationCreatedAt :: GithubDate
   ,organizationName :: Maybe String
-  ,organizationId :: Int
+  ,organizationId :: Id Organization
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Organization
@@ -143,7 +144,7 @@ data Repo = Repo {
   ,repoLanguage :: Maybe String
   ,repoMasterBranch :: Maybe String
   ,repoPushedAt :: Maybe GithubDate   -- ^ this is Nothing for new repositories
-  ,repoId :: Int
+  ,repoId :: Id Repo
   ,repoUrl :: String
   ,repoOpenIssues :: Maybe Int
   ,repoHasWiki :: Maybe Bool
@@ -225,7 +226,7 @@ instance NFData ContentInfo
 data Contributor
   -- | An existing Github user, with their number of contributions, avatar
   -- URL, login, URL, ID, and Gravatar ID.
-  = KnownContributor Int String (Name Contributor) String Int String
+  = KnownContributor Int String (Name Contributor) String (Id Contributor) String
   -- | An unknown Github user with their number of contributions and recorded name.
   | AnonymousContributor Int String
  deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -262,7 +263,7 @@ data DetailedOwner = DetailedUser {
   ,detailedOwnerCompany :: Maybe String
   ,detailedOwnerEmail :: Maybe String
   ,detailedOwnerUrl :: String
-  ,detailedOwnerId :: Int
+  ,detailedOwnerId :: Id GithubOwner
   ,detailedOwnerHtmlUrl :: String
   ,detailedOwnerLogin :: Name GithubOwner
   }
@@ -280,7 +281,7 @@ data DetailedOwner = DetailedUser {
   ,detailedOwnerLocation :: Maybe String
   ,detailedOwnerCompany :: Maybe String
   ,detailedOwnerUrl :: String
-  ,detailedOwnerId :: Int
+  ,detailedOwnerId :: Id GithubOwner
   ,detailedOwnerHtmlUrl :: String
   ,detailedOwnerLogin :: Name GithubOwner
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -290,7 +291,7 @@ instance NFData DetailedOwner
 data RepoWebhook = RepoWebhook {
    repoWebhookUrl :: String
   ,repoWebhookTestUrl :: String
-  ,repoWebhookId :: Integer
+  ,repoWebhookId :: Id RepoWebhook
   ,repoWebhookName :: String
   ,repoWebhookActive :: Bool
   ,repoWebhookEvents :: [RepoWebhookEvent]
@@ -338,7 +339,7 @@ instance NFData RepoWebhookResponse
 data PingEvent = PingEvent {
    pingEventZen :: String
   ,pingEventHook :: RepoWebhook
-  ,pingEventHookId :: Int
+  ,pingEventHookId :: Id RepoWebhook
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData PingEvent
