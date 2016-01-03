@@ -1,10 +1,12 @@
-{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell   #-}
 module Github.OrganizationsSpec where
 
-import Github.Auth             (GithubAuth (..))
-import Github.Data.Definitions (SimpleOrganization (..))
-import Github.Organizations    (publicOrganizationsFor')
+import Github.Auth                  (GithubAuth (..))
+import Github.Data                  (GithubOwner (..), SimpleOrganization (..),
+                                     Team (..))
+import Github.Organizations         (publicOrganizationsFor')
+import Github.Organizations.Members (membersOf')
 
 import Data.Aeson.Compat  (eitherDecodeStrict)
 import Data.Either.Compat (isRight)
@@ -25,7 +27,7 @@ withAuth action = do
     Just token -> action (GithubOAuth token)
 
 spec :: Spec
-spec =
+spec = do
   describe "publicOrganizationsFor'" $ do
     it "decodes simple organization json" $ do
       let orgs = eitherDecodeStrict $(embedFile "fixtures/user-organizations.json")
@@ -34,3 +36,17 @@ spec =
     it "returns information about the user's organizations" $ withAuth $ \auth -> do
       orgs <- publicOrganizationsFor' (Just auth) "mike-burns"
       orgs  `shouldSatisfy` isRight
+
+  describe "teamsOf" $ do
+    it "parse" $ do
+      let ts = eitherDecodeStrict $(embedFile "fixtures/list-teams.json")
+      teamName (head $ fromRightS ts) `shouldBe` "Justice League"
+
+  describe "membersOf" $ do
+    it "parse" $ do
+      let ms = eitherDecodeStrict $(embedFile "fixtures/members-list.json")
+      githubOwnerLogin (head $ fromRightS ms) `shouldBe` "octocat"
+
+    it "works" $ withAuth $ \auth -> do
+      ms <- membersOf' (Just auth) "haskell"
+      ms `shouldSatisfy` isRight
