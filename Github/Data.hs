@@ -6,12 +6,17 @@
 -- instances, use the @Github.Data.Definitions@ module instead.
 
 module Github.Data (
+  -- * Module re-exports
   module Github.Data.Definitions,
   module Github.Data.Gists,
   module Github.Data.GitData,
   module Github.Data.Issues,
   module Github.Data.PullRequests,
   module Github.Data.Teams,
+  -- * Name
+  Name,
+  mkName,
+  untagName,
   ) where
 
 #if !MIN_VERSION_base(4,8,0)
@@ -36,6 +41,7 @@ import Github.Data.Definitions
 import Github.Data.Gists
 import Github.Data.GitData
 import Github.Data.Issues
+import Github.Data.Name
 import Github.Data.PullRequests
 import Github.Data.Teams
 
