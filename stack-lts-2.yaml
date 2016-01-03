@@ -1,0 +1,8 @@
+packages:
+- '.'
+extra-deps:
+- aeson-extra-0.2.3.0
+resolver: lts-2.22
+flags:
+  github:
+     aeson-compat: false

@@ -2,7 +2,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Github.SearchSpec where
 
-import Control.Applicative ((<$>))
+import Prelude        ()
+import Prelude.Compat
+
 import Data.Aeson.Compat   (eitherDecodeStrict)
 import Data.FileEmbed      (embedFile)
 import Test.Hspec          (Spec, describe, it, shouldBe)
