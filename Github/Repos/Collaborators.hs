@@ -34,7 +34,7 @@ collaboratorsOn' auth userName reqRepoName =
 -- > isCollaboratorOn Nothing "johnson" "thoughtbot" "paperclip"
 isCollaboratorOn :: Maybe GithubAuth -> String -> String -> String -> IO (Either Error Bool)
 isCollaboratorOn auth userName repoOwnerName reqRepoName = do
-   result <- doHttps (pack "GET")
+   result <- doHttps getResponseNewManager (pack "GET")
                      (apiEndpoint auth ++ buildPath ["repos", repoOwnerName, reqRepoName, "collaborators", userName])
                      Nothing
                      Nothing
