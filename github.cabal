@@ -134,7 +134,8 @@ source-repository head
 Library
   -- Modules exported by the library.
   Default-Language: Haskell2010
-  Exposed-modules: Github.Auth,
+  Exposed-modules: Github.All,
+                   Github.Auth,
                    Github.Data,
                    Github.Data.Definitions,
                    Github.Data.GitData,
