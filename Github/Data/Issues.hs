@@ -87,6 +87,13 @@ data IssueComment = IssueComment {
 
 instance NFData IssueComment
 
+data SearchIssuesResult = SearchIssuesResult {
+   searchIssuesTotalCount :: Int
+  ,searchIssuesIssues :: [Issue]
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData SearchIssuesResult
+
 data EventType =
     Mentioned     -- ^ The actor was @mentioned in an issue body.
   | Subscribed    -- ^ The actor subscribed to receive notifications for an issue.

@@ -84,6 +84,7 @@ Extra-source-files:  README.md
                     ,samples/Pulls/ShowCommits.hs
                     ,samples/Pulls/ShowPull.hs
                     ,samples/Search/SearchRepos.hs
+                    ,samples/Search/SearchIssues.hs
                     ,samples/Repos/Collaborators/IsCollaborator.hs
                     ,samples/Repos/Collaborators/ListCollaborators.hs
                     ,samples/Repos/Commits/CommitComment.hs

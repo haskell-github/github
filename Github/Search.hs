@@ -5,6 +5,8 @@ module Github.Search(
 ,searchRepos
 ,searchCode'
 ,searchCode
+,searchIssues'
+,searchIssues
 ,module Github.Data
 ) where
 
@@ -38,5 +40,19 @@ searchCode' auth queryString = githubGetWithQueryString' auth ["search", "code"]
 -- > searchCode "q=addClass+in:file+language:js+repo:jquery/jquery"
 searchCode :: String -> IO (Either Error SearchCodeResult)
 searchCode = searchCode' Nothing 
+
+-- | Perform an issue search.
+-- | With authentication.
+--
+-- > searchIssues' (Just $ GithubBasicAuth "github-username" "github-password') "q=a repo%3Aphadej%2Fgithub&per_page=100"
+searchIssues' :: Maybe GithubAuth -> String -> IO (Either Error SearchIssuesResult)
+searchIssues' auth queryString = githubGetWithQueryString' auth ["search", "issues"] queryString
+
+-- | Perform an issue search.
+-- | Without authentication.
+--
+-- > searchIssues "q=a repo%3Aphadej%2Fgithub&per_page=100"
+searchIssues :: String -> IO (Either Error SearchIssuesResult)
+searchIssues = searchIssues' Nothing
 
 
