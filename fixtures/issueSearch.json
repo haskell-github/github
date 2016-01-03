@@ -1,0 +1,96 @@
+{
+  "total_count": 2,
+  "incomplete_results": false,
+  "items": [
+    {
+      "url": "https://api.github.com/repos/phadej/github/issues/130",
+      "labels_url": "https://api.github.com/repos/phadej/github/issues/130/labels{/name}",
+      "comments_url": "https://api.github.com/repos/phadej/github/issues/130/comments",
+      "events_url": "https://api.github.com/repos/phadej/github/issues/130/events",
+      "html_url": "https://github.com/phadej/github/pull/130",
+      "id": 123898390,
+      "number": 130,
+      "title": "Make test runner more robust",
+      "user": {
+        "login": "phadej",
+        "id": 51087,
+        "avatar_url": "https://avatars.githubusercontent.com/u/51087?v=3",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/phadej",
+        "html_url": "https://github.com/phadej",
+        "followers_url": "https://api.github.com/users/phadej/followers",
+        "following_url": "https://api.github.com/users/phadej/following{/other_user}",
+        "gists_url": "https://api.github.com/users/phadej/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/phadej/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/phadej/subscriptions",
+        "organizations_url": "https://api.github.com/users/phadej/orgs",
+        "repos_url": "https://api.github.com/users/phadej/repos",
+        "events_url": "https://api.github.com/users/phadej/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/phadej/received_events",
+        "type": "User",
+        "site_admin": false
+      },
+      "labels": [
+
+      ],
+      "state": "closed",
+      "locked": false,
+      "assignee": null,
+      "milestone": null,
+      "comments": 0,
+      "created_at": "2015-12-25T21:37:39Z",
+      "updated_at": "2015-12-26T08:57:52Z",
+      "closed_at": "2015-12-25T23:32:12Z",
+      "pull_request": {
+        "url": "https://api.github.com/repos/phadej/github/pulls/130",
+        "html_url": "https://github.com/phadej/github/pull/130",
+        "diff_url": "https://github.com/phadej/github/pull/130.diff",
+        "patch_url": "https://github.com/phadej/github/pull/130.patch"
+      },
+      "body": "As they use access token, it's highly unlikely it will be rate limited. ATM there's only one request per test job. i.e. travis could be re-enabled.\r\n\r\nExample run https://travis-ci.org/phadej/github/builds/98815089\r\nSome tests are pending as secret is made for this `jwiegley/github` repository.",
+      "score": 0.75566536
+    },
+    {
+      "url": "https://api.github.com/repos/phadej/github/issues/127",
+      "labels_url": "https://api.github.com/repos/phadej/github/issues/127/labels{/name}",
+      "comments_url": "https://api.github.com/repos/phadej/github/issues/127/comments",
+      "events_url": "https://api.github.com/repos/phadej/github/issues/127/events",
+      "html_url": "https://github.com/phadej/github/issues/127",
+      "id": 119694665,
+      "number": 127,
+      "title": "Decouple request creation from execution",
+      "user": {
+        "login": "phadej",
+        "id": 51087,
+        "avatar_url": "https://avatars.githubusercontent.com/u/51087?v=3",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/phadej",
+        "html_url": "https://github.com/phadej",
+        "followers_url": "https://api.github.com/users/phadej/followers",
+        "following_url": "https://api.github.com/users/phadej/following{/other_user}",
+        "gists_url": "https://api.github.com/users/phadej/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/phadej/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/phadej/subscriptions",
+        "organizations_url": "https://api.github.com/users/phadej/orgs",
+        "repos_url": "https://api.github.com/users/phadej/repos",
+        "events_url": "https://api.github.com/users/phadej/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/phadej/received_events",
+        "type": "User",
+        "site_admin": false
+      },
+      "labels": [
+
+      ],
+      "state": "open",
+      "locked": false,
+      "assignee": null,
+      "milestone": null,
+      "comments": 2,
+      "created_at": "2015-12-01T11:09:03Z",
+      "updated_at": "2015-12-25T19:15:33Z",
+      "closed_at": null,
+      "body": "After working with this API, and making few others, I found that separating request creation and execution is better (i.e. more flexible) design.\r\n\r\nNow one cannot use different network client or add new endpoints.\r\n\r\nShorly\r\n\r\n```hs\r\n-- New stuff:\r\ndata GithubRequest a = GithubRequestGet Url\r\n                     | ...\r\n\r\n-- or alternatively\r\ndata GithubRequest a where\r\n  GithubRequestGet :: Url -> GithubRequest a\r\n  GithubRequestMultiGet :: Url -> GithubRequest [a]\r\n\r\nexecGithubRequest :: FromJSON a => GithubRequest a -> IO (Either Error a)\r\nexecGithubRequest' :: FromJSON a => Maybe GithubAuth -> GithubRequest a -> IO (Either Error a)\r\n\r\npublicOrganizationForRequest :: String -> GithubRequest [SimpleOrganisation]\r\npublicOrganizationForRequest org = GithubRequestGet ...\r\n\r\n-- Old IO methods become:\r\npublicOrganizationsFor :: String -> IO (Either Error [SimpleOrganization])\r\npublicOrganizationsFor = execGithubRequest . publicOrganizationForRequest\r\n\r\npublicOrganizationsFor' :: Maybe GithubAuth -> String -> IO (Either Error [SimpleOrganization])\r\npublicOrganizationsFor' auth = execGithubRequest' auth . publicOrganizationForRequest\r\n```\r\n\r\nHow does this sound? I can make a refactoring, it's quite straight-forward.",
+      "score": 0.7265285
+    }
+  ]
+}

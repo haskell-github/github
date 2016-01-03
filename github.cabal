@@ -84,6 +84,7 @@ Extra-source-files:  README.md
                     ,samples/Pulls/ShowCommits.hs
                     ,samples/Pulls/ShowPull.hs
                     ,samples/Search/SearchRepos.hs
+                    ,samples/Search/SearchIssues.hs
                     ,samples/Repos/Collaborators/IsCollaborator.hs
                     ,samples/Repos/Collaborators/ListCollaborators.hs
                     ,samples/Repos/Commits/CommitComment.hs
@@ -215,6 +216,7 @@ test-suite github-test
   type: exitcode-stdio-1.0
   hs-source-dirs: spec
   other-modules:
+    Github.SearchSpec
     Github.UsersSpec
     Github.OrganizationsSpec
   main-is: Spec.hs

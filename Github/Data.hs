@@ -550,6 +550,12 @@ instance FromJSON SearchReposResult where
                       <*> o .:< "items"
   parseJSON _ = fail "Could not build a SearchReposResult"
 
+instance FromJSON SearchIssuesResult where
+  parseJSON (Object o) =
+    SearchIssuesResult <$> o .: "total_count"
+                       <*> o .:< "items"
+  parseJSON _ = fail "Could not build a SearchIssuesResult"
+
 instance FromJSON Repo where
   parseJSON (Object o) =
     Repo <$> o .:? "ssh_url"
