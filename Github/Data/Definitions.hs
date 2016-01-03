@@ -9,6 +9,8 @@ import GHC.Generics (Generic)
 import qualified Control.Exception as E
 import qualified Data.Map as M
 
+import Github.Data.Name
+
 -- | The options for querying commits.
 data CommitQueryOption = CommitQuerySha String
                        | CommitQueryPath String
@@ -34,14 +36,14 @@ instance NFData GithubDate
 
 data GithubOwner = GithubUser {
    githubOwnerAvatarUrl :: String
-  ,githubOwnerLogin :: String
+  ,githubOwnerLogin :: Name GithubOwner
   ,githubOwnerUrl :: String
   ,githubOwnerId :: Int
   ,githubOwnerGravatarId :: Maybe String
   }
   | GithubOrganization {
    githubOwnerAvatarUrl :: String
-  ,githubOwnerLogin :: String
+  ,githubOwnerLogin :: Name GithubOwner
   ,githubOwnerUrl :: String
   ,githubOwnerId :: Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -97,7 +99,7 @@ data Organization = Organization {
    organizationType :: String
   ,organizationBlog :: Maybe String
   ,organizationLocation :: Maybe String
-  ,organizationLogin :: String
+  ,organizationLogin :: Name Organization
   ,organizationFollowers :: Int
   ,organizationCompany :: Maybe String
   ,organizationAvatarUrl :: String
@@ -137,7 +139,7 @@ data Repo = Repo {
   ,repoUpdatedAt :: Maybe GithubDate
   ,repoWatchers :: Maybe Int
   ,repoOwner :: GithubOwner
-  ,repoName :: String
+  ,repoName :: Name Repo
   ,repoLanguage :: Maybe String
   ,repoMasterBranch :: Maybe String
   ,repoPushedAt :: Maybe GithubDate   -- ^ this is Nothing for new repositories
@@ -155,7 +157,7 @@ data Repo = Repo {
 
 instance NFData Repo
 
-data RepoRef = RepoRef GithubOwner String -- Repo owner and name
+data RepoRef = RepoRef GithubOwner (Name Repo) -- Repo owner and name
  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData RepoRef
@@ -223,7 +225,7 @@ instance NFData ContentInfo
 data Contributor
   -- | An existing Github user, with their number of contributions, avatar
   -- URL, login, URL, ID, and Gravatar ID.
-  = KnownContributor Int String String String Int String
+  = KnownContributor Int String (Name Contributor) String Int String
   -- | An unknown Github user with their number of contributions and recorded name.
   | AnonymousContributor Int String
  deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -262,7 +264,7 @@ data DetailedOwner = DetailedUser {
   ,detailedOwnerUrl :: String
   ,detailedOwnerId :: Int
   ,detailedOwnerHtmlUrl :: String
-  ,detailedOwnerLogin :: String
+  ,detailedOwnerLogin :: Name GithubOwner
   }
   | DetailedOrganization {
    detailedOwnerCreatedAt :: GithubDate
@@ -280,7 +282,7 @@ data DetailedOwner = DetailedUser {
   ,detailedOwnerUrl :: String
   ,detailedOwnerId :: Int
   ,detailedOwnerHtmlUrl :: String
-  ,detailedOwnerLogin :: String
+  ,detailedOwnerLogin :: Name GithubOwner
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData DetailedOwner

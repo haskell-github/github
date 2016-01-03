@@ -10,6 +10,7 @@ module Github.Data (
   module Github.Data.Gists,
   module Github.Data.GitData,
   module Github.Data.Issues,
+  module Github.Data.Name,
   module Github.Data.PullRequests,
   module Github.Data.Teams,
   ) where
@@ -36,6 +37,7 @@ import Github.Data.Definitions
 import Github.Data.Gists
 import Github.Data.GitData
 import Github.Data.Issues
+import Github.Data.Name
 import Github.Data.PullRequests
 import Github.Data.Teams
 

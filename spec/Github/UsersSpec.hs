@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Github.UsersSpec where
 
 import Github.Auth (GithubAuth(..))
