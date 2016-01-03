@@ -1,0 +1,7 @@
+resolver: nightly-2016-01-03
+packages:
+- '.'
+extra-deps: []
+flags:
+  github:
+     aeson-compat: true
