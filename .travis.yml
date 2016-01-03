@@ -13,7 +13,7 @@ before_cache:
 
 env:
   global:
-    secure: "J522iO9HE8yIMwcbBBCXYiAJ0bZSzMjq9nue6oockCIZc3kSoF/IGhfBMns3KRrzMR7nD0IirpHB0jjSXIQLA+51SaWS8HG2+pI+U3qvCoeDIaB85Iyhk932GIymdySCH7ypw71AeuJTErvZ67TR3m+o98BBk8WgMCcLkGykWKA="
+    secure: "IRtE1XwgzQKlD/fzNrapx8l3dVIC8/0BeQoA3C2qQM7BW2BVs5Z12tX/I1nco3E7J5SwfMWStGJxgghcI1t4uTKg6Q1CQDhNNy+Sr3jX9kd3Evvd3HacE/FiBBtIoiE1tIqd0/duCpJ+EH5d9Gd/Zk+1BWnDTdEdAYZVbc6sEMM="
 
 matrix:
   include:
