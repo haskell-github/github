@@ -1,5 +1,5 @@
-{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell   #-}
 module Github.UsersSpec where
 
 import Data.Aeson.Compat  (eitherDecodeStrict)
@@ -11,7 +11,9 @@ import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe,
 
 import Github.Auth             (GithubAuth (..))
 import Github.Data.Definitions (DetailedOwner (..))
+import Github.Request          (executeRequest)
 import Github.Users            (userInfoCurrent', userInfoFor')
+import Github.Users.Followers  (usersFollowedByR, usersFollowingR)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -39,3 +41,13 @@ spec = do
     it "returns information about the autenticated user" $ withAuth $ \auth -> do
       userInfo <- userInfoCurrent' (Just auth)
       userInfo `shouldSatisfy` isRight
+
+  describe "usersFollowing" $ do
+    it "works" $ withAuth $ \auth -> do
+      us <- executeRequest auth $ usersFollowingR "phadej"
+      us `shouldSatisfy` isRight
+
+  describe "usersFollowedBy" $ do
+    it "works" $ withAuth $ \auth -> do
+      us <- executeRequest auth $ usersFollowedByR "phadej"
+      us `shouldSatisfy` isRight
