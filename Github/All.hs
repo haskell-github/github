@@ -24,6 +24,16 @@ module Github.All (
     -- Missing endpoints: All except /List teams/
     teamsOfR,
 
+    -- * Search
+    -- | See <https://developer.github.com/v3/search/>
+   --
+    -- Missing endpoints:
+    --
+    -- * Search users
+    searchReposR,
+    searchCodeR,
+    searchIssuesR,
+
     -- * Users
     -- | See <https://developer.github.com/v3/users/>
     --
@@ -53,5 +63,6 @@ import Github.Data
 import Github.Organizations
 import Github.Organizations.Members
 import Github.Organizations.Teams
+import Github.Search
 import Github.Users
 import Github.Users.Followers
