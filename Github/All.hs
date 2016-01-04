@@ -23,6 +23,28 @@ module Github.All (
     --
     -- Missing endpoints: All except /List teams/
     teamsOfR,
+
+    -- * Users
+    -- | See <https://developer.github.com/v3/users/>
+    --
+    -- Missing endpoints:
+    --
+    -- * Update the authenticated user
+    -- * Get all users
+    userInfoForR,
+    userInfoCurrentR,
+    -- ** Followers
+    -- | See <https://developer.github.com/v3/users/followers/>
+    --
+    -- Missing endpoints:
+    --
+    -- * Check if you are following a user
+    -- * Check if one user follows another
+    -- * Follow a user
+    -- * Unfollow a user
+    usersFollowingR,
+    usersFollowedByR,
+
     -- * Data definitions
     module Github.Data
     ) where
@@ -31,3 +53,5 @@ import Github.Data
 import Github.Organizations
 import Github.Organizations.Members
 import Github.Organizations.Teams
+import Github.Users
+import Github.Users.Followers

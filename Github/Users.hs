@@ -18,18 +18,20 @@ import Github.Request
 -- With authentification
 --
 -- > userInfoFor' (Just ("github-username", "github-password")) "mike-burns"
-userInfoFor' :: Maybe GithubAuth -> String -> IO (Either Error DetailedOwner)
+userInfoFor' :: Maybe GithubAuth -> Name DetailedOwner -> IO (Either Error DetailedOwner)
 userInfoFor' auth = executeRequestMaybe auth . userInfoForR
 
 -- | The information for a single user, by login name.
 --
 -- > userInfoFor "mike-burns"
-userInfoFor :: String -> IO (Either Error DetailedOwner)
-userInfoFor = executeRequest' .  userInfoForR
+userInfoFor :: Name DetailedOwner -> IO (Either Error DetailedOwner)
+userInfoFor = executeRequest' . userInfoForR
 
--- | The information for a single user, by login name. The request
-userInfoForR :: String -> GithubRequest k DetailedOwner
-userInfoForR userName = GithubGet ["users", userName] ""
+-- | Get a single user. The information for a single user, by login name. The request
+--
+-- See <https://developer.github.com/v3/users/#get-a-single-user>
+userInfoForR :: Name DetailedOwner -> GithubRequest k DetailedOwner
+userInfoForR userName = GithubGet ["users", untagName userName] ""
 
 -- | Retrieve information about the user associated with the supplied authentication.
 --
@@ -40,6 +42,8 @@ userInfoCurrent' :: Maybe GithubAuth -> IO (Either Error DetailedOwner)
 userInfoCurrent' auth =
     executeRequestMaybe auth . unsafeDropAuthRequirements $ userInfoCurrentR
 
--- | Retrieve information about the user associated with the supplied authentication.
+-- | Get the authenticated user. Retrieve information about the user associated with the supplied authentication.
+--
+-- See <https://developer.github.com/v3/users/#get-the-authenticated-user>
 userInfoCurrentR :: GithubRequest 'True DetailedOwner
 userInfoCurrentR = GithubGet ["user"] ""
