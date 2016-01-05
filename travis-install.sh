@@ -7,6 +7,7 @@ case $BUILD in
       curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack';
     fi
     stack --no-terminal setup
+    stack --no-terminal test --only-dependencies
     ;;
   cabal)
     if [ -n "$STACKAGESNAPSHOT" ]; then wget https://www.stackage.org/$STACKAGESNAPSHOT/cabal.config; fi

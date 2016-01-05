@@ -1,6 +1,6 @@
 case $BUILD in
   stack)
-    stack --no-terminal test --only-dependencies
+    stack --no-terminal test
     ;;
   cabal)
     if [ -f configure.ac ]; then autoreconf -i; fi
