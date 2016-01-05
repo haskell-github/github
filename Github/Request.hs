@@ -28,6 +28,7 @@ import Data.Aeson.Compat    (FromJSON)
 import Data.Typeable        (Typeable)
 import GHC.Generics         (Generic)
 import Network.HTTP.Conduit (Manager, httpLbs, newManager, tlsManagerSettings)
+import Network.HTTP.Types   (Status)
 
 import qualified Data.ByteString.Lazy      as LBS
 import qualified Network.HTTP.Types.Method as Method
@@ -66,13 +67,13 @@ toMethod Put   = Method.methodPut
 --
 -- TODO: Add constructor for collection fetches.
 data GithubRequest (k :: Bool) a where
-    GithubGet       :: Paths -> QueryString -> GithubRequest k a
-    GithubPost      :: PostMethod -> Paths -> LBS.ByteString -> GithubRequest 'True a
+    GithubGet       :: FromJSON a => Paths -> QueryString -> GithubRequest k a
+    GithubPost      :: FromJSON a => PostMethod -> Paths -> LBS.ByteString -> GithubRequest 'True a
     GithubDelete    :: Paths -> GithubRequest 'True ()
+    GithubStatus    :: GithubRequest k () -> GithubRequest k Status
     deriving (Typeable)
 
 deriving instance Eq (GithubRequest k a)
-deriving instance Ord (GithubRequest k a)
 
 instance Show (GithubRequest k a) where
     showsPrec d r =
@@ -92,6 +93,9 @@ instance Show (GithubRequest k a) where
             GithubDelete ps -> showParen (d > appPrec) $
                 showString "GithubDelete "
                     . showsPrec (appPrec + 1) ps
+            GithubStatus req -> showParen (d > appPrec) $
+                showString "GithubStatus "
+                    . showsPrec (appPrec + 1) req
       where appPrec = 10 :: Int
 
 ------------------------------------------------------------------------------
@@ -99,7 +103,7 @@ instance Show (GithubRequest k a) where
 ------------------------------------------------------------------------------
 
 -- | Execute 'GithubRequest' in 'IO'
-executeRequest :: (FromJSON a, Show a)
+executeRequest :: Show a
                => GithubAuth -> GithubRequest k a -> IO (Either Error a)
 executeRequest auth req = do
     manager <- newManager tlsManagerSettings
@@ -110,7 +114,7 @@ executeRequest auth req = do
     pure x
 
 -- | Like 'executeRequest' but with provided 'Manager'.
-executeRequestWithMgr :: (FromJSON a, Show a)
+executeRequestWithMgr :: Show a
                       => Manager
                       -> GithubAuth
                       -> GithubRequest k a
@@ -135,11 +139,13 @@ executeRequestWithMgr mgr auth req =
             Private.githubAPIDelete' getResponse
                 auth
                 (Private.buildPath paths)
+        GithubStatus _req' -> 
+            error "executeRequestWithMgr GithubStatus not implemented"
   where
     getResponse = flip httpLbs mgr
 
 -- | Like 'executeRequest' but without authentication.
-executeRequest' :: (FromJSON a, Show a)
+executeRequest' :: Show a
                => GithubRequest 'False a -> IO (Either Error a)
 executeRequest' req = do
     manager <- newManager tlsManagerSettings
@@ -150,10 +156,10 @@ executeRequest' req = do
     pure x
 
 -- | Like 'executeRequestWithMgr' but without authentication.
-executeRequestWithMgr' :: (FromJSON a, Show a)
-                      => Manager
-                      -> GithubRequest 'False a
-                      -> IO (Either Error a)
+executeRequestWithMgr' :: Show a
+                       => Manager
+                       -> GithubRequest 'False a
+                       -> IO (Either Error a)
 executeRequestWithMgr' mgr req =
     case req of
         GithubGet paths qs ->
@@ -164,13 +170,15 @@ executeRequestWithMgr' mgr req =
                 Nothing
           where qs' | null qs   = ""
                     | otherwise = '?' : qs
+        GithubStatus (GithubGet _paths _qs) ->
+            error "executeRequestWithMgr' GithubStatus not implemented"
   where
     getResponse = flip httpLbs mgr
 
 -- | Helper for picking between 'executeRequest' and 'executeRequest''.
 --
 -- The use is discouraged.
-executeRequestMaybe :: (FromJSON a, Show a)
+executeRequestMaybe :: Show a
                     => Maybe GithubAuth -> GithubRequest 'False a
                     -> IO (Either Error a)
 executeRequestMaybe = maybe executeRequest' executeRequest
