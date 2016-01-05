@@ -1,20 +1,27 @@
-{-# LANGUAGE CPP, OverloadedStrings, DeriveGeneric, DeriveDataTypeable #-}
+{-# LANGUAGE CPP, OverloadedStrings, DeriveGeneric, DeriveDataTypeable, DataKinds #-}
 -- | The issues API as described on <http://developer.github.com/v3/issues/>.
 module Github.Issues (
- issue
-,issue'
-,issuesForRepo
-,issuesForRepo'
-,IssueLimitation(..)
-,createIssue
-,newIssue
-,editIssue
-,editOfIssue
-,module Github.Data
-) where
+    issue,
+    issue',
+    issueR,
+    issuesForRepo,
+    issuesForRepo',
+    issuesForRepoR,
+    IssueLimitation(..),
+    createIssue,
+    createIssueR,
+    newIssue,
+    editIssue,
+    editIssueR,
+    editOfIssue,
+    module Github.Data,
+    ) where
 
+import Github.Auth
 import Github.Data
-import Github.Private
+import Github.Request
+
+import Data.Aeson.Compat (encode)
 import Control.DeepSeq (NFData)
 import Data.List (intercalate)
 import Data.Data
@@ -54,28 +61,45 @@ instance NFData IssueLimitation
 -- number.'
 --
 -- > issue' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" "462"
-issue' :: Maybe GithubAuth -> String -> String -> Int -> IO (Either Error Issue)
+issue' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Id Issue -> IO (Either Error Issue)
 issue' auth user reqRepoName reqIssueNumber =
-  githubGet' auth ["repos", user, reqRepoName, "issues", show reqIssueNumber]
+    executeRequestMaybe auth $ issueR user reqRepoName reqIssueNumber 
 
 -- | Details on a specific issue, given the repo owner and name, and the issue
 -- number.
 --
--- > issue "thoughtbot" "paperclip" "462"
-issue :: String -> String -> Int -> IO (Either Error Issue)
+-- > issue "thoughtbot" "paperclip" (Id "462")
+issue :: Name GithubOwner -> Name Repo -> Id Issue -> IO (Either Error Issue)
 issue = issue' Nothing
+
+-- | Get a single issue.
+-- See <https://developer.github.com/v3/issues/#get-a-single-issue>
+issueR :: Name GithubOwner -> Name Repo -> Id Issue -> GithubRequest k Issue
+issueR user reqRepoName reqIssueNumber =
+    GithubGet ["repos", untagName user, untagName reqRepoName, "issues", show $ untagId reqIssueNumber] ""
 
 -- | All issues for a repo (given the repo owner and name), with optional
 -- restrictions as described in the @IssueLimitation@ data type.
 --
 -- > issuesForRepo' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
-issuesForRepo' :: Maybe GithubAuth -> String -> String -> [IssueLimitation] -> IO (Either Error [Issue])
+issuesForRepo' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> [IssueLimitation] -> IO (Either Error [Issue])
 issuesForRepo' auth user reqRepoName issueLimitations =
-  githubGetWithQueryString' 
-    auth
-    ["repos", user, reqRepoName, "issues"]
-    (queryStringFromLimitations issueLimitations)
+    executeRequestMaybe auth $ issuesForRepoR user reqRepoName issueLimitations 
+
+-- | All issues for a repo (given the repo owner and name), with optional
+-- restrictions as described in the @IssueLimitation@ data type.
+--
+-- > issuesForRepo "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
+issuesForRepo :: Name GithubOwner -> Name Repo -> [IssueLimitation] -> IO (Either Error [Issue])
+issuesForRepo = issuesForRepo' Nothing
+
+-- | List issues for a repository.
+-- See <https://developer.github.com/v3/issues/#list-issues-for-a-repository>
+issuesForRepoR :: Name GithubOwner -> Name Repo -> [IssueLimitation] -> GithubRequest k [Issue]
+issuesForRepoR user reqRepoName issueLimitations =
+    GithubGet ["repos", untagName user, untagName reqRepoName, "issues"] qs
   where
+    qs = queryStringFromLimitations issueLimitations
     queryStringFromLimitations = intercalate "&" . map convert
 
     convert AnyMilestone     = "milestone=*"
@@ -94,29 +118,26 @@ issuesForRepo' auth user reqRepoName issueLimitations =
     convert (Since t)        =
       "since=" ++ formatTime defaultTimeLocale "%FT%TZ" t
 
--- | All issues for a repo (given the repo owner and name), with optional
--- restrictions as described in the @IssueLimitation@ data type.
---
--- > issuesForRepo "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
-issuesForRepo :: String -> String -> [IssueLimitation] -> IO (Either Error [Issue])
-issuesForRepo = issuesForRepo' Nothing
-
-
 -- Creating new issues.
 
 newIssue :: String -> NewIssue
 newIssue title = NewIssue title Nothing Nothing Nothing Nothing
 
 
--- |
--- Create a new issue.
+-- | Create a new issue.
 --
 -- > createIssue (GithubUser (user, password)) user repo
 -- >  (newIssue "some_repo") {...}
-createIssue :: GithubAuth -> String -> String -> NewIssue
+createIssue :: GithubAuth -> Name GithubOwner -> Name Repo -> NewIssue
             -> IO (Either Error Issue)
-createIssue auth user repo = githubPost auth ["repos", user, repo, "issues"]
+createIssue auth user repo ni =
+     executeRequest auth $ createIssueR user repo ni
 
+-- | Create an issue.
+-- See <https://developer.github.com/v3/issues/#create-an-issue>
+createIssueR :: Name GithubOwner -> Name Repo -> NewIssue -> GithubRequest 'True Issue
+createIssueR user repo =
+    GithubPost Post ["repos", untagName user, untagName repo, "issues"] . encode
 
 -- Editing issues.
 
@@ -124,12 +145,17 @@ editOfIssue :: EditIssue
 editOfIssue = EditIssue Nothing Nothing Nothing Nothing Nothing Nothing
 
 
--- |
--- Edit an issue.
+-- | Edit an issue.
 --
 -- > editIssue (GithubUser (user, password)) user repo issue
 -- >  editOfIssue {...}
-editIssue :: GithubAuth -> String -> String -> Int -> EditIssue
+editIssue :: GithubAuth -> Name GithubOwner -> Name Repo -> Id Issue -> EditIssue
             -> IO (Either Error Issue)
-editIssue auth user repo iss =
-  githubPatch auth ["repos", user, repo, "issues", show iss]
+editIssue auth user repo iss edit =
+     executeRequest auth $ editIssueR user repo iss edit
+
+-- | Edit an issue.
+-- See <https://developer.github.com/v3/issues/#edit-an-issue>
+editIssueR :: Name GithubOwner -> Name Repo -> Id Issue -> EditIssue -> GithubRequest 'True Issue
+editIssueR user repo iss =
+    GithubPost Patch ["repos", untagName user, untagName repo, "issues", show $ untagId iss] . encode

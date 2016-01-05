@@ -3,6 +3,61 @@
 -- This module re-exports all request constructrors and
 -- data definitions from this package.
 module Github.All (
+    -- * Issues
+    -- | See <https://developer.github.com/v3/issues/>
+    --
+    -- Missing endpoints: 
+    --
+    -- * List issues
+    issueR,
+    issuesForRepoR,
+    createIssueR,
+    editIssueR,
+
+    -- ** Comments
+    -- | See <https://developer.github.com/v3/issues/comments/>
+    --
+    -- Missing endpoints:
+    --
+    -- * Delete comment
+    commentR,
+    commentsR,
+    createCommentR,
+    editCommentR,
+
+    -- ** Events
+    -- | See <https://developer.github.com/v3/issues/events/>
+    --
+    eventsForIssueR,
+    eventsForRepoR,
+    eventR,
+
+    -- ** Labels
+    -- | See <https://developer.github.com/v3/issues/labels/>
+    --
+    labelsOnRepoR,
+    labelR,
+    createLabelR,
+    updateLabelR,
+    deleteLabelR,
+    labelsOnIssueR,
+    addLabelsToIssueR,
+    removeLabelFromIssueR,
+    replaceAllLabelsForIssueR,
+    removeAllLabelsFromIssueR,
+    labelsOnMilestoneR,
+
+    -- ** Milestone
+    -- | See <https://developer.github.com/v3/issues/milestones/>
+    -- 
+    -- Missing endpoints:
+    --
+    -- * Create a milestone
+    -- * Update a milestone
+    -- * Delete a milestone
+    milestonesR,
+    milestoneR,
+
     -- * Organizations
     -- | See <https://developer.github.com/v3/orgs/>
     --
@@ -18,6 +73,7 @@ module Github.All (
     --
     -- Missing endpoints: All except /Members List/
     membersOfR,
+
     -- ** Teams
     -- | See <https://developer.github.com/v3/orgs/teams/>
     --
@@ -43,6 +99,7 @@ module Github.All (
     -- * Get all users
     userInfoForR,
     userInfoCurrentR,
+
     -- ** Followers
     -- | See <https://developer.github.com/v3/users/followers/>
     --
@@ -60,6 +117,11 @@ module Github.All (
     ) where
 
 import Github.Data
+import Github.Issues
+import Github.Issues.Comments
+import Github.Issues.Events
+import Github.Issues.Labels
+import Github.Issues.Milestones
 import Github.Organizations
 import Github.Organizations.Members
 import Github.Organizations.Teams
