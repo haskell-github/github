@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveDataTypeable, DeriveGeneric #-}
 module Github.Data.Issues where
 
+import Github.Data.Id
 import Github.Data.Definitions
 import Github.Data.PullRequests
 
@@ -24,7 +25,7 @@ data Issue = Issue {
   ,issueCreatedAt :: GithubDate
   ,issueBody :: Maybe String
   ,issueState :: String
-  ,issueId :: Int
+  ,issueId :: Id Issue
   ,issueComments :: Int
   ,issueMilestone :: Maybe Milestone
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
