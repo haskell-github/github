@@ -125,6 +125,29 @@ module Github.All (
     deleteTeamMembershipForR,
     listTeamsCurrentR,
 
+    -- * Pull Requests
+    -- | See <https://developer.github.com/v3/pulls/>
+    pullRequestsForR,
+    pullRequestR,
+    createPullRequestR,
+    updatePullRequestR,
+    pullRequestCommitsR,
+    pullRequestFilesR,
+    isPullRequestMergedR,
+    mergePullRequestR,
+
+    -- ** Review comments
+    -- | See <https://developer.github.com/v3/pulls/comments/>
+    --
+    -- Missing endpoints:
+    --
+    -- * List comments in a repository
+    -- * Create a comment
+    -- * Edit a comment
+    -- * Delete a comment
+    pullRequestReviewCommentsR,
+    pullRequestReviewCommentR,
+
     -- * Search
     -- | See <https://developer.github.com/v3/search/>
    --
@@ -172,6 +195,8 @@ import Github.Gists.Comments
 import Github.Organizations
 import Github.Organizations.Members
 import Github.Organizations.Teams
+import Github.PullRequests
+import Github.PullRequests.ReviewComments
 import Github.Search
 import Github.Users
 import Github.Users.Followers
