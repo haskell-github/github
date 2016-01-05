@@ -3,6 +3,34 @@
 -- This module re-exports all request constructrors and
 -- data definitions from this package.
 module Github.All (
+     -- * Gists
+    -- | See <https://developer.github.com/v3/gists/>
+    --
+    -- Missing endpoints:
+    --
+    -- * Get a specific revision of a gist
+    -- * Create a gist
+    -- * Edit a gist
+    -- * List gist commits
+    -- * Star a gist
+    -- * Unstar a gist
+    -- * Check if a gist is starred
+    -- * Fork a gist
+    -- * List gist forks
+    -- * Delete a gist
+    gistsR,
+    gistR,
+
+    -- ** Comments
+    -- | See <https://developer.github.com/v3/gists/comments/>
+    --
+    -- Missing endpoints:
+    -- * Create a comment
+    -- * Edit a comment
+    -- * Delete a comment
+    commentsOnR,
+    gistCommentR,
+   
     -- * Issues
     -- | See <https://developer.github.com/v3/issues/>
     --
@@ -139,6 +167,8 @@ import Github.Issues.Comments
 import Github.Issues.Events
 import Github.Issues.Labels
 import Github.Issues.Milestones
+import Github.Gists
+import Github.Gists.Comments
 import Github.Organizations
 import Github.Organizations.Members
 import Github.Organizations.Teams

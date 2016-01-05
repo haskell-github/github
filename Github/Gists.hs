@@ -1,35 +1,51 @@
 -- | The gists API as described at <http://developer.github.com/v3/gists/>.
 module Github.Gists (
- gists
-,gists'
-,gist
-,gist'
-,module Github.Data
-) where
+    gists,
+    gists',
+    gistsR,
+    gist,
+    gist',
+    gistR,
+    module Github.Data,
+    ) where
 
+import Github.Auth
 import Github.Data
-import Github.Private
+import Github.Request
 
--- | The list of all gists created by the user 
--- 
+-- | The list of all gists created by the user
+--
 -- > gists' (Just ("github-username", "github-password")) "mike-burns"
-gists' :: Maybe GithubAuth -> String -> IO (Either Error [Gist])
-gists' auth userName = githubGet' auth ["users", userName, "gists"]
+gists' :: Maybe GithubAuth -> Name GithubOwner -> IO (Either Error [Gist])
+gists' auth user =
+    executeRequestMaybe auth $ gistsR user
 
 -- | The list of all public gists created by the user.
 --
 -- > gists "mike-burns"
-gists :: String -> IO (Either Error [Gist])
+gists :: Name GithubOwner -> IO (Either Error [Gist])
 gists = gists' Nothing
+
+-- | List gists.
+-- See <https://developer.github.com/v3/gists/#list-gists>
+gistsR :: Name GithubOwner -> GithubRequest k [Gist]
+gistsR user = GithubGet ["users", untagName user, "gists"] ""
 
 -- | A specific gist, given its id, with authentication credentials
 --
 -- > gist' (Just ("github-username", "github-password")) "225074"
-gist' :: Maybe GithubAuth -> String -> IO (Either Error Gist)
-gist' auth reqGistId = githubGet' auth ["gists", reqGistId]
+gist' :: Maybe GithubAuth -> Name Gist -> IO (Either Error Gist)
+gist' auth gid =
+    executeRequestMaybe auth $ gistR gid
 
 -- | A specific gist, given its id.
 --
 -- > gist "225074"
-gist :: String -> IO (Either Error Gist)
+gist :: Name Gist -> IO (Either Error Gist)
 gist = gist' Nothing
+
+-- | Get a single gist.
+-- See <https://developer.github.com/v3/gists/#get-a-single-gist>
+gistR :: Name Gist ->GithubRequest k Gist
+gistR gid =
+    GithubGet ["gists", untagName gid] ""
