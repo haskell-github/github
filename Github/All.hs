@@ -30,11 +30,33 @@ module Github.All (
     -- * Delete a comment
     commentsOnR,
     gistCommentR,
-   
+
+    -- * Git Data
+    -- | See <https://developer.github.com/v3/git/>
+
+    -- ** Blobs
+    -- | See <https://developer.github.com/v3/git/blobs/>
+    blobR,
+
+    -- ** Commits
+    -- | See <https://developer.github.com/v3/git/commits/>
+    commitR,
+
+    -- ** References
+    -- | See <https://developer.github.com/v3/git/refs/>
+    referenceR,
+    referencesR,
+    createReferenceR,
+
+    -- ** Trees
+    -- | See <https://developer.github.com/v3/git/trees/>
+    treeR,
+    nestedTreeR,
+
     -- * Issues
     -- | See <https://developer.github.com/v3/issues/>
     --
-    -- Missing endpoints: 
+    -- Missing endpoints:
     --
     -- * List issues
     issueR,
@@ -77,7 +99,7 @@ module Github.All (
 
     -- ** Milestone
     -- | See <https://developer.github.com/v3/issues/milestones/>
-    -- 
+    --
     -- Missing endpoints:
     --
     -- * Create a milestone
@@ -185,13 +207,17 @@ module Github.All (
     ) where
 
 import Github.Data
+import Github.Gists
+import Github.Gists.Comments
+import Github.GitData.Blobs
+import Github.GitData.Commits
+import Github.GitData.References
+import Github.GitData.Trees
 import Github.Issues
 import Github.Issues.Comments
 import Github.Issues.Events
 import Github.Issues.Labels
 import Github.Issues.Milestones
-import Github.Gists
-import Github.Gists.Comments
 import Github.Organizations
 import Github.Organizations.Members
 import Github.Organizations.Teams
@@ -200,3 +226,4 @@ import Github.PullRequests.ReviewComments
 import Github.Search
 import Github.Users
 import Github.Users.Followers
+

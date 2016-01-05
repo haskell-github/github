@@ -1,39 +1,53 @@
 -- | The underlying tree of SHA1s and files that make up a git repo. The API is
 -- described on <http://developer.github.com/v3/git/trees/>.
 module Github.GitData.Trees (
- tree
-,tree'
-,nestedTree
-,nestedTree'
-,module Github.Data
-) where
+    tree,
+    tree',
+    treeR,
+    nestedTree,
+    nestedTree',
+    nestedTreeR,
+    module Github.Data,
+    ) where
 
+import Github.Auth
 import Github.Data
-import Github.Private
+import Github.Request
 
 -- | A tree for a SHA1.
 --
 -- > tree (Just ("github-username", "github-password")) "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
-tree' :: Maybe GithubAuth -> String -> String -> String -> IO (Either Error Tree)
-tree' auth user reqRepoName sha =
-  githubGet' auth ["repos", user, reqRepoName, "git", "trees", sha]
+tree' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Name Tree -> IO (Either Error Tree)
+tree' auth user repo sha =
+    executeRequestMaybe auth $ treeR user repo sha
 
 -- | A tree for a SHA1.
 --
 -- > tree "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
-tree :: String -> String -> String -> IO (Either Error Tree)
+tree :: Name GithubOwner -> Name Repo -> Name Tree -> IO (Either Error Tree)
 tree = tree' Nothing
+
+-- | Get a Tree.
+-- See <https://developer.github.com/v3/git/trees/#get-a-tree>
+treeR :: Name GithubOwner -> Name Repo -> Name Tree -> GithubRequest k Tree
+treeR user repo sha =
+    GithubGet  ["repos", untagName user, untagName repo, "git", "trees", untagName sha] ""
 
 -- | A recursively-nested tree for a SHA1.
 --
 -- > nestedTree' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
-nestedTree' :: Maybe GithubAuth -> String -> String -> String -> IO (Either Error Tree)
-nestedTree' auth user reqRepoName sha =
-  githubGetWithQueryString' auth ["repos", user, reqRepoName, "git", "trees", sha]
-                                 "recursive=1"
+nestedTree' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Name Tree -> IO (Either Error Tree)
+nestedTree' auth user repo sha =
+    executeRequestMaybe auth $ nestedTreeR user repo sha
 
 -- | A recursively-nested tree for a SHA1.
 --
 -- > nestedTree "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
-nestedTree :: String -> String -> String -> IO (Either Error Tree)
+nestedTree :: Name GithubOwner -> Name Repo -> Name Tree -> IO (Either Error Tree)
 nestedTree = nestedTree' Nothing
+
+-- | Get a Tree Recursively.
+-- See <https://developer.github.com/v3/git/trees/#get-a-tree-recursively>
+nestedTreeR :: Name GithubOwner -> Name Repo -> Name Tree -> GithubRequest k Tree
+nestedTreeR user repo sha =
+    GithubGet  ["repos", untagName user, untagName repo, "git", "trees", untagName sha] "recursive=1"
