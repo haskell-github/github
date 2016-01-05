@@ -21,8 +21,25 @@ module Github.All (
     -- ** Teams
     -- | See <https://developer.github.com/v3/orgs/teams/>
     --
-    -- Missing endpoints: All except /List teams/
+    -- Missing endpoints:
+    --
+    -- * List team members
+    -- * Get team member (deprecated)
+    -- * Add team member (deprecated)
+    -- * Remove team member (deprecated)
+    -- * List team repos
+    -- * Check if a team manages a repository
+    -- * Add team repository
+    -- * Remove team repository
     teamsOfR,
+    teamInfoForR,
+    createTeamForR,
+    editTeamR,
+    deleteTeamR,
+    teamMembershipInfoForR,
+    addTeamMembershipForR,
+    deleteTeamMembershipForR,
+    listTeamsCurrentR,
 
     -- * Search
     -- | See <https://developer.github.com/v3/search/>
