@@ -145,8 +145,6 @@ Library
                    Github.Repos.Subscribing,
                    Github.Repos.Webhooks
                    Github.Repos.Webhooks.Validate,
-                   Github.Teams
-                   Github.Teams.Memberships,
                    Github.Users,
                    Github.Users.Followers
                    Github.Search
