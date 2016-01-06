@@ -1,4 +1,5 @@
-{-# LANGUAGE OverloadedStrings, DataKinds #-}
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE OverloadedStrings #-}
 -- | The pull requests API as documented at
 -- <http://developer.github.com/v3/pulls/>.
 module Github.PullRequests (
@@ -30,8 +31,8 @@ import Github.Auth
 import Github.Data
 import Github.Request
 
+import Data.Aeson.Compat  (Value, encode, object, (.=))
 import Network.HTTP.Types
-import Data.Aeson.Compat (Value, encode, object, (.=))
 
 -- | All pull requests for the repo, by owner, repo name, and pull request state.
 -- | With authentification
@@ -128,7 +129,7 @@ updatePullRequestR user repo prid epr =
 pullRequestCommits' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Id DetailedPullRequest -> IO (Either Error [Commit])
 pullRequestCommits' auth user repo prid =
     executeRequestMaybe auth $ pullRequestCommitsR user repo prid
-  
+
 -- | All the commits on a pull request, given the repo owner, repo name, and
 -- the number of the pull request.
 --

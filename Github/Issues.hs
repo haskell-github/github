@@ -1,4 +1,8 @@
-{-# LANGUAGE CPP, OverloadedStrings, DeriveGeneric, DeriveDataTypeable, DataKinds #-}
+{-# LANGUAGE CPP                #-}
+{-# LANGUAGE DataKinds          #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveGeneric      #-}
+{-# LANGUAGE OverloadedStrings  #-}
 -- | The issues API as described on <http://developer.github.com/v3/issues/>.
 module Github.Issues (
     issue,
@@ -21,10 +25,10 @@ import Github.Auth
 import Github.Data
 import Github.Request
 
+import Control.DeepSeq   (NFData)
 import Data.Aeson.Compat (encode)
-import Control.DeepSeq (NFData)
-import Data.List (intercalate)
 import Data.Data
+import Data.List         (intercalate)
 #if MIN_VERSION_time(1,5,0)
 import Data.Time (defaultTimeLocale)
 #else
@@ -32,8 +36,8 @@ import System.Locale (defaultTimeLocale)
 #endif
 import GHC.Generics (Generic)
 
+import Data.Time.Clock  (UTCTime (..))
 import Data.Time.Format (formatTime)
-import Data.Time.Clock (UTCTime(..))
 
 
 -- | A data structure for describing how to filter issues. This is used by
@@ -63,7 +67,7 @@ instance NFData IssueLimitation
 -- > issue' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" "462"
 issue' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Id Issue -> IO (Either Error Issue)
 issue' auth user reqRepoName reqIssueNumber =
-    executeRequestMaybe auth $ issueR user reqRepoName reqIssueNumber 
+    executeRequestMaybe auth $ issueR user reqRepoName reqIssueNumber
 
 -- | Details on a specific issue, given the repo owner and name, and the issue
 -- number.
@@ -84,7 +88,7 @@ issueR user reqRepoName reqIssueNumber =
 -- > issuesForRepo' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
 issuesForRepo' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> [IssueLimitation] -> IO (Either Error [Issue])
 issuesForRepo' auth user reqRepoName issueLimitations =
-    executeRequestMaybe auth $ issuesForRepoR user reqRepoName issueLimitations 
+    executeRequestMaybe auth $ issuesForRepoR user reqRepoName issueLimitations
 
 -- | All issues for a repo (given the repo owner and name), with optional
 -- restrictions as described in the @IssueLimitation@ data type.

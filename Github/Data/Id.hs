@@ -6,8 +6,8 @@ module Github.Data.Id (
     untagId,
     ) where
 
-import Control.DeepSeq   (NFData(..))
-import Data.Aeson.Compat (FromJSON(..), ToJSON(..))
+import Control.DeepSeq   (NFData (..))
+import Data.Aeson.Compat (FromJSON (..), ToJSON (..))
 import Data.Data         (Data, Typeable)
 import Data.Hashable     (Hashable)
 import GHC.Generics      (Generic)

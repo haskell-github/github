@@ -24,7 +24,7 @@ import Github.Request
 -- > comment "thoughtbot" "paperclip" 1468184
 comment :: Name GithubOwner -> Name Repo -> Id Comment -> IO (Either Error IssueComment)
 comment user repo cid =
-    executeRequest' $ commentR user repo cid 
+    executeRequest' $ commentR user repo cid
 
 -- | Get a single comment.
 -- See <https://developer.github.com/v3/issues/comments/#get-a-single-comment>
@@ -43,7 +43,7 @@ comments = comments' Nothing
 -- > comments' (GithubUser (user, password)) "thoughtbot" "paperclip" 635
 comments' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Id Issue -> IO (Either Error [IssueComment])
 comments' auth user repo iid =
-    executeRequestMaybe auth $ commentsR user repo iid 
+    executeRequestMaybe auth $ commentsR user repo iid
 
 -- | List comments on an issue.
 -- See <https://developer.github.com/v3/issues/comments/#list-comments-on-an-issue>
@@ -77,7 +77,7 @@ editComment :: GithubAuth -> Name GithubOwner -> Name Repo -> Id Comment -> Stri
 editComment auth user repo commid body =
     executeRequest auth $ editCommentR user repo commid body
 
--- | Edit a comment. 
+-- | Edit a comment.
 -- See <https://developer.github.com/v3/issues/comments/#edit-a-comment>
 editCommentR :: Name GithubOwner -> Name Repo -> Id Comment -> String -> GithubRequest 'True Comment
 editCommentR user repo commid body =
