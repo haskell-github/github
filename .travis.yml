@@ -55,4 +55,8 @@ install:
 script:
   - sh travis-script.sh
 
+branches:
+  only:
+  - master
+
 # EOF
