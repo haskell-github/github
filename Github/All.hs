@@ -3,7 +3,33 @@
 -- This module re-exports all request constructrors and
 -- data definitions from this package.
 module Github.All (
-     -- * Gists
+    -- * Activity
+    -- | See <https://developer.github.com/v3/activity/>
+
+    -- ** Starring
+    -- | See <https://developer.github.com/v3/activity/starring/>
+    --
+    -- Missing endpoints:
+    --
+    -- * Check if you are starring a repository
+    -- * Star a repository
+    -- * Unstar a repository
+    stargazersForR,
+    reposStarredByR,
+    myStarredR,
+
+    -- ** Watching
+    -- | See <https://developer.github.com/v3/activity/>
+    --
+    -- Missing endpoints:
+    --
+    -- * Get a Repository Subscription
+    -- * Set a Repository Subscription
+    -- * Delete a Repository Subscription
+    watchersForR,
+    reposWatchedByR,
+
+    -- * Gists
     -- | See <https://developer.github.com/v3/gists/>
     --
     -- Missing endpoints:
@@ -170,6 +196,15 @@ module Github.All (
     pullRequestReviewCommentsR,
     pullRequestReviewCommentR,
 
+    -- * Repositories
+    -- | See <https://developer.github.com/v3/repos/>
+
+    -- ** Collaborators
+
+    -- ** Commits
+
+    -- ** Forks
+
     -- * Search
     -- | See <https://developer.github.com/v3/search/>
    --
@@ -206,6 +241,8 @@ module Github.All (
     module Github.Data
     ) where
 
+import Github.Activity.Starring
+import Github.Activity.Watching
 import Github.Data
 import Github.Gists
 import Github.Gists.Comments
@@ -226,4 +263,3 @@ import Github.PullRequests.ReviewComments
 import Github.Search
 import Github.Users
 import Github.Users.Followers
-
