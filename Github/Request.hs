@@ -33,8 +33,8 @@ import Network.HTTP.Types   (Status)
 import qualified Data.ByteString.Lazy      as LBS
 import qualified Network.HTTP.Types.Method as Method
 
-import Github.Data    (Error)
-import Github.Private (GithubAuth)
+import Github.Auth (GithubAuth)
+import Github.Data (Error)
 
 import qualified Github.Private as Private
 

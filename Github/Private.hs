@@ -1,5 +1,5 @@
-{-# LANGUAGE OverloadedStrings, StandaloneDeriving, DeriveDataTypeable #-}
-{-# LANGUAGE CPP, FlexibleContexts, DeriveGeneric #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE CPP, FlexibleContexts #-}
 
 -- | This module is /private/. It is exposed to facilitate customization
 -- and extension of the /public/ API of this package without explicitely
@@ -10,35 +10,24 @@
 --
 module Github.Private where
 
-#if !MIN_VERSION_base(4,8,0)
-import Control.Applicative
-#endif
-import Github.Data
-import Control.DeepSeq (NFData)
+import Prelude ()
+import Prelude.Compat
+
 import Data.Aeson
 import Data.Attoparsec.ByteString.Lazy
-import Data.Data
 import Data.Monoid
 import Data.List
 import Data.CaseInsensitive (mk)
-import qualified Data.ByteString.Char8 as BS
-import qualified Data.ByteString.Lazy.Char8 as LBS
-import GHC.Generics (Generic)
 import Network.HTTP.Types (Status(..), notFound404)
 import Network.HTTP.Conduit
--- import Data.Conduit (ResourceT)
-import qualified Control.Exception as E
 import Data.Maybe (fromMaybe)
 
--- | user/password for HTTP basic access authentication
-data GithubAuth = GithubBasicAuth BS.ByteString BS.ByteString
-                | GithubOAuth String -- ^ token
-                | GithubEnterpriseOAuth String  -- custom API endpoint without
-                                                -- trailing slash
-                                        String  -- token
-                deriving (Show, Data, Typeable, Eq, Ord, Generic)
+import qualified Control.Exception as E
+import qualified Data.ByteString.Char8 as BS
+import qualified Data.ByteString.Lazy.Char8 as LBS
 
-instance NFData GithubAuth
+import Github.Data
+import Github.Auth
 
 githubGet :: (FromJSON b, Show b) => [String] -> IO (Either Error b)
 githubGet = githubGet' Nothing
