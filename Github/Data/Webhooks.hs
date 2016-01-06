@@ -13,16 +13,16 @@ import GHC.Generics    (Generic)
 import qualified Data.Map as M
 
 data RepoWebhook = RepoWebhook {
-   repoWebhookUrl :: String
-  ,repoWebhookTestUrl :: String
-  ,repoWebhookId :: Id RepoWebhook
-  ,repoWebhookName :: String
-  ,repoWebhookActive :: Bool
-  ,repoWebhookEvents :: [RepoWebhookEvent]
-  ,repoWebhookConfig :: M.Map String String
+   repoWebhookUrl          :: String
+  ,repoWebhookTestUrl      :: String
+  ,repoWebhookId           :: Id RepoWebhook
+  ,repoWebhookName         :: String
+  ,repoWebhookActive       :: Bool
+  ,repoWebhookEvents       :: [RepoWebhookEvent]
+  ,repoWebhookConfig       :: M.Map String String
   ,repoWebhookLastResponse :: RepoWebhookResponse
-  ,repoWebhookUpdatedAt :: GithubDate
-  ,repoWebhookCreatedAt :: GithubDate
+  ,repoWebhookUpdatedAt    :: GithubDate
+  ,repoWebhookCreatedAt    :: GithubDate
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData RepoWebhook
@@ -53,16 +53,16 @@ data RepoWebhookEvent =
 instance NFData RepoWebhookEvent
 
 data RepoWebhookResponse = RepoWebhookResponse {
-   repoWebhookResponseCode :: Maybe Int
-  ,repoWebhookResponseStatus :: String
+   repoWebhookResponseCode    :: Maybe Int
+  ,repoWebhookResponseStatus  :: String
   ,repoWebhookResponseMessage :: Maybe String
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData RepoWebhookResponse
 
 data PingEvent = PingEvent {
-   pingEventZen :: String
-  ,pingEventHook :: RepoWebhook
+   pingEventZen    :: String
+  ,pingEventHook   :: RepoWebhook
   ,pingEventHookId :: Id RepoWebhook
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 

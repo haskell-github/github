@@ -139,7 +139,7 @@ executeRequestWithMgr mgr auth req =
             Private.githubAPIDelete' getResponse
                 auth
                 (Private.buildPath paths)
-        GithubStatus _req' -> 
+        GithubStatus _req' ->
             error "executeRequestWithMgr GithubStatus not implemented"
   where
     getResponse = flip httpLbs mgr

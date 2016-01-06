@@ -15,8 +15,8 @@ module Github.Repos.Comments (
     module Github.Data,
     ) where
 
-import Github.Data
 import Github.Auth
+import Github.Data
 import Github.Request
 
 -- | All the comments on a Github repo.
@@ -70,7 +70,7 @@ commitCommentFor = commitCommentFor' Nothing
 -- > commitCommentFor "thoughtbot" "paperclip" "669575"
 commitCommentFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Id Comment -> IO (Either Error Comment)
 commitCommentFor' auth user repo cid =
-    executeRequestMaybe auth $ commitCommentForR user repo cid  
+    executeRequestMaybe auth $ commitCommentForR user repo cid
 
 -- | Get a single commit comment.
 -- See <https://developer.github.com/v3/repos/comments/#get-a-single-commit-comment>

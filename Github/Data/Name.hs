@@ -6,11 +6,11 @@ module Github.Data.Name (
     untagName,
     ) where
 
-import Control.DeepSeq   (NFData(..))
-import Data.Aeson.Compat (FromJSON(..), ToJSON(..))
+import Control.DeepSeq   (NFData (..))
+import Data.Aeson.Compat (FromJSON (..), ToJSON (..))
 import Data.Data         (Data, Typeable)
 import Data.Hashable     (Hashable)
-import Data.String       (IsString(..))
+import Data.String       (IsString (..))
 import GHC.Generics      (Generic)
 
 newtype Name entity = N String

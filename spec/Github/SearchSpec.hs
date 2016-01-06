@@ -1,17 +1,17 @@
-{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell   #-}
 module Github.SearchSpec where
 
 import Prelude        ()
 import Prelude.Compat
 
-import Data.Aeson.Compat   (eitherDecodeStrict)
-import Data.FileEmbed      (embedFile)
-import Test.Hspec          (Spec, describe, it, shouldBe)
+import Data.Aeson.Compat (eitherDecodeStrict)
+import Data.FileEmbed    (embedFile)
+import Test.Hspec        (Spec, describe, it, shouldBe)
 
-import Github.Data.Id (Id (..))
-import Github.Data.Issues      (Issue(..), SearchIssuesResult(..))
-import Github.Search           (searchIssues)
+import Github.Data.Id     (Id (..))
+import Github.Data.Issues (Issue (..), SearchIssuesResult (..))
+import Github.Search      (searchIssues)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b

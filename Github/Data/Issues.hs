@@ -1,96 +1,97 @@
-{-# LANGUAGE DeriveDataTypeable, DeriveGeneric #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveGeneric      #-}
 module Github.Data.Issues where
 
-import Github.Data.Id
 import Github.Data.Definitions
+import Github.Data.Id
 import Github.Data.PullRequests
 
 import Control.DeepSeq (NFData)
-import Data.Data (Typeable, Data)
-import GHC.Generics (Generic)
+import Data.Data       (Data, Typeable)
+import GHC.Generics    (Generic)
 
 data Issue = Issue {
-   issueClosedAt :: Maybe GithubDate
-  ,issueUpdatedAt :: GithubDate
-  ,issueEventsUrl :: String
-  ,issueHtmlUrl :: Maybe String
-  ,issueClosedBy :: Maybe GithubOwner
-  ,issueLabels :: [IssueLabel]
-  ,issueNumber :: Int
-  ,issueAssignee :: Maybe GithubOwner
-  ,issueUser :: GithubOwner
-  ,issueTitle :: String
+   issueClosedAt    :: Maybe GithubDate
+  ,issueUpdatedAt   :: GithubDate
+  ,issueEventsUrl   :: String
+  ,issueHtmlUrl     :: Maybe String
+  ,issueClosedBy    :: Maybe GithubOwner
+  ,issueLabels      :: [IssueLabel]
+  ,issueNumber      :: Int
+  ,issueAssignee    :: Maybe GithubOwner
+  ,issueUser        :: GithubOwner
+  ,issueTitle       :: String
   ,issuePullRequest :: Maybe PullRequestReference
-  ,issueUrl :: String
-  ,issueCreatedAt :: GithubDate
-  ,issueBody :: Maybe String
-  ,issueState :: String
-  ,issueId :: Id Issue
-  ,issueComments :: Int
-  ,issueMilestone :: Maybe Milestone
+  ,issueUrl         :: String
+  ,issueCreatedAt   :: GithubDate
+  ,issueBody        :: Maybe String
+  ,issueState       :: String
+  ,issueId          :: Id Issue
+  ,issueComments    :: Int
+  ,issueMilestone   :: Maybe Milestone
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Issue
 
 data NewIssue = NewIssue {
-  newIssueTitle :: String
-, newIssueBody :: Maybe String
-, newIssueAssignee :: Maybe String
+  newIssueTitle     :: String
+, newIssueBody      :: Maybe String
+, newIssueAssignee  :: Maybe String
 , newIssueMilestone :: Maybe Int
-, newIssueLabels :: Maybe [String]
+, newIssueLabels    :: Maybe [String]
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData NewIssue
 
 data EditIssue = EditIssue {
-  editIssueTitle :: Maybe String
-, editIssueBody :: Maybe String
-, editIssueAssignee :: Maybe String
-, editIssueState :: Maybe String
+  editIssueTitle     :: Maybe String
+, editIssueBody      :: Maybe String
+, editIssueAssignee  :: Maybe String
+, editIssueState     :: Maybe String
 , editIssueMilestone :: Maybe Int
-, editIssueLabels :: Maybe [String]
+, editIssueLabels    :: Maybe [String]
 } deriving  (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData EditIssue
 
 data Milestone = Milestone {
-   milestoneCreator :: GithubOwner
-  ,milestoneDueOn :: Maybe GithubDate
-  ,milestoneOpenIssues :: Int
-  ,milestoneNumber :: Int
+   milestoneCreator      :: GithubOwner
+  ,milestoneDueOn        :: Maybe GithubDate
+  ,milestoneOpenIssues   :: Int
+  ,milestoneNumber       :: Int
   ,milestoneClosedIssues :: Int
-  ,milestoneDescription :: Maybe String
-  ,milestoneTitle :: String
-  ,milestoneUrl :: String
-  ,milestoneCreatedAt :: GithubDate
-  ,milestoneState :: String
+  ,milestoneDescription  :: Maybe String
+  ,milestoneTitle        :: String
+  ,milestoneUrl          :: String
+  ,milestoneCreatedAt    :: GithubDate
+  ,milestoneState        :: String
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Milestone
 
 data IssueLabel = IssueLabel {
    labelColor :: String
-  ,labelUrl :: String
-  ,labelName :: String
+  ,labelUrl   :: String
+  ,labelName  :: String
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData IssueLabel
 
 data IssueComment = IssueComment {
    issueCommentUpdatedAt :: GithubDate
-  ,issueCommentUser :: GithubOwner
-  ,issueCommentUrl :: String
-  ,issueCommentHtmlUrl :: String
+  ,issueCommentUser      :: GithubOwner
+  ,issueCommentUrl       :: String
+  ,issueCommentHtmlUrl   :: String
   ,issueCommentCreatedAt :: GithubDate
-  ,issueCommentBody :: String
-  ,issueCommentId :: Int
+  ,issueCommentBody      :: String
+  ,issueCommentId        :: Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData IssueComment
 
 data SearchIssuesResult = SearchIssuesResult {
    searchIssuesTotalCount :: Int
-  ,searchIssuesIssues :: [Issue]
+  ,searchIssuesIssues     :: [Issue]
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData SearchIssuesResult
@@ -120,13 +121,13 @@ instance NFData EventType
 
 -- | Issue event
 data Event = Event {
-   eventActor :: GithubOwner
-  ,eventType :: EventType
-  ,eventCommitId :: Maybe String
-  ,eventUrl :: String
+   eventActor     :: GithubOwner
+  ,eventType      :: EventType
+  ,eventCommitId  :: Maybe String
+  ,eventUrl       :: String
   ,eventCreatedAt :: GithubDate
-  ,eventId :: Int
-  ,eventIssue :: Maybe Issue
+  ,eventId        :: Int
+  ,eventIssue     :: Maybe Issue
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Event

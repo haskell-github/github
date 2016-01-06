@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP               #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | Verification of incomming webhook payloads, as described at
@@ -11,11 +11,11 @@ module Github.Repos.Webhooks.Validate (
 #if !MIN_VERSION_base(4,8,0)
 import Control.Applicative
 #endif
-import Crypto.Hash
-import qualified Data.ByteString.Char8 as BS
-import Data.Byteable (constEqBytes, toBytes)
+import           Crypto.Hash
+import           Data.Byteable          (constEqBytes, toBytes)
 import qualified Data.ByteString.Base16 as Hex
-import Data.Monoid
+import qualified Data.ByteString.Char8  as BS
+import           Data.Monoid
 
 
 -- | Validates a given payload against a given HMAC hexdigest using a given
