@@ -2,7 +2,7 @@
 -- <http://developer.github.com/v3/git/commits/>.
 module Github.GitData.Commits (
     commit,
-    commitR,
+    gitCommitR,
     module Github.Data,
 ) where
 
@@ -14,11 +14,11 @@ import Github.Request
 -- > commit "thoughtbot" "paperclip" "bc5c51d1ece1ee45f94b056a0f5a1674d7e8cba9"
 commit :: Name GithubOwner -> Name Repo -> Name GitCommit -> IO (Either Error GitCommit)
 commit user repo sha =
-    executeRequest' $ commitR user repo sha
+    executeRequest' $ gitCommitR user repo sha
 
 
 -- | Get a commit.
 -- See <https://developer.github.com/v3/git/commits/#get-a-commit>
-commitR :: Name GithubOwner -> Name Repo -> Name GitCommit -> GithubRequest k GitCommit
-commitR user repo sha =
+gitCommitR :: Name GithubOwner -> Name Repo -> Name GitCommit -> GithubRequest k GitCommit
+gitCommitR user repo sha =
     GithubGet ["repos", untagName user, untagName repo, "git", "commits", untagName sha] ""

@@ -2,8 +2,36 @@
 --
 -- This module re-exports all request constructrors and
 -- data definitions from this package.
+--
+-- The missing endpoints lists are exhausive, they indicate endpoints we know are missing.
 module Github.All (
-     -- * Gists
+    -- * Activity
+    -- | See <https://developer.github.com/v3/activity/>
+
+    -- ** Starring
+    -- | See <https://developer.github.com/v3/activity/starring/>
+    --
+    -- Missing endpoints:
+    --
+    -- * Check if you are starring a repository
+    -- * Star a repository
+    -- * Unstar a repository
+    stargazersForR,
+    reposStarredByR,
+    myStarredR,
+
+    -- ** Watching
+    -- | See <https://developer.github.com/v3/activity/>
+    --
+    -- Missing endpoints:
+    --
+    -- * Get a Repository Subscription
+    -- * Set a Repository Subscription
+    -- * Delete a Repository Subscription
+    watchersForR,
+    reposWatchedByR,
+
+    -- * Gists
     -- | See <https://developer.github.com/v3/gists/>
     --
     -- Missing endpoints:
@@ -40,7 +68,7 @@ module Github.All (
 
     -- ** Commits
     -- | See <https://developer.github.com/v3/git/commits/>
-    commitR,
+    gitCommitR,
 
     -- ** References
     -- | See <https://developer.github.com/v3/git/refs/>
@@ -170,9 +198,62 @@ module Github.All (
     pullRequestReviewCommentsR,
     pullRequestReviewCommentR,
 
+    -- * Repositories
+    -- | See <https://developer.github.com/v3/repos/>
+    --
+    -- Missing endpoints:
+    -- * List your repositories
+    -- * List all public repositories
+    -- * List Teams
+    -- * Get Branch
+    -- * Enabling and disabling branch protection
+    userReposR,
+
+    -- ** Collaborators
+    -- | See <https://developer.github.com/v3/repos/collaborators/>
+    collaboratorsOnR,
+    isCollaboratorOnR,
+
+    -- ** Comments
+    -- | See <https://developer.github.com/v3/repos/comments/>
+    --
+    -- Missing endpoints:
+    --
+    -- * Create a commit comment
+    -- * Update a commit comment
+    -- *  Delete a commit comment
+    commentsForR,
+    commitCommentsForR,
+    commitCommentForR,
+
+    -- ** Commits
+    -- | See <https://developer.github.com/v3/repos/commits/>
+    commitsForR,
+    commitsWithOptionsForR,
+    commitR,
+    diffR,
+
+    -- ** Forks
+    -- | See <https://developer.github.com/v3/repos/forks/>
+    --
+    -- Missing endpoints:
+    --
+    -- * Create a fork
+    forksForR,
+
+    -- ** Webhooks
+    -- | See <https://developer.github.com/v3/repos/hooks/>
+    webhooksForR,
+    webhookForR,
+    createRepoWebhookR,
+    editRepoWebhookR,
+    testPushRepoWebhookR,
+    pingRepoWebhookR,
+    deleteRepoWebhookR,
+
     -- * Search
     -- | See <https://developer.github.com/v3/search/>
-   --
+    --
     -- Missing endpoints:
     --
     -- * Search users
@@ -206,6 +287,8 @@ module Github.All (
     module Github.Data
     ) where
 
+import Github.Activity.Starring
+import Github.Activity.Watching
 import Github.Data
 import Github.Gists
 import Github.Gists.Comments
@@ -223,7 +306,12 @@ import Github.Organizations.Members
 import Github.Organizations.Teams
 import Github.PullRequests
 import Github.PullRequests.ReviewComments
+import Github.Repos
+import Github.Repos.Collaborators
+import Github.Repos.Comments
+import Github.Repos.Commits
+import Github.Repos.Forks
+import Github.Repos.Webhooks
 import Github.Search
 import Github.Users
 import Github.Users.Followers
-
