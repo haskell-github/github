@@ -1,13 +1,13 @@
-{-# LANGUAGE DeriveDataTypeable, DeriveGeneric #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE DeriveGeneric      #-}
 
 module Github.Data.Definitions where
 
-import Control.DeepSeq (NFData)
-import Data.Time
-import Data.Data
-import GHC.Generics (Generic)
+import           Control.DeepSeq   (NFData)
 import qualified Control.Exception as E
-import qualified Data.Map as M
+import           Data.Data
+import           Data.Time
+import           GHC.Generics      (Generic)
 
 import Github.Data.Id
 import Github.Data.Name
@@ -36,41 +36,41 @@ newtype GithubDate = GithubDate { fromGithubDate :: UTCTime }
 instance NFData GithubDate
 
 data GithubOwner = GithubUser {
-   githubOwnerAvatarUrl :: String
-  ,githubOwnerLogin :: Name GithubOwner
-  ,githubOwnerUrl :: String
-  ,githubOwnerId :: Id GithubOwner
+   githubOwnerAvatarUrl  :: String
+  ,githubOwnerLogin      :: Name GithubOwner
+  ,githubOwnerUrl        :: String
+  ,githubOwnerId         :: Id GithubOwner
   ,githubOwnerGravatarId :: Maybe String
   }
   | GithubOrganization {
    githubOwnerAvatarUrl :: String
-  ,githubOwnerLogin :: Name GithubOwner
-  ,githubOwnerUrl :: String
-  ,githubOwnerId :: Id GithubOwner
+  ,githubOwnerLogin     :: Name GithubOwner
+  ,githubOwnerUrl       :: String
+  ,githubOwnerId        :: Id GithubOwner
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData GithubOwner
 
 data Stats = Stats {
    statsAdditions :: Int
-  ,statsTotal :: Int
+  ,statsTotal     :: Int
   ,statsDeletions :: Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Stats
 
 data Comment = Comment {
-   commentPosition :: Maybe Int
-  ,commentLine :: Maybe Int
-  ,commentBody :: String
-  ,commentCommitId :: Maybe String
+   commentPosition  :: Maybe Int
+  ,commentLine      :: Maybe Int
+  ,commentBody      :: String
+  ,commentCommitId  :: Maybe String
   ,commentUpdatedAt :: UTCTime
-  ,commentHtmlUrl :: Maybe String
-  ,commentUrl :: String
+  ,commentHtmlUrl   :: Maybe String
+  ,commentUrl       :: String
   ,commentCreatedAt :: Maybe UTCTime
-  ,commentPath :: Maybe String
-  ,commentUser :: GithubOwner
-  ,commentId :: Id Comment
+  ,commentPath      :: Maybe String
+  ,commentUser      :: GithubOwner
+  ,commentId        :: Id Comment
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Comment
@@ -88,71 +88,71 @@ data EditComment = EditComment {
 instance NFData EditComment
 
 data SimpleOrganization = SimpleOrganization {
-   simpleOrganizationUrl :: String
+   simpleOrganizationUrl       :: String
   ,simpleOrganizationAvatarUrl :: String
-  ,simpleOrganizationId :: Id Organization
-  ,simpleOrganizationLogin :: String
+  ,simpleOrganizationId        :: Id Organization
+  ,simpleOrganizationLogin     :: String
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData SimpleOrganization
 
 data Organization = Organization {
-   organizationType :: String
-  ,organizationBlog :: Maybe String
-  ,organizationLocation :: Maybe String
-  ,organizationLogin :: Name Organization
-  ,organizationFollowers :: Int
-  ,organizationCompany :: Maybe String
-  ,organizationAvatarUrl :: String
+   organizationType        :: String
+  ,organizationBlog        :: Maybe String
+  ,organizationLocation    :: Maybe String
+  ,organizationLogin       :: Name Organization
+  ,organizationFollowers   :: Int
+  ,organizationCompany     :: Maybe String
+  ,organizationAvatarUrl   :: String
   ,organizationPublicGists :: Int
-  ,organizationHtmlUrl :: String
-  ,organizationEmail :: Maybe String
-  ,organizationFollowing :: Int
+  ,organizationHtmlUrl     :: String
+  ,organizationEmail       :: Maybe String
+  ,organizationFollowing   :: Int
   ,organizationPublicRepos :: Int
-  ,organizationUrl :: String
-  ,organizationCreatedAt :: GithubDate
-  ,organizationName :: Maybe String
-  ,organizationId :: Id Organization
+  ,organizationUrl         :: String
+  ,organizationCreatedAt   :: GithubDate
+  ,organizationName        :: Maybe String
+  ,organizationId          :: Id Organization
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Organization
 
 data SearchReposResult = SearchReposResult {
   searchReposTotalCount :: Int
-  ,searchReposRepos :: [Repo]
+  ,searchReposRepos     :: [Repo]
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData SearchReposResult
 
 data Repo = Repo {
-   repoSshUrl :: Maybe String
-  ,repoDescription :: Maybe String
-  ,repoCreatedAt :: Maybe GithubDate
-  ,repoHtmlUrl :: String
-  ,repoSvnUrl :: Maybe String
-  ,repoForks :: Maybe Int
-  ,repoHomepage :: Maybe String
-  ,repoFork :: Maybe Bool
-  ,repoGitUrl :: Maybe String
-  ,repoPrivate :: Bool
-  ,repoCloneUrl :: Maybe String
-  ,repoSize :: Maybe Int
-  ,repoUpdatedAt :: Maybe GithubDate
-  ,repoWatchers :: Maybe Int
-  ,repoOwner :: GithubOwner
-  ,repoName :: Name Repo
-  ,repoLanguage :: Maybe String
-  ,repoMasterBranch :: Maybe String
-  ,repoPushedAt :: Maybe GithubDate   -- ^ this is Nothing for new repositories
-  ,repoId :: Id Repo
-  ,repoUrl :: String
-  ,repoOpenIssues :: Maybe Int
-  ,repoHasWiki :: Maybe Bool
-  ,repoHasIssues :: Maybe Bool
-  ,repoHasDownloads :: Maybe Bool
-  ,repoParent :: Maybe RepoRef
-  ,repoSource :: Maybe RepoRef
-  ,repoHooksUrl :: String
+   repoSshUrl          :: Maybe String
+  ,repoDescription     :: Maybe String
+  ,repoCreatedAt       :: Maybe GithubDate
+  ,repoHtmlUrl         :: String
+  ,repoSvnUrl          :: Maybe String
+  ,repoForks           :: Maybe Int
+  ,repoHomepage        :: Maybe String
+  ,repoFork            :: Maybe Bool
+  ,repoGitUrl          :: Maybe String
+  ,repoPrivate         :: Bool
+  ,repoCloneUrl        :: Maybe String
+  ,repoSize            :: Maybe Int
+  ,repoUpdatedAt       :: Maybe GithubDate
+  ,repoWatchers        :: Maybe Int
+  ,repoOwner           :: GithubOwner
+  ,repoName            :: Name Repo
+  ,repoLanguage        :: Maybe String
+  ,repoMasterBranch    :: Maybe String
+  ,repoPushedAt        :: Maybe GithubDate   -- ^ this is Nothing for new repositories
+  ,repoId              :: Id Repo
+  ,repoUrl             :: String
+  ,repoOpenIssues      :: Maybe Int
+  ,repoHasWiki         :: Maybe Bool
+  ,repoHasIssues       :: Maybe Bool
+  ,repoHasDownloads    :: Maybe Bool
+  ,repoParent          :: Maybe RepoRef
+  ,repoSource          :: Maybe RepoRef
+  ,repoHooksUrl        :: String
   ,repoStargazersCount :: Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -165,19 +165,19 @@ instance NFData RepoRef
 
 data SearchCodeResult = SearchCodeResult {
    searchCodeTotalCount :: Int
-  ,searchCodeCodes :: [Code]
+  ,searchCodeCodes      :: [Code]
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData SearchCodeResult
 
 data Code = Code {
-   codeName :: String
-  ,codePath :: String
-  ,codeSha :: String
-  ,codeUrl :: String
-  ,codeGitUrl :: String
+   codeName    :: String
+  ,codePath    :: String
+  ,codeSha     :: String
+  ,codeUrl     :: String
+  ,codeGitUrl  :: String
   ,codeHtmlUrl :: String
-  ,codeRepo :: Repo
+  ,codeRepo    :: Repo
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Code
@@ -190,10 +190,10 @@ data Content
 instance NFData Content
 
 data ContentFileData = ContentFileData {
-   contentFileInfo :: ContentInfo
+   contentFileInfo     :: ContentInfo
   ,contentFileEncoding :: String
-  ,contentFileSize :: Int
-  ,contentFileContent :: String
+  ,contentFileSize     :: Int
+  ,contentFileContent  :: String
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData ContentFileData
@@ -213,11 +213,11 @@ instance NFData ContentItemType
 
 -- | Information common to both kinds of Content: files and directories.
 data ContentInfo = ContentInfo {
-   contentName :: String
-  ,contentPath :: String
-  ,contentSha :: String
-  ,contentUrl :: String
-  ,contentGitUrl :: String
+   contentName    :: String
+  ,contentPath    :: String
+  ,contentSha     :: String
+  ,contentUrl     :: String
+  ,contentGitUrl  :: String
   ,contentHtmlUrl :: String
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -247,99 +247,43 @@ data Language = Language String Int
 instance NFData Language
 
 data DetailedOwner = DetailedUser {
-   detailedOwnerCreatedAt :: GithubDate
-  ,detailedOwnerType :: String
+   detailedOwnerCreatedAt   :: GithubDate
+  ,detailedOwnerType        :: String
   ,detailedOwnerPublicGists :: Int
-  ,detailedOwnerAvatarUrl :: String
-  ,detailedOwnerFollowers :: Int
-  ,detailedOwnerFollowing :: Int
-  ,detailedOwnerHireable :: Maybe Bool
-  ,detailedOwnerGravatarId :: Maybe String
-  ,detailedOwnerBlog :: Maybe String
-  ,detailedOwnerBio :: Maybe String
+  ,detailedOwnerAvatarUrl   :: String
+  ,detailedOwnerFollowers   :: Int
+  ,detailedOwnerFollowing   :: Int
+  ,detailedOwnerHireable    :: Maybe Bool
+  ,detailedOwnerGravatarId  :: Maybe String
+  ,detailedOwnerBlog        :: Maybe String
+  ,detailedOwnerBio         :: Maybe String
   ,detailedOwnerPublicRepos :: Int
-  ,detailedOwnerName :: Maybe String
-  ,detailedOwnerLocation :: Maybe String
-  ,detailedOwnerCompany :: Maybe String
-  ,detailedOwnerEmail :: Maybe String
-  ,detailedOwnerUrl :: String
-  ,detailedOwnerId :: Id GithubOwner
-  ,detailedOwnerHtmlUrl :: String
-  ,detailedOwnerLogin :: Name GithubOwner
+  ,detailedOwnerName        :: Maybe String
+  ,detailedOwnerLocation    :: Maybe String
+  ,detailedOwnerCompany     :: Maybe String
+  ,detailedOwnerEmail       :: Maybe String
+  ,detailedOwnerUrl         :: String
+  ,detailedOwnerId          :: Id GithubOwner
+  ,detailedOwnerHtmlUrl     :: String
+  ,detailedOwnerLogin       :: Name GithubOwner
   }
   | DetailedOrganization {
-   detailedOwnerCreatedAt :: GithubDate
-  ,detailedOwnerType :: String
+   detailedOwnerCreatedAt   :: GithubDate
+  ,detailedOwnerType        :: String
   ,detailedOwnerPublicGists :: Int
-  ,detailedOwnerAvatarUrl :: String
-  ,detailedOwnerFollowers :: Int
-  ,detailedOwnerFollowing :: Int
-  ,detailedOwnerBlog :: Maybe String
-  ,detailedOwnerBio :: Maybe String
+  ,detailedOwnerAvatarUrl   :: String
+  ,detailedOwnerFollowers   :: Int
+  ,detailedOwnerFollowing   :: Int
+  ,detailedOwnerBlog        :: Maybe String
+  ,detailedOwnerBio         :: Maybe String
   ,detailedOwnerPublicRepos :: Int
-  ,detailedOwnerName :: Maybe String
-  ,detailedOwnerLocation :: Maybe String
-  ,detailedOwnerCompany :: Maybe String
-  ,detailedOwnerUrl :: String
-  ,detailedOwnerId :: Id GithubOwner
-  ,detailedOwnerHtmlUrl :: String
-  ,detailedOwnerLogin :: Name GithubOwner
+  ,detailedOwnerName        :: Maybe String
+  ,detailedOwnerLocation    :: Maybe String
+  ,detailedOwnerCompany     :: Maybe String
+  ,detailedOwnerUrl         :: String
+  ,detailedOwnerId          :: Id GithubOwner
+  ,detailedOwnerHtmlUrl     :: String
+  ,detailedOwnerLogin       :: Name GithubOwner
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData DetailedOwner
-
-data RepoWebhook = RepoWebhook {
-   repoWebhookUrl :: String
-  ,repoWebhookTestUrl :: String
-  ,repoWebhookId :: Id RepoWebhook
-  ,repoWebhookName :: String
-  ,repoWebhookActive :: Bool
-  ,repoWebhookEvents :: [RepoWebhookEvent]
-  ,repoWebhookConfig :: M.Map String String
-  ,repoWebhookLastResponse :: RepoWebhookResponse
-  ,repoWebhookUpdatedAt :: GithubDate
-  ,repoWebhookCreatedAt :: GithubDate
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData RepoWebhook
-
-data RepoWebhookEvent =
-   WebhookWildcardEvent
- | WebhookCommitCommentEvent
- | WebhookCreateEvent
- | WebhookDeleteEvent
- | WebhookDeploymentEvent
- | WebhookDeploymentStatusEvent
- | WebhookForkEvent
- | WebhookGollumEvent
- | WebhookIssueCommentEvent
- | WebhookIssuesEvent
- | WebhookMemberEvent
- | WebhookPageBuildEvent
- | WebhookPublicEvent
- | WebhookPullRequestReviewCommentEvent
- | WebhookPullRequestEvent
- | WebhookPushEvent
- | WebhookReleaseEvent
- | WebhookStatusEvent
- | WebhookTeamAddEvent
- | WebhookWatchEvent
-   deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData RepoWebhookEvent
-
-data RepoWebhookResponse = RepoWebhookResponse {
-   repoWebhookResponseCode :: Maybe Int
-  ,repoWebhookResponseStatus :: String
-  ,repoWebhookResponseMessage :: Maybe String
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData RepoWebhookResponse
-
-data PingEvent = PingEvent {
-   pingEventZen :: String
-  ,pingEventHook :: RepoWebhook
-  ,pingEventHookId :: Id RepoWebhook
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData PingEvent

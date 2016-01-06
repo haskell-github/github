@@ -2,6 +2,8 @@
 --
 -- This module re-exports all request constructrors and
 -- data definitions from this package.
+--
+-- The missing endpoints lists are exhausive, they indicate endpoints we know are missing.
 module Github.All (
     -- * Activity
     -- | See <https://developer.github.com/v3/activity/>
@@ -66,7 +68,7 @@ module Github.All (
 
     -- ** Commits
     -- | See <https://developer.github.com/v3/git/commits/>
-    commitR,
+    gitCommitR,
 
     -- ** References
     -- | See <https://developer.github.com/v3/git/refs/>
@@ -198,16 +200,60 @@ module Github.All (
 
     -- * Repositories
     -- | See <https://developer.github.com/v3/repos/>
+    --
+    -- Missing endpoints:
+    -- * List your repositories
+    -- * List all public repositories
+    -- * List Teams
+    -- * Get Branch
+    -- * Enabling and disabling branch protection
+    userReposR,
 
     -- ** Collaborators
+    -- | See <https://developer.github.com/v3/repos/collaborators/>
+    collaboratorsOnR,
+    isCollaboratorOnR,
+
+    -- ** Comments
+    -- | See <https://developer.github.com/v3/repos/comments/>
+    --
+    -- Missing endpoints:
+    --
+    -- * Create a commit comment
+    -- * Update a commit comment
+    -- *  Delete a commit comment
+    commentsForR,
+    commitCommentsForR,
+    commitCommentForR,
 
     -- ** Commits
+    -- | See <https://developer.github.com/v3/repos/commits/>
+    commitsForR,
+    commitsWithOptionsForR,
+    commitR,
+    diffR,
 
     -- ** Forks
+    -- | See <https://developer.github.com/v3/repos/forks/>
+    --
+    -- Missing endpoints:
+    --
+    -- * Create a fork
+    forksForR,
+
+    -- ** Webhooks
+    -- | See <https://developer.github.com/v3/repos/hooks/>
+    webhooksForR,
+    webhookForR,
+    createRepoWebhookR,
+    editRepoWebhookR,
+    testPushRepoWebhookR,
+    pingRepoWebhookR,
+    deleteRepoWebhookR,
 
     -- * Search
     -- | See <https://developer.github.com/v3/search/>
-   --
+    --
     -- Missing endpoints:
     --
     -- * Search users
@@ -260,6 +306,12 @@ import Github.Organizations.Members
 import Github.Organizations.Teams
 import Github.PullRequests
 import Github.PullRequests.ReviewComments
+import Github.Repos
+import Github.Repos.Collaborators
+import Github.Repos.Comments
+import Github.Repos.Commits
+import Github.Repos.Forks
+import Github.Repos.Webhooks
 import Github.Search
 import Github.Users
 import Github.Users.Followers

@@ -1,43 +1,57 @@
 -- | The repo collaborators API as described on
 -- <http://developer.github.com/v3/repos/collaborators/>.
 module Github.Repos.Collaborators (
- collaboratorsOn
-,collaboratorsOn'
-,isCollaboratorOn
-,module Github.Data
-) where
+    collaboratorsOn,
+    collaboratorsOn',
+    collaboratorsOnR,
+    isCollaboratorOn,
+    isCollaboratorOnR,
+    module Github.Data,
+    ) where
 
+import Github.Auth
 import Github.Data
-import Github.Private
-
-import Data.ByteString.Char8 (pack)
-import qualified Network.HTTP.Conduit as C (responseStatus)
-import qualified Network.HTTP.Types as T (statusCode)
+import Github.Request
+import Network.HTTP.Types (Status)
 
 -- | All the users who have collaborated on a repo.
 --
 -- > collaboratorsOn "thoughtbot" "paperclip"
-collaboratorsOn :: String -> String -> IO (Either Error [GithubOwner])
-collaboratorsOn userName reqRepoName =
-  githubGet ["repos", userName, reqRepoName, "collaborators"]
+collaboratorsOn :: Name GithubOwner -> Name Repo -> IO (Either Error [GithubOwner])
+collaboratorsOn = collaboratorsOn' Nothing
 
 -- | All the users who have collaborated on a repo.
 -- With authentication.
-collaboratorsOn' :: Maybe GithubAuth -> String -> String -> IO (Either Error [GithubOwner])
-collaboratorsOn' auth userName reqRepoName =
-  githubGet' auth ["repos", userName, reqRepoName, "collaborators"]
+collaboratorsOn' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error [GithubOwner])
+collaboratorsOn' auth user repo =
+    executeRequestMaybe auth $ collaboratorsOnR user repo
+
+-- | List collaborators.
+-- See <https://developer.github.com/v3/repos/collaborators/#list-collaborators>
+collaboratorsOnR :: Name GithubOwner -> Name Repo -> GithubRequest k [GithubOwner]
+collaboratorsOnR user repo =
+    GithubGet ["repos", untagName user, untagName repo, "collaborators"] ""
 
 -- | Whether the user is collaborating on a repo. Takes the user in question,
 -- the user who owns the repo, and the repo name.
 --
 -- > isCollaboratorOn Nothing "mike-burns" "thoughtbot" "paperclip"
 -- > isCollaboratorOn Nothing "johnson" "thoughtbot" "paperclip"
-isCollaboratorOn :: Maybe GithubAuth -> String -> String -> String -> IO (Either Error Bool)
-isCollaboratorOn auth userName repoOwnerName reqRepoName = do
-   result <- doHttps getResponseNewManager (pack "GET")
-                     (apiEndpoint auth ++ buildPath ["repos", repoOwnerName, reqRepoName, "collaborators", userName])
-                     Nothing
-                     Nothing
-   return $ either (Left . HTTPConnectionError)
-                   (Right . (204 ==) . T.statusCode . C.responseStatus)
-                   result
+--
+-- TODO: GithubStatus
+isCollaboratorOn :: Maybe GithubAuth
+                 -> Name GithubOwner  -- ^ Repository owner
+                 -> Name Repo         -- ^ Repository name
+                 -> Name GithubOwner  -- ^ Collaborator?
+                 -> IO (Either Error Status)
+isCollaboratorOn auth user repo coll =
+    executeRequestMaybe auth $ isCollaboratorOnR user repo coll
+
+-- | Check if a user is a collaborator.
+-- See <https://developer.github.com/v3/repos/collaborators/#check-if-a-user-is-a-collaborator>
+isCollaboratorOnR :: Name GithubOwner  -- ^ Repository owner
+                  -> Name Repo         -- ^ Repository name
+                  -> Name GithubOwner  -- ^ Collaborator?
+                  -> GithubRequest k Status
+isCollaboratorOnR user repo coll = GithubStatus $
+    GithubGet ["repos", untagName user, untagName repo, "collaborators", untagName coll] ""

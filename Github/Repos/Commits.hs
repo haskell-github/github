@@ -3,31 +3,30 @@
 -- | The repo commits API as described on
 -- <http://developer.github.com/v3/repos/commits/>.
 module Github.Repos.Commits (
- CommitQueryOption(..)
-,commitsFor
-,commitsFor'
-,commitsWithOptionsFor
-,commitsWithOptionsFor'
-,commit
-,commit'
-,commentsFor
-,commentsFor'
-,commitCommentsFor
-,commitCommentsFor'
-,commitCommentFor
-,commitCommentFor'
-,diff
-,diff'
-,module Github.Data
-) where
+    CommitQueryOption(..),
+    commitsFor,
+    commitsFor',
+    commitsForR,
+    commitsWithOptionsFor,
+    commitsWithOptionsFor',
+    commitsWithOptionsForR,
+    commit,
+    commit',
+    commitR,
+    diff,
+    diff',
+    diffR,
+    module Github.Data,
+    ) where
 
+import Github.Auth
 import Github.Data
-import Github.Private
+import Github.Request
 
 import Data.Time.Format (formatTime)
 #if MIN_VERSION_time (1,5,0)
+import Data.Time        (defaultTimeLocale)
 import Data.Time.Format (iso8601DateFormat)
-import Data.Time (defaultTimeLocale)
 #else
 import System.Locale (defaultTimeLocale)
 #endif
@@ -52,17 +51,23 @@ renderCommitQueryOption (CommitQueryUntil date) = "until=" ++ ds ++ "Z"
 -- | The commit history for a repo.
 --
 -- > commitsFor "mike-burns" "github"
-commitsFor :: String -> String -> IO (Either Error [Commit])
+commitsFor :: Name GithubOwner -> Name Repo -> IO (Either Error [Commit])
 commitsFor = commitsFor' Nothing
 
 -- | The commit history for a repo.
 -- With authentication.
 --
 -- > commitsFor' (Just (GithubBasicAuth (user, password))) "mike-burns" "github"
-commitsFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Commit])
-commitsFor' auth user repo = githubGet' auth ["repos", user, repo, "commits"]
+commitsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error [Commit])
+commitsFor' auth user repo =
+    commitsWithOptionsFor' auth user repo []
 
-commitsWithOptionsFor :: String -> String -> [CommitQueryOption] -> IO (Either Error [Commit])
+-- | List commits on a repository.
+-- See <https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository>
+commitsForR :: Name GithubOwner -> Name Repo -> GithubRequest k [Commit]
+commitsForR user repo = commitsWithOptionsForR user repo []
+
+commitsWithOptionsFor :: Name GithubOwner -> Name Repo -> [CommitQueryOption] -> IO (Either Error [Commit])
 commitsWithOptionsFor = commitsWithOptionsFor' Nothing
 
 -- | The commit history for a repo, with commits filtered to satisfy a list of
@@ -70,73 +75,54 @@ commitsWithOptionsFor = commitsWithOptionsFor' Nothing
 -- With authentication.
 --
 -- > commitsWithOptionsFor' (Just (GithubBasicAuth (user, password))) "mike-burns" "github" [CommitQueryAuthor "djeik"]
-commitsWithOptionsFor' :: Maybe GithubAuth -> String -> String -> [CommitQueryOption] -> IO (Either Error [Commit])
-commitsWithOptionsFor' auth user repo opts = githubGetWithQueryString' auth ["repos", user, repo, "commits"] qs
-    where qs = intercalate "&" $ map renderCommitQueryOption opts
+commitsWithOptionsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> [CommitQueryOption] -> IO (Either Error [Commit])
+commitsWithOptionsFor' auth user repo opts =
+    executeRequestMaybe auth $ commitsWithOptionsForR user repo opts
+
+-- | List commits on a repository.
+-- See <https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository>
+commitsWithOptionsForR :: Name GithubOwner -> Name Repo -> [CommitQueryOption] -> GithubRequest k [Commit]
+commitsWithOptionsForR user repo opts =
+    GithubGet ["repos", untagName user, untagName repo, "commits"] qs
+  where
+    qs = intercalate "&" $ map renderCommitQueryOption opts
+
 
 -- | Details on a specific SHA1 for a repo.
 --
 -- > commit "mike-burns" "github" "9d1a9a361266c3c890b1108ad2fdf52f824b1b81"
-commit :: String -> String -> String -> IO (Either Error Commit)
+commit :: Name GithubOwner -> Name Repo -> Name Commit -> IO (Either Error Commit)
 commit = commit' Nothing
 
 -- | Details on a specific SHA1 for a repo.
 -- With authentication.
 --
 -- > commit (Just $ GithubBasicAuth (username, password)) "mike-burns" "github" "9d1a9a361266c3c890b1108ad2fdf52f824b1b81"
-commit' :: Maybe GithubAuth -> String -> String -> String -> IO (Either Error Commit)
-commit' auth user repo sha1 = githubGet' auth ["repos", user, repo, "commits", sha1]
+commit' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Name Commit -> IO (Either Error Commit)
+commit' auth user repo sha =
+    executeRequestMaybe auth $ commitR user repo sha
 
-
--- | All the comments on a Github repo.
---
--- > commentsFor "thoughtbot" "paperclip"
-commentsFor :: String -> String -> IO (Either Error [Comment])
-commentsFor = commentsFor' Nothing
-
--- | All the comments on a Github repo.
--- With authentication.
---
--- > commentsFor "thoughtbot" "paperclip"
-commentsFor' :: Maybe GithubAuth -> String -> String -> IO (Either Error [Comment])
-commentsFor' auth user repo = githubGet' auth ["repos", user, repo, "comments"]
-
--- | Just the comments on a specific SHA for a given Github repo.
---
--- > commitCommentsFor "thoughtbot" "paperclip" "41f685f6e01396936bb8cd98e7cca517e2c7d96b"
-commitCommentsFor :: String -> String -> String -> IO (Either Error [Comment])
-commitCommentsFor = commitCommentsFor' Nothing
-
--- | Just the comments on a specific SHA for a given Github repo.
--- With authentication.
---
--- > commitCommentsFor "thoughtbot" "paperclip" "41f685f6e01396936bb8cd98e7cca517e2c7d96b"
-commitCommentsFor' :: Maybe GithubAuth -> String -> String -> String -> IO (Either Error [Comment])
-commitCommentsFor' auth user repo sha1 =
-  githubGet' auth ["repos", user, repo, "commits", sha1, "comments"]
-
--- | A comment, by its ID, relative to the Github repo.
---
--- > commitCommentFor "thoughtbot" "paperclip" "669575"
-commitCommentFor :: String -> String -> String -> IO (Either Error Comment)
-commitCommentFor = commitCommentFor' Nothing
-
--- | A comment, by its ID, relative to the Github repo.
---
--- > commitCommentFor "thoughtbot" "paperclip" "669575"
-commitCommentFor' :: Maybe GithubAuth -> String -> String -> String -> IO (Either Error Comment)
-commitCommentFor' auth user repo reqCommentId =
-  githubGet' auth ["repos", user, repo, "comments", reqCommentId]
+-- | Get a single commit
+-- See <https://developer.github.com/v3/repos/commits/#get-a-single-commit>
+commitR :: Name GithubOwner -> Name Repo -> Name Commit -> GithubRequest k Commit
+commitR user repo sha =
+    GithubGet ["repos", untagName user, untagName repo, "commits", untagName sha] ""
 
 -- | The diff between two treeishes on a repo.
 --
 -- > diff "thoughtbot" "paperclip" "41f685f6e01396936bb8cd98e7cca517e2c7d96b" "HEAD"
-diff :: String -> String -> String -> String -> IO (Either Error Diff)
+diff :: Name GithubOwner -> Name Repo -> Name Commit -> Name Commit -> IO (Either Error Diff)
 diff = diff' Nothing
 
 -- | The diff between two treeishes on a repo.
 --
 -- > diff "thoughtbot" "paperclip" "41f685f6e01396936bb8cd98e7cca517e2c7d96b" "HEAD"
-diff' :: Maybe GithubAuth -> String -> String -> String -> String -> IO (Either Error Diff)
+diff' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Name Commit -> Name Commit -> IO (Either Error Diff)
 diff' auth user repo base headref =
-  githubGet' auth ["repos", user, repo, "compare", base ++ "..." ++ headref]
+    executeRequestMaybe auth $ diffR user repo base headref
+
+-- | Compare two commits
+-- See <https://developer.github.com/v3/repos/commits/#compare-two-commits>
+diffR :: Name GithubOwner -> Name Repo -> Name Commit -> Name Commit -> GithubRequest k Diff
+diffR user repo base headref =
+    GithubGet ["repos", untagName user, untagName repo, "compare", untagName base ++ "..." ++ untagName headref] ""

@@ -1,123 +1,115 @@
-{-# LANGUAGE OverloadedStrings, DeriveGeneric, DeriveDataTypeable #-}
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE DataKinds #-}
 -- | The webhooks API, as described at
 -- <https://developer.github.com/v3/repos/hooks/>
 -- <https://developer.github.com/webhooks>
 
 module Github.Repos.Webhooks (
+    -- * Querying repositories
+    webhooksFor',
+    webhooksForR,
+    webhookFor',
+    webhookForR,
 
--- * Querying repositories
-  webhooksFor'
- ,webhookFor'
+    -- ** Create
+    createRepoWebhook',
+    createRepoWebhookR,
 
--- ** Create
- ,createRepoWebhook'
+    -- ** Edit
+    editRepoWebhook',
+    editRepoWebhookR,
 
--- ** Edit  
- ,editRepoWebhook'
+    -- ** Test
+    testPushRepoWebhook',
+    testPushRepoWebhookR,
+    pingRepoWebhook',
+    pingRepoWebhookR,
 
--- ** Test  
- ,testPushRepoWebhook'
- ,pingRepoWebhook'
-
--- ** Delete  
- ,deleteRepoWebhook'
- ,NewRepoWebhook(..)
- ,EditRepoWebhook(..)
- ,RepoOwner
- ,RepoName
- ,RepoWebhookId
+    -- ** Delete
+    deleteRepoWebhook',
+    deleteRepoWebhookR,
 ) where
 
+import Github.Auth
 import Github.Data
-import Github.Private
-import Control.DeepSeq (NFData)
-import Data.Data
-import qualified Data.Map as M
-import Network.HTTP.Conduit
-import Network.HTTP.Types
-import Data.Aeson
-import GHC.Generics (Generic)
+import Github.Request
 
-type RepoOwner = String
-type RepoName = String
-type RepoWebhookId = Int
-    
-data NewRepoWebhook = NewRepoWebhook {
-  newRepoWebhookName :: String
- ,newRepoWebhookConfig :: M.Map String String
- ,newRepoWebhookEvents :: Maybe [RepoWebhookEvent]
- ,newRepoWebhookActive :: Maybe Bool
-} deriving (Eq, Ord, Show, Typeable, Data, Generic)
+import Data.Aeson.Compat  (encode)
+import Network.HTTP.Types (Status)
 
-instance NFData NewRepoWebhook
+webhooksFor' :: GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error [RepoWebhook])
+webhooksFor' auth user repo =
+    executeRequest auth $ webhooksForR user repo
 
-data EditRepoWebhook = EditRepoWebhook {
-  editRepoWebhookConfig :: Maybe (M.Map String String)
- ,editRepoWebhookEvents :: Maybe [RepoWebhookEvent]
- ,editRepoWebhookAddEvents :: Maybe [RepoWebhookEvent]
- ,editRepoWebhookRemoveEvents :: Maybe [RepoWebhookEvent]
- ,editRepoWebhookActive :: Maybe Bool
-} deriving (Eq, Ord, Show, Typeable, Data, Generic)
-                
-instance NFData EditRepoWebhook
+-- | List hooks.
+-- See <https://developer.github.com/v3/repos/hooks/#list-hooks>
+webhooksForR :: Name GithubOwner -> Name Repo -> GithubRequest k [RepoWebhook]
+webhooksForR user repo =
+    GithubGet ["repos", untagName user, untagName repo, "hooks"] ""
 
-instance ToJSON NewRepoWebhook where
-  toJSON (NewRepoWebhook { newRepoWebhookName = name
-                         , newRepoWebhookConfig = config
-                         , newRepoWebhookEvents = events
-                         , newRepoWebhookActive = active
+webhookFor' :: GithubAuth -> Name GithubOwner -> Name Repo -> Id RepoWebhook -> IO (Either Error RepoWebhook)
+webhookFor' auth user repo hookId =
+    executeRequest auth $ webhookForR user repo hookId
 
-             }) = object
-             [ "name" .= name
-             , "config" .= config
-             , "events" .= events
-             , "active" .= active
-             ]
+-- | Get single hook.
+-- See <https://developer.github.com/v3/repos/hooks/#get-single-hook>
+webhookForR :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> GithubRequest k RepoWebhook
+webhookForR user repo hookId =
+    GithubGet ["repos", untagName user, untagName repo, "hooks", show $ untagId hookId] ""
 
-instance ToJSON EditRepoWebhook where             
-  toJSON (EditRepoWebhook { editRepoWebhookConfig = config
-                          , editRepoWebhookEvents = events
-                          , editRepoWebhookAddEvents = addEvents
-                          , editRepoWebhookRemoveEvents = removeEvents
-                          , editRepoWebhookActive = active
-             }) = object
-             [ "config" .= config
-             , "events" .= events
-             , "add_events" .= addEvents
-             , "remove_events" .= removeEvents
-             , "active" .= active
-             ]
-             
-webhooksFor' :: GithubAuth -> RepoOwner -> RepoName -> IO (Either Error [RepoWebhook])
-webhooksFor' auth owner reqRepoName =
-  githubGet' (Just auth) ["repos", owner, reqRepoName, "hooks"]
+createRepoWebhook' :: GithubAuth -> Name GithubOwner -> Name Repo -> NewRepoWebhook -> IO (Either Error RepoWebhook)
+createRepoWebhook' auth user repo hook =
+    executeRequest auth $ createRepoWebhookR user repo hook
 
-webhookFor' :: GithubAuth -> RepoOwner -> RepoName -> RepoWebhookId -> IO (Either Error RepoWebhook)
-webhookFor' auth owner reqRepoName webhookId =
-  githubGet' (Just auth) ["repos", owner, reqRepoName, "hooks", (show webhookId)]
+-- | Create a hook.
+-- See <https://developer.github.com/v3/repos/hooks/#create-a-hook>
+createRepoWebhookR :: Name GithubOwner -> Name Repo -> NewRepoWebhook -> GithubRequest 'True RepoWebhook
+createRepoWebhookR user repo hook =
+    GithubPost Post ["repos", untagName user, untagName repo, "hooks"] (encode hook)
 
-createRepoWebhook' :: GithubAuth -> RepoOwner -> RepoName -> NewRepoWebhook -> IO (Either Error RepoWebhook)
-createRepoWebhook' auth owner reqRepoName = githubPost auth ["repos", owner, reqRepoName, "hooks"]
+editRepoWebhook' :: GithubAuth -> Name GithubOwner -> Name Repo -> Id RepoWebhook -> EditRepoWebhook -> IO (Either Error RepoWebhook)
+editRepoWebhook' auth user repo hookId hookEdit =
+    executeRequest auth $ editRepoWebhookR user repo hookId hookEdit
 
-editRepoWebhook' :: GithubAuth -> RepoOwner -> RepoName -> RepoWebhookId -> EditRepoWebhook -> IO (Either Error RepoWebhook)
-editRepoWebhook' auth owner reqRepoName webhookId edit = githubPatch auth ["repos", owner, reqRepoName, "hooks", (show webhookId)] edit
-                                                            
-testPushRepoWebhook' :: GithubAuth -> RepoOwner -> RepoName -> RepoWebhookId -> IO (Either Error Status)
-testPushRepoWebhook' auth owner reqRepoName webhookId =
-  doHttpsStatus "POST" (createWebhookOpPath owner reqRepoName webhookId (Just "tests")) auth (Just . RequestBodyLBS . encode $ (decode "{}" :: Maybe (M.Map String Int)))
+-- | Edit a hook.
+-- See <https://developer.github.com/v3/repos/hooks/#edit-a-hook>
+editRepoWebhookR :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> EditRepoWebhook -> GithubRequest 'True RepoWebhook
+editRepoWebhookR user repo hookId hookEdit =
+    GithubPost Patch ["repos", untagName user, untagName repo, "hooks", show $ untagId hookId] (encode hookEdit)
 
-pingRepoWebhook' :: GithubAuth -> RepoOwner -> RepoName -> RepoWebhookId -> IO (Either Error Status)
-pingRepoWebhook' auth owner reqRepoName webhookId =
-  doHttpsStatus "POST" (createWebhookOpPath owner reqRepoName webhookId (Just "pings")) auth Nothing
+testPushRepoWebhook' :: GithubAuth -> Name GithubOwner -> Name Repo -> Id RepoWebhook -> IO (Either Error Status)
+testPushRepoWebhook' auth user repo hookId =
+    executeRequest auth $ testPushRepoWebhookR user repo hookId
 
-deleteRepoWebhook' :: GithubAuth -> RepoOwner -> RepoName -> RepoWebhookId -> IO (Either Error Status)
-deleteRepoWebhook' auth owner reqRepoName webhookId =
-  doHttpsStatus "DELETE" (createWebhookOpPath owner reqRepoName webhookId Nothing) auth Nothing
+-- | Test a push hook.
+-- See <https://developer.github.com/v3/repos/hooks/#test-a-push-hook>
+testPushRepoWebhookR :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> GithubRequest 'True Status
+testPushRepoWebhookR user repo hookId = GithubStatus $
+    GithubPost Post (createWebhookOpPath user repo hookId $ Just "tests") (encode ())
 
-createBaseWebhookPath :: RepoOwner -> RepoName -> RepoWebhookId -> String
-createBaseWebhookPath owner reqRepoName webhookId = buildPath ["repos", owner, reqRepoName, "hooks", show webhookId]
+pingRepoWebhook' :: GithubAuth -> Name GithubOwner -> Name Repo -> Id RepoWebhook -> IO (Either Error Status)
+pingRepoWebhook' auth user repo hookId =
+    executeRequest auth $ pingRepoWebhookR user repo hookId
 
-createWebhookOpPath :: RepoOwner -> RepoName -> RepoWebhookId -> Maybe String -> String
-createWebhookOpPath owner reqRepoName webhookId Nothing = createBaseWebhookPath owner reqRepoName webhookId
-createWebhookOpPath owner reqRepoName webhookId (Just operation) = createBaseWebhookPath owner reqRepoName webhookId ++ "/" ++ operation
+-- | Ping a hook.
+-- See <https://developer.github.com/v3/repos/hooks/#ping-a-hook>
+pingRepoWebhookR :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> GithubRequest 'True Status
+pingRepoWebhookR user repo hookId = GithubStatus $
+    GithubPost Post (createWebhookOpPath user repo hookId $ Just "pings") (encode ())
+
+deleteRepoWebhook' :: GithubAuth -> Name GithubOwner -> Name Repo -> Id RepoWebhook -> IO (Either Error ())
+deleteRepoWebhook' auth user repo hookId =
+    executeRequest auth $ deleteRepoWebhookR user repo hookId
+
+-- | Delete a hook.
+-- See <https://developer.github.com/v3/repos/hooks/#delete-a-hook>
+deleteRepoWebhookR :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> GithubRequest 'True ()
+deleteRepoWebhookR user repo hookId =
+    GithubDelete $ createWebhookOpPath user repo hookId Nothing
+
+createBaseWebhookPath :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> [String]
+createBaseWebhookPath user repo hookId =
+    ["repos", untagName user, untagName repo, "hooks", show $ untagId hookId]
+
+createWebhookOpPath :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> Maybe String -> [String]
+createWebhookOpPath owner reqName webhookId Nothing = createBaseWebhookPath owner reqName webhookId
+createWebhookOpPath owner reqName webhookId (Just operation) = createBaseWebhookPath owner reqName webhookId ++ [operation]

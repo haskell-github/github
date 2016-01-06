@@ -1,4 +1,6 @@
-{-# LANGUAGE CPP, DeriveDataTypeable, OverloadedStrings #-}
+{-# LANGUAGE CPP                #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE OverloadedStrings  #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 -- | This module re-exports the @Github.Data.Definitions@ module, adding
@@ -6,34 +8,37 @@
 -- instances, use the @Github.Data.Definitions@ module instead.
 
 module Github.Data (
-  -- * Module re-exports
-  module Github.Data.Definitions,
-  module Github.Data.Gists,
-  module Github.Data.GitData,
-  module Github.Data.Issues,
-  module Github.Data.PullRequests,
-  module Github.Data.Teams,
-  -- * Tagged types
-  -- ** Name
-  Name,
-  mkName,
-  untagName,
-  -- ** Id
-  Id,
-  mkId,
-  untagId,
-  ) where
+    -- * Module re-exports
+    module Github.Data.Definitions,
+    module Github.Data.Gists,
+    module Github.Data.GitData,
+    module Github.Data.Issues,
+    module Github.Data.PullRequests,
+    module Github.Data.Repos,
+    module Github.Data.Teams,
+    module Github.Data.Webhooks,
+
+    -- * Tagged types
+    -- ** Name
+    Name,
+    mkName,
+    untagName,
+    -- ** Id
+    Id,
+    mkId,
+    untagId,
+    ) where
 
 #if !MIN_VERSION_base(4,8,0)
 import Control.Applicative
 #endif
-import Control.Monad
-import qualified Data.Text as T
-import Data.Aeson.Compat
-import Data.Aeson.Types (Parser)
-import qualified Data.Vector as V
+import           Control.Monad
+import           Data.Aeson.Compat
+import           Data.Aeson.Types  (Parser)
+import           Data.Hashable     (Hashable)
 import qualified Data.HashMap.Lazy as Map
-import Data.Hashable (Hashable)
+import qualified Data.Text         as T
+import qualified Data.Vector       as V
 
 #if MIN_VERSION_time(1,5,0)
 import Data.Time
@@ -49,7 +54,9 @@ import Github.Data.Id
 import Github.Data.Issues
 import Github.Data.Name
 import Github.Data.PullRequests
+import Github.Data.Repos
 import Github.Data.Teams
+import Github.Data.Webhooks
 
 instance FromJSON GithubDate where
   parseJSON (String t) =
@@ -589,6 +596,42 @@ instance FromJSON Repo where
          <*> o .: "stargazers_count"
   parseJSON _ = fail "Could not build a Repo"
 
+instance ToJSON NewRepo where
+  toJSON (NewRepo { newRepoName         = name
+                  , newRepoDescription  = description
+                  , newRepoHomepage     = homepage
+                  , newRepoPrivate      = private
+                  , newRepoHasIssues    = hasIssues
+                  , newRepoHasWiki      = hasWiki
+                  , newRepoAutoInit     = autoInit
+                  }) = object
+                  [ "name"                .= name
+                  , "description"         .= description
+                  , "homepage"            .= homepage
+                  , "private"             .= private
+                  , "has_issues"          .= hasIssues
+                  , "has_wiki"            .= hasWiki
+                  , "auto_init"           .= autoInit
+                  ]
+
+instance ToJSON EditRepo where
+  toJSON (EditRepo { editName         = name
+                   , editDescription  = description
+                   , editHomepage     = homepage
+                   , editPublic       = public
+                   , editHasIssues    = hasIssues
+                   , editHasWiki      = hasWiki
+                   , editHasDownloads = hasDownloads
+                   }) = object
+                   [ "name"          .= name
+                   , "description"   .= description
+                   , "homepage"      .= homepage
+                   , "public"        .= public
+                   , "has_issues"    .= hasIssues
+                   , "has_wiki"      .= hasWiki
+                   , "has_downloads" .= hasDownloads
+                   ]
+
 instance FromJSON SearchCodeResult where
   parseJSON (Object o) =
     SearchCodeResult <$> o .: "total_count"
@@ -826,6 +869,33 @@ instance FromJSON RepoWebhookResponse where
                         <*> o .: "status"
                         <*> o .: "message"
   parseJSON _          = fail "Could not build a RepoWebhookResponse"
+
+instance ToJSON NewRepoWebhook where
+  toJSON (NewRepoWebhook { newRepoWebhookName = name
+                         , newRepoWebhookConfig = config
+                         , newRepoWebhookEvents = events
+                         , newRepoWebhookActive = active
+
+             }) = object
+             [ "name" .= name
+             , "config" .= config
+             , "events" .= events
+             , "active" .= active
+             ]
+
+instance ToJSON EditRepoWebhook where
+  toJSON (EditRepoWebhook { editRepoWebhookConfig = config
+                          , editRepoWebhookEvents = events
+                          , editRepoWebhookAddEvents = addEvents
+                          , editRepoWebhookRemoveEvents = removeEvents
+                          , editRepoWebhookActive = active
+             }) = object
+             [ "config" .= config
+             , "events" .= events
+             , "add_events" .= addEvents
+             , "remove_events" .= removeEvents
+             , "active" .= active
+             ]
 
 instance FromJSON Content where
   parseJSON o@(Object _) = ContentFile <$> parseJSON o
