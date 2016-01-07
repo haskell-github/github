@@ -672,7 +672,7 @@ instance FromJSON Contributor where
 instance FromJSON Languages where
   parseJSON (Object o) =
     Languages <$>
-      mapM (\name -> Language (T.unpack name) <$> o .: name)
+      mapM (\name -> Language name <$> o .: name)
            (Map.keys o)
   parseJSON _ = fail "Could not build Languages"
 

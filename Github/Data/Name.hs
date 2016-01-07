@@ -11,17 +11,20 @@ import Data.Aeson.Compat (FromJSON (..), ToJSON (..))
 import Data.Data         (Data, Typeable)
 import Data.Hashable     (Hashable)
 import Data.String       (IsString (..))
+import Data.Text         (Text)
 import GHC.Generics      (Generic)
 
-newtype Name entity = N String
+import qualified Data.Text as T
+
+newtype Name entity = N Text
     deriving (Eq, Ord, Show, Read, Generic, Typeable, Data)
 
 -- | Smart constructor for 'Name'
-mkName :: proxy entity -> String -> Name entity
+mkName :: proxy entity -> Text -> Name entity
 mkName _ = N
 
 untagName :: Name entity -> String
-untagName (N name) = name
+untagName (N name) = T.unpack name
 
 instance Hashable (Name entity)
 
@@ -35,4 +38,4 @@ instance ToJSON (Name entity) where
     toJSON = toJSON . untagName
 
 instance IsString (Name entity) where
-    fromString = N
+    fromString = N . fromString

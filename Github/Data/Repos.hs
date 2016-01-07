@@ -7,16 +7,17 @@ import Github.Data.Name
 
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
+import Data.Text       (Text)
 import GHC.Generics    (Generic)
 
 data NewRepo = NewRepo {
-  newRepoName        :: Name Repo
-, newRepoDescription :: (Maybe String)
-, newRepoHomepage    :: (Maybe String)
-, newRepoPrivate     :: (Maybe Bool)
-, newRepoHasIssues   :: (Maybe Bool)
-, newRepoHasWiki     :: (Maybe Bool)
-, newRepoAutoInit    :: (Maybe Bool)
+  newRepoName        :: !(Name Repo)
+, newRepoDescription :: !(Maybe Text)
+, newRepoHomepage    :: !(Maybe Text)
+, newRepoPrivate     :: !(Maybe Bool)
+, newRepoHasIssues   :: !(Maybe Bool)
+, newRepoHasWiki     :: !(Maybe Bool)
+, newRepoAutoInit    :: !(Maybe Bool)
 } deriving (Eq, Ord, Show, Data, Typeable, Generic)
 
 instance NFData NewRepo
@@ -25,13 +26,13 @@ newRepo :: Name Repo -> NewRepo
 newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing
 
 data EditRepo = EditRepo {
-  editName         :: Maybe (Name Repo)
-, editDescription  :: Maybe String
-, editHomepage     :: Maybe String
-, editPublic       :: Maybe Bool
-, editHasIssues    :: Maybe Bool
-, editHasWiki      :: Maybe Bool
-, editHasDownloads :: Maybe Bool
+  editName         :: !(Maybe (Name Repo))
+, editDescription  :: !(Maybe Text)
+, editHomepage     :: !(Maybe Text)
+, editPublic       :: !(Maybe Bool)
+, editHasIssues    :: !(Maybe Bool)
+, editHasWiki      :: !(Maybe Bool)
+, editHasDownloads :: !(Maybe Bool)
 } deriving (Eq, Ord, Show, Data, Typeable, Generic)
 
 instance NFData EditRepo

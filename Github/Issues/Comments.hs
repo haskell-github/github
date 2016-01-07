@@ -15,6 +15,7 @@ module Github.Issues.Comments (
     ) where
 
 import Data.Aeson.Compat (encode)
+import Data.Text         (Text)
 import Github.Auth
 import Github.Data
 import Github.Request
@@ -55,14 +56,14 @@ commentsR user repo iid =
 --
 -- > createComment (GithubUser (user, password)) user repo issue
 -- >  "some words"
-createComment :: GithubAuth -> Name GithubOwner -> Name Repo -> Id Issue -> String
+createComment :: GithubAuth -> Name GithubOwner -> Name Repo -> Id Issue -> Text
             -> IO (Either Error Comment)
 createComment auth user repo iss body =
     executeRequest auth $ createCommentR user repo iss body
 
 -- | Create a comment.
 -- See <https://developer.github.com/v3/issues/comments/#create-a-comment>
-createCommentR :: Name GithubOwner -> Name Repo -> Id Issue -> String -> GithubRequest 'True Comment
+createCommentR :: Name GithubOwner -> Name Repo -> Id Issue -> Text -> GithubRequest 'True Comment
 createCommentR user repo iss body =
     GithubPost Post parts (encode $ NewComment body)
   where
@@ -72,14 +73,14 @@ createCommentR user repo iss body =
 --
 -- > editComment (GithubUser (user, password)) user repo commentid
 -- >  "new words"
-editComment :: GithubAuth -> Name GithubOwner -> Name Repo -> Id Comment -> String
+editComment :: GithubAuth -> Name GithubOwner -> Name Repo -> Id Comment -> Text
             -> IO (Either Error Comment)
 editComment auth user repo commid body =
     executeRequest auth $ editCommentR user repo commid body
 
 -- | Edit a comment.
 -- See <https://developer.github.com/v3/issues/comments/#edit-a-comment>
-editCommentR :: Name GithubOwner -> Name Repo -> Id Comment -> String -> GithubRequest 'True Comment
+editCommentR :: Name GithubOwner -> Name Repo -> Id Comment -> Text -> GithubRequest 'True Comment
 editCommentR user repo commid body =
     GithubPost Patch parts (encode $ EditComment body)
   where

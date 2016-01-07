@@ -29,6 +29,7 @@ import Control.DeepSeq   (NFData)
 import Data.Aeson.Compat (encode)
 import Data.Data
 import Data.List         (intercalate)
+import Data.Text         (Text)
 #if MIN_VERSION_time(1,5,0)
 import Data.Time (defaultTimeLocale)
 #else
@@ -124,7 +125,7 @@ issuesForRepoR user reqRepoName issueLimitations =
 
 -- Creating new issues.
 
-newIssue :: String -> NewIssue
+newIssue :: Text -> NewIssue
 newIssue title = NewIssue title Nothing Nothing Nothing Nothing
 
 

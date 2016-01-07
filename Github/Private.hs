@@ -22,6 +22,8 @@ import Network.HTTP.Types (Status(..), notFound404)
 import Network.HTTP.Conduit
 import Data.Maybe (fromMaybe)
 
+import qualified Data.Text as T
+
 import qualified Control.Exception as E
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.ByteString.Lazy.Char8 as LBS
@@ -217,14 +219,14 @@ parseJsonRaw jsonString =
   let parsed = parse json jsonString in
   case parsed of
        Data.Attoparsec.ByteString.Lazy.Done _ jsonResult -> Right jsonResult
-       (Fail _ _ e) -> Left $ ParseError e
+       (Fail _ _ e) -> Left $ ParseError (T.pack e)
 
 jsonResultToE :: Show b => LBS.ByteString -> Data.Aeson.Result b
               -> Either Error b
 jsonResultToE jsonString result = case result of
     Success s -> Right s
-    Error e   -> Left $ JsonError $
-                 e ++ " on the JSON: " ++ LBS.unpack jsonString
+    Error e   -> Left $ JsonError $ T.pack $
+                     e ++ " on the JSON: " ++ LBS.unpack jsonString
 
 parseJson :: (FromJSON b, Show b) => LBS.ByteString -> Either Error b
 parseJson jsonString = either Left (jsonResultToE jsonString . fromJSON)

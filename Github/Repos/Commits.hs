@@ -23,6 +23,8 @@ import Github.Auth
 import Github.Data
 import Github.Request
 
+import qualified Data.Text as T
+
 import Data.Time.Format (formatTime)
 #if MIN_VERSION_time (1,5,0)
 import Data.Time        (defaultTimeLocale)
@@ -40,9 +42,9 @@ githubFormat = formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%S" . fromGithubDate
 #endif
 
 renderCommitQueryOption :: CommitQueryOption -> String
-renderCommitQueryOption (CommitQuerySha sha) = "sha=" ++ sha
-renderCommitQueryOption (CommitQueryPath path) = "path=" ++ path
-renderCommitQueryOption (CommitQueryAuthor author) = "author=" ++ author
+renderCommitQueryOption (CommitQuerySha sha) = "sha=" ++ T.unpack sha
+renderCommitQueryOption (CommitQueryPath path) = "path=" ++ T.unpack path
+renderCommitQueryOption (CommitQueryAuthor author) = "author=" ++ T.unpack author
 renderCommitQueryOption (CommitQuerySince date) = "since=" ++ ds ++ "Z"
     where ds = show $ githubFormat date
 renderCommitQueryOption (CommitQueryUntil date) = "until=" ++ ds ++ "Z"
