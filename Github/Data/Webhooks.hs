@@ -4,7 +4,7 @@
 module Github.Data.Webhooks where
 
 import Github.Data.Definitions
-import Github.Data.Id
+import Github.Data.Id          (Id)
 
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)

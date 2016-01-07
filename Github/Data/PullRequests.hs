@@ -3,6 +3,7 @@
 module Github.Data.PullRequests where
 
 import Github.Data.Definitions
+import Github.Data.Repos       (Repo)
 
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)

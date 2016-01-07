@@ -3,12 +3,13 @@
 module Github.Data.Issues where
 
 import Github.Data.Definitions
-import Github.Data.Id
+import Github.Data.Id           (Id)
 import Github.Data.PullRequests
 
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
+import Data.Time       (UTCTime)
 import GHC.Generics    (Generic)
 
 data Issue = Issue {
@@ -90,13 +91,6 @@ data IssueComment = IssueComment {
 
 instance NFData IssueComment
 
-data SearchIssuesResult = SearchIssuesResult {
-   searchIssuesTotalCount :: Int
-  ,searchIssuesIssues     :: [Issue]
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData SearchIssuesResult
-
 data EventType =
     Mentioned     -- ^ The actor was @mentioned in an issue body.
   | Subscribed    -- ^ The actor subscribed to receive notifications for an issue.
@@ -132,3 +126,24 @@ data Event = Event {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Event
+
+-- | A data structure for describing how to filter issues. This is used by
+-- @issuesForRepo@.
+data IssueLimitation =
+      AnyMilestone -- ^ Issues appearing in any milestone. [default]
+    | NoMilestone -- ^ Issues without a milestone.
+    | MilestoneId Int -- ^ Only issues that are in the milestone with the given id.
+    | Open -- ^ Only open issues. [default]
+    | OnlyClosed -- ^ Only closed issues.
+    | Unassigned -- ^ Issues to which no one has been assigned ownership.
+    | AnyAssignment -- ^ All issues regardless of assignment. [default]
+    | AssignedTo String -- ^ Only issues assigned to the user with the given login.
+    | Mentions String -- ^ Issues which mention the given string, taken to be a user's login.
+    | Labels [String] -- ^ A list of labels to filter by.
+    | Ascending -- ^ Sort ascending.
+    | Descending -- ^ Sort descending. [default]
+    | Since UTCTime -- ^ Only issues created since the specified date and time.
+    | PerPage Int -- ^ Download this many issues per query
+  deriving (Eq, Ord, Show, Typeable, Data, Generic)
+
+instance NFData IssueLimitation

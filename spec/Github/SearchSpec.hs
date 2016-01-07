@@ -10,8 +10,8 @@ import Data.FileEmbed    (embedFile)
 import Test.Hspec        (Spec, describe, it, shouldBe)
 
 import Github.Data.Id     (Id (..))
-import Github.Data.Issues (Issue (..), SearchIssuesResult (..))
-import Github.Search      (searchIssues)
+import Github.Data.Issues (Issue (..))
+import Github.Search      (SearchIssuesResult (..), searchIssues)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
