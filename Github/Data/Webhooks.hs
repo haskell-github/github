@@ -8,21 +8,22 @@ import Github.Data.Id
 
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
+import Data.Text       (Text)
 import GHC.Generics    (Generic)
 
 import qualified Data.Map as M
 
 data RepoWebhook = RepoWebhook {
-   repoWebhookUrl          :: String
-  ,repoWebhookTestUrl      :: String
-  ,repoWebhookId           :: Id RepoWebhook
-  ,repoWebhookName         :: String
-  ,repoWebhookActive       :: Bool
-  ,repoWebhookEvents       :: [RepoWebhookEvent]
-  ,repoWebhookConfig       :: M.Map String String
-  ,repoWebhookLastResponse :: RepoWebhookResponse
-  ,repoWebhookUpdatedAt    :: GithubDate
-  ,repoWebhookCreatedAt    :: GithubDate
+   repoWebhookUrl          :: !Text
+  ,repoWebhookTestUrl      :: !Text
+  ,repoWebhookId           :: !(Id RepoWebhook)
+  ,repoWebhookName         :: !Text
+  ,repoWebhookActive       :: !Bool
+  ,repoWebhookEvents       :: ![RepoWebhookEvent]
+  ,repoWebhookConfig       :: !(M.Map Text Text)
+  ,repoWebhookLastResponse :: !RepoWebhookResponse
+  ,repoWebhookUpdatedAt    :: !GithubDate
+  ,repoWebhookCreatedAt    :: !GithubDate
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData RepoWebhook
@@ -53,36 +54,36 @@ data RepoWebhookEvent =
 instance NFData RepoWebhookEvent
 
 data RepoWebhookResponse = RepoWebhookResponse {
-   repoWebhookResponseCode    :: Maybe Int
-  ,repoWebhookResponseStatus  :: String
-  ,repoWebhookResponseMessage :: Maybe String
+   repoWebhookResponseCode    :: !(Maybe Int)
+  ,repoWebhookResponseStatus  :: !Text
+  ,repoWebhookResponseMessage :: !(Maybe Text)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData RepoWebhookResponse
 
 data PingEvent = PingEvent {
-   pingEventZen    :: String
-  ,pingEventHook   :: RepoWebhook
-  ,pingEventHookId :: Id RepoWebhook
+   pingEventZen    :: !Text
+  ,pingEventHook   :: !RepoWebhook
+  ,pingEventHookId :: !(Id RepoWebhook)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData PingEvent
 
 data NewRepoWebhook = NewRepoWebhook {
-  newRepoWebhookName   :: String
- ,newRepoWebhookConfig :: M.Map String String
- ,newRepoWebhookEvents :: Maybe [RepoWebhookEvent]
- ,newRepoWebhookActive :: Maybe Bool
+  newRepoWebhookName   :: !Text
+ ,newRepoWebhookConfig :: !(M.Map Text Text)
+ ,newRepoWebhookEvents :: !(Maybe [RepoWebhookEvent])
+ ,newRepoWebhookActive :: !(Maybe Bool)
 } deriving (Eq, Ord, Show, Typeable, Data, Generic)
 
 instance NFData NewRepoWebhook
 
 data EditRepoWebhook = EditRepoWebhook {
-  editRepoWebhookConfig       :: Maybe (M.Map String String)
- ,editRepoWebhookEvents       :: Maybe [RepoWebhookEvent]
- ,editRepoWebhookAddEvents    :: Maybe [RepoWebhookEvent]
- ,editRepoWebhookRemoveEvents :: Maybe [RepoWebhookEvent]
- ,editRepoWebhookActive       :: Maybe Bool
+  editRepoWebhookConfig       :: !(Maybe (M.Map Text Text))
+ ,editRepoWebhookEvents       :: !(Maybe [RepoWebhookEvent])
+ ,editRepoWebhookAddEvents    :: !(Maybe [RepoWebhookEvent])
+ ,editRepoWebhookRemoveEvents :: !(Maybe [RepoWebhookEvent])
+ ,editRepoWebhookActive       :: !(Maybe Bool)
 } deriving (Eq, Ord, Show, Typeable, Data, Generic)
 
 instance NFData EditRepoWebhook

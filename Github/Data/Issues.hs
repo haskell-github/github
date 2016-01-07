@@ -8,24 +8,25 @@ import Github.Data.PullRequests
 
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
+import Data.Text       (Text)
 import GHC.Generics    (Generic)
 
 data Issue = Issue {
    issueClosedAt    :: Maybe GithubDate
   ,issueUpdatedAt   :: GithubDate
-  ,issueEventsUrl   :: String
-  ,issueHtmlUrl     :: Maybe String
+  ,issueEventsUrl   :: Text
+  ,issueHtmlUrl     :: Maybe Text
   ,issueClosedBy    :: Maybe GithubOwner
   ,issueLabels      :: [IssueLabel]
   ,issueNumber      :: Int
   ,issueAssignee    :: Maybe GithubOwner
   ,issueUser        :: GithubOwner
-  ,issueTitle       :: String
+  ,issueTitle       :: Text
   ,issuePullRequest :: Maybe PullRequestReference
-  ,issueUrl         :: String
+  ,issueUrl         :: Text
   ,issueCreatedAt   :: GithubDate
-  ,issueBody        :: Maybe String
-  ,issueState       :: String
+  ,issueBody        :: Maybe Text
+  ,issueState       :: Text
   ,issueId          :: Id Issue
   ,issueComments    :: Int
   ,issueMilestone   :: Maybe Milestone
@@ -34,22 +35,22 @@ data Issue = Issue {
 instance NFData Issue
 
 data NewIssue = NewIssue {
-  newIssueTitle     :: String
-, newIssueBody      :: Maybe String
-, newIssueAssignee  :: Maybe String
+  newIssueTitle     :: Text
+, newIssueBody      :: Maybe Text
+, newIssueAssignee  :: Maybe Text
 , newIssueMilestone :: Maybe Int
-, newIssueLabels    :: Maybe [String]
+, newIssueLabels    :: Maybe [Text]
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData NewIssue
 
 data EditIssue = EditIssue {
-  editIssueTitle     :: Maybe String
-, editIssueBody      :: Maybe String
-, editIssueAssignee  :: Maybe String
-, editIssueState     :: Maybe String
+  editIssueTitle     :: Maybe Text
+, editIssueBody      :: Maybe Text
+, editIssueAssignee  :: Maybe Text
+, editIssueState     :: Maybe Text
 , editIssueMilestone :: Maybe Int
-, editIssueLabels    :: Maybe [String]
+, editIssueLabels    :: Maybe [Text]
 } deriving  (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData EditIssue
@@ -60,19 +61,19 @@ data Milestone = Milestone {
   ,milestoneOpenIssues   :: Int
   ,milestoneNumber       :: Int
   ,milestoneClosedIssues :: Int
-  ,milestoneDescription  :: Maybe String
-  ,milestoneTitle        :: String
-  ,milestoneUrl          :: String
+  ,milestoneDescription  :: Maybe Text
+  ,milestoneTitle        :: Text
+  ,milestoneUrl          :: Text
   ,milestoneCreatedAt    :: GithubDate
-  ,milestoneState        :: String
+  ,milestoneState        :: Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Milestone
 
 data IssueLabel = IssueLabel {
-   labelColor :: String
-  ,labelUrl   :: String
-  ,labelName  :: String
+   labelColor :: Text
+  ,labelUrl   :: Text
+  ,labelName  :: Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData IssueLabel
@@ -80,10 +81,10 @@ instance NFData IssueLabel
 data IssueComment = IssueComment {
    issueCommentUpdatedAt :: GithubDate
   ,issueCommentUser      :: GithubOwner
-  ,issueCommentUrl       :: String
-  ,issueCommentHtmlUrl   :: String
+  ,issueCommentUrl       :: Text
+  ,issueCommentHtmlUrl   :: Text
   ,issueCommentCreatedAt :: GithubDate
-  ,issueCommentBody      :: String
+  ,issueCommentBody      :: Text
   ,issueCommentId        :: Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -121,13 +122,13 @@ instance NFData EventType
 
 -- | Issue event
 data Event = Event {
-   eventActor     :: GithubOwner
-  ,eventType      :: EventType
-  ,eventCommitId  :: Maybe String
-  ,eventUrl       :: String
-  ,eventCreatedAt :: GithubDate
-  ,eventId        :: Int
-  ,eventIssue     :: Maybe Issue
+   eventActor     :: !GithubOwner
+  ,eventType      :: !EventType
+  ,eventCommitId  :: !(Maybe Text)
+  ,eventUrl       :: !Text
+  ,eventCreatedAt :: !GithubDate
+  ,eventId        :: !Int
+  ,eventIssue     :: !(Maybe Issue)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Event

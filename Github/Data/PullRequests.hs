@@ -6,112 +6,113 @@ import Github.Data.Definitions
 
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
+import Data.Text       (Text)
 import GHC.Generics    (Generic)
 
 data PullRequest = PullRequest {
-   pullRequestClosedAt  :: Maybe GithubDate
-  ,pullRequestCreatedAt :: GithubDate
-  ,pullRequestUser      :: GithubOwner
-  ,pullRequestPatchUrl  :: String
-  ,pullRequestState     :: String
-  ,pullRequestNumber    :: Int
-  ,pullRequestHtmlUrl   :: String
-  ,pullRequestUpdatedAt :: GithubDate
-  ,pullRequestBody      :: String
-  ,pullRequestIssueUrl  :: String
-  ,pullRequestDiffUrl   :: String
-  ,pullRequestUrl       :: String
-  ,pullRequestLinks     :: PullRequestLinks
-  ,pullRequestMergedAt  :: Maybe GithubDate
-  ,pullRequestTitle     :: String
-  ,pullRequestId        :: Int
+   pullRequestClosedAt  :: !(Maybe GithubDate)
+  ,pullRequestCreatedAt :: !GithubDate
+  ,pullRequestUser      :: !GithubOwner
+  ,pullRequestPatchUrl  :: !Text
+  ,pullRequestState     :: !Text
+  ,pullRequestNumber    :: !Int
+  ,pullRequestHtmlUrl   :: !Text
+  ,pullRequestUpdatedAt :: !GithubDate
+  ,pullRequestBody      :: !Text
+  ,pullRequestIssueUrl  :: !Text
+  ,pullRequestDiffUrl   :: !Text
+  ,pullRequestUrl       :: !Text
+  ,pullRequestLinks     :: !PullRequestLinks
+  ,pullRequestMergedAt  :: !(Maybe GithubDate)
+  ,pullRequestTitle     :: !Text
+  ,pullRequestId        :: !Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData PullRequest
 
 data DetailedPullRequest = DetailedPullRequest {
   -- this is a duplication of a PullRequest
-   detailedPullRequestClosedAt       :: Maybe GithubDate
-  ,detailedPullRequestCreatedAt      :: GithubDate
-  ,detailedPullRequestUser           :: GithubOwner
-  ,detailedPullRequestPatchUrl       :: String
-  ,detailedPullRequestState          :: String
-  ,detailedPullRequestNumber         :: Int
-  ,detailedPullRequestHtmlUrl        :: String
-  ,detailedPullRequestUpdatedAt      :: GithubDate
-  ,detailedPullRequestBody           :: String
-  ,detailedPullRequestIssueUrl       :: String
-  ,detailedPullRequestDiffUrl        :: String
-  ,detailedPullRequestUrl            :: String
-  ,detailedPullRequestLinks          :: PullRequestLinks
-  ,detailedPullRequestMergedAt       :: Maybe GithubDate
-  ,detailedPullRequestTitle          :: String
-  ,detailedPullRequestId             :: Int
+   detailedPullRequestClosedAt       :: !(Maybe GithubDate)
+  ,detailedPullRequestCreatedAt      :: !GithubDate
+  ,detailedPullRequestUser           :: !GithubOwner
+  ,detailedPullRequestPatchUrl       :: !Text
+  ,detailedPullRequestState          :: !Text
+  ,detailedPullRequestNumber         :: !Int
+  ,detailedPullRequestHtmlUrl        :: !Text
+  ,detailedPullRequestUpdatedAt      :: !GithubDate
+  ,detailedPullRequestBody           :: !Text
+  ,detailedPullRequestIssueUrl       :: !Text
+  ,detailedPullRequestDiffUrl        :: !Text
+  ,detailedPullRequestUrl            :: !Text
+  ,detailedPullRequestLinks          :: !PullRequestLinks
+  ,detailedPullRequestMergedAt       :: !(Maybe GithubDate)
+  ,detailedPullRequestTitle          :: !Text
+  ,detailedPullRequestId             :: !Int
 
-  ,detailedPullRequestMergedBy       :: Maybe GithubOwner
-  ,detailedPullRequestChangedFiles   :: Int
-  ,detailedPullRequestHead           :: PullRequestCommit
-  ,detailedPullRequestComments       :: Int
-  ,detailedPullRequestDeletions      :: Int
-  ,detailedPullRequestAdditions      :: Int
-  ,detailedPullRequestReviewComments :: Int
-  ,detailedPullRequestBase           :: PullRequestCommit
-  ,detailedPullRequestCommits        :: Int
-  ,detailedPullRequestMerged         :: Bool
-  ,detailedPullRequestMergeable      :: Maybe Bool
+  ,detailedPullRequestMergedBy       :: !(Maybe GithubOwner)
+  ,detailedPullRequestChangedFiles   :: !Int
+  ,detailedPullRequestHead           :: !PullRequestCommit
+  ,detailedPullRequestComments       :: !Int
+  ,detailedPullRequestDeletions      :: !Int
+  ,detailedPullRequestAdditions      :: !Int
+  ,detailedPullRequestReviewComments :: !Int
+  ,detailedPullRequestBase           :: !PullRequestCommit
+  ,detailedPullRequestCommits        :: !Int
+  ,detailedPullRequestMerged         :: !Bool
+  ,detailedPullRequestMergeable      :: !(Maybe Bool)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData DetailedPullRequest
 
 data EditPullRequest = EditPullRequest {
-   editPullRequestTitle :: Maybe String
-  ,editPullRequestBody  :: Maybe String
-  ,editPullRequestState :: Maybe EditPullRequestState
+   editPullRequestTitle :: !(Maybe Text)
+  ,editPullRequestBody  :: !(Maybe Text)
+  ,editPullRequestState :: !(Maybe EditPullRequestState)
 } deriving (Show, Generic)
 
 instance NFData EditPullRequest
 
 data CreatePullRequest =
       CreatePullRequest
-      { createPullRequestTitle :: String
-      , createPullRequestBody  :: String
-      , createPullRequestHead  :: String
-      , createPullRequestBase  :: String
+      { createPullRequestTitle :: !Text
+      , createPullRequestBody  :: !Text
+      , createPullRequestHead  :: !Text
+      , createPullRequestBase  :: !Text
       }
     | CreatePullRequestIssue
-      { createPullRequestIssueNum :: Int
-      , createPullRequestHead     :: String
-      , createPullRequestBase     :: String
+      { createPullRequestIssueNum :: !Int
+      , createPullRequestHead     :: !Text
+      , createPullRequestBase     :: !Text
       }
     deriving (Show, Generic)
 
 instance NFData CreatePullRequest
 
 data PullRequestLinks = PullRequestLinks {
-   pullRequestLinksReviewComments :: String
-  ,pullRequestLinksComments       :: String
-  ,pullRequestLinksHtml           :: String
-  ,pullRequestLinksSelf           :: String
+   pullRequestLinksReviewComments :: !Text
+  ,pullRequestLinksComments       :: !Text
+  ,pullRequestLinksHtml           :: !Text
+  ,pullRequestLinksSelf           :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData PullRequestLinks
 
 data PullRequestCommit = PullRequestCommit {
-   pullRequestCommitLabel :: String
-  ,pullRequestCommitRef   :: String
-  ,pullRequestCommitSha   :: String
-  ,pullRequestCommitUser  :: GithubOwner
-  ,pullRequestCommitRepo  :: Repo
+   pullRequestCommitLabel :: !Text
+  ,pullRequestCommitRef   :: !Text
+  ,pullRequestCommitSha   :: !Text
+  ,pullRequestCommitUser  :: !GithubOwner
+  ,pullRequestCommitRepo  :: !Repo
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData PullRequestCommit
 
 data PullRequestEvent = PullRequestEvent {
-   pullRequestEventAction      :: PullRequestEventType
-  ,pullRequestEventNumber      :: Int
-  ,pullRequestEventPullRequest :: DetailedPullRequest
-  ,pullRequestRepository       :: Repo
-  ,pullRequestSender           :: GithubOwner
+   pullRequestEventAction      :: !PullRequestEventType
+  ,pullRequestEventNumber      :: !Int
+  ,pullRequestEventPullRequest :: !DetailedPullRequest
+  ,pullRequestRepository       :: !Repo
+  ,pullRequestSender           :: !GithubOwner
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData PullRequestEvent
@@ -130,9 +131,9 @@ data PullRequestEventType =
 instance NFData PullRequestEventType
 
 data PullRequestReference = PullRequestReference {
-  pullRequestReferenceHtmlUrl   :: Maybe String
-  ,pullRequestReferencePatchUrl :: Maybe String
-  ,pullRequestReferenceDiffUrl  :: Maybe String
+  pullRequestReferenceHtmlUrl   :: !(Maybe Text)
+  ,pullRequestReferencePatchUrl :: !(Maybe Text)
+  ,pullRequestReferenceDiffUrl  :: !(Maybe Text)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData PullRequestReference
