@@ -9,8 +9,8 @@ import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
 import GHC.Generics    (Generic)
 
-import Github.Data.Id
-import Github.Data.Name
+import Github.Data.Id   (Id)
+import Github.Data.Name (Name)
 
 data Privacy =
     PrivacyClosed

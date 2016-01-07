@@ -1,8 +1,6 @@
-{-# LANGUAGE CPP                #-}
-{-# LANGUAGE DataKinds          #-}
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
-{-# LANGUAGE OverloadedStrings  #-}
+{-# LANGUAGE CPP               #-}
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE OverloadedStrings #-}
 -- | The issues API as described on <http://developer.github.com/v3/issues/>.
 module Github.Issues (
     issue,
@@ -25,9 +23,7 @@ import Github.Auth
 import Github.Data
 import Github.Request
 
-import Control.DeepSeq   (NFData)
 import Data.Aeson.Compat (encode)
-import Data.Data
 import Data.List         (intercalate)
 import Data.Text         (Text)
 #if MIN_VERSION_time(1,5,0)
@@ -35,32 +31,8 @@ import Data.Time (defaultTimeLocale)
 #else
 import System.Locale (defaultTimeLocale)
 #endif
-import GHC.Generics (Generic)
 
-import Data.Time.Clock  (UTCTime (..))
 import Data.Time.Format (formatTime)
-
-
--- | A data structure for describing how to filter issues. This is used by
--- @issuesForRepo@.
-data IssueLimitation =
-      AnyMilestone -- ^ Issues appearing in any milestone. [default]
-    | NoMilestone -- ^ Issues without a milestone.
-    | MilestoneId Int -- ^ Only issues that are in the milestone with the given id.
-    | Open -- ^ Only open issues. [default]
-    | OnlyClosed -- ^ Only closed issues.
-    | Unassigned -- ^ Issues to which no one has been assigned ownership.
-    | AnyAssignment -- ^ All issues regardless of assignment. [default]
-    | AssignedTo String -- ^ Only issues assigned to the user with the given login.
-    | Mentions String -- ^ Issues which mention the given string, taken to be a user's login.
-    | Labels [String] -- ^ A list of labels to filter by.
-    | Ascending -- ^ Sort ascending.
-    | Descending -- ^ Sort descending. [default]
-    | Since UTCTime -- ^ Only issues created since the specified date and time.
-    | PerPage Int -- ^ Download this many issues per query
-  deriving (Eq, Ord, Show, Typeable, Data, Generic)
-
-instance NFData IssueLimitation
 
 -- | Details on a specific issue, given the repo owner and name, and the issue
 -- number.'
@@ -148,7 +120,6 @@ createIssueR user repo =
 
 editOfIssue :: EditIssue
 editOfIssue = EditIssue Nothing Nothing Nothing Nothing Nothing Nothing
-
 
 -- | Edit an issue.
 --

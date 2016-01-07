@@ -121,6 +121,7 @@ Library
                    Github.Data.Name,
                    Github.Data.PullRequests,
                    Github.Data.Repos,
+                   Github.Data.Search,
                    Github.Data.Teams,
                    Github.Data.Webhooks,
                    Github.Gists,

@@ -3,8 +3,8 @@
 module Github.Data.Gists where
 
 import Github.Data.Definitions
-import Github.Data.Id
-import Github.Data.Name
+import Github.Data.Id          (Id)
+import Github.Data.Name        (Name)
 
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
