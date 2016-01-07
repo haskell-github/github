@@ -121,6 +121,7 @@ Library
                    Github.Data.Name,
                    Github.Data.PullRequests,
                    Github.Data.Repos,
+                   Github.Data.Request,
                    Github.Data.Search,
                    Github.Data.Teams,
                    Github.Data.Webhooks,
@@ -152,9 +153,6 @@ Library
                    Github.Search
                    Github.Request
 
-                   -- Private
-                   Github.Private
-
   -- Packages needed in order to build this package.
   Build-depends: base >= 4.0 && < 5.0,
                  base-compat,
@@ -166,10 +164,12 @@ Library
                  containers,
                  deepseq,
                  hashable,
+                 exceptions,
                  text,
                  old-locale,
                  http-conduit >= 1.8,
                  http-client,
+                 http-client-tls,
                  http-types,
                  data-default,
                  vector,
