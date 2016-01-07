@@ -123,7 +123,6 @@ Library
                    Github.Data.Repos,
                    Github.Data.Teams,
                    Github.Data.Webhooks,
-                   Github.Events,
                    Github.Gists,
                    Github.Gists.Comments,
                    Github.GitData.Commits,
