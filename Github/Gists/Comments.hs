@@ -22,7 +22,7 @@ commentsOn gid =
 -- See <https://developer.github.com/v3/gists/comments/#list-comments-on-a-gist>
 commentsOnR :: Name Gist -> GithubRequest k [GistComment]
 commentsOnR gid =
-    GithubGet ["gists", untagName gid, "comments"] ""
+    GithubGet ["gists", untagName gid, "comments"] []
 
 -- | A specific comment, by the comment ID.
 --
@@ -35,4 +35,4 @@ comment cid =
 -- See <https://developer.github.com/v3/gists/comments/#get-a-single-comment>
 gistCommentR :: Id GistComment -> GithubRequest k GistComment
 gistCommentR cid =
-    GithubGet ["gists", "comments", show $ untagId cid] ""
+    GithubGet ["gists", "comments", show $ untagId cid] []

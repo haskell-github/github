@@ -37,7 +37,7 @@ reference = reference' Nothing
 -- See <https://developer.github.com/v3/git/refs/#get-a-reference>
 referenceR :: Name GithubOwner -> Name Repo -> Name GitReference -> GithubRequest k GitReference
 referenceR user repo ref =
-    GithubGet ["repos", untagName user, untagName repo, "git", "refs", untagName ref] ""
+    GithubGet ["repos", untagName user, untagName repo, "git", "refs", untagName ref] []
 
 -- | The history of references for a repo.
 --
@@ -56,7 +56,7 @@ references = references' Nothing
 -- See <https://developer.github.com/v3/git/refs/#get-all-references>
 referencesR :: Name GithubOwner -> Name Repo -> GithubRequest k [GitReference]
 referencesR user repo =
-    GithubGet ["repos", untagName user, untagName repo, "git", "refs"] ""
+    GithubGet ["repos", untagName user, untagName repo, "git", "refs"] []
 
 -- | Create a reference.
 createReference :: GithubAuth -> Name GithubOwner -> Name Repo -> NewGitReference -> IO (Either Error GitReference)
@@ -80,4 +80,4 @@ namespacedReferences user repo namespace =
 -- See <https://developer.github.com/v3/git/refs/#get-all-references>
 namespacedReferencesR :: Name GithubOwner -> Name Repo -> String -> GithubRequest k [GitReference]
 namespacedReferencesR user repo namespace =
-    GithubGet ["repos", untagName user, untagName repo, "git", "refs", namespace] ""
+    GithubGet ["repos", untagName user, untagName repo, "git", "refs", namespace] []

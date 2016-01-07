@@ -29,4 +29,4 @@ forksFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/forks/#list-forks>
 forksForR :: Name GithubOwner -> Name Repo -> GithubRequest k [Repo]
 forksForR user repo =
-    GithubGet ["repos", untagName user, untagName repo, "forks"] ""
+    GithubGet ["repos", untagName user, untagName repo, "forks"] []

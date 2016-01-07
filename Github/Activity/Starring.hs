@@ -26,7 +26,7 @@ stargazersFor auth user repo =
 -- See <https://developer.github.com/v3/activity/starring/#list-stargazers>
 stargazersForR :: Name GithubOwner -> Name Repo -> GithubRequest k [GithubOwner]
 stargazersForR user repo =
-    GithubGet ["repos", untagName user, untagName repo, "stargazers"] ""
+    GithubGet ["repos", untagName user, untagName repo, "stargazers"] []
 
 -- | All the public repos starred by the specified user.
 --
@@ -39,7 +39,7 @@ reposStarredBy auth user =
 -- See <https://developer.github.com/v3/activity/starring/#list-repositories-being-starred>
 reposStarredByR :: Name GithubOwner -> GithubRequest k [Repo]
 reposStarredByR user =
-    GithubGet ["users", untagName user, "starred"] ""
+    GithubGet ["users", untagName user, "starred"] []
 
 -- | All the repos starred by the authenticated user.
 myStarred :: GithubAuth -> IO (Either Error [Repo])
@@ -48,4 +48,4 @@ myStarred auth =
 
 -- | All the repos starred by the authenticated user.
 myStarredR :: GithubRequest 'True [Repo]
-myStarredR = GithubGet ["user", "starred"] ""
+myStarredR = GithubGet ["user", "starred"] []

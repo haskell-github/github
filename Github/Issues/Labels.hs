@@ -58,7 +58,7 @@ labelsOnRepo' auth user repo =
 -- See <https://developer.github.com/v3/issues/labels/#list-all-labels-for-this-repository>
 labelsOnRepoR :: Name GithubOwner -> Name Repo -> GithubRequest k [IssueLabel]
 labelsOnRepoR user repo =
-    GithubGet ["repos", untagName user, untagName repo, "labels"] ""
+    GithubGet ["repos", untagName user, untagName repo, "labels"] []
 
 -- | A label by name.
 --
@@ -77,7 +77,7 @@ label' auth user repo lbl =
 -- See <https://developer.github.com/v3/issues/labels/#get-a-single-label>
 labelR :: Name GithubOwner -> Name Repo -> Name IssueLabel -> GithubRequest k IssueLabel
 labelR user repo lbl =
-    GithubGet ["repos", untagName user, untagName repo, "labels", untagName lbl] ""
+    GithubGet ["repos", untagName user, untagName repo, "labels", untagName lbl] []
 
 -- | Create a label
 --
@@ -152,7 +152,7 @@ labelsOnIssue' auth user repo iid =
 -- See <https://developer.github.com/v3/issues/labels/#list-labels-on-an-issue>
 labelsOnIssueR :: Name GithubOwner -> Name Repo -> Id Issue -> GithubRequest k [IssueLabel]
 labelsOnIssueR user repo iid =
-    GithubGet ["repos", untagName user, untagName repo, "issues", show $ untagId iid, "labels"] ""
+    GithubGet ["repos", untagName user, untagName repo, "issues", show $ untagId iid, "labels"] []
 
 -- | Add labels to an issue.
 --
@@ -251,4 +251,4 @@ labelsOnMilestone' auth user repo mid =
 -- See <https://developer.github.com/v3/issues/labels/#get-labels-for-every-issue-in-a-milestone>
 labelsOnMilestoneR :: Name GithubOwner -> Name Repo -> Id Milestone -> GithubRequest k [IssueLabel]
 labelsOnMilestoneR user repo mid =
-    GithubGet ["repos", untagName user, untagName repo, "milestones", show $ untagId mid, "labels"] ""
+    GithubGet ["repos", untagName user, untagName repo, "milestones", show $ untagId mid, "labels"] []

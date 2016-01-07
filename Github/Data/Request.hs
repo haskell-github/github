@@ -23,6 +23,7 @@ import Data.Typeable        (Typeable)
 import GHC.Generics         (Generic)
 import Network.HTTP.Types   (Status,)
 
+import qualified Data.ByteString           as BS
 import qualified Data.ByteString.Lazy      as LBS
 import qualified Network.HTTP.Types.Method as Method
 
@@ -31,7 +32,7 @@ import qualified Network.HTTP.Types.Method as Method
 ------------------------------------------------------------------------------
 
 type Paths = [String]
-type QueryString = String
+type QueryString = [(BS.ByteString, Maybe BS.ByteString)]
 
 -- | Http method of requests with body.
 data PostMethod = Post | Patch | Put

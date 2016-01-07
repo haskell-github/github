@@ -21,4 +21,4 @@ commit user repo sha =
 -- See <https://developer.github.com/v3/git/commits/#get-a-commit>
 gitCommitR :: Name GithubOwner -> Name Repo -> Name GitCommit -> GithubRequest k GitCommit
 gitCommitR user repo sha =
-    GithubGet ["repos", untagName user, untagName repo, "git", "commits", untagName sha] ""
+    GithubGet ["repos", untagName user, untagName repo, "git", "commits", untagName sha] []

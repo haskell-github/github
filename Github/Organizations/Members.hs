@@ -29,4 +29,4 @@ membersOf = membersOf' Nothing
 --
 -- See <https://developer.github.com/v3/orgs/members/#members-list>
 membersOfR :: Name Organization -> GithubRequest k [GithubOwner]
-membersOfR organization = GithubGet ["orgs", untagName organization, "members"] ""
+membersOfR organization = GithubGet ["orgs", untagName organization, "members"] []

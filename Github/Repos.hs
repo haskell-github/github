@@ -59,12 +59,14 @@ import Github.Auth
 import Github.Data
 import Github.Request
 
-repoPublicityQueryString :: RepoPublicity -> String
-repoPublicityQueryString All     = "type=all"
-repoPublicityQueryString Owner   = "type=owner"
-repoPublicityQueryString Member  = "type=member"
-repoPublicityQueryString Public  = "type=public"
-repoPublicityQueryString Private = "type=private"
+import qualified Data.ByteString.Char8 as BS8
+
+repoPublicityQueryString :: RepoPublicity -> QueryString
+repoPublicityQueryString All     = [("type", Just "all")]
+repoPublicityQueryString Owner   = [("type", Just "owner")]
+repoPublicityQueryString Member  = [("type", Just "member")]
+repoPublicityQueryString Public  = [("type", Just "public")]
+repoPublicityQueryString Private = [("type", Just "private")]
 
 -- | The repos for a user, by their login. Can be restricted to just repos they
 -- own, are a member of, or publicize. Private repos will return empty list.
@@ -129,7 +131,7 @@ repository' auth user repo =
 -- See <https://developer.github.com/v3/repos/#get>
 repositoryR :: Name GithubOwner -> Name Repo -> GithubRequest k Repo
 repositoryR user repo =
-    GithubGet ["repos", untagName user, untagName repo] ""
+    GithubGet ["repos", untagName user, untagName repo] []
 
 -- | Create a new repository.
 --
@@ -201,8 +203,8 @@ contributorsR :: Name GithubOwner
 contributorsR user repo anon =
     GithubGet ["repos", untagName user, untagName repo, "contributors"] qs
   where
-    qs | anon      = "anon=true"
-       | otherwise = ""
+    qs | anon      = [("anon", Just "true")]
+       | otherwise = []
 
 -- | The contributors to a repo, including anonymous contributors (such as
 -- deleted users or git commits with unknown email addresses), given the owner
@@ -242,7 +244,7 @@ languagesFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/#list-languages>
 languagesForR :: Name GithubOwner -> Name Repo -> GithubRequest k Languages
 languagesForR user repo =
-    GithubGet  ["repos", untagName user, untagName repo, "languages"] ""
+    GithubGet  ["repos", untagName user, untagName repo, "languages"] []
 
 -- | The git tags on a repo, given the repo owner and name.
 --
@@ -262,7 +264,7 @@ tagsFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/#list-tags>
 tagsForR :: Name GithubOwner -> Name Repo -> GithubRequest k [Tag]
 tagsForR user repo =
-    GithubGet  ["repos", untagName user, untagName repo, "tags"] ""
+    GithubGet  ["repos", untagName user, untagName repo, "tags"] []
 
 -- | The git branches on a repo, given the repo owner and name.
 --
@@ -282,7 +284,7 @@ branchesFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/#list-branches>
 branchesForR :: Name GithubOwner -> Name Repo -> GithubRequest k [Branch]
 branchesForR user repo =
-    GithubGet  ["repos", untagName user, untagName repo, "branches"] ""
+    GithubGet  ["repos", untagName user, untagName repo, "branches"] []
 
 -- | The contents of a file or directory in a repo, given the repo owner, name, and path to the file
 --
@@ -306,7 +308,7 @@ contentsForR :: Name GithubOwner
 contentsForR user repo path ref =
     GithubGet ["repos", untagName user, untagName repo, "contents", path] qs
   where
-    qs =  maybe "" ("ref=" ++) ref
+    qs =  maybe [] (\r -> [("ref", Just . BS8.pack $ r)]) ref
 
 -- | The contents of a README file in a repo, given the repo owner and name
 --
@@ -324,7 +326,7 @@ readmeFor' auth user repo =
 
 readmeForR :: Name GithubOwner -> Name Repo -> GithubRequest k Content
 readmeForR user repo =
-    GithubGet ["repos", untagName user, untagName repo, "readme"] ""
+    GithubGet ["repos", untagName user, untagName repo, "readme"] []
 
 -- | Delete an existing repository.
 --

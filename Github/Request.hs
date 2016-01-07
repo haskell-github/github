@@ -141,12 +141,12 @@ makeHttpRequest :: MonadThrow m
                 -> m Request
 makeHttpRequest auth r = case r of
     GithubStatus req  -> makeHttpRequest auth req
-    GithubGet paths _qs -> do
+    GithubGet paths qs -> do
         req <- parseUrl $ url paths
         pure $ setReqHeaders
              . setCheckStatus
              . setAuthRequest auth
-             . setQueryString []
+             . setQueryString qs
              $ req
     GithubPost m paths body -> do
         req <- parseUrl $ url paths

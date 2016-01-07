@@ -32,7 +32,7 @@ watchersFor' auth user repo =
 -- See <https://developer.github.com/v3/activity/watching/#list-watchers>
 watchersForR :: Name GithubOwner -> Name Repo -> GithubRequest k [GithubOwner]
 watchersForR user repo =
-    GithubGet ["repos", untagName user, untagName repo, "watchers"] ""
+    GithubGet ["repos", untagName user, untagName repo, "watchers"] []
 
 -- | All the public repos watched by the specified user.
 --
@@ -52,4 +52,4 @@ reposWatchedBy' auth user =
 -- See <https://developer.github.com/v3/activity/watching/#list-repositories-being-watched>
 reposWatchedByR :: Name GithubOwner -> GithubRequest k [Repo]
 reposWatchedByR user =
-    GithubGet ["users", untagName user, "subscriptions"] ""
+    GithubGet ["users", untagName user, "subscriptions"] []

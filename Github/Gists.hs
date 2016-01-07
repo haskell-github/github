@@ -29,7 +29,7 @@ gists = gists' Nothing
 -- | List gists.
 -- See <https://developer.github.com/v3/gists/#list-gists>
 gistsR :: Name GithubOwner -> GithubRequest k [Gist]
-gistsR user = GithubGet ["users", untagName user, "gists"] ""
+gistsR user = GithubGet ["users", untagName user, "gists"] []
 
 -- | A specific gist, given its id, with authentication credentials
 --
@@ -48,4 +48,4 @@ gist = gist' Nothing
 -- See <https://developer.github.com/v3/gists/#get-a-single-gist>
 gistR :: Name Gist ->GithubRequest k Gist
 gistR gid =
-    GithubGet ["gists", untagName gid] ""
+    GithubGet ["gists", untagName gid] []

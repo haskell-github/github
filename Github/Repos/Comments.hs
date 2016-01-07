@@ -37,7 +37,7 @@ commentsFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/comments/#list-commit-comments-for-a-repository>
 commentsForR :: Name GithubOwner -> Name Repo -> GithubRequest k [Comment]
 commentsForR user repo =
-    GithubGet ["repos", untagName user, untagName repo, "comments"] ""
+    GithubGet ["repos", untagName user, untagName repo, "comments"] []
 
 -- | Just the comments on a specific SHA for a given Github repo.
 --
@@ -57,7 +57,7 @@ commitCommentsFor' auth user repo sha =
 -- See <https://developer.github.com/v3/repos/comments/#list-comments-for-a-single-commit>
 commitCommentsForR :: Name GithubOwner -> Name Repo -> Name Commit -> GithubRequest k [Comment]
 commitCommentsForR user repo sha =
-    GithubGet ["repos", untagName user, untagName repo, "commits", untagName sha, "comments"] ""
+    GithubGet ["repos", untagName user, untagName repo, "commits", untagName sha, "comments"] []
 
 -- | A comment, by its ID, relative to the Github repo.
 --
@@ -76,4 +76,4 @@ commitCommentFor' auth user repo cid =
 -- See <https://developer.github.com/v3/repos/comments/#get-a-single-commit-comment>
 commitCommentForR :: Name GithubOwner -> Name Repo -> Id Comment -> GithubRequest k Comment
 commitCommentForR user repo cid =
-    GithubGet ["repos", untagName user, untagName repo, "comments", show $ untagId cid] ""
+    GithubGet ["repos", untagName user, untagName repo, "comments", show $ untagId cid] []

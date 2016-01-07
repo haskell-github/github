@@ -21,7 +21,7 @@ usersFollowing = executeRequest' . usersFollowingR
 --
 -- See <https://developer.github.com/v3/users/followers/#list-followers-of-a-user>
 usersFollowingR :: Name GithubOwner -> GithubRequest k [GithubOwner]
-usersFollowingR userName = GithubGet ["users", untagName userName, "followers"] "" -- TODO: use paged get
+usersFollowingR userName = GithubGet ["users", untagName userName, "followers"] [] -- TODO: use paged get
 
 -- | All the users that the given user follows.
 --
@@ -33,4 +33,4 @@ usersFollowedBy = executeRequest' . usersFollowedByR
 --
 -- See <https://developer.github.com/v3/users/followers/#list-users-followed-by-another-user>
 usersFollowedByR :: Name GithubOwner -> GithubRequest k [GithubOwner]
-usersFollowedByR userName = GithubGet ["users", untagName userName, "following"] "" -- TODO: use paged get
+usersFollowedByR userName = GithubGet ["users", untagName userName, "following"] [] -- TODO: use paged get

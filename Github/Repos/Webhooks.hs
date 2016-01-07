@@ -44,7 +44,7 @@ webhooksFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/hooks/#list-hooks>
 webhooksForR :: Name GithubOwner -> Name Repo -> GithubRequest k [RepoWebhook]
 webhooksForR user repo =
-    GithubGet ["repos", untagName user, untagName repo, "hooks"] ""
+    GithubGet ["repos", untagName user, untagName repo, "hooks"] []
 
 webhookFor' :: GithubAuth -> Name GithubOwner -> Name Repo -> Id RepoWebhook -> IO (Either Error RepoWebhook)
 webhookFor' auth user repo hookId =
@@ -54,7 +54,7 @@ webhookFor' auth user repo hookId =
 -- See <https://developer.github.com/v3/repos/hooks/#get-single-hook>
 webhookForR :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> GithubRequest k RepoWebhook
 webhookForR user repo hookId =
-    GithubGet ["repos", untagName user, untagName repo, "hooks", show $ untagId hookId] ""
+    GithubGet ["repos", untagName user, untagName repo, "hooks", show $ untagId hookId] []
 
 createRepoWebhook' :: GithubAuth -> Name GithubOwner -> Name Repo -> NewRepoWebhook -> IO (Either Error RepoWebhook)
 createRepoWebhook' auth user repo hook =

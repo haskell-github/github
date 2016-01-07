@@ -29,7 +29,7 @@ publicOrganizationsFor = publicOrganizationsFor' Nothing
 --
 -- See <https://developer.github.com/v3/orgs/#list-user-organizations>
 publicOrganizationsForR :: Name GithubOwner -> GithubRequest k [SimpleOrganization]
-publicOrganizationsForR userName = GithubGet ["users", untagName userName, "orgs"] "" -- TODO: Use PagedGet
+publicOrganizationsForR userName = GithubGet ["users", untagName userName, "orgs"] [] -- TODO: Use PagedGet
 
 -- | Details on a public organization. Takes the organization's login.
 --
@@ -47,4 +47,4 @@ publicOrganization = publicOrganization' Nothing
 --
 -- See <https://developer.github.com/v3/orgs/#get-an-organization>
 publicOrganizationR :: Name Organization -> GithubRequest k Organization
-publicOrganizationR reqOrganizationName = GithubGet ["orgs", untagName reqOrganizationName] ""
+publicOrganizationR reqOrganizationName = GithubGet ["orgs", untagName reqOrganizationName] []

@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP, OverloadedStrings #-}
 
 -- | The repo commits API as described on
 -- <http://developer.github.com/v3/repos/commits/>.
@@ -22,8 +22,11 @@ module Github.Repos.Commits (
 import Github.Auth
 import Github.Data
 import Github.Request
+import Data.Monoid ((<>))
 
-import qualified Data.Text as T
+import qualified Data.Text.Encoding as TE
+import qualified Data.ByteString as BS
+import qualified Data.ByteString.Char8 as BS8
 
 import Data.Time.Format (formatTime)
 #if MIN_VERSION_time (1,5,0)
@@ -32,7 +35,6 @@ import Data.Time.Format (iso8601DateFormat)
 #else
 import System.Locale (defaultTimeLocale)
 #endif
-import Data.List (intercalate)
 
 githubFormat :: GithubDate -> String
 #if MIN_VERSION_time (1,5,0)
@@ -41,13 +43,13 @@ githubFormat = formatTime defaultTimeLocale (iso8601DateFormat $ Just "%H:%M:%S"
 githubFormat = formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%S" . fromGithubDate
 #endif
 
-renderCommitQueryOption :: CommitQueryOption -> String
-renderCommitQueryOption (CommitQuerySha sha) = "sha=" ++ T.unpack sha
-renderCommitQueryOption (CommitQueryPath path) = "path=" ++ T.unpack path
-renderCommitQueryOption (CommitQueryAuthor author) = "author=" ++ T.unpack author
-renderCommitQueryOption (CommitQuerySince date) = "since=" ++ ds ++ "Z"
+renderCommitQueryOption :: CommitQueryOption -> (BS.ByteString, Maybe BS.ByteString)
+renderCommitQueryOption (CommitQuerySha sha)      = ("sha", Just $ TE.encodeUtf8 sha)
+renderCommitQueryOption (CommitQueryPath path)     = ("path", Just $ TE.encodeUtf8 path)
+renderCommitQueryOption (CommitQueryAuthor author) = ("author", Just $ TE.encodeUtf8 author)
+renderCommitQueryOption (CommitQuerySince date)    = ("since", Just $ BS8.pack ds <> "Z")
     where ds = show $ githubFormat date
-renderCommitQueryOption (CommitQueryUntil date) = "until=" ++ ds ++ "Z"
+renderCommitQueryOption (CommitQueryUntil date)    = ("until", Just $ BS8.pack ds <> "Z")
     where ds = show $ githubFormat date
 
 -- | The commit history for a repo.
@@ -87,7 +89,7 @@ commitsWithOptionsForR :: Name GithubOwner -> Name Repo -> [CommitQueryOption] -
 commitsWithOptionsForR user repo opts =
     GithubGet ["repos", untagName user, untagName repo, "commits"] qs
   where
-    qs = intercalate "&" $ map renderCommitQueryOption opts
+    qs = map renderCommitQueryOption opts
 
 
 -- | Details on a specific SHA1 for a repo.
@@ -108,7 +110,7 @@ commit' auth user repo sha =
 -- See <https://developer.github.com/v3/repos/commits/#get-a-single-commit>
 commitR :: Name GithubOwner -> Name Repo -> Name Commit -> GithubRequest k Commit
 commitR user repo sha =
-    GithubGet ["repos", untagName user, untagName repo, "commits", untagName sha] ""
+    GithubGet ["repos", untagName user, untagName repo, "commits", untagName sha] []
 
 -- | The diff between two treeishes on a repo.
 --
@@ -127,4 +129,4 @@ diff' auth user repo base headref =
 -- See <https://developer.github.com/v3/repos/commits/#compare-two-commits>
 diffR :: Name GithubOwner -> Name Repo -> Name Commit -> Name Commit -> GithubRequest k Diff
 diffR user repo base headref =
-    GithubGet ["repos", untagName user, untagName repo, "compare", untagName base ++ "..." ++ untagName headref] ""
+    GithubGet ["repos", untagName user, untagName repo, "compare", untagName base ++ "..." ++ untagName headref] []

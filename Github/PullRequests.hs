@@ -34,6 +34,8 @@ import Github.Request
 import Data.Aeson.Compat  (Value, encode, object, (.=))
 import Network.HTTP.Types
 
+import qualified Data.ByteString.Char8 as BS8
+
 -- | All pull requests for the repo, by owner, repo name, and pull request state.
 -- | With authentification
 --
@@ -65,7 +67,7 @@ pullRequestsForR :: Name GithubOwner -> Name Repo
                  -> GithubRequest k [PullRequest]
 pullRequestsForR user repo state =
     GithubGet ["repos", untagName user, untagName repo, "pulls"] $
-        maybe "" ("state=" ++) state
+        maybe [] (\s -> [("state", Just . BS8.pack $ s)]) state
 
 -- | A detailed pull request, which has much more information. This takes the
 -- repo owner and name along with the number assigned to the pull request.
@@ -87,7 +89,7 @@ pullRequest = pullRequest' Nothing
 -- See <https://developer.github.com/v3/pulls/#get-a-single-pull-request>
 pullRequestR :: Name GithubOwner -> Name Repo -> Id DetailedPullRequest -> GithubRequest k DetailedPullRequest
 pullRequestR user repo prid =
-    GithubGet ["repos", untagName user, untagName repo, "pulls", show $ untagId prid] ""
+    GithubGet ["repos", untagName user, untagName repo, "pulls", show $ untagId prid] []
 
 createPullRequest :: GithubAuth
                   -> Name GithubOwner
@@ -141,7 +143,7 @@ pullRequestCommits = pullRequestCommits' Nothing
 -- See <https://developer.github.com/v3/pulls/#list-commits-on-a-pull-request>
 pullRequestCommitsR :: Name GithubOwner -> Name Repo -> Id DetailedPullRequest -> GithubRequest k [Commit]
 pullRequestCommitsR user repo prid =
-    GithubGet ["repos", untagName user, untagName repo, "pulls", show $ untagId prid, "commits"] ""
+    GithubGet ["repos", untagName user, untagName repo, "pulls", show $ untagId prid, "commits"] []
 
 -- | The individual files that a pull request patches. Takes the repo owner and
 -- name, plus the number assigned to the pull request.
@@ -163,7 +165,7 @@ pullRequestFiles = pullRequestFiles' Nothing
 -- See <https://developer.github.com/v3/pulls/#list-pull-requests-files>
 pullRequestFilesR :: Name GithubOwner -> Name Repo -> Id DetailedPullRequest -> GithubRequest k [File]
 pullRequestFilesR user repo prid =
-    GithubGet ["repos", untagName user, untagName repo, "pulls", show $ untagId prid, "files"] ""
+    GithubGet ["repos", untagName user, untagName repo, "pulls", show $ untagId prid, "files"] []
 
 -- | Check if pull request has been merged
 isPullRequestMerged :: GithubAuth -> Name GithubOwner -> Name Repo -> Id DetailedPullRequest -> IO (Either Error Status)
@@ -174,7 +176,7 @@ isPullRequestMerged auth user repo prid =
 -- See <https://developer.github.com/v3/pulls/#get-if-a-pull-request-has-been-merged>
 isPullRequestMergedR :: Name GithubOwner -> Name Repo -> Id DetailedPullRequest -> GithubRequest k Status
 isPullRequestMergedR user repo prid = GithubStatus $
-    GithubGet ["repos", untagName user, untagName repo, "pulls", show $ untagId prid, "merge"] ""
+    GithubGet ["repos", untagName user, untagName repo, "pulls", show $ untagId prid, "merge"] []
 
 -- | Merge a pull request.
 mergePullRequest :: GithubAuth -> Name GithubOwner -> Name Repo -> Id DetailedPullRequest -> Maybe String -> IO (Either Error Status)

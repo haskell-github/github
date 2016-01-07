@@ -34,7 +34,7 @@ eventsForIssue' auth user repo iid =
 -- See <https://developer.github.com/v3/issues/events/#list-events-for-an-issue>
 eventsForIssueR :: Name GithubOwner -> Name Repo -> Id Issue -> GithubRequest k [Event]
 eventsForIssueR user repo iid =
-    GithubGet ["repos", untagName user, untagName repo, "issues", show $ untagId iid, "events"] ""
+    GithubGet ["repos", untagName user, untagName repo, "issues", show $ untagId iid, "events"] []
 
 -- | All the events for all issues in a repo.
 --
@@ -53,7 +53,7 @@ eventsForRepo' auth user repo =
 -- See <https://developer.github.com/v3/issues/events/#list-events-for-a-repository>
 eventsForRepoR :: Name GithubOwner -> Name Repo -> GithubRequest k [Event]
 eventsForRepoR user repo =
-    GithubGet ["repos", untagName user, untagName repo, "issues", "events"] ""
+    GithubGet ["repos", untagName user, untagName repo, "issues", "events"] []
 
 -- | Details on a specific event, by the event's ID.
 --
@@ -72,4 +72,4 @@ event' auth user repo eid =
 -- See <https://developer.github.com/v3/issues/events/#get-a-single-event>
 eventR :: Name GithubOwner -> Name Repo -> Id Event -> GithubRequest k Event
 eventR user repo eid =
-    GithubGet ["repos", untagName user, untagName repo, "issues", "events", show eid] ""
+    GithubGet ["repos", untagName user, untagName repo, "issues", "events", show eid] []

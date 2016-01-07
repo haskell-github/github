@@ -31,7 +31,7 @@ comment user repo cid =
 -- See <https://developer.github.com/v3/issues/comments/#get-a-single-comment>
 commentR :: Name GithubOwner -> Name Repo -> Id Comment -> GithubRequest k IssueComment
 commentR user repo cid =
-    GithubGet ["repos", untagName user, untagName repo, "issues", "comments", show $ untagId cid] ""
+    GithubGet ["repos", untagName user, untagName repo, "issues", "comments", show $ untagId cid] []
 
 -- | All comments on an issue, by the issue's number.
 --
@@ -50,7 +50,7 @@ comments' auth user repo iid =
 -- See <https://developer.github.com/v3/issues/comments/#list-comments-on-an-issue>
 commentsR :: Name GithubOwner -> Name Repo -> Id Issue -> GithubRequest k [IssueComment]
 commentsR user repo iid =
-    GithubGet ["repos", untagName user, untagName repo, "issues", show $ untagId iid, "comments"] ""
+    GithubGet ["repos", untagName user, untagName repo, "issues", show $ untagId iid, "comments"] []
 
 -- | Create a new comment.
 --
