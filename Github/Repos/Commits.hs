@@ -1,4 +1,5 @@
-{-# LANGUAGE CPP, OverloadedStrings #-}
+{-# LANGUAGE CPP               #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 -- | The repo commits API as described on
 -- <http://developer.github.com/v3/repos/commits/>.
@@ -19,14 +20,15 @@ module Github.Repos.Commits (
     module Github.Data,
     ) where
 
+import Data.Monoid    ((<>))
+import Data.Vector    (Vector)
 import Github.Auth
 import Github.Data
 import Github.Request
-import Data.Monoid ((<>))
 
-import qualified Data.Text.Encoding as TE
-import qualified Data.ByteString as BS
+import qualified Data.ByteString       as BS
 import qualified Data.ByteString.Char8 as BS8
+import qualified Data.Text.Encoding    as TE
 
 import Data.Time.Format (formatTime)
 #if MIN_VERSION_time (1,5,0)
@@ -55,23 +57,23 @@ renderCommitQueryOption (CommitQueryUntil date)    = ("until", Just $ BS8.pack d
 -- | The commit history for a repo.
 --
 -- > commitsFor "mike-burns" "github"
-commitsFor :: Name GithubOwner -> Name Repo -> IO (Either Error [Commit])
+commitsFor :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector Commit))
 commitsFor = commitsFor' Nothing
 
 -- | The commit history for a repo.
 -- With authentication.
 --
 -- > commitsFor' (Just (GithubBasicAuth (user, password))) "mike-burns" "github"
-commitsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error [Commit])
+commitsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector Commit))
 commitsFor' auth user repo =
     commitsWithOptionsFor' auth user repo []
 
 -- | List commits on a repository.
 -- See <https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository>
-commitsForR :: Name GithubOwner -> Name Repo -> GithubRequest k [Commit]
+commitsForR :: Name GithubOwner -> Name Repo -> GithubRequest k (Vector Commit)
 commitsForR user repo = commitsWithOptionsForR user repo []
 
-commitsWithOptionsFor :: Name GithubOwner -> Name Repo -> [CommitQueryOption] -> IO (Either Error [Commit])
+commitsWithOptionsFor :: Name GithubOwner -> Name Repo -> [CommitQueryOption] -> IO (Either Error (Vector Commit))
 commitsWithOptionsFor = commitsWithOptionsFor' Nothing
 
 -- | The commit history for a repo, with commits filtered to satisfy a list of
@@ -79,15 +81,15 @@ commitsWithOptionsFor = commitsWithOptionsFor' Nothing
 -- With authentication.
 --
 -- > commitsWithOptionsFor' (Just (GithubBasicAuth (user, password))) "mike-burns" "github" [CommitQueryAuthor "djeik"]
-commitsWithOptionsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> [CommitQueryOption] -> IO (Either Error [Commit])
+commitsWithOptionsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> [CommitQueryOption] -> IO (Either Error (Vector Commit))
 commitsWithOptionsFor' auth user repo opts =
     executeRequestMaybe auth $ commitsWithOptionsForR user repo opts
 
 -- | List commits on a repository.
 -- See <https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository>
-commitsWithOptionsForR :: Name GithubOwner -> Name Repo -> [CommitQueryOption] -> GithubRequest k [Commit]
+commitsWithOptionsForR :: Name GithubOwner -> Name Repo -> [CommitQueryOption] -> GithubRequest k (Vector Commit)
 commitsWithOptionsForR user repo opts =
-    GithubGet ["repos", untagName user, untagName repo, "commits"] qs
+    GithubPagedGet ["repos", untagName user, untagName repo, "commits"] qs
   where
     qs = map renderCommitQueryOption opts
 

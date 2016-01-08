@@ -2,6 +2,7 @@
 {-# LANGUAGE DataKinds          #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric      #-}
+{-# LANGUAGE FlexibleContexts   #-}
 {-# LANGUAGE GADTs              #-}
 {-# LANGUAGE KindSignatures     #-}
 {-# LANGUAGE OverloadedStrings  #-}
@@ -14,14 +15,11 @@ module Github.Data.Request (
     QueryString,
     ) where
 
-#if !MIN_VERSION_base(4,8,0)
-import Control.Applicative
-#endif
-
-import Data.Aeson.Compat    (FromJSON)
-import Data.Typeable        (Typeable)
-import GHC.Generics         (Generic)
-import Network.HTTP.Types   (Status,)
+import Data.Aeson.Compat  (FromJSON)
+import Data.Typeable      (Typeable)
+import Data.Vector        (Vector)
+import GHC.Generics       (Generic)
+import Network.HTTP.Types (Status)
 
 import qualified Data.ByteString           as BS
 import qualified Data.ByteString.Lazy      as LBS
@@ -57,6 +55,7 @@ toMethod Put   = Method.methodPut
 -- TODO: Add constructor for collection fetches.
 data GithubRequest (k :: Bool) a where
     GithubGet       :: FromJSON a => Paths -> QueryString -> GithubRequest k a
+    GithubPagedGet  :: FromJSON (Vector a) => Paths -> QueryString -> GithubRequest k (Vector a)
     GithubPost      :: FromJSON a => PostMethod -> Paths -> LBS.ByteString -> GithubRequest 'True a
     GithubDelete    :: Paths -> GithubRequest 'True ()
     GithubStatus    :: GithubRequest k () -> GithubRequest k Status
@@ -69,6 +68,11 @@ instance Show (GithubRequest k a) where
         case r of
             GithubGet ps qs -> showParen (d > appPrec) $
                 showString "GithubGet "
+                    . showsPrec (appPrec + 1) ps
+                    . showString " "
+                    . showsPrec (appPrec + 1) qs
+            GithubPagedGet ps qs -> showParen (d > appPrec) $
+                showString "GithubPagedGet "
                     . showsPrec (appPrec + 1) ps
                     . showString " "
                     . showsPrec (appPrec + 1) qs

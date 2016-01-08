@@ -1,11 +1,13 @@
-{-# LANGUAGE CPP                #-}
-{-# LANGUAGE DataKinds          #-}
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
-{-# LANGUAGE GADTs              #-}
-{-# LANGUAGE KindSignatures     #-}
-{-# LANGUAGE OverloadedStrings  #-}
-{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE CPP                 #-}
+{-# LANGUAGE DataKinds           #-}
+{-# LANGUAGE DeriveDataTypeable  #-}
+{-# LANGUAGE DeriveGeneric       #-}
+{-# LANGUAGE FlexibleContexts    #-}
+{-# LANGUAGE GADTs               #-}
+{-# LANGUAGE KindSignatures      #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE StandaloneDeriving  #-}
 module Github.Request (
     -- * Types
     GithubRequest(..),
@@ -22,22 +24,38 @@ module Github.Request (
     unsafeDropAuthRequirements,
     -- * Tools
     makeHttpRequest,
+    getNextUrl,
     ) where
 
-#if !MIN_VERSION_base(4,8,0)
-import Control.Applicative
+import Prelude ()
+import Prelude.Compat
+
+#if MIN_VERSION_mtl(2,2,0)
+import Control.Monad.Except (MonadError(..))
+#else
+import Control.Monad.Error (MonadError(..))
 #endif
 
-import Control.Monad.Catch     (MonadThrow)
-import Data.Aeson.Compat       (eitherDecode)
-import Data.List               (intercalate)
-import Data.Monoid             ((<>))
-import Network.HTTP.Client     (HttpException (..), Manager, Request (..),
-                                RequestBody (..), Response (..), applyBasicAuth,
-                                httpLbs, newManager, parseUrl, setQueryString)
-import Network.HTTP.Client.TLS (tlsManagerSettings)
-import Network.HTTP.Types      (Method, RequestHeaders, Status (..),
-                                methodDelete)
+import Control.Monad.Catch       (MonadThrow)
+import Control.Monad.Trans.Except      (ExceptT (..), runExceptT)
+import Control.Monad.Trans.Class (lift)
+import Data.Aeson.Compat         (FromJSON, eitherDecode)
+import Data.List                 (find, intercalate)
+import Data.Monoid               ((<>))
+import Data.Text                 (Text)
+
+import Network.HTTP.Client          (HttpException (..), Manager, Request (..),
+                                     RequestBody (..), Response (..),
+                                     applyBasicAuth, httpLbs, newManager,
+                                     parseUrl, setQueryString)
+import Network.HTTP.Client.Internal (setUri)
+import Network.HTTP.Client.TLS      (tlsManagerSettings)
+import Network.HTTP.Link.Parser     (parseLinkHeaderBS)
+import Network.HTTP.Link.Types      (Link (..), LinkParam (..), href,
+                                     linkParams)
+import Network.HTTP.Types           (Method, RequestHeaders, Status (..),
+                                     methodDelete)
+import Network.URI                  (URI)
 
 import qualified Control.Exception     as E
 import qualified Data.ByteString.Char8 as BS8
@@ -70,15 +88,14 @@ executeRequestWithMgr mgr auth req =
         GithubGet {} -> do
             httpReq <- makeHttpRequest (Just auth) req
             res <- httpLbs httpReq mgr
-            case eitherDecode (responseBody res) of
-                Right x  -> pure . Right $ x
-                Left err -> pure . Left . ParseError . T.pack $ err
+            pure $ parseResponse res
+        GithubPagedGet {} -> do
+            httpReq <- makeHttpRequest (Just auth) req
+            performPagedRequest (flip httpLbs mgr) httpReq
         GithubPost {} -> do
             httpReq <- makeHttpRequest (Just auth) req
             res <- httpLbs httpReq mgr
-            case eitherDecode (responseBody res) of
-                Right x  -> pure . Right $ x
-                Left err -> pure . Left . ParseError . T.pack $ err
+            pure $ parseResponse res
         GithubDelete {} -> do
             httpReq <- makeHttpRequest (Just auth) req
             _ <- httpLbs httpReq mgr
@@ -109,9 +126,10 @@ executeRequestWithMgr' mgr req =
         GithubGet {} -> do
             httpReq <- makeHttpRequest Nothing req
             res <- httpLbs httpReq mgr
-            case eitherDecode (responseBody res) of
-                Right x  -> pure . Right $ x
-                Left err -> pure . Left . ParseError . T.pack $ err
+            pure $ parseResponse res
+        GithubPagedGet {} -> do
+            httpReq <- makeHttpRequest Nothing req
+            performPagedRequest (flip httpLbs mgr) httpReq
         GithubStatus {} -> do
             httpReq <- makeHttpRequest Nothing req
             res <- httpLbs httpReq mgr
@@ -143,26 +161,33 @@ makeHttpRequest auth r = case r of
     GithubStatus req  -> makeHttpRequest auth req
     GithubGet paths qs -> do
         req <- parseUrl $ url paths
-        pure $ setReqHeaders
-             . setCheckStatus
-             . setAuthRequest auth
-             . setQueryString qs
-             $ req
+        return $ setReqHeaders
+               . setCheckStatus
+               . setAuthRequest auth
+               . setQueryString qs
+               $ req
+    GithubPagedGet paths qs -> do
+        req <- parseUrl $ url paths
+        return $ setReqHeaders
+               . setCheckStatus
+               . setAuthRequest auth
+               . setQueryString qs
+               $ req
     GithubPost m paths body -> do
         req <- parseUrl $ url paths
-        pure $ setReqHeaders
-             . setCheckStatus
-             . setAuthRequest auth
-             . setBody body
-             . setMethod (toMethod m)
-             $ req
+        return $ setReqHeaders
+               . setCheckStatus
+               . setAuthRequest auth
+               . setBody body
+               . setMethod (toMethod m)
+               $ req
     GithubDelete paths -> do
         req <- parseUrl $ url paths
-        pure $ setReqHeaders
-             . setCheckStatus
-             . setAuthRequest auth
-             . setMethod methodDelete
-             $ req
+        return $ setReqHeaders
+               . setCheckStatus
+               . setAuthRequest auth
+               . setMethod methodDelete
+               $ req
   where
     url :: Paths -> String
     url paths = baseUrl ++ '/' : intercalate "/" paths
@@ -200,3 +225,39 @@ makeHttpRequest auth r = case r of
     successOrMissing s@(Status sci _) hs cookiejar
       | (200 <= sci && sci < 300) || sci == 404 = Nothing
       | otherwise = Just $ E.toException $ StatusCodeException s hs cookiejar
+
+-- | Get Link rel=next from request headers.
+getNextUrl :: Response a -> Maybe URI
+getNextUrl req = do
+    linkHeader <- lookup "Link" (responseHeaders req)
+    links <- parseLinkHeaderBS linkHeader
+    nextURI <- find isRelNext links
+    return $ href nextURI
+  where
+    isRelNext :: Link -> Bool
+    isRelNext = any (== relNextLinkParam) . linkParams
+
+    relNextLinkParam :: (LinkParam, Text)
+    relNextLinkParam = (Rel, "next")
+
+parseResponse :: (FromJSON a, MonadError Error m) => Response LBS.ByteString -> m a
+parseResponse res = case eitherDecode (responseBody res) of
+    Right x  -> return x
+    Left err -> throwError . ParseError . T.pack $ err
+
+performPagedRequest :: forall a m. (FromJSON a, Monoid a, MonadThrow m)
+                    => (Request -> m (Response LBS.ByteString))  -- ^ `httpLbs` analogue
+                    -> Request                                   -- ^ initial request
+                    -> m (Either Error a)
+performPagedRequest httpLbs' = runExceptT . go
+  where
+    go :: Request -> ExceptT Error m a
+    go req = do
+        res <- lift $ httpLbs' req
+        m <- parseResponse res
+        case getNextUrl res of
+            Nothing  -> return m
+            Just uri -> do
+                req' <- setUri req uri
+                rest <- go req'
+                return $ m <> rest
