@@ -155,7 +155,7 @@ deleteTeamMembershipFor' :: GithubAuth -> Id Team -> Name GithubOwner -> IO (Eit
 deleteTeamMembershipFor' auth tid user =
     executeRequest auth $ deleteTeamMembershipForR tid user
 
--- | Remove team membership
+-- | Remove team membership.
 -- See <https://developer.github.com/v3/orgs/teams/#remove-team-membership>
 deleteTeamMembershipForR :: Id Team -> Name GithubOwner -> GithubRequest 'True ()
 deleteTeamMembershipForR tid user =

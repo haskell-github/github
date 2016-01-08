@@ -53,7 +53,7 @@ commitCommentsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Name 
 commitCommentsFor' auth user repo sha =
     executeRequestMaybe auth $ commitCommentsForR user repo sha
 
--- | List comments for a single commit
+-- | List comments for a single commit.
 -- See <https://developer.github.com/v3/repos/comments/#list-comments-for-a-single-commit>
 commitCommentsForR :: Name GithubOwner -> Name Repo -> Name Commit -> GithubRequest k [Comment]
 commitCommentsForR user repo sha =

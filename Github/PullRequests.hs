@@ -167,7 +167,7 @@ pullRequestFilesR :: Name GithubOwner -> Name Repo -> Id DetailedPullRequest -> 
 pullRequestFilesR user repo prid =
     GithubGet ["repos", untagName user, untagName repo, "pulls", show $ untagId prid, "files"] []
 
--- | Check if pull request has been merged
+-- | Check if pull request has been merged.
 isPullRequestMerged :: GithubAuth -> Name GithubOwner -> Name Repo -> Id DetailedPullRequest -> IO (Either Error Status)
 isPullRequestMerged auth user repo prid =
     executeRequest auth $ isPullRequestMergedR user repo prid
@@ -183,7 +183,7 @@ mergePullRequest :: GithubAuth -> Name GithubOwner -> Name Repo -> Id DetailedPu
 mergePullRequest auth user repo prid commitMessage =
     executeRequest auth $ mergePullRequestR user repo prid commitMessage
 
--- | Merge a pull request (Merge Button)
+-- | Merge a pull request (Merge Button).
 -- https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button
 mergePullRequestR :: Name GithubOwner -> Name Repo -> Id DetailedPullRequest -> Maybe String -> GithubRequest 'True Status
 mergePullRequestR user repo prid commitMessage = GithubStatus $

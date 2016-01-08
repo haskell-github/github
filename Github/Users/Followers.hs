@@ -17,8 +17,7 @@ import Github.Request
 usersFollowing :: Name GithubOwner -> IO (Either Error [GithubOwner])
 usersFollowing = executeRequest' . usersFollowingR
 
--- | List followers of a user. All the users following the given user.
---
+-- | List followers of a user.
 -- See <https://developer.github.com/v3/users/followers/#list-followers-of-a-user>
 usersFollowingR :: Name GithubOwner -> GithubRequest k [GithubOwner]
 usersFollowingR userName = GithubGet ["users", untagName userName, "followers"] [] -- TODO: use paged get
@@ -29,8 +28,7 @@ usersFollowingR userName = GithubGet ["users", untagName userName, "followers"] 
 usersFollowedBy :: Name GithubOwner -> IO (Either Error [GithubOwner])
 usersFollowedBy = executeRequest' . usersFollowedByR
 
--- | List users followed by another user. All the users that the given user follows.
---
+-- | List users followed by another user.
 -- See <https://developer.github.com/v3/users/followers/#list-users-followed-by-another-user>
 usersFollowedByR :: Name GithubOwner -> GithubRequest k [GithubOwner]
 usersFollowedByR userName = GithubGet ["users", untagName userName, "following"] [] -- TODO: use paged get

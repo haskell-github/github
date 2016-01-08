@@ -32,7 +32,6 @@ searchRepos :: QueryString -> IO (Either Error SearchReposResult)
 searchRepos = searchRepos' Nothing
 
 -- | Search repositories.
---
 -- See <https://developer.github.com/v3/search/#search-repositories>
 searchReposR :: QueryString -> GithubRequest k SearchReposResult
 searchReposR queryString = GithubGet ["search", "repositories"] queryString
@@ -52,7 +51,6 @@ searchCode :: QueryString -> IO (Either Error SearchCodeResult)
 searchCode = searchCode' Nothing
 
 -- | Search code.
---
 -- See <https://developer.github.com/v3/search/#search-code>
 searchCodeR :: QueryString -> GithubRequest k SearchCodeResult
 searchCodeR queryString = GithubGet ["search", "code"] queryString
@@ -72,7 +70,6 @@ searchIssues :: QueryString -> IO (Either Error SearchIssuesResult)
 searchIssues = searchIssues' Nothing
 
 -- | Search issues.
---
 -- See <https://developer.github.com/v3/search/#search-issues>
 searchIssuesR :: QueryString -> GithubRequest k SearchIssuesResult
 searchIssuesR queryString = GithubGet ["search", "issues"] queryString

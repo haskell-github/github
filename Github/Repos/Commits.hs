@@ -108,7 +108,7 @@ commit' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Name Commit -> I
 commit' auth user repo sha =
     executeRequestMaybe auth $ commitR user repo sha
 
--- | Get a single commit
+-- | Get a single commit.
 -- See <https://developer.github.com/v3/repos/commits/#get-a-single-commit>
 commitR :: Name GithubOwner -> Name Repo -> Name Commit -> GithubRequest k Commit
 commitR user repo sha =
@@ -127,7 +127,7 @@ diff' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Name Commit -> Nam
 diff' auth user repo base headref =
     executeRequestMaybe auth $ diffR user repo base headref
 
--- | Compare two commits
+-- | Compare two commits.
 -- See <https://developer.github.com/v3/repos/commits/#compare-two-commits>
 diffR :: Name GithubOwner -> Name Repo -> Name Commit -> Name Commit -> GithubRequest k Diff
 diffR user repo base headref =

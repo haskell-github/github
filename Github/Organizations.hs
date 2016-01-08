@@ -25,8 +25,7 @@ publicOrganizationsFor' auth = executeRequestMaybe auth . publicOrganizationsFor
 publicOrganizationsFor :: Name GithubOwner -> IO (Either Error [SimpleOrganization])
 publicOrganizationsFor = publicOrganizationsFor' Nothing
 
--- | List user organizations. The public organizations for a user, given the user's login.
---
+-- | List user organizations.
 -- See <https://developer.github.com/v3/orgs/#list-user-organizations>
 publicOrganizationsForR :: Name GithubOwner -> GithubRequest k [SimpleOrganization]
 publicOrganizationsForR userName = GithubGet ["users", untagName userName, "orgs"] [] -- TODO: Use PagedGet
@@ -43,8 +42,7 @@ publicOrganization' auth = executeRequestMaybe auth . publicOrganizationR
 publicOrganization :: Name Organization -> IO (Either Error Organization)
 publicOrganization = publicOrganization' Nothing
 
--- | Get an organization. Details on a public organization. Takes the organization's login.
---
+-- | Get an organization.
 -- See <https://developer.github.com/v3/orgs/#get-an-organization>
 publicOrganizationR :: Name Organization -> GithubRequest k Organization
 publicOrganizationR reqOrganizationName = GithubGet ["orgs", untagName reqOrganizationName] []
