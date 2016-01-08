@@ -24,6 +24,7 @@ module Github.Request (
     unsafeDropAuthRequirements,
     -- * Tools
     makeHttpRequest,
+    parseResponse,
     getNextUrl,
     ) where
 
