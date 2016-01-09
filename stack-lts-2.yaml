@@ -2,6 +2,7 @@ packages:
 - '.'
 extra-deps:
 - aeson-extra-0.2.3.0
+- http-link-header-1.0.1
 resolver: lts-2.22
 flags:
   github:

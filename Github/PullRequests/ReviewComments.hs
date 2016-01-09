@@ -10,19 +10,20 @@ module Github.PullRequests.ReviewComments (
 
 import Github.Data
 import Github.Request
+import Data.Vector (Vector)
 
 -- | All the comments on a pull request with the given ID.
 --
 -- > pullRequestReviewComments "thoughtbot" "factory_girl" (Id 256)
-pullRequestReviewComments :: Name GithubOwner -> Name Repo -> Id PullRequest -> IO (Either Error [Comment])
+pullRequestReviewComments :: Name GithubOwner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector Comment))
 pullRequestReviewComments user repo prid =
-    executeRequest' $ pullRequestReviewCommentsR user repo prid
+    executeRequest' $ pullRequestReviewCommentsR user repo prid Nothing
 
 -- | List comments on a pull request.
 -- See <https://developer.github.com/v3/pulls/comments/#list-comments-on-a-pull-request>
-pullRequestReviewCommentsR :: Name GithubOwner -> Name Repo -> Id PullRequest -> GithubRequest k [Comment]
+pullRequestReviewCommentsR :: Name GithubOwner -> Name Repo -> Id PullRequest -> Maybe Count -> GithubRequest k (Vector Comment)
 pullRequestReviewCommentsR user repo prid =
-    GithubGet ["repos", untagName user, untagName repo, "pulls", show $ untagId prid, "comments"] ""
+    GithubPagedGet ["repos", untagName user, untagName repo, "pulls", show $ untagId prid, "comments"] []
 
 -- | One comment on a pull request, by the comment's ID.
 --
@@ -35,4 +36,4 @@ pullRequestReviewComment user repo cid =
 -- See <https://developer.github.com/v3/pulls/comments/#get-a-single-comment>
 pullRequestReviewCommentR :: Name GithubOwner -> Name Repo -> Id Comment -> GithubRequest k Comment
 pullRequestReviewCommentR user repo cid =
-    GithubGet ["repos", untagName user, untagName repo, "pulls", "comments", show $ untagId cid] ""
+    GithubGet ["repos", untagName user, untagName repo, "pulls", "comments", show $ untagId cid] []

@@ -15,6 +15,7 @@ module Github.Data (
     module Github.Data.Issues,
     module Github.Data.PullRequests,
     module Github.Data.Repos,
+    module Github.Data.Request,
     module Github.Data.Search,
     module Github.Data.Teams,
     module Github.Data.Webhooks,
@@ -56,6 +57,7 @@ import Github.Data.Issues
 import Github.Data.Name
 import Github.Data.PullRequests
 import Github.Data.Repos
+import Github.Data.Request
 import Github.Data.Search
 import Github.Data.Teams
 import Github.Data.Webhooks

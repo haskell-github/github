@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 -- | The underlying tree of SHA1s and files that make up a git repo. The API is
 -- described on <http://developer.github.com/v3/git/trees/>.
 module Github.GitData.Trees (
@@ -31,7 +32,7 @@ tree = tree' Nothing
 -- See <https://developer.github.com/v3/git/trees/#get-a-tree>
 treeR :: Name GithubOwner -> Name Repo -> Name Tree -> GithubRequest k Tree
 treeR user repo sha =
-    GithubGet  ["repos", untagName user, untagName repo, "git", "trees", untagName sha] ""
+    GithubGet  ["repos", untagName user, untagName repo, "git", "trees", untagName sha] []
 
 -- | A recursively-nested tree for a SHA1.
 --
@@ -50,4 +51,4 @@ nestedTree = nestedTree' Nothing
 -- See <https://developer.github.com/v3/git/trees/#get-a-tree-recursively>
 nestedTreeR :: Name GithubOwner -> Name Repo -> Name Tree -> GithubRequest k Tree
 nestedTreeR user repo sha =
-    GithubGet  ["repos", untagName user, untagName repo, "git", "trees", untagName sha] "recursive=1"
+    GithubGet  ["repos", untagName user, untagName repo, "git", "trees", untagName sha] [("recursive", Just "1")]

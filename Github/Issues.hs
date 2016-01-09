@@ -26,6 +26,7 @@ import Github.Request
 import Data.Aeson.Compat (encode)
 import Data.List         (intercalate)
 import Data.Text         (Text)
+import Data.Vector       (Vector)
 #if MIN_VERSION_time(1,5,0)
 import Data.Time (defaultTimeLocale)
 #else
@@ -33,6 +34,8 @@ import System.Locale (defaultTimeLocale)
 #endif
 
 import Data.Time.Format (formatTime)
+
+import qualified Data.ByteString.Char8 as BS8
 
 -- | Details on a specific issue, given the repo owner and name, and the issue
 -- number.'
@@ -53,47 +56,46 @@ issue = issue' Nothing
 -- See <https://developer.github.com/v3/issues/#get-a-single-issue>
 issueR :: Name GithubOwner -> Name Repo -> Id Issue -> GithubRequest k Issue
 issueR user reqRepoName reqIssueNumber =
-    GithubGet ["repos", untagName user, untagName reqRepoName, "issues", show $ untagId reqIssueNumber] ""
+    GithubGet ["repos", untagName user, untagName reqRepoName, "issues", show $ untagId reqIssueNumber] []
 
 -- | All issues for a repo (given the repo owner and name), with optional
 -- restrictions as described in the @IssueLimitation@ data type.
 --
 -- > issuesForRepo' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
-issuesForRepo' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> [IssueLimitation] -> IO (Either Error [Issue])
+issuesForRepo' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> [IssueLimitation] -> IO (Either Error (Vector Issue))
 issuesForRepo' auth user reqRepoName issueLimitations =
-    executeRequestMaybe auth $ issuesForRepoR user reqRepoName issueLimitations
+    executeRequestMaybe auth $ issuesForRepoR user reqRepoName issueLimitations Nothing
 
 -- | All issues for a repo (given the repo owner and name), with optional
 -- restrictions as described in the @IssueLimitation@ data type.
 --
 -- > issuesForRepo "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
-issuesForRepo :: Name GithubOwner -> Name Repo -> [IssueLimitation] -> IO (Either Error [Issue])
+issuesForRepo :: Name GithubOwner -> Name Repo -> [IssueLimitation] -> IO (Either Error (Vector Issue))
 issuesForRepo = issuesForRepo' Nothing
 
 -- | List issues for a repository.
 -- See <https://developer.github.com/v3/issues/#list-issues-for-a-repository>
-issuesForRepoR :: Name GithubOwner -> Name Repo -> [IssueLimitation] -> GithubRequest k [Issue]
+issuesForRepoR :: Name GithubOwner -> Name Repo -> [IssueLimitation] -> Maybe Count -> GithubRequest k (Vector Issue)
 issuesForRepoR user reqRepoName issueLimitations =
-    GithubGet ["repos", untagName user, untagName reqRepoName, "issues"] qs
+    GithubPagedGet ["repos", untagName user, untagName reqRepoName, "issues"] qs
   where
-    qs = queryStringFromLimitations issueLimitations
-    queryStringFromLimitations = intercalate "&" . map convert
+    qs = map convert issueLimitations
 
-    convert AnyMilestone     = "milestone=*"
-    convert NoMilestone      = "milestone=none"
-    convert (MilestoneId n)  = "milestone=" ++ show n
-    convert Open             = "state=open"
-    convert OnlyClosed       = "state=closed"
-    convert Unassigned       = "assignee=none"
-    convert AnyAssignment    = "assignee=*"
-    convert (AssignedTo u)   = "assignee=" ++ u
-    convert (Mentions u)     = "mentioned=" ++ u
-    convert (Labels l)       = "labels=" ++ intercalate "," l
-    convert Ascending        = "direction=asc"
-    convert Descending       = "direction=desc"
-    convert (PerPage n)      = "per_page=" ++ show n
+    convert AnyMilestone     = ("milestone", Just "*")
+    convert NoMilestone      = ("milestone", Just "none")
+    convert (MilestoneId n)  = ("milestone", Just . BS8.pack $ show n)
+    convert Open             = ("state", Just "open")
+    convert OnlyClosed       = ("state", Just "closed")
+    convert Unassigned       = ("assignee", Just "none")
+    convert AnyAssignment    = ("assignee", Just "")
+    convert (AssignedTo u)   = ("assignee", Just $ BS8.pack u)
+    convert (Mentions u)     = ("mentioned", Just $ BS8.pack u)
+    convert (Labels l)       = ("labels", Just . BS8.pack $ intercalate "," l)
+    convert Ascending        = ("direction", Just "asc")
+    convert Descending       = ("direction", Just "desc")
+    convert (PerPage n)      = ("per_page", Just . BS8.pack $ show n)
     convert (Since t)        =
-      "since=" ++ formatTime defaultTimeLocale "%FT%TZ" t
+        ("since", Just . BS8.pack $ formatTime defaultTimeLocale "%FT%TZ" t)
 
 -- Creating new issues.
 

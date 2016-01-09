@@ -55,59 +55,62 @@ module Github.Repos (
 import Control.Applicative ((<|>))
 import Data.Aeson.Compat   (encode)
 
+import Data.Vector    (Vector)
 import Github.Auth
 import Github.Data
 import Github.Request
 
-repoPublicityQueryString :: RepoPublicity -> String
-repoPublicityQueryString All     = "type=all"
-repoPublicityQueryString Owner   = "type=owner"
-repoPublicityQueryString Member  = "type=member"
-repoPublicityQueryString Public  = "type=public"
-repoPublicityQueryString Private = "type=private"
+import qualified Data.ByteString.Char8 as BS8
+
+repoPublicityQueryString :: RepoPublicity -> QueryString
+repoPublicityQueryString All     = [("type", Just "all")]
+repoPublicityQueryString Owner   = [("type", Just "owner")]
+repoPublicityQueryString Member  = [("type", Just "member")]
+repoPublicityQueryString Public  = [("type", Just "public")]
+repoPublicityQueryString Private = [("type", Just "private")]
 
 -- | The repos for a user, by their login. Can be restricted to just repos they
 -- own, are a member of, or publicize. Private repos will return empty list.
 --
 -- > userRepos "mike-burns" All
-userRepos :: Name GithubOwner -> RepoPublicity -> IO (Either Error [Repo])
+userRepos :: Name GithubOwner -> RepoPublicity -> IO (Either Error (Vector Repo))
 userRepos = userRepos' Nothing
 
 -- | The repos for a user, by their login.
 -- With authentication.
 --
 -- > userRepos' (Just (GithubBasicAuth (user, password))) "mike-burns" All
-userRepos' :: Maybe GithubAuth -> Name GithubOwner -> RepoPublicity -> IO (Either Error [Repo])
+userRepos' :: Maybe GithubAuth -> Name GithubOwner -> RepoPublicity -> IO (Either Error (Vector Repo))
 userRepos' auth user publicity =
-    executeRequestMaybe auth $ userReposR user publicity
+    executeRequestMaybe auth $ userReposR user publicity Nothing
 
 -- | List user repositories.
 -- See <https://developer.github.com/v3/repos/#list-user-repositories>
-userReposR :: Name GithubOwner -> RepoPublicity -> GithubRequest k [Repo]
+userReposR :: Name GithubOwner -> RepoPublicity -> Maybe Count -> GithubRequest k(Vector Repo)
 userReposR user publicity =
-    GithubGet  ["users", untagName user, "repos"] qs
+    GithubPagedGet  ["users", untagName user, "repos"] qs
   where
     qs = repoPublicityQueryString publicity
 
 -- | The repos for an organization, by the organization name.
 --
 -- > organizationRepos "thoughtbot"
-organizationRepos :: Name Organization -> IO (Either Error [Repo])
+organizationRepos :: Name Organization -> IO (Either Error (Vector Repo))
 organizationRepos org = organizationRepos' Nothing org All
 
 -- | The repos for an organization, by the organization name.
 -- With authentication.
 --
 -- > organizationRepos (Just (GithubBasicAuth (user, password))) "thoughtbot" All
-organizationRepos' :: Maybe GithubAuth -> Name Organization -> RepoPublicity -> IO (Either Error [Repo])
+organizationRepos' :: Maybe GithubAuth -> Name Organization -> RepoPublicity -> IO (Either Error (Vector Repo))
 organizationRepos' auth org publicity =
-    executeRequestMaybe auth $ organizationReposR org publicity
+    executeRequestMaybe auth $ organizationReposR org publicity Nothing
 
 -- | List organization repositories.
 -- See <https://developer.github.com/v3/repos/#list-organization-repositories>
-organizationReposR :: Name Organization -> RepoPublicity -> GithubRequest k [Repo]
+organizationReposR :: Name Organization -> RepoPublicity -> Maybe Count -> GithubRequest k (Vector Repo)
 organizationReposR org publicity =
-    GithubGet ["orgs", untagName org, "repos"] qs
+    GithubPagedGet ["orgs", untagName org, "repos"] qs
   where
     qs = repoPublicityQueryString publicity
 
@@ -129,7 +132,7 @@ repository' auth user repo =
 -- See <https://developer.github.com/v3/repos/#get>
 repositoryR :: Name GithubOwner -> Name Repo -> GithubRequest k Repo
 repositoryR user repo =
-    GithubGet ["repos", untagName user, untagName repo] ""
+    GithubGet ["repos", untagName user, untagName repo] []
 
 -- | Create a new repository.
 --
@@ -181,35 +184,36 @@ editRepoR user repo body =
 -- | The contributors to a repo, given the owner and repo name.
 --
 -- > contributors "thoughtbot" "paperclip"
-contributors :: Name GithubOwner -> Name Repo -> IO (Either Error [Contributor])
+contributors :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector Contributor))
 contributors = contributors' Nothing
 
 -- | The contributors to a repo, given the owner and repo name.
 -- With authentication.
 --
 -- > contributors' (Just (GithubBasicAuth (user, password))) "thoughtbot" "paperclip"
-contributors' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error [Contributor])
+contributors' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector Contributor))
 contributors' auth user repo =
-    executeRequestMaybe auth $ contributorsR user repo False
+    executeRequestMaybe auth $ contributorsR user repo False Nothing
 
 -- | List contributors.
 -- See <https://developer.github.com/v3/repos/#list-contributors>
 contributorsR :: Name GithubOwner
               -> Name Repo
               -> Bool              -- ^ Include anonymous
-              -> GithubRequest k [Contributor]
+              -> Maybe Count
+              -> GithubRequest k (Vector Contributor)
 contributorsR user repo anon =
-    GithubGet ["repos", untagName user, untagName repo, "contributors"] qs
+    GithubPagedGet ["repos", untagName user, untagName repo, "contributors"] qs
   where
-    qs | anon      = "anon=true"
-       | otherwise = ""
+    qs | anon      = [("anon", Just "true")]
+       | otherwise = []
 
 -- | The contributors to a repo, including anonymous contributors (such as
 -- deleted users or git commits with unknown email addresses), given the owner
 -- and repo name.
 --
 -- > contributorsWithAnonymous "thoughtbot" "paperclip"
-contributorsWithAnonymous :: Name GithubOwner -> Name Repo -> IO (Either Error [Contributor])
+contributorsWithAnonymous :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector Contributor))
 contributorsWithAnonymous = contributorsWithAnonymous' Nothing
 
 -- | The contributors to a repo, including anonymous contributors (such as
@@ -218,9 +222,9 @@ contributorsWithAnonymous = contributorsWithAnonymous' Nothing
 -- With authentication.
 --
 -- > contributorsWithAnonymous' (Just (GithubBasicAuth (user, password))) "thoughtbot" "paperclip"
-contributorsWithAnonymous' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error [Contributor])
+contributorsWithAnonymous' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector Contributor))
 contributorsWithAnonymous' auth user repo =
-    executeRequestMaybe auth $ contributorsR user repo True
+    executeRequestMaybe auth $ contributorsR user repo True Nothing
 
 -- | The programming languages used in a repo along with the number of
 -- characters written in that language. Takes the repo owner and name.
@@ -242,47 +246,47 @@ languagesFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/#list-languages>
 languagesForR :: Name GithubOwner -> Name Repo -> GithubRequest k Languages
 languagesForR user repo =
-    GithubGet  ["repos", untagName user, untagName repo, "languages"] ""
+    GithubGet  ["repos", untagName user, untagName repo, "languages"] []
 
 -- | The git tags on a repo, given the repo owner and name.
 --
 -- > tagsFor "thoughtbot" "paperclip"
-tagsFor :: Name GithubOwner -> Name Repo -> IO (Either Error [Tag])
+tagsFor :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector Tag))
 tagsFor = tagsFor' Nothing
 
 -- | The git tags on a repo, given the repo owner and name.
 -- With authentication.
 --
 -- > tagsFor' (Just (GithubBasicAuth (user, password))) "thoughtbot" "paperclip"
-tagsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error [Tag])
+tagsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector Tag))
 tagsFor' auth user repo =
-    executeRequestMaybe auth $ tagsForR user repo
+    executeRequestMaybe auth $ tagsForR user repo Nothing
 
 -- | List tags.
 -- See <https://developer.github.com/v3/repos/#list-tags>
-tagsForR :: Name GithubOwner -> Name Repo -> GithubRequest k [Tag]
+tagsForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector Tag)
 tagsForR user repo =
-    GithubGet  ["repos", untagName user, untagName repo, "tags"] ""
+    GithubPagedGet  ["repos", untagName user, untagName repo, "tags"] []
 
 -- | The git branches on a repo, given the repo owner and name.
 --
 -- > branchesFor "thoughtbot" "paperclip"
-branchesFor :: Name GithubOwner -> Name Repo -> IO (Either Error [Branch])
+branchesFor :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector Branch))
 branchesFor = branchesFor' Nothing
 
 -- | The git branches on a repo, given the repo owner and name.
 -- With authentication.
 --
 -- > branchesFor' (Just (GithubBasicAuth (user, password))) "thoughtbot" "paperclip"
-branchesFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error [Branch])
+branchesFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector Branch))
 branchesFor' auth user repo =
-    executeRequestMaybe auth $ branchesForR user repo
+    executeRequestMaybe auth $ branchesForR user repo Nothing
 
 -- | List branches.
 -- See <https://developer.github.com/v3/repos/#list-branches>
-branchesForR :: Name GithubOwner -> Name Repo -> GithubRequest k [Branch]
+branchesForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector Branch)
 branchesForR user repo =
-    GithubGet  ["repos", untagName user, untagName repo, "branches"] ""
+    GithubPagedGet  ["repos", untagName user, untagName repo, "branches"] []
 
 -- | The contents of a file or directory in a repo, given the repo owner, name, and path to the file
 --
@@ -306,7 +310,7 @@ contentsForR :: Name GithubOwner
 contentsForR user repo path ref =
     GithubGet ["repos", untagName user, untagName repo, "contents", path] qs
   where
-    qs =  maybe "" ("ref=" ++) ref
+    qs =  maybe [] (\r -> [("ref", Just . BS8.pack $ r)]) ref
 
 -- | The contents of a README file in a repo, given the repo owner and name
 --
@@ -324,7 +328,7 @@ readmeFor' auth user repo =
 
 readmeForR :: Name GithubOwner -> Name Repo -> GithubRequest k Content
 readmeForR user repo =
-    GithubGet ["repos", untagName user, untagName repo, "readme"] ""
+    GithubGet ["repos", untagName user, untagName repo, "readme"] []
 
 -- | Delete an existing repository.
 --

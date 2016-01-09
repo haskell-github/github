@@ -30,25 +30,27 @@ import Data.Aeson.Compat (encode)
 import Github.Auth
 import Github.Data
 import Github.Request
+import Data.Vector (Vector)
 
 -- | List teams.  List the teams of an organization.
 -- When authenticated, lists private teams visible to the authenticated user.
 -- When unauthenticated, lists only public teams for an organization.
 --
 -- > teamsOf' (Just $ GithubOAuth "token") "thoughtbot"
-teamsOf' :: Maybe GithubAuth -> Name Organization -> IO (Either Error [Team])
-teamsOf' auth = executeRequestMaybe auth . teamsOfR
+teamsOf' :: Maybe GithubAuth -> Name Organization -> IO (Either Error (Vector Team))
+teamsOf' auth org =
+    executeRequestMaybe auth $ teamsOfR org Nothing
 
 -- | List the public teams of an organization.
 --
 -- > teamsOf "thoughtbot"
-teamsOf :: Name Organization -> IO (Either Error [Team])
+teamsOf :: Name Organization -> IO (Either Error (Vector Team))
 teamsOf = teamsOf' Nothing
 
 -- | List teams.
 -- See <https://developer.github.com/v3/orgs/teams/#list-teams>
-teamsOfR :: Name Organization -> GithubRequest k [Team]
-teamsOfR organization = GithubGet ["orgs", untagName organization, "teams"] ""
+teamsOfR :: Name Organization -> Maybe Count -> GithubRequest k (Vector Team)
+teamsOfR organization = GithubPagedGet ["orgs", untagName organization, "teams"] []
 
 -- | The information for a single team, by team id.
 -- | With authentication
@@ -68,7 +70,7 @@ teamInfoFor = teamInfoFor' Nothing
 -- See <https://developer.github.com/v3/orgs/teams/#get-team>
 teamInfoForR  :: Id Team -> GithubRequest k DetailedTeam
 teamInfoForR tid =
-    GithubGet ["teams", show $ untagId tid] ""
+    GithubGet ["teams", show $ untagId tid] []
 
 -- | Create a team under an organization
 --
@@ -127,7 +129,7 @@ teamMembershipInfoFor' auth tid user =
 -- See <https://developer.github.com/v3/orgs/teams/#get-team-membership
 teamMembershipInfoForR :: Id Team -> Name GithubOwner -> GithubRequest k TeamMembership
 teamMembershipInfoForR tid user =
-    GithubGet ["teams", show $ untagId tid, "memberships", untagName user] ""
+    GithubGet ["teams", show $ untagId tid, "memberships", untagName user] []
 
 -- | Retrieve team mebership information for a user.
 --
@@ -155,7 +157,7 @@ deleteTeamMembershipFor' :: GithubAuth -> Id Team -> Name GithubOwner -> IO (Eit
 deleteTeamMembershipFor' auth tid user =
     executeRequest auth $ deleteTeamMembershipForR tid user
 
--- | Remove team membership
+-- | Remove team membership.
 -- See <https://developer.github.com/v3/orgs/teams/#remove-team-membership>
 deleteTeamMembershipForR :: Id Team -> Name GithubOwner -> GithubRequest 'True ()
 deleteTeamMembershipForR tid user =
@@ -164,10 +166,10 @@ deleteTeamMembershipForR tid user =
 -- | List teams for current authenticated user
 --
 -- > listTeamsCurrent' (GithubOAuth "token")
-listTeamsCurrent' :: GithubAuth -> IO (Either Error [DetailedTeam])
-listTeamsCurrent' auth = executeRequest auth $ listTeamsCurrentR
+listTeamsCurrent' :: GithubAuth -> IO (Either Error (Vector DetailedTeam))
+listTeamsCurrent' auth = executeRequest auth $ listTeamsCurrentR Nothing
 
 -- | List user teams.
 -- See <https://developer.github.com/v3/orgs/teams/#list-user-teams>
-listTeamsCurrentR :: GithubRequest 'True [DetailedTeam]
-listTeamsCurrentR = GithubGet ["user", "teams"] ""
+listTeamsCurrentR :: Maybe Count -> GithubRequest 'True (Vector DetailedTeam)
+listTeamsCurrentR = GithubPagedGet ["user", "teams"] []

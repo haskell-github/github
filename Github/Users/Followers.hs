@@ -8,29 +8,30 @@ module Github.Users.Followers (
     module Github.Data,
     ) where
 
+import Data.Vector    (Vector)
 import Github.Data
 import Github.Request
 
 -- | All the users following the given user.
 --
 -- > usersFollowing "mike-burns"
-usersFollowing :: Name GithubOwner -> IO (Either Error [GithubOwner])
-usersFollowing = executeRequest' . usersFollowingR
+usersFollowing :: Name GithubOwner -> IO (Either Error (Vector GithubOwner))
+usersFollowing user =
+    executeRequest' $ usersFollowingR user Nothing
 
--- | List followers of a user. All the users following the given user.
---
+-- | List followers of a user.
 -- See <https://developer.github.com/v3/users/followers/#list-followers-of-a-user>
-usersFollowingR :: Name GithubOwner -> GithubRequest k [GithubOwner]
-usersFollowingR userName = GithubGet ["users", untagName userName, "followers"] "" -- TODO: use paged get
+usersFollowingR :: Name GithubOwner -> Maybe Count -> GithubRequest k (Vector GithubOwner)
+usersFollowingR userName = GithubPagedGet ["users", untagName userName, "followers"] []
 
 -- | All the users that the given user follows.
 --
 -- > usersFollowedBy "mike-burns"
-usersFollowedBy :: Name GithubOwner -> IO (Either Error [GithubOwner])
-usersFollowedBy = executeRequest' . usersFollowedByR
+usersFollowedBy :: Name GithubOwner -> IO (Either Error (Vector GithubOwner))
+usersFollowedBy user =
+    executeRequest' $ usersFollowedByR user Nothing
 
--- | List users followed by another user. All the users that the given user follows.
---
+-- | List users followed by another user.
 -- See <https://developer.github.com/v3/users/followers/#list-users-followed-by-another-user>
-usersFollowedByR :: Name GithubOwner -> GithubRequest k [GithubOwner]
-usersFollowedByR userName = GithubGet ["users", untagName userName, "following"] "" -- TODO: use paged get
+usersFollowedByR :: Name GithubOwner -> Maybe Count -> GithubRequest k (Vector GithubOwner)
+usersFollowedByR userName = GithubPagedGet ["users", untagName userName, "following"] []

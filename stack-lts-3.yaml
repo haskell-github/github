@@ -1,6 +1,7 @@
 packages:
 - '.'
-extra-deps: []
+extra-deps:
+- http-link-header-1.0.1
 resolver: lts-3.20
 flags:
   github:

@@ -9,6 +9,7 @@ module Github.Gists (
     module Github.Data,
     ) where
 
+import Data.Vector    (Vector)
 import Github.Auth
 import Github.Data
 import Github.Request
@@ -16,20 +17,20 @@ import Github.Request
 -- | The list of all gists created by the user
 --
 -- > gists' (Just ("github-username", "github-password")) "mike-burns"
-gists' :: Maybe GithubAuth -> Name GithubOwner -> IO (Either Error [Gist])
+gists' :: Maybe GithubAuth -> Name GithubOwner -> IO (Either Error (Vector Gist))
 gists' auth user =
-    executeRequestMaybe auth $ gistsR user
+    executeRequestMaybe auth $ gistsR user Nothing
 
 -- | The list of all public gists created by the user.
 --
 -- > gists "mike-burns"
-gists :: Name GithubOwner -> IO (Either Error [Gist])
+gists :: Name GithubOwner -> IO (Either Error (Vector Gist))
 gists = gists' Nothing
 
 -- | List gists.
 -- See <https://developer.github.com/v3/gists/#list-gists>
-gistsR :: Name GithubOwner -> GithubRequest k [Gist]
-gistsR user = GithubGet ["users", untagName user, "gists"] ""
+gistsR :: Name GithubOwner -> Maybe Count -> GithubRequest k (Vector Gist)
+gistsR user = GithubPagedGet ["users", untagName user, "gists"] []
 
 -- | A specific gist, given its id, with authentication credentials
 --
@@ -48,4 +49,4 @@ gist = gist' Nothing
 -- See <https://developer.github.com/v3/gists/#get-a-single-gist>
 gistR :: Name Gist ->GithubRequest k Gist
 gistR gid =
-    GithubGet ["gists", untagName gid] ""
+    GithubGet ["gists", untagName gid] []

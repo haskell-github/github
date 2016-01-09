@@ -16,6 +16,7 @@ module Github.GitData.References (
     ) where
 
 import Data.Aeson.Compat (encode)
+import Data.Vector       (Vector)
 import Github.Auth
 import Github.Data
 import Github.Request
@@ -37,26 +38,26 @@ reference = reference' Nothing
 -- See <https://developer.github.com/v3/git/refs/#get-a-reference>
 referenceR :: Name GithubOwner -> Name Repo -> Name GitReference -> GithubRequest k GitReference
 referenceR user repo ref =
-    GithubGet ["repos", untagName user, untagName repo, "git", "refs", untagName ref] ""
+    GithubGet ["repos", untagName user, untagName repo, "git", "refs", untagName ref] []
 
 -- | The history of references for a repo.
 --
 -- > references "mike-burns" "github"
-references' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error [GitReference])
+references' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector GitReference))
 references' auth user repo =
-    executeRequestMaybe auth $ referencesR user repo
+    executeRequestMaybe auth $ referencesR user repo Nothing
 
 -- | The history of references for a repo.
 --
 -- > references "mike-burns" "github"
-references :: Name GithubOwner -> Name Repo -> IO (Either Error [GitReference])
+references :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector GitReference))
 references = references' Nothing
 
 -- | Get all References.
 -- See <https://developer.github.com/v3/git/refs/#get-all-references>
-referencesR :: Name GithubOwner -> Name Repo -> GithubRequest k [GitReference]
+referencesR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector GitReference)
 referencesR user repo =
-    GithubGet ["repos", untagName user, untagName repo, "git", "refs"] ""
+    GithubPagedGet ["repos", untagName user, untagName repo, "git", "refs"] []
 
 -- | Create a reference.
 createReference :: GithubAuth -> Name GithubOwner -> Name Repo -> NewGitReference -> IO (Either Error GitReference)
@@ -80,4 +81,4 @@ namespacedReferences user repo namespace =
 -- See <https://developer.github.com/v3/git/refs/#get-all-references>
 namespacedReferencesR :: Name GithubOwner -> Name Repo -> String -> GithubRequest k [GitReference]
 namespacedReferencesR user repo namespace =
-    GithubGet ["repos", untagName user, untagName repo, "git", "refs", namespace] ""
+    GithubGet ["repos", untagName user, untagName repo, "git", "refs", namespace] []

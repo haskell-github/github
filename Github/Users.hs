@@ -27,11 +27,10 @@ userInfoFor' auth = executeRequestMaybe auth . userInfoForR
 userInfoFor :: Name DetailedOwner -> IO (Either Error DetailedOwner)
 userInfoFor = executeRequest' . userInfoForR
 
--- | Get a single user. The information for a single user, by login name. The request
---
+-- | Get a single user.
 -- See <https://developer.github.com/v3/users/#get-a-single-user>
 userInfoForR :: Name DetailedOwner -> GithubRequest k DetailedOwner
-userInfoForR userName = GithubGet ["users", untagName userName] ""
+userInfoForR userName = GithubGet ["users", untagName userName] []
 
 -- | Retrieve information about the user associated with the supplied authentication.
 --
@@ -42,8 +41,7 @@ userInfoCurrent' :: Maybe GithubAuth -> IO (Either Error DetailedOwner)
 userInfoCurrent' auth =
     executeRequestMaybe auth . unsafeDropAuthRequirements $ userInfoCurrentR
 
--- | Get the authenticated user. Retrieve information about the user associated with the supplied authentication.
---
+-- | Get the authenticated user.
 -- See <https://developer.github.com/v3/users/#get-the-authenticated-user>
 userInfoCurrentR :: GithubRequest 'True DetailedOwner
-userInfoCurrentR = GithubGet ["user"] ""
+userInfoCurrentR = GithubGet ["user"] []

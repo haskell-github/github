@@ -121,6 +121,7 @@ Library
                    Github.Data.Name,
                    Github.Data.PullRequests,
                    Github.Data.Repos,
+                   Github.Data.Request,
                    Github.Data.Search,
                    Github.Data.Teams,
                    Github.Data.Webhooks,
@@ -152,31 +153,35 @@ Library
                    Github.Search
                    Github.Request
 
-                   -- Private
-                   Github.Private
-
   -- Packages needed in order to build this package.
   Build-depends: base >= 4.0 && < 5.0,
-                 base-compat,
-                 time >=1.4 && <1.6,
                  aeson >= 0.6.1.0,
                  attoparsec >= 0.10.3.0,
+                 base-compat,
+                 base16-bytestring >= 0.1.1.6,
+                 byteable >= 0.1.0,
                  bytestring,
                  case-insensitive >= 0.4.0.4,
                  containers,
-                 deepseq,
-                 hashable,
-                 text,
-                 old-locale,
-                 http-conduit >= 1.8,
-                 http-client,
-                 http-types,
-                 data-default,
-                 vector,
-                 unordered-containers >= 0.2 && < 0.3,
                  cryptohash >= 0.11,
-                 byteable >= 0.1.0,
-                 base16-bytestring >= 0.1.1.6
+                 data-default,
+                 deepseq,
+                 exceptions,
+                 hashable,
+                 http-client,
+                 http-client-tls,
+                 http-conduit >= 1.8,
+                 http-link-header >=1.0.1 && <1.1,
+                 http-types,
+                 mtl,
+                 network-uri,
+                 old-locale,
+                 text,
+                 time >=1.4 && <1.6,
+                 transformers,
+                 transformers-compat,
+                 unordered-containers >= 0.2 && < 0.3,
+                 vector
 
   if flag(aeson-compat)
     Build-depends: aeson-compat >= 0.3.0.0 && <0.4
@@ -188,14 +193,16 @@ test-suite github-test
   type: exitcode-stdio-1.0
   hs-source-dirs: spec
   other-modules:
+    Github.CommitsSpec
+    Github.OrganizationsSpec
     Github.SearchSpec
     Github.UsersSpec
-    Github.OrganizationsSpec
   main-is: Spec.hs
   ghc-options: -Wall
   build-depends: base >= 4.0 && < 5.0,
                  base-compat,
                  github,
+                 vector,
                  file-embed,
                  hspec
   if flag(aeson-compat)

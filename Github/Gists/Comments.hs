@@ -8,21 +8,22 @@ module Github.Gists.Comments (
     module Github.Data,
     ) where
 
+import Data.Vector    (Vector)
 import Github.Data
 import Github.Request
 
 -- | All the comments on a Gist, given the Gist ID.
 --
 -- > commentsOn "1174060"
-commentsOn :: Name Gist -> IO (Either Error [GistComment])
+commentsOn :: Name Gist -> IO (Either Error (Vector GistComment))
 commentsOn gid =
-    executeRequest' $ commentsOnR gid
+    executeRequest' $ commentsOnR gid Nothing
 
 -- | List comments on a gist.
 -- See <https://developer.github.com/v3/gists/comments/#list-comments-on-a-gist>
-commentsOnR :: Name Gist -> GithubRequest k [GistComment]
+commentsOnR :: Name Gist -> Maybe Count -> GithubRequest k (Vector GistComment)
 commentsOnR gid =
-    GithubGet ["gists", untagName gid, "comments"] ""
+    GithubPagedGet ["gists", untagName gid, "comments"] []
 
 -- | A specific comment, by the comment ID.
 --
@@ -35,4 +36,4 @@ comment cid =
 -- See <https://developer.github.com/v3/gists/comments/#get-a-single-comment>
 gistCommentR :: Id GistComment -> GithubRequest k GistComment
 gistCommentR cid =
-    GithubGet ["gists", "comments", show $ untagId cid] ""
+    GithubGet ["gists", "comments", show $ untagId cid] []

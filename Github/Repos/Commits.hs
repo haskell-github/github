@@ -1,4 +1,5 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE CPP               #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 -- | The repo commits API as described on
 -- <http://developer.github.com/v3/repos/commits/>.
@@ -19,11 +20,15 @@ module Github.Repos.Commits (
     module Github.Data,
     ) where
 
+import Data.Monoid    ((<>))
+import Data.Vector    (Vector)
 import Github.Auth
 import Github.Data
 import Github.Request
 
-import qualified Data.Text as T
+import qualified Data.ByteString       as BS
+import qualified Data.ByteString.Char8 as BS8
+import qualified Data.Text.Encoding    as TE
 
 import Data.Time.Format (formatTime)
 #if MIN_VERSION_time (1,5,0)
@@ -32,7 +37,6 @@ import Data.Time.Format (iso8601DateFormat)
 #else
 import System.Locale (defaultTimeLocale)
 #endif
-import Data.List (intercalate)
 
 githubFormat :: GithubDate -> String
 #if MIN_VERSION_time (1,5,0)
@@ -41,35 +45,35 @@ githubFormat = formatTime defaultTimeLocale (iso8601DateFormat $ Just "%H:%M:%S"
 githubFormat = formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%S" . fromGithubDate
 #endif
 
-renderCommitQueryOption :: CommitQueryOption -> String
-renderCommitQueryOption (CommitQuerySha sha) = "sha=" ++ T.unpack sha
-renderCommitQueryOption (CommitQueryPath path) = "path=" ++ T.unpack path
-renderCommitQueryOption (CommitQueryAuthor author) = "author=" ++ T.unpack author
-renderCommitQueryOption (CommitQuerySince date) = "since=" ++ ds ++ "Z"
+renderCommitQueryOption :: CommitQueryOption -> (BS.ByteString, Maybe BS.ByteString)
+renderCommitQueryOption (CommitQuerySha sha)      = ("sha", Just $ TE.encodeUtf8 sha)
+renderCommitQueryOption (CommitQueryPath path)     = ("path", Just $ TE.encodeUtf8 path)
+renderCommitQueryOption (CommitQueryAuthor author) = ("author", Just $ TE.encodeUtf8 author)
+renderCommitQueryOption (CommitQuerySince date)    = ("since", Just $ BS8.pack ds <> "Z")
     where ds = show $ githubFormat date
-renderCommitQueryOption (CommitQueryUntil date) = "until=" ++ ds ++ "Z"
+renderCommitQueryOption (CommitQueryUntil date)    = ("until", Just $ BS8.pack ds <> "Z")
     where ds = show $ githubFormat date
 
 -- | The commit history for a repo.
 --
 -- > commitsFor "mike-burns" "github"
-commitsFor :: Name GithubOwner -> Name Repo -> IO (Either Error [Commit])
+commitsFor :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector Commit))
 commitsFor = commitsFor' Nothing
 
 -- | The commit history for a repo.
 -- With authentication.
 --
 -- > commitsFor' (Just (GithubBasicAuth (user, password))) "mike-burns" "github"
-commitsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error [Commit])
+commitsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector Commit))
 commitsFor' auth user repo =
     commitsWithOptionsFor' auth user repo []
 
 -- | List commits on a repository.
 -- See <https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository>
-commitsForR :: Name GithubOwner -> Name Repo -> GithubRequest k [Commit]
-commitsForR user repo = commitsWithOptionsForR user repo []
+commitsForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector Commit)
+commitsForR user repo limit = commitsWithOptionsForR user repo limit []
 
-commitsWithOptionsFor :: Name GithubOwner -> Name Repo -> [CommitQueryOption] -> IO (Either Error [Commit])
+commitsWithOptionsFor :: Name GithubOwner -> Name Repo -> [CommitQueryOption] -> IO (Either Error (Vector Commit))
 commitsWithOptionsFor = commitsWithOptionsFor' Nothing
 
 -- | The commit history for a repo, with commits filtered to satisfy a list of
@@ -77,17 +81,17 @@ commitsWithOptionsFor = commitsWithOptionsFor' Nothing
 -- With authentication.
 --
 -- > commitsWithOptionsFor' (Just (GithubBasicAuth (user, password))) "mike-burns" "github" [CommitQueryAuthor "djeik"]
-commitsWithOptionsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> [CommitQueryOption] -> IO (Either Error [Commit])
+commitsWithOptionsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> [CommitQueryOption] -> IO (Either Error (Vector Commit))
 commitsWithOptionsFor' auth user repo opts =
-    executeRequestMaybe auth $ commitsWithOptionsForR user repo opts
+    executeRequestMaybe auth $ commitsWithOptionsForR user repo Nothing opts
 
 -- | List commits on a repository.
 -- See <https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository>
-commitsWithOptionsForR :: Name GithubOwner -> Name Repo -> [CommitQueryOption] -> GithubRequest k [Commit]
-commitsWithOptionsForR user repo opts =
-    GithubGet ["repos", untagName user, untagName repo, "commits"] qs
+commitsWithOptionsForR :: Name GithubOwner -> Name Repo -> Maybe Count -> [CommitQueryOption] -> GithubRequest k (Vector Commit)
+commitsWithOptionsForR user repo limit opts =
+    GithubPagedGet ["repos", untagName user, untagName repo, "commits"] qs limit
   where
-    qs = intercalate "&" $ map renderCommitQueryOption opts
+    qs = map renderCommitQueryOption opts
 
 
 -- | Details on a specific SHA1 for a repo.
@@ -104,11 +108,11 @@ commit' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Name Commit -> I
 commit' auth user repo sha =
     executeRequestMaybe auth $ commitR user repo sha
 
--- | Get a single commit
+-- | Get a single commit.
 -- See <https://developer.github.com/v3/repos/commits/#get-a-single-commit>
 commitR :: Name GithubOwner -> Name Repo -> Name Commit -> GithubRequest k Commit
 commitR user repo sha =
-    GithubGet ["repos", untagName user, untagName repo, "commits", untagName sha] ""
+    GithubGet ["repos", untagName user, untagName repo, "commits", untagName sha] []
 
 -- | The diff between two treeishes on a repo.
 --
@@ -123,8 +127,8 @@ diff' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Name Commit -> Nam
 diff' auth user repo base headref =
     executeRequestMaybe auth $ diffR user repo base headref
 
--- | Compare two commits
+-- | Compare two commits.
 -- See <https://developer.github.com/v3/repos/commits/#compare-two-commits>
 diffR :: Name GithubOwner -> Name Repo -> Name Commit -> Name Commit -> GithubRequest k Diff
 diffR user repo base headref =
-    GithubGet ["repos", untagName user, untagName repo, "compare", untagName base ++ "..." ++ untagName headref] ""
+    GithubGet ["repos", untagName user, untagName repo, "compare", untagName base ++ "..." ++ untagName headref] []
