@@ -10,6 +10,7 @@ import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
 import Data.Time       (UTCTime)
+import Data.Vector     (Vector)
 import GHC.Generics    (Generic)
 
 data Issue = Issue {
@@ -18,7 +19,7 @@ data Issue = Issue {
   ,issueEventsUrl   :: Text
   ,issueHtmlUrl     :: Maybe Text
   ,issueClosedBy    :: Maybe GithubOwner
-  ,issueLabels      :: [IssueLabel]
+  ,issueLabels      :: (Vector IssueLabel)
   ,issueNumber      :: Int
   ,issueAssignee    :: Maybe GithubOwner
   ,issueUser        :: GithubOwner
@@ -40,7 +41,7 @@ data NewIssue = NewIssue {
 , newIssueBody      :: Maybe Text
 , newIssueAssignee  :: Maybe Text
 , newIssueMilestone :: Maybe Int
-, newIssueLabels    :: Maybe [Text]
+, newIssueLabels    :: Maybe (Vector Text)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData NewIssue
@@ -51,7 +52,7 @@ data EditIssue = EditIssue {
 , editIssueAssignee  :: Maybe Text
 , editIssueState     :: Maybe Text
 , editIssueMilestone :: Maybe Int
-, editIssueLabels    :: Maybe [Text]
+, editIssueLabels    :: Maybe (Vector Text)
 } deriving  (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData EditIssue

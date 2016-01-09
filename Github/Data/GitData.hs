@@ -7,16 +7,18 @@ import Github.Data.Definitions
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
+import Data.Time       (UTCTime)
+import Data.Vector     (Vector)
 import GHC.Generics    (Generic)
 
 data Commit = Commit {
    commitSha       :: !Text
-  ,commitParents   :: ![Tree]
+  ,commitParents   :: !(Vector Tree)
   ,commitUrl       :: !Text
   ,commitGitCommit :: !GitCommit
   ,commitCommitter :: !(Maybe GithubOwner)
   ,commitAuthor    :: !(Maybe GithubOwner)
-  ,commitFiles     :: ![File]
+  ,commitFiles     :: !(Vector File)
   ,commitStats     :: !(Maybe Stats)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -25,7 +27,7 @@ instance NFData Commit
 data Tree = Tree {
    treeSha      :: !Text
   ,treeUrl      :: !Text
-  ,treeGitTrees :: ![GitTree]
+  ,treeGitTrees :: !(Vector GitTree)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Tree
@@ -49,7 +51,7 @@ data GitCommit = GitCommit {
   ,gitCommitAuthor    :: !GitUser
   ,gitCommitTree      :: !Tree
   ,gitCommitSha       :: !(Maybe Text)
-  ,gitCommitParents   :: ![Tree]
+  ,gitCommitParents   :: !(Vector Tree)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData GitCommit
@@ -93,10 +95,10 @@ data Diff = Diff {
   ,diffPatchUrl     :: !Text
   ,diffUrl          :: !Text
   ,diffBaseCommit   :: !Commit
-  ,diffCommits      :: ![Commit]
+  ,diffCommits      :: !(Vector Commit)
   ,diffTotalCommits :: !Int
   ,diffHtmlUrl      :: !Text
-  ,diffFiles        :: ![File]
+  ,diffFiles        :: !(Vector File)
   ,diffAheadBy      :: !Int
   ,diffDiffUrl      :: !Text
   ,diffPermalinkUrl :: !Text
@@ -130,7 +132,7 @@ instance NFData GitObject
 data GitUser = GitUser {
    gitUserName  :: !Text
   ,gitUserEmail :: !Text
-  ,gitUserDate  :: !GithubDate
+  ,gitUserDate  :: !UTCTime
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData GitUser
