@@ -40,25 +40,26 @@ import Data.Foldable     (toList)
 import Github.Auth
 import Github.Data
 import Github.Request
+import Data.Vector (Vector)
 
 -- | All the labels available to use on any issue in the repo.
 --
 -- > labelsOnRepo "thoughtbot" "paperclip"
-labelsOnRepo :: Name GithubOwner -> Name Repo -> IO (Either Error [IssueLabel])
+labelsOnRepo :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector IssueLabel))
 labelsOnRepo = labelsOnRepo' Nothing
 
 -- | All the labels available to use on any issue in the repo using authentication.
 --
 -- > labelsOnRepo' (Just (GithubUser (user password))) "thoughtbot" "paperclip"
-labelsOnRepo' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error [IssueLabel])
+labelsOnRepo' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector IssueLabel))
 labelsOnRepo' auth user repo =
-    executeRequestMaybe auth $ labelsOnRepoR user repo
+    executeRequestMaybe auth $ labelsOnRepoR user repo Nothing
 
 -- | List all labels for this repository.
 -- See <https://developer.github.com/v3/issues/labels/#list-all-labels-for-this-repository>
-labelsOnRepoR :: Name GithubOwner -> Name Repo -> GithubRequest k [IssueLabel]
+labelsOnRepoR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector IssueLabel)
 labelsOnRepoR user repo =
-    GithubGet ["repos", untagName user, untagName repo, "labels"] []
+    GithubPagedGet ["repos", untagName user, untagName repo, "labels"] []
 
 -- | A label by name.
 --
@@ -138,21 +139,21 @@ deleteLabelR user repo lbl =
 -- | The labels on an issue in a repo.
 --
 -- > labelsOnIssue "thoughtbot" "paperclip" 585
-labelsOnIssue :: Name GithubOwner -> Name Repo -> Id Issue -> IO (Either Error [IssueLabel])
+labelsOnIssue :: Name GithubOwner -> Name Repo -> Id Issue -> IO (Either Error (Vector IssueLabel))
 labelsOnIssue = labelsOnIssue' Nothing
 
 -- | The labels on an issue in a repo using authentication.
 --
 -- > labelsOnIssue' (Just (GithubUser (user password))) "thoughtbot" "paperclip" (Id 585)
-labelsOnIssue' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Id Issue -> IO (Either Error [IssueLabel])
+labelsOnIssue' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Id Issue -> IO (Either Error (Vector IssueLabel))
 labelsOnIssue' auth user repo iid =
-    executeRequestMaybe auth $ labelsOnIssueR user repo iid
+    executeRequestMaybe auth $ labelsOnIssueR user repo iid Nothing
 
 -- | List labels on an issue.
 -- See <https://developer.github.com/v3/issues/labels/#list-labels-on-an-issue>
-labelsOnIssueR :: Name GithubOwner -> Name Repo -> Id Issue -> GithubRequest k [IssueLabel]
+labelsOnIssueR :: Name GithubOwner -> Name Repo -> Id Issue -> Maybe Count -> GithubRequest k (Vector IssueLabel)
 labelsOnIssueR user repo iid =
-    GithubGet ["repos", untagName user, untagName repo, "issues", show $ untagId iid, "labels"] []
+    GithubPagedGet ["repos", untagName user, untagName repo, "issues", show $ untagId iid, "labels"] []
 
 -- | Add labels to an issue.
 --
@@ -163,7 +164,7 @@ addLabelsToIssue :: Foldable f
                  -> Name Repo
                  -> Id Issue
                  -> f (Name IssueLabel)
-                 -> IO (Either Error [IssueLabel])
+                 -> IO (Either Error (Vector IssueLabel))
 addLabelsToIssue auth user repo iid lbls =
     executeRequest auth $ addLabelsToIssueR user repo iid lbls
 
@@ -174,7 +175,7 @@ addLabelsToIssueR :: Foldable f
                   -> Name Repo
                   -> Id Issue
                   -> f (Name IssueLabel)
-                  -> GithubRequest 'True [IssueLabel]
+                  -> GithubRequest 'True (Vector IssueLabel)
 addLabelsToIssueR user repo iid lbls =
     GithubPost Post paths (encode $ toList lbls)
   where
@@ -202,7 +203,7 @@ replaceAllLabelsForIssue :: Foldable f
                          -> Name Repo
                          -> Id Issue
                          -> f (Name IssueLabel)
-                         -> IO (Either Error [IssueLabel])
+                         -> IO (Either Error (Vector IssueLabel))
 replaceAllLabelsForIssue auth user repo iid lbls =
     executeRequest auth $ replaceAllLabelsForIssueR user repo iid lbls
 
@@ -215,7 +216,7 @@ replaceAllLabelsForIssueR :: Foldable f
                           -> Name Repo
                           -> Id Issue
                           -> f (Name IssueLabel)
-                          -> GithubRequest 'True [IssueLabel]
+                          -> GithubRequest 'True (Vector IssueLabel)
 replaceAllLabelsForIssueR user repo iid lbls =
     GithubPost Put paths (encode $ toList lbls)
   where
@@ -237,18 +238,18 @@ removeAllLabelsFromIssueR user repo iid =
 -- | All the labels on a repo's milestone given the milestone ID.
 --
 -- > labelsOnMilestone "thoughtbot" "paperclip" (Id 2)
-labelsOnMilestone :: Name GithubOwner -> Name Repo -> Id Milestone -> IO (Either Error [IssueLabel])
+labelsOnMilestone :: Name GithubOwner -> Name Repo -> Id Milestone -> IO (Either Error (Vector IssueLabel))
 labelsOnMilestone = labelsOnMilestone' Nothing
 
 -- | All the labels on a repo's milestone given the milestone ID using authentication.
 --
 -- > labelsOnMilestone' (Just (GithubUser (user password))) "thoughtbot" "paperclip" (Id 2)
-labelsOnMilestone' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Id Milestone -> IO (Either Error [IssueLabel])
+labelsOnMilestone' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Id Milestone -> IO (Either Error (Vector IssueLabel))
 labelsOnMilestone' auth user repo mid =
-    executeRequestMaybe auth $ labelsOnMilestoneR user repo mid
+    executeRequestMaybe auth $ labelsOnMilestoneR user repo mid Nothing
 
 -- | Get labels for every issue in a milestone.
 -- See <https://developer.github.com/v3/issues/labels/#get-labels-for-every-issue-in-a-milestone>
-labelsOnMilestoneR :: Name GithubOwner -> Name Repo -> Id Milestone -> GithubRequest k [IssueLabel]
+labelsOnMilestoneR :: Name GithubOwner -> Name Repo -> Id Milestone -> Maybe Count -> GithubRequest k (Vector IssueLabel)
 labelsOnMilestoneR user repo mid =
-    GithubGet ["repos", untagName user, untagName repo, "milestones", show $ untagId mid, "labels"] []
+    GithubPagedGet ["repos", untagName user, untagName repo, "milestones", show $ untagId mid, "labels"] []

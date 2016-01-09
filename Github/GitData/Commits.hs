@@ -16,7 +16,6 @@ commit :: Name GithubOwner -> Name Repo -> Name GitCommit -> IO (Either Error Gi
 commit user repo sha =
     executeRequest' $ gitCommitR user repo sha
 
-
 -- | Get a commit.
 -- See <https://developer.github.com/v3/git/commits/#get-a-commit>
 gitCommitR :: Name GithubOwner -> Name Repo -> Name GitCommit -> GithubRequest k GitCommit

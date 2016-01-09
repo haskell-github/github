@@ -30,25 +30,27 @@ import Data.Aeson.Compat (encode)
 import Github.Auth
 import Github.Data
 import Github.Request
+import Data.Vector (Vector)
 
 -- | List teams.  List the teams of an organization.
 -- When authenticated, lists private teams visible to the authenticated user.
 -- When unauthenticated, lists only public teams for an organization.
 --
 -- > teamsOf' (Just $ GithubOAuth "token") "thoughtbot"
-teamsOf' :: Maybe GithubAuth -> Name Organization -> IO (Either Error [Team])
-teamsOf' auth = executeRequestMaybe auth . teamsOfR
+teamsOf' :: Maybe GithubAuth -> Name Organization -> IO (Either Error (Vector Team))
+teamsOf' auth org =
+    executeRequestMaybe auth $ teamsOfR org Nothing
 
 -- | List the public teams of an organization.
 --
 -- > teamsOf "thoughtbot"
-teamsOf :: Name Organization -> IO (Either Error [Team])
+teamsOf :: Name Organization -> IO (Either Error (Vector Team))
 teamsOf = teamsOf' Nothing
 
 -- | List teams.
 -- See <https://developer.github.com/v3/orgs/teams/#list-teams>
-teamsOfR :: Name Organization -> GithubRequest k [Team]
-teamsOfR organization = GithubGet ["orgs", untagName organization, "teams"] []
+teamsOfR :: Name Organization -> Maybe Count -> GithubRequest k (Vector Team)
+teamsOfR organization = GithubPagedGet ["orgs", untagName organization, "teams"] []
 
 -- | The information for a single team, by team id.
 -- | With authentication
@@ -164,10 +166,10 @@ deleteTeamMembershipForR tid user =
 -- | List teams for current authenticated user
 --
 -- > listTeamsCurrent' (GithubOAuth "token")
-listTeamsCurrent' :: GithubAuth -> IO (Either Error [DetailedTeam])
-listTeamsCurrent' auth = executeRequest auth $ listTeamsCurrentR
+listTeamsCurrent' :: GithubAuth -> IO (Either Error (Vector DetailedTeam))
+listTeamsCurrent' auth = executeRequest auth $ listTeamsCurrentR Nothing
 
 -- | List user teams.
 -- See <https://developer.github.com/v3/orgs/teams/#list-user-teams>
-listTeamsCurrentR :: GithubRequest 'True [DetailedTeam]
-listTeamsCurrentR = GithubGet ["user", "teams"] []
+listTeamsCurrentR :: Maybe Count -> GithubRequest 'True (Vector DetailedTeam)
+listTeamsCurrentR = GithubPagedGet ["user", "teams"] []

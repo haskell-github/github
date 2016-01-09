@@ -34,17 +34,18 @@ import Github.Data
 import Github.Request
 
 import Data.Aeson.Compat  (encode)
+import Data.Vector        (Vector)
 import Network.HTTP.Types (Status)
 
-webhooksFor' :: GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error [RepoWebhook])
+webhooksFor' :: GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector RepoWebhook))
 webhooksFor' auth user repo =
-    executeRequest auth $ webhooksForR user repo
+    executeRequest auth $ webhooksForR user repo Nothing
 
 -- | List hooks.
 -- See <https://developer.github.com/v3/repos/hooks/#list-hooks>
-webhooksForR :: Name GithubOwner -> Name Repo -> GithubRequest k [RepoWebhook]
+webhooksForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector RepoWebhook)
 webhooksForR user repo =
-    GithubGet ["repos", untagName user, untagName repo, "hooks"] []
+    GithubPagedGet ["repos", untagName user, untagName repo, "hooks"] []
 
 webhookFor' :: GithubAuth -> Name GithubOwner -> Name Repo -> Id RepoWebhook -> IO (Either Error RepoWebhook)
 webhookFor' auth user repo hookId =

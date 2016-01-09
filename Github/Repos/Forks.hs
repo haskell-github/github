@@ -7,6 +7,7 @@ module Github.Repos.Forks (
     module Github.Data,
     ) where
 
+import Data.Vector    (Vector)
 import Github.Auth
 import Github.Data
 import Github.Request
@@ -14,19 +15,19 @@ import Github.Request
 -- | All the repos that are forked off the given repo.
 --
 -- > forksFor "thoughtbot" "paperclip"
-forksFor :: Name GithubOwner -> Name Repo -> IO (Either Error [Repo])
+forksFor :: Name GithubOwner -> Name Repo -> IO (Either Error  (Vector Repo))
 forksFor = forksFor' Nothing
 
 -- | All the repos that are forked off the given repo.
 -- | With authentication
 --
 -- > forksFor' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
-forksFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error [Repo])
+forksFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error  (Vector Repo))
 forksFor' auth user repo =
-    executeRequestMaybe auth $ forksForR user repo
+    executeRequestMaybe auth $ forksForR user repo Nothing
 
 -- | List forks.
 -- See <https://developer.github.com/v3/repos/forks/#list-forks>
-forksForR :: Name GithubOwner -> Name Repo -> GithubRequest k [Repo]
+forksForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector Repo)
 forksForR user repo =
-    GithubGet ["repos", untagName user, untagName repo, "forks"] []
+    GithubPagedGet ["repos", untagName user, untagName repo, "forks"] []

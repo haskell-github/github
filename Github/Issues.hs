@@ -26,6 +26,7 @@ import Github.Request
 import Data.Aeson.Compat (encode)
 import Data.List         (intercalate)
 import Data.Text         (Text)
+import Data.Vector       (Vector)
 #if MIN_VERSION_time(1,5,0)
 import Data.Time (defaultTimeLocale)
 #else
@@ -61,22 +62,22 @@ issueR user reqRepoName reqIssueNumber =
 -- restrictions as described in the @IssueLimitation@ data type.
 --
 -- > issuesForRepo' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
-issuesForRepo' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> [IssueLimitation] -> IO (Either Error [Issue])
+issuesForRepo' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> [IssueLimitation] -> IO (Either Error (Vector Issue))
 issuesForRepo' auth user reqRepoName issueLimitations =
-    executeRequestMaybe auth $ issuesForRepoR user reqRepoName issueLimitations
+    executeRequestMaybe auth $ issuesForRepoR user reqRepoName issueLimitations Nothing
 
 -- | All issues for a repo (given the repo owner and name), with optional
 -- restrictions as described in the @IssueLimitation@ data type.
 --
 -- > issuesForRepo "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
-issuesForRepo :: Name GithubOwner -> Name Repo -> [IssueLimitation] -> IO (Either Error [Issue])
+issuesForRepo :: Name GithubOwner -> Name Repo -> [IssueLimitation] -> IO (Either Error (Vector Issue))
 issuesForRepo = issuesForRepo' Nothing
 
 -- | List issues for a repository.
 -- See <https://developer.github.com/v3/issues/#list-issues-for-a-repository>
-issuesForRepoR :: Name GithubOwner -> Name Repo -> [IssueLimitation] -> GithubRequest k [Issue]
+issuesForRepoR :: Name GithubOwner -> Name Repo -> [IssueLimitation] -> Maybe Count -> GithubRequest k (Vector Issue)
 issuesForRepoR user reqRepoName issueLimitations =
-    GithubGet ["repos", untagName user, untagName reqRepoName, "issues"] qs
+    GithubPagedGet ["repos", untagName user, untagName reqRepoName, "issues"] qs
   where
     qs = map convert issueLimitations
 

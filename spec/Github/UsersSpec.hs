@@ -44,10 +44,10 @@ spec = do
 
   describe "usersFollowing" $ do
     it "works" $ withAuth $ \auth -> do
-      us <- executeRequest auth $ usersFollowingR "phadej"
+      us <- executeRequest auth $ usersFollowingR "phadej" (Just 10)
       us `shouldSatisfy` isRight
 
   describe "usersFollowedBy" $ do
     it "works" $ withAuth $ \auth -> do
-      us <- executeRequest auth $ usersFollowedByR "phadej"
+      us <- executeRequest auth $ usersFollowedByR "phadej" (Just 10)
       us `shouldSatisfy` isRight
