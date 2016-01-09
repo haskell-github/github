@@ -24,23 +24,29 @@ matrix:
     - env: BUILD=cabal CABALVER=1.18 GHCVER=7.8.4 STACKAGESNAPSHOT=lts-2.22
       compiler: ": #GHC 7.8.4 lts-2.22"
       addons: {apt: {packages: [cabal-install-1.18,ghc-7.8.4], sources: [hvr-ghc]}}
-    - env: BUILD=cabal CABALVER=1.22 GHCVER=7.10.2
-      compiler: ": #GHC 7.10.2"
+    - env: BUILD=cabal CABALVER=1.22 GHCVER=7.10.2 STACKAGESNAPSHOT=lts-3.21
+      compiler: ": #GHC 7.10.2 lts-3.21"
       addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.2], sources: [hvr-ghc]}}
-    - env: BUILD=cabal CABALVER=1.22 GHCVER=7.10.2 STACKAGESNAPSHOT=lts-3
-      compiler: ": #GHC 7.10.2 lts-3"
-      addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.2], sources: [hvr-ghc]}}
-    - env: BUILD=stack STACK_YAML=stack-lts-2.yaml
+    - env: BUILD=cabal CABALVER=1.22 GHCVER=7.10.3
+      compiler: ": #GHC 7.10.3"
+      addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3], sources: [hvr-ghc]}}
+    - env: BUILD=cabal CABALVER=1.22 GHCVER=7.10.3 STACKAGESNAPSHOT=lts-4.0
+      compiler: ": #GHC 7.10.3 lts-4.0"
+      addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3], sources: [hvr-ghc]}}
+    - env: BUILD=stack STACK_YAML=stack-lts-2.yaml GHCVER=7.8.4
       compiler: ": #STACK LTS2"
       addons: {apt: {packages: [ghc-7.8.4], sources: [hvr-ghc]}}
-    - env: BUILD=stack STACK_YAML=stack-lts-3.yaml
+    - env: BUILD=stack STACK_YAML=stack-lts-3.yaml GHCVER=7.10.2
       compiler: ": #STACK LTS3"
       addons: {apt: {packages: [ghc-7.10.2], sources: [hvr-ghc]}}
-    - env: BUILD=stack STACK_YAML=stack-nightly.yaml
+    - env: BUILD=stack STACK_YAML=stack-lts-4.yaml  GHCVER=7.10.3
+      compiler: ": #STACK LTS4"
+      addons: {apt: {packages: [ghc-7.10.3], sources: [hvr-ghc]}}
+    - env: BUILD=stack STACK_YAML=stack-nightly.yaml GHCVER=7.10.3
       compiler: ": #STACK nightly"
       addons: {apt: {packages: [ghc-7.10.3], sources: [hvr-ghc]}}
-    - env: BUILD=stack STACK_YAML=stack-lts-3.yaml
-      compiler: ": #stack LTS3 OSX"
+    - env: BUILD=stack STACK_YAML=stack-lts-4.yaml
+      compiler: ": #stack LTS4 OSX"
       os: osx
 
 before_install:

@@ -16,7 +16,7 @@ case $BUILD in
     if [ -f $HOME/.cabal/packages/hackage.haskell.org/00-index.tar.gz ]; then
       zcat $HOME/.cabal/packages/hackage.haskell.org/00-index.tar.gz > $HOME/.cabal/packages/hackage.haskell.org/00-index.tar
     fi
-    travis_retry cabal update -v
+    cabal update -v
     sed -i 's/^jobs:/-- jobs:/' ${HOME}/.cabal/config
     cabal install --only-dependencies --enable-tests --enable-benchmarks --dry -v > installplan.txt
     sed -i -e '1,/^Resolving /d' installplan.txt; cat installplan.txt

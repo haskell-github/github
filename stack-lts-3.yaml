@@ -2,7 +2,7 @@ packages:
 - '.'
 extra-deps:
 - http-link-header-1.0.1
-resolver: lts-3.20
+resolver: lts-3.21
 flags:
   github:
      aeson-compat: false
