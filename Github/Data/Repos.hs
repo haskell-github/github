@@ -9,6 +9,7 @@ import Github.Data.Name        (Name)
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
+import Data.Vector     (Vector)
 import GHC.Generics    (Generic)
 
 data Repo = Repo {
@@ -87,7 +88,7 @@ data RepoPublicity =
  deriving (Show, Eq, Ord, Typeable, Data, Generic)
 
 -- | This is only used for the FromJSON instance.
-data Languages = Languages { getLanguages :: [Language] }
+data Languages = Languages { getLanguages :: Vector Language }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Languages

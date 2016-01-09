@@ -9,6 +9,7 @@ import Github.Data.Name        (Name)
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
+import Data.Vector     (Vector)
 import GHC.Generics    (Generic)
 
 data Gist = Gist {
@@ -22,7 +23,7 @@ data Gist = Gist {
   ,gistUpdatedAt   :: !GithubDate
   ,gistHtmlUrl     :: !Text
   ,gistId          :: !(Name Gist)
-  ,gistFiles       :: ![GistFile]
+  ,gistFiles       :: !(Vector GistFile)
   ,gistGitPullUrl  :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 

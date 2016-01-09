@@ -31,10 +31,9 @@ module Github.Data (
     untagId,
     ) where
 
-#if !MIN_VERSION_base(4,8,0)
-import Control.Applicative
-#endif
-import           Control.Monad
+import Prelude ()
+import Prelude.Compat
+
 import           Data.Aeson.Compat
 import           Data.Aeson.Types  (Parser)
 import           Data.Hashable     (Hashable)
@@ -675,7 +674,7 @@ instance FromJSON Contributor where
 
 instance FromJSON Languages where
   parseJSON (Object o) =
-    Languages <$>
+    Languages . V.fromList <$>
       mapM (\name -> Language name <$> o .: name)
            (Map.keys o)
   parseJSON _ = fail "Could not build Languages"
@@ -903,7 +902,7 @@ instance ToJSON EditRepoWebhook where
 
 instance FromJSON Content where
   parseJSON o@(Object _) = ContentFile <$> parseJSON o
-  parseJSON (Array os) = ContentDirectory <$> (mapM parseJSON $ V.toList os)
+  parseJSON (Array os) = ContentDirectory <$> (V.mapM parseJSON os)
   parseJSON _ = fail "Could not build a Content"
 
 instance FromJSON ContentFileData where
@@ -935,11 +934,11 @@ instance FromJSON ContentInfo where
                 <*> o .: "html_url"
   parseJSON _ = fail "Could not build a ContentInfo"
 
--- | A slightly more generic version of Aeson's @(.:?)@, using `mzero' instead
--- of `Nothing'.
-(.:<) :: (FromJSON a) => Object -> T.Text -> Parser [a]
+-- | A slightly less generic version of Aeson's '.:?', using `V.empty' instead
+-- of 'Nothing'.
+(.:<) :: (FromJSON a) => Object -> T.Text -> Parser (V.Vector a)
 obj .:< key = case Map.lookup key obj of
-                   Nothing -> pure mzero
+                   Nothing -> pure V.empty
                    Just v  -> parseJSON v
 
 -- | Produce all values for the given key.

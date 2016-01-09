@@ -9,6 +9,7 @@ import Github.Data.Id          (Id)
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
+import Data.Vector     (Vector)
 import GHC.Generics    (Generic)
 
 import qualified Data.Map as M
@@ -19,7 +20,7 @@ data RepoWebhook = RepoWebhook {
   ,repoWebhookId           :: !(Id RepoWebhook)
   ,repoWebhookName         :: !Text
   ,repoWebhookActive       :: !Bool
-  ,repoWebhookEvents       :: ![RepoWebhookEvent]
+  ,repoWebhookEvents       :: !(Vector RepoWebhookEvent)
   ,repoWebhookConfig       :: !(M.Map Text Text)
   ,repoWebhookLastResponse :: !RepoWebhookResponse
   ,repoWebhookUpdatedAt    :: !GithubDate
@@ -72,7 +73,7 @@ instance NFData PingEvent
 data NewRepoWebhook = NewRepoWebhook {
   newRepoWebhookName   :: !Text
  ,newRepoWebhookConfig :: !(M.Map Text Text)
- ,newRepoWebhookEvents :: !(Maybe [RepoWebhookEvent])
+ ,newRepoWebhookEvents :: !(Maybe (Vector RepoWebhookEvent))
  ,newRepoWebhookActive :: !(Maybe Bool)
 } deriving (Eq, Ord, Show, Typeable, Data, Generic)
 
@@ -80,9 +81,9 @@ instance NFData NewRepoWebhook
 
 data EditRepoWebhook = EditRepoWebhook {
   editRepoWebhookConfig       :: !(Maybe (M.Map Text Text))
- ,editRepoWebhookEvents       :: !(Maybe [RepoWebhookEvent])
- ,editRepoWebhookAddEvents    :: !(Maybe [RepoWebhookEvent])
- ,editRepoWebhookRemoveEvents :: !(Maybe [RepoWebhookEvent])
+ ,editRepoWebhookEvents       :: !(Maybe (Vector RepoWebhookEvent))
+ ,editRepoWebhookAddEvents    :: !(Maybe (Vector RepoWebhookEvent))
+ ,editRepoWebhookRemoveEvents :: !(Maybe (Vector RepoWebhookEvent))
  ,editRepoWebhookActive       :: !(Maybe Bool)
 } deriving (Eq, Ord, Show, Typeable, Data, Generic)
 

@@ -7,10 +7,12 @@ import Github.Data.Definitions
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
+import Data.Vector     (Vector)
 import GHC.Generics    (Generic)
 
-import Github.Data.Id   (Id)
-import Github.Data.Name (Name)
+import Github.Data.Id    (Id)
+import Github.Data.Name  (Name)
+import Github.Data.Repos (Repo)
 
 data Privacy =
     PrivacyClosed
@@ -61,7 +63,7 @@ instance NFData DetailedTeam
 data CreateTeam = CreateTeam {
    createTeamName        :: !(Name Team)
   ,createTeamDescription :: !(Maybe Text)
-  ,createRepoNames       :: ![Text]
+  ,createTeamRepoNames   :: !(Vector (Name Repo))
   {-,createTeamPrivacy :: Privacy-}
   ,createTeamPermission  :: Permission
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)

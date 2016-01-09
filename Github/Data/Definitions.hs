@@ -3,12 +3,14 @@
 
 module Github.Data.Definitions where
 
-import           Control.DeepSeq   (NFData)
+import Control.DeepSeq (NFData)
+import Data.Data       (Data, Typeable)
+import Data.Text       (Text)
+import Data.Time       (UTCTime)
+import Data.Vector     (Vector)
+import GHC.Generics    (Generic)
+
 import qualified Control.Exception as E
-import           Data.Data
-import           Data.Text         (Text)
-import           Data.Time
-import           GHC.Generics      (Generic)
 
 import Github.Data.Id
 import Github.Data.Name
@@ -120,7 +122,7 @@ instance NFData Organization
 
 data Content
   = ContentFile ContentFileData
-  | ContentDirectory [ContentItem]
+  | ContentDirectory (Vector ContentItem)
  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Content
