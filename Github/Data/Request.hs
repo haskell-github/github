@@ -13,6 +13,7 @@ module Github.Data.Request (
     toMethod,
     Paths,
     QueryString,
+    Count,
     ) where
 
 import Data.Aeson.Compat  (FromJSON)
@@ -31,6 +32,7 @@ import qualified Network.HTTP.Types.Method as Method
 
 type Paths = [String]
 type QueryString = [(BS.ByteString, Maybe BS.ByteString)]
+type Count = Int
 
 -- | Http method of requests with body.
 data PostMethod = Post | Patch | Put
@@ -55,7 +57,7 @@ toMethod Put   = Method.methodPut
 -- TODO: Add constructor for collection fetches.
 data GithubRequest (k :: Bool) a where
     GithubGet       :: FromJSON a => Paths -> QueryString -> GithubRequest k a
-    GithubPagedGet  :: FromJSON (Vector a) => Paths -> QueryString -> GithubRequest k (Vector a)
+    GithubPagedGet  :: FromJSON (Vector a) => Paths -> QueryString -> Maybe Count -> GithubRequest k (Vector a)
     GithubPost      :: FromJSON a => PostMethod -> Paths -> LBS.ByteString -> GithubRequest 'True a
     GithubDelete    :: Paths -> GithubRequest 'True ()
     GithubStatus    :: GithubRequest k () -> GithubRequest k Status
@@ -71,11 +73,13 @@ instance Show (GithubRequest k a) where
                     . showsPrec (appPrec + 1) ps
                     . showString " "
                     . showsPrec (appPrec + 1) qs
-            GithubPagedGet ps qs -> showParen (d > appPrec) $
+            GithubPagedGet ps qs l -> showParen (d > appPrec) $
                 showString "GithubPagedGet "
                     . showsPrec (appPrec + 1) ps
                     . showString " "
                     . showsPrec (appPrec + 1) qs
+                    . showString " "
+                    . showsPrec (appPrec + 1) l
             GithubPost m ps body -> showParen (d > appPrec) $
                 showString "GithubPost "
                     . showsPrec (appPrec + 1) m

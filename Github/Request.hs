@@ -28,22 +28,22 @@ module Github.Request (
     getNextUrl,
     ) where
 
-import Prelude ()
+import Prelude        ()
 import Prelude.Compat
 
 #if MIN_VERSION_mtl(2,2,0)
-import Control.Monad.Except (MonadError(..))
+import Control.Monad.Except (MonadError (..))
 #else
-import Control.Monad.Error (MonadError(..))
+import Control.Monad.Error (MonadError (..))
 #endif
 
-import Control.Monad.Catch       (MonadThrow)
-import Control.Monad.Trans.Except      (ExceptT (..), runExceptT)
-import Control.Monad.Trans.Class (lift)
-import Data.Aeson.Compat         (FromJSON, eitherDecode)
-import Data.List                 (find, intercalate)
-import Data.Monoid               ((<>))
-import Data.Text                 (Text)
+import Control.Monad.Catch        (MonadThrow)
+import Control.Monad.Trans.Class  (lift)
+import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
+import Data.Aeson.Compat          (FromJSON, eitherDecode)
+import Data.List                  (find, intercalate)
+import Data.Monoid                ((<>))
+import Data.Text                  (Text)
 
 import Network.HTTP.Client          (HttpException (..), Manager, Request (..),
                                      RequestBody (..), Response (..),
@@ -62,10 +62,13 @@ import qualified Control.Exception     as E
 import qualified Data.ByteString.Char8 as BS8
 import qualified Data.ByteString.Lazy  as LBS
 import qualified Data.Text             as T
+import qualified Data.Vector           as V
 
 import Github.Auth         (GithubAuth (..))
 import Github.Data         (Error (..))
 import Github.Data.Request
+
+import Debug.Trace
 
 -- | Execute 'GithubRequest' in 'IO'
 executeRequest :: Show a
@@ -90,9 +93,11 @@ executeRequestWithMgr mgr auth req =
             httpReq <- makeHttpRequest (Just auth) req
             res <- httpLbs httpReq mgr
             pure $ parseResponse res
-        GithubPagedGet {} -> do
+        GithubPagedGet _ _ l -> do
             httpReq <- makeHttpRequest (Just auth) req
-            performPagedRequest (flip httpLbs mgr) httpReq
+            performPagedRequest (flip  httpLbs mgr) predicate httpReq
+          where
+            predicate = maybe (const True) (\l' -> (< l') . V.length ) l
         GithubPost {} -> do
             httpReq <- makeHttpRequest (Just auth) req
             res <- httpLbs httpReq mgr
@@ -128,13 +133,18 @@ executeRequestWithMgr' mgr req =
             httpReq <- makeHttpRequest Nothing req
             res <- httpLbs httpReq mgr
             pure $ parseResponse res
-        GithubPagedGet {} -> do
+        GithubPagedGet _ _ l -> do
             httpReq <- makeHttpRequest Nothing req
-            performPagedRequest (flip httpLbs mgr) httpReq
+            performPagedRequest (flip  httpLbs mgr) predicate httpReq
+          where
+            predicate = maybe (const True) (\l' -> (< l') . V.length . xxx) l
         GithubStatus {} -> do
             httpReq <- makeHttpRequest Nothing req
             res <- httpLbs httpReq mgr
             pure . Right . responseStatus $ res
+
+xxx :: V.Vector a -> V.Vector a
+xxx v = traceShow (V.length v) v
 
 -- | Helper for picking between 'executeRequest' and 'executeRequest''.
 --
@@ -167,7 +177,7 @@ makeHttpRequest auth r = case r of
                . setAuthRequest auth
                . setQueryString qs
                $ req
-    GithubPagedGet paths qs -> do
+    GithubPagedGet paths qs _ -> do
         req <- parseUrl $ url paths
         return $ setReqHeaders
                . setCheckStatus
@@ -248,17 +258,18 @@ parseResponse res = case eitherDecode (responseBody res) of
 
 performPagedRequest :: forall a m. (FromJSON a, Monoid a, MonadThrow m)
                     => (Request -> m (Response LBS.ByteString))  -- ^ `httpLbs` analogue
+                    -> (a -> Bool)                               -- ^ predicate to continue iteration
                     -> Request                                   -- ^ initial request
                     -> m (Either Error a)
-performPagedRequest httpLbs' = runExceptT . go
+performPagedRequest httpLbs' predicate = runExceptT . go mempty
   where
-    go :: Request -> ExceptT Error m a
-    go req = do
+    go :: a -> Request -> ExceptT Error m a
+    go acc req = do
         res <- lift $ httpLbs' req
         m <- parseResponse res
-        case getNextUrl res of
-            Nothing  -> return m
-            Just uri -> do
+        let m' = acc <> m
+        case (predicate m', getNextUrl res) of
+            (True, Just uri) -> do
                 req' <- setUri req uri
-                rest <- go req'
-                return $ m <> rest
+                go m' req'
+            (_, _)           -> return m'

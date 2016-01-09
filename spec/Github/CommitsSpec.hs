@@ -2,15 +2,15 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module Github.CommitsSpec where
 
-import Github.Auth                  (GithubAuth (..))
-import Github.Repos.Commits (commitsFor')
+import Github.Auth          (GithubAuth (..))
+import Github.Repos.Commits (commitsFor', commitsForR)
+import Github.Request       (executeRequest)
 
 -- import Data.Aeson.Compat  (eitherDecodeStrict)
 import Data.Either.Compat (isRight)
 -- import Data.FileEmbed     (embedFile)
 import System.Environment (lookupEnv)
-import Test.Hspec         (Spec, describe, it, pendingWith,
-                           shouldSatisfy)
+import Test.Hspec         (Spec, describe, it, pendingWith, shouldSatisfy)
 
 import qualified Data.Vector as V
 
@@ -30,5 +30,11 @@ spec = do
   describe "commitsFor" $ do
     it "works" $ withAuth $ \auth -> do
       cs <-  commitsFor' (Just auth) "phadej" "github"
-      V.length (fromRightS cs) `shouldSatisfy` (> 300)
       cs `shouldSatisfy` isRight
+      V.length (fromRightS cs) `shouldSatisfy` (> 300)
+
+    -- Page size is 30, so we get 60 commits
+    it "limits the response" $ withAuth $ \auth -> do
+      cs <- executeRequest auth $ commitsForR "phadej" "github" (Just 40)
+      cs `shouldSatisfy` isRight
+      V.length (fromRightS cs) `shouldSatisfy` (< 70)

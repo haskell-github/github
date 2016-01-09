@@ -70,8 +70,8 @@ commitsFor' auth user repo =
 
 -- | List commits on a repository.
 -- See <https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository>
-commitsForR :: Name GithubOwner -> Name Repo -> GithubRequest k (Vector Commit)
-commitsForR user repo = commitsWithOptionsForR user repo []
+commitsForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector Commit)
+commitsForR user repo limit = commitsWithOptionsForR user repo limit []
 
 commitsWithOptionsFor :: Name GithubOwner -> Name Repo -> [CommitQueryOption] -> IO (Either Error (Vector Commit))
 commitsWithOptionsFor = commitsWithOptionsFor' Nothing
@@ -83,13 +83,13 @@ commitsWithOptionsFor = commitsWithOptionsFor' Nothing
 -- > commitsWithOptionsFor' (Just (GithubBasicAuth (user, password))) "mike-burns" "github" [CommitQueryAuthor "djeik"]
 commitsWithOptionsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> [CommitQueryOption] -> IO (Either Error (Vector Commit))
 commitsWithOptionsFor' auth user repo opts =
-    executeRequestMaybe auth $ commitsWithOptionsForR user repo opts
+    executeRequestMaybe auth $ commitsWithOptionsForR user repo Nothing opts
 
 -- | List commits on a repository.
 -- See <https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository>
-commitsWithOptionsForR :: Name GithubOwner -> Name Repo -> [CommitQueryOption] -> GithubRequest k (Vector Commit)
-commitsWithOptionsForR user repo opts =
-    GithubPagedGet ["repos", untagName user, untagName repo, "commits"] qs
+commitsWithOptionsForR :: Name GithubOwner -> Name Repo -> Maybe Count -> [CommitQueryOption] -> GithubRequest k (Vector Commit)
+commitsWithOptionsForR user repo limit opts =
+    GithubPagedGet ["repos", untagName user, untagName repo, "commits"] qs limit
   where
     qs = map renderCommitQueryOption opts
 
