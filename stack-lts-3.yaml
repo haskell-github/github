@@ -2,6 +2,7 @@ packages:
 - '.'
 extra-deps:
 - http-link-header-1.0.1
+- iso8601-time-0.1.4
 resolver: lts-3.21
 flags:
   github:

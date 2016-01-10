@@ -19,8 +19,8 @@ import Github.Data.Name
 data CommitQueryOption = CommitQuerySha !Text
                        | CommitQueryPath !Text
                        | CommitQueryAuthor !Text
-                       | CommitQuerySince !GithubDate
-                       | CommitQueryUntil !GithubDate
+                       | CommitQuerySince !UTCTime
+                       | CommitQueryUntil !UTCTime
                        deriving (Show, Eq, Ord)
 
 -- | Errors have been tagged according to their source, so you can more easily
@@ -31,12 +31,6 @@ data Error =
   | JsonError Text -- ^ The JSON is malformed or unexpected.
   | UserError Text -- ^ Incorrect input.
   deriving Show
-
--- | A date in the Github format, which is a special case of ISO-8601.
-newtype GithubDate = GithubDate { fromGithubDate :: UTCTime }
-  deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData GithubDate
 
 data GithubOwner = GithubUser {
    githubOwnerAvatarUrl  :: !Text
@@ -113,7 +107,7 @@ data Organization = Organization {
   ,organizationFollowing   :: !Int
   ,organizationPublicRepos :: !Int
   ,organizationUrl         :: !Text
-  ,organizationCreatedAt   :: !GithubDate
+  ,organizationCreatedAt   :: !UTCTime
   ,organizationName        :: !(Maybe Text)
   ,organizationId          :: !(Id Organization)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -172,7 +166,7 @@ data Contributor
 instance NFData Contributor
 
 data DetailedOwner = DetailedUser {
-   detailedOwnerCreatedAt   :: !GithubDate
+   detailedOwnerCreatedAt   :: !UTCTime
   ,detailedOwnerType        :: !Text
   ,detailedOwnerPublicGists :: !Int
   ,detailedOwnerAvatarUrl   :: !Text
@@ -193,7 +187,7 @@ data DetailedOwner = DetailedUser {
   ,detailedOwnerLogin       :: !(Name GithubOwner)
   }
   | DetailedOrganization {
-   detailedOwnerCreatedAt   :: !GithubDate
+   detailedOwnerCreatedAt   :: !UTCTime
   ,detailedOwnerType        :: !Text
   ,detailedOwnerPublicGists :: !Int
   ,detailedOwnerAvatarUrl   :: !Text

@@ -9,6 +9,7 @@ import Github.Data.Name        (Name)
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
+import Data.Time       (UTCTime)
 import Data.Vector     (Vector)
 import GHC.Generics    (Generic)
 
@@ -17,10 +18,10 @@ data Gist = Gist {
   ,gistGitPushUrl  :: !Text
   ,gistUrl         :: !Text
   ,gistDescription :: !(Maybe Text)
-  ,gistCreatedAt   :: !GithubDate
+  ,gistCreatedAt   :: !UTCTime
   ,gistPublic      :: !Bool
   ,gistComments    :: !Int
-  ,gistUpdatedAt   :: !GithubDate
+  ,gistUpdatedAt   :: !UTCTime
   ,gistHtmlUrl     :: !Text
   ,gistId          :: !(Name Gist)
   ,gistFiles       :: !(Vector GistFile)
@@ -43,9 +44,9 @@ instance NFData GistFile
 data GistComment = GistComment {
    gistCommentUser      :: !GithubOwner
   ,gistCommentUrl       :: !Text
-  ,gistCommentCreatedAt :: !GithubDate
+  ,gistCommentCreatedAt :: !UTCTime
   ,gistCommentBody      :: !Text
-  ,gistCommentUpdatedAt :: !GithubDate
+  ,gistCommentUpdatedAt :: !UTCTime
   ,gistCommentId        :: !(Id GistComment)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 

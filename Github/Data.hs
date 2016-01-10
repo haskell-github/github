@@ -31,7 +31,7 @@ module Github.Data (
     untagId,
     ) where
 
-import Prelude ()
+import Prelude        ()
 import Prelude.Compat
 
 import           Data.Aeson.Compat
@@ -40,13 +40,6 @@ import           Data.Hashable     (Hashable)
 import qualified Data.HashMap.Lazy as Map
 import qualified Data.Text         as T
 import qualified Data.Vector       as V
-
-#if MIN_VERSION_time(1,5,0)
-import Data.Time
-#else
-import Data.Time
-import System.Locale (defaultTimeLocale)
-#endif
 
 import Github.Data.Definitions
 import Github.Data.Gists
@@ -60,19 +53,6 @@ import Github.Data.Request
 import Github.Data.Search
 import Github.Data.Teams
 import Github.Data.Webhooks
-
-instance FromJSON GithubDate where
-  parseJSON (String t) =
-    case pt defaultTimeLocale "%FT%T%Z" (T.unpack t) of
-         Just d -> pure $ GithubDate d
-         _      -> fail "could not parse Github datetime"
-    where
-#if MIN_VERSION_time(1,5,0)
-      pt = parseTimeM True
-#else
-      pt = parseTime
-#endif
-  parseJSON _          = fail "Given something besides a String"
 
 instance FromJSON Commit where
   parseJSON (Object o) =

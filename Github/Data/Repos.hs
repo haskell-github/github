@@ -9,13 +9,14 @@ import Github.Data.Name        (Name)
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
+import Data.Time       (UTCTime)
 import Data.Vector     (Vector)
 import GHC.Generics    (Generic)
 
 data Repo = Repo {
    repoSshUrl          :: !(Maybe Text)
   ,repoDescription     :: !(Maybe Text)
-  ,repoCreatedAt       :: !(Maybe GithubDate)
+  ,repoCreatedAt       :: !(Maybe UTCTime)
   ,repoHtmlUrl         :: !Text
   ,repoSvnUrl          :: !(Maybe Text)
   ,repoForks           :: !(Maybe Int)
@@ -25,13 +26,13 @@ data Repo = Repo {
   ,repoPrivate         :: !Bool
   ,repoCloneUrl        :: !(Maybe Text)
   ,repoSize            :: !(Maybe Int)
-  ,repoUpdatedAt       :: !(Maybe GithubDate)
+  ,repoUpdatedAt       :: !(Maybe UTCTime)
   ,repoWatchers        :: !(Maybe Int)
   ,repoOwner           :: !GithubOwner
   ,repoName            :: !(Name Repo)
   ,repoLanguage        :: !(Maybe Text)
   ,repoMasterBranch    :: !(Maybe Text)
-  ,repoPushedAt        :: !(Maybe GithubDate)   -- ^ this is Nothing for new repositories
+  ,repoPushedAt        :: !(Maybe UTCTime)   -- ^ this is Nothing for new repositories
   ,repoId              :: !(Id Repo)
   ,repoUrl             :: !Text
   ,repoOpenIssues      :: !(Maybe Int)

@@ -14,8 +14,8 @@ import Data.Vector     (Vector)
 import GHC.Generics    (Generic)
 
 data Issue = Issue {
-   issueClosedAt    :: Maybe GithubDate
-  ,issueUpdatedAt   :: GithubDate
+   issueClosedAt    :: Maybe UTCTime
+  ,issueUpdatedAt   :: UTCTime
   ,issueEventsUrl   :: Text
   ,issueHtmlUrl     :: Maybe Text
   ,issueClosedBy    :: Maybe GithubOwner
@@ -26,7 +26,7 @@ data Issue = Issue {
   ,issueTitle       :: Text
   ,issuePullRequest :: Maybe PullRequestReference
   ,issueUrl         :: Text
-  ,issueCreatedAt   :: GithubDate
+  ,issueCreatedAt   :: UTCTime
   ,issueBody        :: Maybe Text
   ,issueState       :: Text
   ,issueId          :: Id Issue
@@ -59,14 +59,14 @@ instance NFData EditIssue
 
 data Milestone = Milestone {
    milestoneCreator      :: GithubOwner
-  ,milestoneDueOn        :: Maybe GithubDate
+  ,milestoneDueOn        :: Maybe UTCTime
   ,milestoneOpenIssues   :: Int
   ,milestoneNumber       :: Int
   ,milestoneClosedIssues :: Int
   ,milestoneDescription  :: Maybe Text
   ,milestoneTitle        :: Text
   ,milestoneUrl          :: Text
-  ,milestoneCreatedAt    :: GithubDate
+  ,milestoneCreatedAt    :: UTCTime
   ,milestoneState        :: Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -81,11 +81,11 @@ data IssueLabel = IssueLabel {
 instance NFData IssueLabel
 
 data IssueComment = IssueComment {
-   issueCommentUpdatedAt :: GithubDate
+   issueCommentUpdatedAt :: UTCTime
   ,issueCommentUser      :: GithubOwner
   ,issueCommentUrl       :: Text
   ,issueCommentHtmlUrl   :: Text
-  ,issueCommentCreatedAt :: GithubDate
+  ,issueCommentCreatedAt :: UTCTime
   ,issueCommentBody      :: Text
   ,issueCommentId        :: Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -121,7 +121,7 @@ data Event = Event {
   ,eventType      :: !EventType
   ,eventCommitId  :: !(Maybe Text)
   ,eventUrl       :: !Text
-  ,eventCreatedAt :: !GithubDate
+  ,eventCreatedAt :: !UTCTime
   ,eventId        :: !Int
   ,eventIssue     :: !(Maybe Issue)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)

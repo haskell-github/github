@@ -20,39 +20,23 @@ module Github.Repos.Commits (
     module Github.Data,
     ) where
 
-import Data.Monoid    ((<>))
-import Data.Vector    (Vector)
-import Github.Auth
-import Github.Data
-import Github.Request
+import Data.Time.ISO8601 (formatISO8601)
+import Data.Vector       (Vector)
 
 import qualified Data.ByteString       as BS
 import qualified Data.ByteString.Char8 as BS8
 import qualified Data.Text.Encoding    as TE
 
-import Data.Time.Format (formatTime)
-#if MIN_VERSION_time (1,5,0)
-import Data.Time        (defaultTimeLocale)
-import Data.Time.Format (iso8601DateFormat)
-#else
-import System.Locale (defaultTimeLocale)
-#endif
-
-githubFormat :: GithubDate -> String
-#if MIN_VERSION_time (1,5,0)
-githubFormat = formatTime defaultTimeLocale (iso8601DateFormat $ Just "%H:%M:%S") . fromGithubDate
-#else
-githubFormat = formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%S" . fromGithubDate
-#endif
+import Github.Auth
+import Github.Data
+import Github.Request
 
 renderCommitQueryOption :: CommitQueryOption -> (BS.ByteString, Maybe BS.ByteString)
 renderCommitQueryOption (CommitQuerySha sha)      = ("sha", Just $ TE.encodeUtf8 sha)
 renderCommitQueryOption (CommitQueryPath path)     = ("path", Just $ TE.encodeUtf8 path)
 renderCommitQueryOption (CommitQueryAuthor author) = ("author", Just $ TE.encodeUtf8 author)
-renderCommitQueryOption (CommitQuerySince date)    = ("since", Just $ BS8.pack ds <> "Z")
-    where ds = show $ githubFormat date
-renderCommitQueryOption (CommitQueryUntil date)    = ("until", Just $ BS8.pack ds <> "Z")
-    where ds = show $ githubFormat date
+renderCommitQueryOption (CommitQuerySince date)    = ("since", Just $ BS8.pack $ formatISO8601 date)
+renderCommitQueryOption (CommitQueryUntil date)    = ("until", Just $ BS8.pack $ formatISO8601 date)
 
 -- | The commit history for a repo.
 --
