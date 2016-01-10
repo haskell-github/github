@@ -18,18 +18,18 @@ import Github.Request
 -- With authentification
 --
 -- > userInfoFor' (Just ("github-username", "github-password")) "mike-burns"
-userInfoFor' :: Maybe GithubAuth -> Name DetailedOwner -> IO (Either Error DetailedOwner)
+userInfoFor' :: Maybe GithubAuth -> Name GithubOwner -> IO (Either Error GithubOwner)
 userInfoFor' auth = executeRequestMaybe auth . userInfoForR
 
 -- | The information for a single user, by login name.
 --
 -- > userInfoFor "mike-burns"
-userInfoFor :: Name DetailedOwner -> IO (Either Error DetailedOwner)
+userInfoFor :: Name GithubOwner -> IO (Either Error GithubOwner)
 userInfoFor = executeRequest' . userInfoForR
 
 -- | Get a single user.
 -- See <https://developer.github.com/v3/users/#get-a-single-user>
-userInfoForR :: Name DetailedOwner -> GithubRequest k DetailedOwner
+userInfoForR :: Name GithubOwner -> GithubRequest k GithubOwner
 userInfoForR userName = GithubGet ["users", untagName userName] []
 
 -- | Retrieve information about the user associated with the supplied authentication.
@@ -37,11 +37,11 @@ userInfoForR userName = GithubGet ["users", untagName userName] []
 -- > userInfoCurrent' (GithubOAuth "...")
 --
 -- TODO: Change to require 'GithubAuth'?
-userInfoCurrent' :: Maybe GithubAuth -> IO (Either Error DetailedOwner)
+userInfoCurrent' :: Maybe GithubAuth -> IO (Either Error GithubOwner)
 userInfoCurrent' auth =
     executeRequestMaybe auth . unsafeDropAuthRequirements $ userInfoCurrentR
 
 -- | Get the authenticated user.
 -- See <https://developer.github.com/v3/users/#get-the-authenticated-user>
-userInfoCurrentR :: GithubRequest 'True DetailedOwner
+userInfoCurrentR :: GithubRequest 'True GithubOwner
 userInfoCurrentR = GithubGet ["user"] []

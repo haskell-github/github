@@ -37,10 +37,10 @@ import Prelude.Compat
 
 import Data.Aeson.Compat (encode, object, (.=))
 import Data.Foldable     (toList)
+import Data.Vector       (Vector)
 import Github.Auth
 import Github.Data
 import Github.Request
-import Data.Vector (Vector)
 
 -- | All the labels available to use on any issue in the repo.
 --

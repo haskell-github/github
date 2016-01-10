@@ -6,13 +6,13 @@ import Github.Data.Definitions
 import Github.Data.Id          (Id)
 import Github.Data.Name        (Name)
 
-import Control.DeepSeq (NFData(..))
+import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
-import Data.Data       (Data, Typeable)
-import Data.Text       (Text)
-import Data.Time       (UTCTime)
-import Data.Vector     (Vector)
-import GHC.Generics    (Generic)
+import Data.Data                (Data, Typeable)
+import Data.Text                (Text)
+import Data.Time                (UTCTime)
+import Data.Vector              (Vector)
+import GHC.Generics             (Generic)
 
 data Repo = Repo {
    repoSshUrl          :: !(Maybe Text)
@@ -29,7 +29,7 @@ data Repo = Repo {
   ,repoSize            :: !(Maybe Int)
   ,repoUpdatedAt       :: !(Maybe UTCTime)
   ,repoWatchers        :: !(Maybe Int)
-  ,repoOwner           :: !GithubOwner
+  ,repoOwner           :: !SimpleOwner
   ,repoName            :: !(Name Repo)
   ,repoLanguage        :: !(Maybe Text)
   ,repoMasterBranch    :: !(Maybe Text)
@@ -48,7 +48,7 @@ data Repo = Repo {
 
 instance NFData Repo where rnf = genericRnf
 
-data RepoRef = RepoRef GithubOwner (Name Repo) -- Repo owner and name
+data RepoRef = RepoRef SimpleOwner (Name Repo) -- Repo owner and name
  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData RepoRef where rnf = genericRnf

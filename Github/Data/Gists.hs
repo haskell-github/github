@@ -15,7 +15,7 @@ import Data.Vector              (Vector)
 import GHC.Generics             (Generic)
 
 data Gist = Gist {
-   gistUser        :: !GithubOwner
+   gistUser        :: !SimpleOwner
   ,gistGitPushUrl  :: !Text
   ,gistUrl         :: !Text
   ,gistDescription :: !(Maybe Text)
@@ -43,7 +43,7 @@ data GistFile = GistFile {
 instance NFData GistFile where rnf = genericRnf
 
 data GistComment = GistComment {
-   gistCommentUser      :: !GithubOwner
+   gistCommentUser      :: !SimpleOwner
   ,gistCommentUrl       :: !Text
   ,gistCommentCreatedAt :: !UTCTime
   ,gistCommentBody      :: !Text

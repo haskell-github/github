@@ -1,22 +1,22 @@
 -- | The pull request review comments API as described at
 -- <http://developer.github.com/v3/pulls/comments/>.
 module Github.PullRequests.ReviewComments (
-    pullRequestReviewComments,
+    pullRequestReviewCommentsIO,
     pullRequestReviewCommentsR,
     pullRequestReviewComment,
     pullRequestReviewCommentR,
     module Github.Data,
     ) where
 
+import Data.Vector    (Vector)
 import Github.Data
 import Github.Request
-import Data.Vector (Vector)
 
 -- | All the comments on a pull request with the given ID.
 --
 -- > pullRequestReviewComments "thoughtbot" "factory_girl" (Id 256)
-pullRequestReviewComments :: Name GithubOwner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector Comment))
-pullRequestReviewComments user repo prid =
+pullRequestReviewCommentsIO :: Name GithubOwner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector Comment))
+pullRequestReviewCommentsIO user repo prid =
     executeRequest' $ pullRequestReviewCommentsR user repo prid Nothing
 
 -- | List comments on a pull request.

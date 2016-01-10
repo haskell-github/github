@@ -4,21 +4,21 @@ module Github.Data.GitData where
 
 import Github.Data.Definitions
 
-import Control.DeepSeq (NFData(..))
+import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
-import Data.Data       (Data, Typeable)
-import Data.Text       (Text)
-import Data.Time       (UTCTime)
-import Data.Vector     (Vector)
-import GHC.Generics    (Generic)
+import Data.Data                (Data, Typeable)
+import Data.Text                (Text)
+import Data.Time                (UTCTime)
+import Data.Vector              (Vector)
+import GHC.Generics             (Generic)
 
 data Commit = Commit {
    commitSha       :: !Text
   ,commitParents   :: !(Vector Tree)
   ,commitUrl       :: !Text
   ,commitGitCommit :: !GitCommit
-  ,commitCommitter :: !(Maybe GithubOwner)
-  ,commitAuthor    :: !(Maybe GithubOwner)
+  ,commitCommitter :: !(Maybe SimpleOwner)
+  ,commitAuthor    :: !(Maybe SimpleOwner)
   ,commitFiles     :: !(Vector File)
   ,commitStats     :: !(Maybe Stats)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)

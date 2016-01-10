@@ -16,10 +16,10 @@ module Github.Issues.Comments (
 
 import Data.Aeson.Compat (encode)
 import Data.Text         (Text)
+import Data.Vector       (Vector)
 import Github.Auth
 import Github.Data
 import Github.Request
-import Data.Vector (Vector)
 
 -- | A specific comment, by ID.
 --

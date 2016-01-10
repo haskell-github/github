@@ -34,9 +34,10 @@ module Github.Data (
 import Prelude        ()
 import Prelude.Compat
 
-import           Data.Aeson.Compat
-import           Data.Aeson.Types  (Parser)
-import           Data.Hashable     (Hashable)
+import Data.Aeson.Compat
+import Data.Aeson.Types  (Parser)
+import Data.Hashable     (Hashable)
+
 import qualified Data.HashMap.Lazy as Map
 import qualified Data.Text         as T
 import qualified Data.Vector       as V
@@ -94,20 +95,22 @@ instance FromJSON GitCommit where
               <*> o .:< "parents"
   parseJSON _          = fail "Could not build a GitCommit"
 
-instance FromJSON GithubOwner where
+instance FromJSON SimpleOwner where
   parseJSON (Object o)
     | o `at` "gravatar_id" == Nothing =
-      GithubOrganization <$> o .: "avatar_url"
-                 <*> o .: "login"
-                 <*> o .: "url"
-                 <*> o .: "id"
+      SimpleOrganizationOwner
+          <$> o .: "avatar_url"
+          <*> o .: "login"
+          <*> o .: "url"
+          <*> o .: "id"
     | otherwise =
-      GithubUser <$> o .: "avatar_url"
-                 <*> o .: "login"
-                 <*> o .: "url"
-                 <*> o .: "id"
-                 <*> o .: "gravatar_id"
-  parseJSON v          = fail $ "Could not build a GithubOwner out of " ++ (show v)
+      SimpleUserOwner
+          <$> o .: "avatar_url"
+          <*> o .: "login"
+          <*> o .: "url"
+          <*> o .: "id"
+          <*> o .: "gravatar_id"
+  parseJSON v          = fail $ "Could not build a SimpleGithubOwner out of " ++ (show v)
 
 instance FromJSON GitUser where
   parseJSON (Object o) =
@@ -376,9 +379,9 @@ instance FromJSON Organization where
                  <*> o .: "id"
   parseJSON _ = fail "Could not build an Organization"
 
-instance FromJSON PullRequest where
+instance FromJSON SimplePullRequest where
   parseJSON (Object o) =
-      PullRequest
+      SimplePullRequest
         <$> o .:? "closed_at"
         <*> o .: "created_at"
         <*> o .: "user"
@@ -395,7 +398,7 @@ instance FromJSON PullRequest where
         <*> o .:? "merged_at"
         <*> o .: "title"
         <*> o .: "id"
-  parseJSON _ = fail "Could not build a PullRequest"
+  parseJSON _ = fail "Could not build a SimplePullRequest"
 
 instance ToJSON EditPullRequestState where
   toJSON (EditPullRequestStateOpen) = String "open"
@@ -413,9 +416,9 @@ instance ToJSON CreatePullRequest where
   toJSON (CreatePullRequestIssue issueNum headPR basePR) =
     object [ "issue" .= issueNum, "head" .= headPR, "base" .= basePR]
 
-instance FromJSON DetailedPullRequest where
+instance FromJSON PullRequest where
   parseJSON (Object o) =
-      DetailedPullRequest
+      PullRequest
         <$> o .:? "closed_at"
         <*> o .: "created_at"
         <*> o .: "user"
@@ -443,7 +446,7 @@ instance FromJSON DetailedPullRequest where
         <*> o .: "commits"
         <*> o .: "merged"
         <*> o .:? "mergeable"
-  parseJSON _ = fail "Could not build a DetailedPullRequest"
+  parseJSON _ = fail "Could not build a PullRequest"
 
 instance FromJSON PullRequestLinks where
   parseJSON (Object o) =
@@ -675,10 +678,10 @@ instance FromJSON BranchCommit where
   parseJSON (Object o) = BranchCommit <$> o .: "sha" <*> o .: "url"
   parseJSON _ = fail "Could not build a BranchCommit"
 
-instance FromJSON DetailedOwner where
+instance FromJSON GithubOwner where
   parseJSON (Object o)
     | o `at` "gravatar_id" == Nothing =
-      DetailedOrganization <$> o .: "created_at"
+      GithubOrganization <$> o .: "created_at"
                    <*> o .: "type"
                    <*> o .: "public_gists"
                    <*> o .: "avatar_url"
@@ -695,7 +698,7 @@ instance FromJSON DetailedOwner where
                    <*> o .: "html_url"
                    <*> o .: "login"
     | otherwise =
-      DetailedUser <$> o .: "created_at"
+      GithubUser <$> o .: "created_at"
                    <*> o .: "type"
                    <*> o .: "public_gists"
                    <*> o .: "avatar_url"
@@ -714,7 +717,7 @@ instance FromJSON DetailedOwner where
                    <*> o .: "id"
                    <*> o .: "html_url"
                    <*> o .: "login"
-  parseJSON _ = fail "Could not build a DetailedOwner"
+  parseJSON _ = fail "Could not build a GithubOwner"
 
 instance FromJSON Privacy where
   parseJSON (String attr) =
@@ -748,6 +751,19 @@ instance ToJSON Permission where
         PermissionPush  -> "push"
         PermissionAdmin -> "admin"
 
+instance FromJSON SimpleTeam where
+  parseJSON (Object o) =
+    SimpleTeam <$> o .: "id"
+               <*> o .: "url"
+               <*> o .: "name"
+               <*> o .: "slug"
+               <*> o .:?"description" .!= Nothing
+               <*> o .:?"privacy" .!= Nothing
+               <*> o .: "permission"
+               <*> o .: "members_url"
+               <*> o .: "repositories_url"
+  parseJSON _ = fail "Could not build SimpleTeam"
+
 instance FromJSON Team where
   parseJSON (Object o) =
     Team <$> o .: "id"
@@ -759,23 +775,10 @@ instance FromJSON Team where
          <*> o .: "permission"
          <*> o .: "members_url"
          <*> o .: "repositories_url"
-  parseJSON _ = fail "Could not build Team"
-
-instance FromJSON DetailedTeam where
-  parseJSON (Object o) =
-    DetailedTeam <$> o .: "id"
-                 <*> o .: "url"
-                 <*> o .: "name"
-                 <*> o .: "slug"
-                 <*> o .:?"description" .!= Nothing
-                 <*> o .:?"privacy" .!= Nothing
-                 <*> o .: "permission"
-                 <*> o .: "members_url"
-                 <*> o .: "repositories_url"
-                 <*> o .: "members_count"
-                 <*> o .: "repos_count"
-                 <*> o .: "organization"
-  parseJSON _ = fail "Could not build a DetailedTeam"
+         <*> o .: "members_count"
+         <*> o .: "repos_count"
+         <*> o .: "organization"
+  parseJSON _ = fail "Could not build a Team"
 
 instance ToJSON CreateTeam where
   toJSON (CreateTeam name desc repo_names {-privacy-} permissions) =

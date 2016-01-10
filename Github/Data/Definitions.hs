@@ -33,21 +33,21 @@ data Error =
   | UserError Text -- ^ Incorrect input.
   deriving Show
 
-data GithubOwner = GithubUser {
-   githubOwnerAvatarUrl  :: !Text
-  ,githubOwnerLogin      :: !(Name GithubOwner)
-  ,githubOwnerUrl        :: !Text
-  ,githubOwnerId         :: !(Id GithubOwner)
-  ,githubOwnerGravatarId :: !(Maybe Text)
+data SimpleOwner = SimpleUserOwner {
+   simpleOwnerAvatarUrl  :: !Text
+  ,simpleOwnerLogin      :: !(Name SimpleOwner)
+  ,simpleOwnerUrl        :: !Text
+  ,simpleOwnerId         :: !(Id SimpleOwner)
+  ,simpleOwnerGravatarId :: !(Maybe Text)
   }
-  | GithubOrganization {
-   githubOwnerAvatarUrl :: !Text
-  ,githubOwnerLogin     :: !(Name GithubOwner)
-  ,githubOwnerUrl       :: !Text
-  ,githubOwnerId        :: !(Id GithubOwner)
+  | SimpleOrganizationOwner {
+   simpleOwnerAvatarUrl :: !Text
+  ,simpleOwnerLogin     :: !(Name SimpleOwner)
+  ,simpleOwnerUrl       :: !Text
+  ,simpleOwnerId        :: !(Id SimpleOwner)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData GithubOwner where rnf = genericRnf
+instance NFData SimpleOwner where rnf = genericRnf
 
 data Stats = Stats {
    statsAdditions :: !Int
@@ -67,7 +67,7 @@ data Comment = Comment {
   ,commentUrl       :: !Text
   ,commentCreatedAt :: !(Maybe UTCTime)
   ,commentPath      :: !(Maybe Text)
-  ,commentUser      :: !GithubOwner
+  ,commentUser      :: !SimpleOwner
   ,commentId        :: !(Id Comment)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -166,44 +166,44 @@ data Contributor
 
 instance NFData Contributor where rnf = genericRnf
 
-data DetailedOwner = DetailedUser {
-   detailedOwnerCreatedAt   :: !UTCTime
-  ,detailedOwnerType        :: !Text
-  ,detailedOwnerPublicGists :: !Int
-  ,detailedOwnerAvatarUrl   :: !Text
-  ,detailedOwnerFollowers   :: !Int
-  ,detailedOwnerFollowing   :: !Int
-  ,detailedOwnerHireable    :: !(Maybe Bool)
-  ,detailedOwnerGravatarId  :: !(Maybe Text)
-  ,detailedOwnerBlog        :: !(Maybe Text)
-  ,detailedOwnerBio         :: !(Maybe Text)
-  ,detailedOwnerPublicRepos :: !Int
-  ,detailedOwnerName        :: !(Maybe Text)
-  ,detailedOwnerLocation    :: !(Maybe Text)
-  ,detailedOwnerCompany     :: !(Maybe Text)
-  ,detailedOwnerEmail       :: !(Maybe Text)
-  ,detailedOwnerUrl         :: !Text
-  ,detailedOwnerId          :: !(Id GithubOwner)
-  ,detailedOwnerHtmlUrl     :: !Text
-  ,detailedOwnerLogin       :: !(Name GithubOwner)
+data GithubOwner = GithubUser {
+   githubOwnerCreatedAt   :: !UTCTime
+  ,githubOwnerType        :: !Text
+  ,githubOwnerPublicGists :: !Int
+  ,githubOwnerAvatarUrl   :: !Text
+  ,githubOwnerFollowers   :: !Int
+  ,githubOwnerFollowing   :: !Int
+  ,githubOwnerHireable    :: !(Maybe Bool)
+  ,githubOwnerGravatarId  :: !(Maybe Text)
+  ,githubOwnerBlog        :: !(Maybe Text)
+  ,githubOwnerBio         :: !(Maybe Text)
+  ,githubOwnerPublicRepos :: !Int
+  ,githubOwnerName        :: !(Maybe Text)
+  ,githubOwnerLocation    :: !(Maybe Text)
+  ,githubOwnerCompany     :: !(Maybe Text)
+  ,githubOwnerEmail       :: !(Maybe Text)
+  ,githubOwnerUrl         :: !Text
+  ,githubOwnerId          :: !(Id SimpleOwner)
+  ,githubOwnerHtmlUrl     :: !Text
+  ,githubOwnerLogin       :: !(Name SimpleOwner)
   }
-  | DetailedOrganization {
-   detailedOwnerCreatedAt   :: !UTCTime
-  ,detailedOwnerType        :: !Text
-  ,detailedOwnerPublicGists :: !Int
-  ,detailedOwnerAvatarUrl   :: !Text
-  ,detailedOwnerFollowers   :: !Int
-  ,detailedOwnerFollowing   :: !Int
-  ,detailedOwnerBlog        :: !(Maybe Text)
-  ,detailedOwnerBio         :: !(Maybe Text)
-  ,detailedOwnerPublicRepos :: !Int
-  ,detailedOwnerName        :: !(Maybe Text)
-  ,detailedOwnerLocation    :: !(Maybe Text)
-  ,detailedOwnerCompany     :: !(Maybe Text)
-  ,detailedOwnerUrl         :: !Text
-  ,detailedOwnerId          :: !(Id GithubOwner)
-  ,detailedOwnerHtmlUrl     :: !Text
-  ,detailedOwnerLogin       :: !(Name GithubOwner)
+  | GithubOrganization {
+   githubOwnerCreatedAt   :: !UTCTime
+  ,githubOwnerType        :: !Text
+  ,githubOwnerPublicGists :: !Int
+  ,githubOwnerAvatarUrl   :: !Text
+  ,githubOwnerFollowers   :: !Int
+  ,githubOwnerFollowing   :: !Int
+  ,githubOwnerBlog        :: !(Maybe Text)
+  ,githubOwnerBio         :: !(Maybe Text)
+  ,githubOwnerPublicRepos :: !Int
+  ,githubOwnerName        :: !(Maybe Text)
+  ,githubOwnerLocation    :: !(Maybe Text)
+  ,githubOwnerCompany     :: !(Maybe Text)
+  ,githubOwnerUrl         :: !Text
+  ,githubOwnerId          :: !(Id SimpleOwner)
+  ,githubOwnerHtmlUrl     :: !Text
+  ,githubOwnerLogin       :: !(Name SimpleOwner)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData DetailedOwner where rnf = genericRnf
+instance NFData GithubOwner where rnf = genericRnf
