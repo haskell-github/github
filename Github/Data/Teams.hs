@@ -4,7 +4,8 @@ module Github.Data.Teams where
 
 import Github.Data.Definitions
 
-import Control.DeepSeq (NFData)
+import Control.DeepSeq (NFData(..))
+import Control.DeepSeq.Generics (genericRnf)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
 import Data.Vector     (Vector)
@@ -19,7 +20,7 @@ data Privacy =
   | PrivacySecret
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Privacy
+instance NFData Privacy where rnf = genericRnf
 
 data Permission =
     PermissionPull
@@ -27,7 +28,7 @@ data Permission =
   | PermissionAdmin
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Permission
+instance NFData Permission where rnf = genericRnf
 
 data Team = Team {
    teamId              :: !(Id Team)
@@ -41,7 +42,7 @@ data Team = Team {
   ,teamRepositoriesUrl :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Team
+instance NFData Team where rnf = genericRnf
 
 data DetailedTeam = DetailedTeam {
    detailedTeamId              :: !(Id Team)
@@ -58,7 +59,7 @@ data DetailedTeam = DetailedTeam {
   ,detailedTeamOrganization    :: !GithubOwner
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData DetailedTeam
+instance NFData DetailedTeam where rnf = genericRnf
 
 data CreateTeam = CreateTeam {
    createTeamName        :: !(Name Team)
@@ -77,7 +78,7 @@ data EditTeam = EditTeam {
   ,editTeamPermission  :: !Permission
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData EditTeam
+instance NFData EditTeam where rnf = genericRnf
 
 data Role =
      RoleMaintainer
@@ -91,7 +92,7 @@ data ReqState =
   |  StateActive
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData ReqState
+instance NFData ReqState where rnf = genericRnf
 
 data TeamMembership = TeamMembership {
   teamMembershipUrl      :: !Text,
@@ -99,10 +100,10 @@ data TeamMembership = TeamMembership {
   teamMembershipReqState :: !ReqState
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData TeamMembership
+instance NFData TeamMembership where rnf = genericRnf
 
 data CreateTeamMembership = CreateTeamMembership {
   createTeamMembershipRole :: !Role
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData CreateTeamMembership
+instance NFData CreateTeamMembership where rnf = genericRnf

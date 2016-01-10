@@ -6,7 +6,8 @@ import Github.Data.Definitions
 import Github.Data.Id           (Id)
 import Github.Data.PullRequests
 
-import Control.DeepSeq (NFData)
+import Control.DeepSeq (NFData(..))
+import Control.DeepSeq.Generics (genericRnf)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
 import Data.Time       (UTCTime)
@@ -34,7 +35,7 @@ data Issue = Issue {
   ,issueMilestone   :: Maybe Milestone
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Issue
+instance NFData Issue where rnf = genericRnf
 
 data NewIssue = NewIssue {
   newIssueTitle     :: Text
@@ -44,7 +45,7 @@ data NewIssue = NewIssue {
 , newIssueLabels    :: Maybe (Vector Text)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData NewIssue
+instance NFData NewIssue where rnf = genericRnf
 
 data EditIssue = EditIssue {
   editIssueTitle     :: Maybe Text
@@ -55,7 +56,7 @@ data EditIssue = EditIssue {
 , editIssueLabels    :: Maybe (Vector Text)
 } deriving  (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData EditIssue
+instance NFData EditIssue where rnf = genericRnf
 
 data Milestone = Milestone {
    milestoneCreator      :: GithubOwner
@@ -70,7 +71,7 @@ data Milestone = Milestone {
   ,milestoneState        :: Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Milestone
+instance NFData Milestone where rnf = genericRnf
 
 data IssueLabel = IssueLabel {
    labelColor :: Text
@@ -78,7 +79,7 @@ data IssueLabel = IssueLabel {
   ,labelName  :: Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData IssueLabel
+instance NFData IssueLabel where rnf = genericRnf
 
 data IssueComment = IssueComment {
    issueCommentUpdatedAt :: UTCTime
@@ -90,7 +91,7 @@ data IssueComment = IssueComment {
   ,issueCommentId        :: Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData IssueComment
+instance NFData IssueComment where rnf = genericRnf
 
 data EventType =
     Mentioned     -- ^ The actor was @mentioned in an issue body.
@@ -113,7 +114,7 @@ data EventType =
   | HeadRefRestored -- ^ The pull request’s branch was restored.
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData EventType
+instance NFData EventType where rnf = genericRnf
 
 -- | Issue event
 data Event = Event {
@@ -126,7 +127,7 @@ data Event = Event {
   ,eventIssue     :: !(Maybe Issue)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Event
+instance NFData Event where rnf = genericRnf
 
 -- | A data structure for describing how to filter issues. This is used by
 -- @issuesForRepo@.
@@ -147,4 +148,4 @@ data IssueLimitation =
     | PerPage Int -- ^ Download this many issues per query
   deriving (Eq, Ord, Show, Typeable, Data, Generic)
 
-instance NFData IssueLimitation
+instance NFData IssueLimitation where rnf = genericRnf

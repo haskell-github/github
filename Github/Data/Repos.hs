@@ -6,7 +6,8 @@ import Github.Data.Definitions
 import Github.Data.Id          (Id)
 import Github.Data.Name        (Name)
 
-import Control.DeepSeq (NFData)
+import Control.DeepSeq (NFData(..))
+import Control.DeepSeq.Generics (genericRnf)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
 import Data.Time       (UTCTime)
@@ -45,12 +46,12 @@ data Repo = Repo {
   ,repoStargazersCount :: !Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Repo
+instance NFData Repo where rnf = genericRnf
 
 data RepoRef = RepoRef GithubOwner (Name Repo) -- Repo owner and name
  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData RepoRef
+instance NFData RepoRef where rnf = genericRnf
 
 data NewRepo = NewRepo {
   newRepoName        :: !(Name Repo)
@@ -62,7 +63,7 @@ data NewRepo = NewRepo {
 , newRepoAutoInit    :: !(Maybe Bool)
 } deriving (Eq, Ord, Show, Data, Typeable, Generic)
 
-instance NFData NewRepo
+instance NFData NewRepo where rnf = genericRnf
 
 newRepo :: Name Repo -> NewRepo
 newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing
@@ -77,7 +78,7 @@ data EditRepo = EditRepo {
 , editHasDownloads :: !(Maybe Bool)
 } deriving (Eq, Ord, Show, Data, Typeable, Generic)
 
-instance NFData EditRepo
+instance NFData EditRepo where rnf = genericRnf
 
 -- | Filter the list of the user's repos using any of these constructors.
 data RepoPublicity =
@@ -92,11 +93,11 @@ data RepoPublicity =
 data Languages = Languages { getLanguages :: Vector Language }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Languages
+instance NFData Languages where rnf = genericRnf
 
 -- | A programming language with the name and number of characters written in
 -- it.
-data Language = Language Text Int
+data Language = Language !Text !Int
  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Language
+instance NFData Language where rnf = genericRnf

@@ -5,12 +5,13 @@ module Github.Data.Webhooks where
 
 import Github.Data.Id (Id)
 
-import Control.DeepSeq (NFData)
-import Data.Data       (Data, Typeable)
-import Data.Text       (Text)
-import Data.Time       (UTCTime)
-import Data.Vector     (Vector)
-import GHC.Generics    (Generic)
+import Control.DeepSeq          (NFData (..))
+import Control.DeepSeq.Generics (genericRnf)
+import Data.Data                (Data, Typeable)
+import Data.Text                (Text)
+import Data.Time                (UTCTime)
+import Data.Vector              (Vector)
+import GHC.Generics             (Generic)
 
 import qualified Data.Map as M
 
@@ -27,7 +28,7 @@ data RepoWebhook = RepoWebhook {
   ,repoWebhookCreatedAt    :: !UTCTime
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData RepoWebhook
+instance NFData RepoWebhook where rnf = genericRnf
 
 data RepoWebhookEvent =
    WebhookWildcardEvent
@@ -52,7 +53,7 @@ data RepoWebhookEvent =
  | WebhookWatchEvent
    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData RepoWebhookEvent
+instance NFData RepoWebhookEvent where rnf = genericRnf
 
 data RepoWebhookResponse = RepoWebhookResponse {
    repoWebhookResponseCode    :: !(Maybe Int)
@@ -60,7 +61,7 @@ data RepoWebhookResponse = RepoWebhookResponse {
   ,repoWebhookResponseMessage :: !(Maybe Text)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData RepoWebhookResponse
+instance NFData RepoWebhookResponse where rnf = genericRnf
 
 data PingEvent = PingEvent {
    pingEventZen    :: !Text
@@ -68,7 +69,7 @@ data PingEvent = PingEvent {
   ,pingEventHookId :: !(Id RepoWebhook)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData PingEvent
+instance NFData PingEvent where rnf = genericRnf
 
 data NewRepoWebhook = NewRepoWebhook {
   newRepoWebhookName   :: !Text
@@ -77,7 +78,7 @@ data NewRepoWebhook = NewRepoWebhook {
  ,newRepoWebhookActive :: !(Maybe Bool)
 } deriving (Eq, Ord, Show, Typeable, Data, Generic)
 
-instance NFData NewRepoWebhook
+instance NFData NewRepoWebhook where rnf = genericRnf
 
 data EditRepoWebhook = EditRepoWebhook {
   editRepoWebhookConfig       :: !(Maybe (M.Map Text Text))
@@ -87,4 +88,4 @@ data EditRepoWebhook = EditRepoWebhook {
  ,editRepoWebhookActive       :: !(Maybe Bool)
 } deriving (Eq, Ord, Show, Typeable, Data, Generic)
 
-instance NFData EditRepoWebhook
+instance NFData EditRepoWebhook where rnf = genericRnf

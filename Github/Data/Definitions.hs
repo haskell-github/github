@@ -3,12 +3,13 @@
 
 module Github.Data.Definitions where
 
-import Control.DeepSeq (NFData)
-import Data.Data       (Data, Typeable)
-import Data.Text       (Text)
-import Data.Time       (UTCTime)
-import Data.Vector     (Vector)
-import GHC.Generics    (Generic)
+import Control.DeepSeq          (NFData (..))
+import Control.DeepSeq.Generics (genericRnf)
+import Data.Data                (Data, Typeable)
+import Data.Text                (Text)
+import Data.Time                (UTCTime)
+import Data.Vector              (Vector)
+import GHC.Generics             (Generic)
 
 import qualified Control.Exception as E
 
@@ -46,7 +47,7 @@ data GithubOwner = GithubUser {
   ,githubOwnerId        :: !(Id GithubOwner)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData GithubOwner
+instance NFData GithubOwner where rnf = genericRnf
 
 data Stats = Stats {
    statsAdditions :: !Int
@@ -54,7 +55,7 @@ data Stats = Stats {
   ,statsDeletions :: !Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Stats
+instance NFData Stats where rnf = genericRnf
 
 data Comment = Comment {
    commentPosition  :: !(Maybe Int)
@@ -70,19 +71,19 @@ data Comment = Comment {
   ,commentId        :: !(Id Comment)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Comment
+instance NFData Comment where rnf = genericRnf
 
 data NewComment = NewComment {
    newCommentBody :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData NewComment
+instance NFData NewComment where rnf = genericRnf
 
 data EditComment = EditComment {
    editCommentBody :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData EditComment
+instance NFData EditComment where rnf = genericRnf
 
 data SimpleOrganization = SimpleOrganization {
    simpleOrganizationUrl       :: !Text
@@ -91,7 +92,7 @@ data SimpleOrganization = SimpleOrganization {
   ,simpleOrganizationLogin     :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData SimpleOrganization
+instance NFData SimpleOrganization where rnf = genericRnf
 
 data Organization = Organization {
    organizationType        :: !Text
@@ -112,14 +113,14 @@ data Organization = Organization {
   ,organizationId          :: !(Id Organization)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Organization
+instance NFData Organization where rnf = genericRnf
 
 data Content
   = ContentFile ContentFileData
   | ContentDirectory (Vector ContentItem)
  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Content
+instance NFData Content where rnf = genericRnf
 
 data ContentFileData = ContentFileData {
    contentFileInfo     :: !ContentInfo
@@ -128,7 +129,7 @@ data ContentFileData = ContentFileData {
   ,contentFileContent  :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData ContentFileData
+instance NFData ContentFileData where rnf = genericRnf
 
 -- | An item in a directory listing.
 data ContentItem = ContentItem {
@@ -136,12 +137,12 @@ data ContentItem = ContentItem {
   ,contentItemInfo :: !ContentInfo
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData ContentItem
+instance NFData ContentItem where rnf = genericRnf
 
 data ContentItemType = ItemFile | ItemDir
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData ContentItemType
+instance NFData ContentItemType where rnf = genericRnf
 
 -- | Information common to both kinds of Content: files and directories.
 data ContentInfo = ContentInfo {
@@ -153,7 +154,7 @@ data ContentInfo = ContentInfo {
   ,contentHtmlUrl :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData ContentInfo
+instance NFData ContentInfo where rnf = genericRnf
 
 data Contributor
   -- | An existing Github user, with their number of contributions, avatar
@@ -163,7 +164,7 @@ data Contributor
   | AnonymousContributor Int Text
  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Contributor
+instance NFData Contributor where rnf = genericRnf
 
 data DetailedOwner = DetailedUser {
    detailedOwnerCreatedAt   :: !UTCTime
@@ -205,4 +206,4 @@ data DetailedOwner = DetailedUser {
   ,detailedOwnerLogin       :: !(Name GithubOwner)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData DetailedOwner
+instance NFData DetailedOwner where rnf = genericRnf

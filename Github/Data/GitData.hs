@@ -4,7 +4,8 @@ module Github.Data.GitData where
 
 import Github.Data.Definitions
 
-import Control.DeepSeq (NFData)
+import Control.DeepSeq (NFData(..))
+import Control.DeepSeq.Generics (genericRnf)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
 import Data.Time       (UTCTime)
@@ -22,7 +23,7 @@ data Commit = Commit {
   ,commitStats     :: !(Maybe Stats)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Commit
+instance NFData Commit where rnf = genericRnf
 
 data Tree = Tree {
    treeSha      :: !Text
@@ -30,7 +31,7 @@ data Tree = Tree {
   ,treeGitTrees :: !(Vector GitTree)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Tree
+instance NFData Tree where rnf = genericRnf
 
 data GitTree = GitTree {
   gitTreeType  :: !Text
@@ -42,7 +43,7 @@ data GitTree = GitTree {
   ,gitTreeMode :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData GitTree
+instance NFData GitTree where rnf = genericRnf
 
 data GitCommit = GitCommit {
    gitCommitMessage   :: !Text
@@ -54,7 +55,7 @@ data GitCommit = GitCommit {
   ,gitCommitParents   :: !(Vector Tree)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData GitCommit
+instance NFData GitCommit where rnf = genericRnf
 
 data Blob = Blob {
    blobUrl      :: !Text
@@ -64,7 +65,7 @@ data Blob = Blob {
   ,blobSize     :: !Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Blob
+instance NFData Blob where rnf = genericRnf
 
 data Tag = Tag {
    tagName       :: !Text
@@ -73,21 +74,21 @@ data Tag = Tag {
   ,tagCommit     :: !BranchCommit
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Tag
+instance NFData Tag where rnf = genericRnf
 
 data Branch = Branch {
    branchName   :: !Text
   ,branchCommit :: !BranchCommit
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Branch
+instance NFData Branch where rnf = genericRnf
 
 data BranchCommit = BranchCommit {
    branchCommitSha :: !Text
   ,branchCommitUrl :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData BranchCommit
+instance NFData BranchCommit where rnf = genericRnf
 
 data Diff = Diff {
    diffStatus       :: !Text
@@ -104,14 +105,14 @@ data Diff = Diff {
   ,diffPermalinkUrl :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Diff
+instance NFData Diff where rnf = genericRnf
 
 data NewGitReference = NewGitReference {
    newGitReferenceRef :: !Text
   ,newGitReferenceSha :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData NewGitReference
+instance NFData NewGitReference where rnf = genericRnf
 
 data GitReference = GitReference {
    gitReferenceObject :: !GitObject
@@ -119,7 +120,7 @@ data GitReference = GitReference {
   ,gitReferenceRef    :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData GitReference
+instance NFData GitReference where rnf = genericRnf
 
 data GitObject = GitObject {
    gitObjectType :: !Text
@@ -127,7 +128,7 @@ data GitObject = GitObject {
   ,gitObjectUrl  :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData GitObject
+instance NFData GitObject where rnf = genericRnf
 
 data GitUser = GitUser {
    gitUserName  :: !Text
@@ -135,7 +136,7 @@ data GitUser = GitUser {
   ,gitUserDate  :: !UTCTime
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData GitUser
+instance NFData GitUser where rnf = genericRnf
 
 data File = File {
    fileBlobUrl   :: !Text
@@ -149,4 +150,4 @@ data File = File {
   ,fileDeletions :: !Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData File
+instance NFData File where rnf = genericRnf
