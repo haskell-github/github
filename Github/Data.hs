@@ -9,6 +9,7 @@
 
 module Github.Data (
     -- * Module re-exports
+    module Github.Auth,
     module Github.Data.Definitions,
     module Github.Data.Gists,
     module Github.Data.GitData,
@@ -42,6 +43,7 @@ import qualified Data.HashMap.Lazy as Map
 import qualified Data.Text         as T
 import qualified Data.Vector       as V
 
+import Github.Auth
 import Github.Data.Definitions
 import Github.Data.Gists
 import Github.Data.GitData

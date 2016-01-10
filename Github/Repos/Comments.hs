@@ -38,7 +38,7 @@ commentsFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/comments/#list-commit-comments-for-a-repository>
 commentsForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector Comment)
 commentsForR user repo =
-    GithubPagedGet ["repos", untagName user, untagName repo, "comments"] []
+    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "comments"] []
 
 -- | Just the comments on a specific SHA for a given Github repo.
 --
@@ -58,7 +58,7 @@ commitCommentsFor' auth user repo sha =
 -- See <https://developer.github.com/v3/repos/comments/#list-comments-for-a-single-commit>
 commitCommentsForR :: Name GithubOwner -> Name Repo -> Name Commit -> Maybe Count -> GithubRequest k (Vector Comment)
 commitCommentsForR user repo sha =
-    GithubPagedGet ["repos", untagName user, untagName repo, "commits", untagName sha, "comments"] []
+    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "commits", toPathPart sha, "comments"] []
 
 -- | A comment, by its ID, relative to the Github repo.
 --
@@ -77,4 +77,4 @@ commitCommentFor' auth user repo cid =
 -- See <https://developer.github.com/v3/repos/comments/#get-a-single-commit-comment>
 commitCommentForR :: Name GithubOwner -> Name Repo -> Id Comment -> GithubRequest k Comment
 commitCommentForR user repo cid =
-    GithubGet ["repos", untagName user, untagName repo, "comments", show $ untagId cid] []
+    GithubGet ["repos", toPathPart user, toPathPart repo, "comments", toPathPart cid] []

@@ -14,8 +14,6 @@ import Data.String       (IsString (..))
 import Data.Text         (Text)
 import GHC.Generics      (Generic)
 
-import qualified Data.Text as T
-
 newtype Name entity = N Text
     deriving (Eq, Ord, Show, Read, Generic, Typeable, Data)
 
@@ -23,8 +21,8 @@ newtype Name entity = N Text
 mkName :: proxy entity -> Text -> Name entity
 mkName _ = N
 
-untagName :: Name entity -> String
-untagName (N name) = T.unpack name
+untagName :: Name entity -> Text
+untagName (N name) = name
 
 instance Hashable (Name entity)
 

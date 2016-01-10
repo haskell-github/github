@@ -88,7 +88,7 @@ userRepos' auth user publicity =
 -- See <https://developer.github.com/v3/repos/#list-user-repositories>
 userReposR :: Name GithubOwner -> RepoPublicity -> Maybe Count -> GithubRequest k(Vector Repo)
 userReposR user publicity =
-    GithubPagedGet  ["users", untagName user, "repos"] qs
+    GithubPagedGet  ["users", toPathPart user, "repos"] qs
   where
     qs = repoPublicityQueryString publicity
 
@@ -110,7 +110,7 @@ organizationRepos' auth org publicity =
 -- See <https://developer.github.com/v3/repos/#list-organization-repositories>
 organizationReposR :: Name Organization -> RepoPublicity -> Maybe Count -> GithubRequest k (Vector Repo)
 organizationReposR org publicity =
-    GithubPagedGet ["orgs", untagName org, "repos"] qs
+    GithubPagedGet ["orgs", toPathPart org, "repos"] qs
   where
     qs = repoPublicityQueryString publicity
 
@@ -132,7 +132,7 @@ repository' auth user repo =
 -- See <https://developer.github.com/v3/repos/#get>
 repositoryR :: Name GithubOwner -> Name Repo -> GithubRequest k Repo
 repositoryR user repo =
-    GithubGet ["repos", untagName user, untagName repo] []
+    GithubGet ["repos", toPathPart user, toPathPart repo] []
 
 -- | Create a new repository.
 --
@@ -158,7 +158,7 @@ createOrganizationRepo' auth org nrepo =
 -- See <https://developer.github.com/v3/repos/#create>
 createOrganizationRepoR :: Name Organization -> NewRepo -> GithubRequest 'True Repo
 createOrganizationRepoR org nrepo =
-    GithubPost Post ["orgs", untagName org, "repos"] (encode nrepo)
+    GithubPost Post ["orgs", toPathPart org, "repos"] (encode nrepo)
 
 -- | Edit an existing repository.
 --
@@ -176,7 +176,7 @@ editRepo auth user repo body =
 -- See <https://developer.github.com/v3/repos/#edit>
 editRepoR :: Name GithubOwner -> Name Repo -> EditRepo -> GithubRequest 'True Repo
 editRepoR user repo body =
-    GithubPost Patch ["repos", untagName user, untagName repo] (encode b)
+    GithubPost Patch ["repos", toPathPart user, toPathPart repo] (encode b)
   where
     -- if no name is given, use curent name
     b = body {editName = editName body <|> Just repo}
@@ -203,7 +203,7 @@ contributorsR :: Name GithubOwner
               -> Maybe Count
               -> GithubRequest k (Vector Contributor)
 contributorsR user repo anon =
-    GithubPagedGet ["repos", untagName user, untagName repo, "contributors"] qs
+    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "contributors"] qs
   where
     qs | anon      = [("anon", Just "true")]
        | otherwise = []
@@ -246,7 +246,7 @@ languagesFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/#list-languages>
 languagesForR :: Name GithubOwner -> Name Repo -> GithubRequest k Languages
 languagesForR user repo =
-    GithubGet  ["repos", untagName user, untagName repo, "languages"] []
+    GithubGet  ["repos", toPathPart user, toPathPart repo, "languages"] []
 
 -- | The git tags on a repo, given the repo owner and name.
 --
@@ -266,7 +266,7 @@ tagsFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/#list-tags>
 tagsForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector Tag)
 tagsForR user repo =
-    GithubPagedGet  ["repos", untagName user, untagName repo, "tags"] []
+    GithubPagedGet  ["repos", toPathPart user, toPathPart repo, "tags"] []
 
 -- | The git branches on a repo, given the repo owner and name.
 --
@@ -286,7 +286,7 @@ branchesFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/#list-branches>
 branchesForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector Branch)
 branchesForR user repo =
-    GithubPagedGet  ["repos", untagName user, untagName repo, "branches"] []
+    GithubPagedGet  ["repos", toPathPart user, toPathPart repo, "branches"] []
 
 -- | The contents of a file or directory in a repo, given the repo owner, name, and path to the file
 --
@@ -308,7 +308,7 @@ contentsForR :: Name GithubOwner
              -> Maybe String      -- ^ Git commit
              -> GithubRequest k Content
 contentsForR user repo path ref =
-    GithubGet ["repos", untagName user, untagName repo, "contents", path] qs
+    GithubGet ["repos", toPathPart user, toPathPart repo, "contents", path] qs
   where
     qs =  maybe [] (\r -> [("ref", Just . BS8.pack $ r)]) ref
 
@@ -328,7 +328,7 @@ readmeFor' auth user repo =
 
 readmeForR :: Name GithubOwner -> Name Repo -> GithubRequest k Content
 readmeForR user repo =
-    GithubGet ["repos", untagName user, untagName repo, "readme"] []
+    GithubGet ["repos", toPathPart user, toPathPart repo, "readme"] []
 
 -- | Delete an existing repository.
 --
@@ -339,4 +339,4 @@ deleteRepo auth user repo =
 
 deleteRepoR :: Name GithubOwner -> Name Repo -> GithubRequest 'True ()
 deleteRepoR user repo =
-    GithubDelete ["repos", untagName user, untagName repo]
+    GithubDelete ["repos", toPathPart user, toPathPart repo]

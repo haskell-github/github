@@ -59,7 +59,7 @@ labelsOnRepo' auth user repo =
 -- See <https://developer.github.com/v3/issues/labels/#list-all-labels-for-this-repository>
 labelsOnRepoR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector IssueLabel)
 labelsOnRepoR user repo =
-    GithubPagedGet ["repos", untagName user, untagName repo, "labels"] []
+    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "labels"] []
 
 -- | A label by name.
 --
@@ -78,7 +78,7 @@ label' auth user repo lbl =
 -- See <https://developer.github.com/v3/issues/labels/#get-a-single-label>
 labelR :: Name GithubOwner -> Name Repo -> Name IssueLabel -> GithubRequest k IssueLabel
 labelR user repo lbl =
-    GithubGet ["repos", untagName user, untagName repo, "labels", untagName lbl] []
+    GithubGet ["repos", toPathPart user, toPathPart repo, "labels", toPathPart lbl] []
 
 -- | Create a label
 --
@@ -93,7 +93,7 @@ createLabelR :: Name GithubOwner -> Name Repo -> Name IssueLabel -> String -> Gi
 createLabelR user repo lbl color =
     GithubPost Post paths $ encode body
   where
-    paths = ["repos", untagName user, untagName repo, "labels"]
+    paths = ["repos", toPathPart user, toPathPart repo, "labels"]
     body = object ["name" .= untagName lbl, "color" .= color]
 
 -- | Update a label
@@ -120,7 +120,7 @@ updateLabelR :: Name GithubOwner
 updateLabelR user repo oldLbl newLbl color =
     GithubPost Patch paths (encode body)
   where
-    paths = ["repos", untagName user, untagName repo, "labels", untagName oldLbl]
+    paths = ["repos", toPathPart user, toPathPart repo, "labels", toPathPart oldLbl]
     body = object ["name" .= untagName newLbl, "color" .= color]
 
 -- | Delete a label
@@ -134,7 +134,7 @@ deleteLabel auth user repo lbl =
 -- See <https://developer.github.com/v3/issues/labels/#delete-a-label>
 deleteLabelR :: Name GithubOwner -> Name Repo -> Name IssueLabel -> GithubRequest 'True ()
 deleteLabelR user repo lbl =
-    GithubDelete ["repos", untagName user, untagName repo, "labels", untagName lbl]
+    GithubDelete ["repos", toPathPart user, toPathPart repo, "labels", toPathPart lbl]
 
 -- | The labels on an issue in a repo.
 --
@@ -153,7 +153,7 @@ labelsOnIssue' auth user repo iid =
 -- See <https://developer.github.com/v3/issues/labels/#list-labels-on-an-issue>
 labelsOnIssueR :: Name GithubOwner -> Name Repo -> Id Issue -> Maybe Count -> GithubRequest k (Vector IssueLabel)
 labelsOnIssueR user repo iid =
-    GithubPagedGet ["repos", untagName user, untagName repo, "issues", show $ untagId iid, "labels"] []
+    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"] []
 
 -- | Add labels to an issue.
 --
@@ -179,7 +179,7 @@ addLabelsToIssueR :: Foldable f
 addLabelsToIssueR user repo iid lbls =
     GithubPost Post paths (encode $ toList lbls)
   where
-    paths = ["repos", untagName user, untagName repo, "issues", show $ untagId iid, "labels"]
+    paths = ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"]
 
 -- | Remove a label from an issue.
 --
@@ -192,7 +192,7 @@ removeLabelFromIssue auth user repo iid lbl =
 -- See <https://developer.github.com/v3/issues/labels/#remove-a-label-from-an-issue>
 removeLabelFromIssueR :: Name GithubOwner -> Name Repo -> Id Issue -> Name IssueLabel -> GithubRequest 'True ()
 removeLabelFromIssueR user repo iid lbl =
-    GithubDelete ["repos", untagName user, untagName repo, "issues", show $ untagId iid, "labels", untagName lbl]
+    GithubDelete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels", toPathPart lbl]
 
 -- | Replace all labels on an issue. Sending an empty list will remove all labels from the issue.
 --
@@ -220,7 +220,7 @@ replaceAllLabelsForIssueR :: Foldable f
 replaceAllLabelsForIssueR user repo iid lbls =
     GithubPost Put paths (encode $ toList lbls)
   where
-    paths = ["repos", untagName user, untagName repo, "issues", show $ untagId iid, "labels"]
+    paths = ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"]
 
 -- | Remove all labels from an issue.
 --
@@ -233,7 +233,7 @@ removeAllLabelsFromIssue auth user repo iid =
 -- See <https://developer.github.com/v3/issues/labels/#remove-all-labels-from-an-issue>
 removeAllLabelsFromIssueR :: Name GithubOwner -> Name Repo -> Id Issue -> GithubRequest 'True ()
 removeAllLabelsFromIssueR user repo iid =
-    GithubDelete ["repos", untagName user, untagName repo, "issues", show $ untagId iid, "labels"]
+    GithubDelete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"]
 
 -- | All the labels on a repo's milestone given the milestone ID.
 --
@@ -252,4 +252,4 @@ labelsOnMilestone' auth user repo mid =
 -- See <https://developer.github.com/v3/issues/labels/#get-labels-for-every-issue-in-a-milestone>
 labelsOnMilestoneR :: Name GithubOwner -> Name Repo -> Id Milestone -> Maybe Count -> GithubRequest k (Vector IssueLabel)
 labelsOnMilestoneR user repo mid =
-    GithubPagedGet ["repos", untagName user, untagName repo, "milestones", show $ untagId mid, "labels"] []
+    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "milestones", toPathPart mid, "labels"] []

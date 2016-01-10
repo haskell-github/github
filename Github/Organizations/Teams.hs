@@ -50,7 +50,7 @@ teamsOf = teamsOf' Nothing
 -- | List teams.
 -- See <https://developer.github.com/v3/orgs/teams/#list-teams>
 teamsOfR :: Name Organization -> Maybe Count -> GithubRequest k (Vector SimpleTeam)
-teamsOfR org = GithubPagedGet ["orgs", untagName org, "teams"] []
+teamsOfR org = GithubPagedGet ["orgs", toPathPart org, "teams"] []
 
 -- | The information for a single team, by team id.
 -- | With authentication
@@ -70,7 +70,7 @@ teamInfoFor = teamInfoFor' Nothing
 -- See <https://developer.github.com/v3/orgs/teams/#get-team>
 teamInfoForR  :: Id Team -> GithubRequest k Team
 teamInfoForR tid =
-    GithubGet ["teams", show $ untagId tid] []
+    GithubGet ["teams", toPathPart tid] []
 
 -- | Create a team under an GithubOwner
 --
@@ -86,7 +86,7 @@ createTeamFor' auth org cteam =
 -- See <https://developer.github.com/v3/orgs/teams/#create-team>
 createTeamForR :: Name Organization -> CreateTeam -> GithubRequest 'True Team
 createTeamForR org cteam =
-    GithubPost Post ["orgs", untagName org, "teams"] (encode cteam)
+    GithubPost Post ["orgs", toPathPart org, "teams"] (encode cteam)
 
 -- | Edit a team, by id.
 --
@@ -102,7 +102,7 @@ editTeam' auth tid eteam =
 -- See <https://developer.github.com/v3/orgs/teams/#edit-team>
 editTeamR :: Id Team -> EditTeam -> GithubRequest 'True Team
 editTeamR tid eteam =
-    GithubPost Patch ["teams", show $ untagId tid] (encode eteam)
+    GithubPost Patch ["teams", toPathPart tid] (encode eteam)
 
 -- | Delete a team, by id.
 --
@@ -115,7 +115,7 @@ deleteTeam' auth tid =
 -- See <https://developer.github.com/v3/orgs/teams/#delete-team>
 deleteTeamR :: Id Team -> GithubRequest 'True ()
 deleteTeamR tid =
-    GithubDelete ["teams", show $ untagId tid]
+    GithubDelete ["teams", toPathPart tid]
 
 -- | Retrieve team mebership information for a user.
 -- | With authentication
@@ -129,7 +129,7 @@ teamMembershipInfoFor' auth tid user =
 -- See <https://developer.github.com/v3/orgs/teams/#get-team-membership
 teamMembershipInfoForR :: Id Team -> Name GithubOwner -> GithubRequest k TeamMembership
 teamMembershipInfoForR tid user =
-    GithubGet ["teams", show $ untagId tid, "memberships", untagName user] []
+    GithubGet ["teams", toPathPart tid, "memberships", toPathPart user] []
 
 -- | Retrieve team mebership information for a user.
 --
@@ -148,7 +148,7 @@ addTeamMembershipFor' auth tid user role =
 -- See <https://developer.github.com/v3/orgs/teams/#add-team-membership>
 addTeamMembershipForR :: Id Team -> Name GithubOwner -> Role -> GithubRequest 'True TeamMembership
 addTeamMembershipForR tid user role =
-    GithubPost Put ["teams", show $ untagId tid, "memberships", untagName user] (encode $ CreateTeamMembership role)
+    GithubPost Put ["teams", toPathPart tid, "memberships", toPathPart user] (encode $ CreateTeamMembership role)
 
 -- | Delete a member of a team.
 --
@@ -161,7 +161,7 @@ deleteTeamMembershipFor' auth tid user =
 -- See <https://developer.github.com/v3/orgs/teams/#remove-team-membership>
 deleteTeamMembershipForR :: Id Team -> Name GithubOwner -> GithubRequest 'True ()
 deleteTeamMembershipForR tid user =
-    GithubDelete ["teams", show $ untagId tid, "memberships", untagName user]
+    GithubDelete ["teams", toPathPart tid, "memberships", toPathPart user]
 
 -- | List teams for current authenticated user
 --

@@ -32,7 +32,7 @@ comment user repo cid =
 -- See <https://developer.github.com/v3/issues/comments/#get-a-single-comment>
 commentR :: Name GithubOwner -> Name Repo -> Id Comment -> GithubRequest k IssueComment
 commentR user repo cid =
-    GithubGet ["repos", untagName user, untagName repo, "issues", "comments", show $ untagId cid] []
+    GithubGet ["repos", toPathPart user, toPathPart repo, "issues", "comments", toPathPart cid] []
 
 -- | All comments on an issue, by the issue's number.
 --
@@ -51,7 +51,7 @@ comments' auth user repo iid =
 -- See <https://developer.github.com/v3/issues/comments/#list-comments-on-an-issue>
 commentsR :: Name GithubOwner -> Name Repo -> Id Issue -> Maybe Count -> GithubRequest k (Vector IssueComment)
 commentsR user repo iid =
-    GithubPagedGet ["repos", untagName user, untagName repo, "issues", show $ untagId iid, "comments"] []
+    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "comments"] []
 
 -- | Create a new comment.
 --
@@ -68,7 +68,7 @@ createCommentR :: Name GithubOwner -> Name Repo -> Id Issue -> Text -> GithubReq
 createCommentR user repo iss body =
     GithubPost Post parts (encode $ NewComment body)
   where
-    parts = ["repos", untagName user, untagName repo, "issues", show $ untagId iss, "comments"]
+    parts = ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iss, "comments"]
 
 -- | Edit a comment.
 --
@@ -85,4 +85,4 @@ editCommentR :: Name GithubOwner -> Name Repo -> Id Comment -> Text -> GithubReq
 editCommentR user repo commid body =
     GithubPost Patch parts (encode $ EditComment body)
   where
-    parts = ["repos", untagName user, untagName repo, "issues", "comments", show $ untagId commid]
+    parts = ["repos", toPathPart user, toPathPart repo, "issues", "comments", toPathPart commid]

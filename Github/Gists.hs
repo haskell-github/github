@@ -30,7 +30,7 @@ gists = gists' Nothing
 -- | List gists.
 -- See <https://developer.github.com/v3/gists/#list-gists>
 gistsR :: Name GithubOwner -> Maybe Count -> GithubRequest k (Vector Gist)
-gistsR user = GithubPagedGet ["users", untagName user, "gists"] []
+gistsR user = GithubPagedGet ["users", toPathPart user, "gists"] []
 
 -- | A specific gist, given its id, with authentication credentials
 --
@@ -49,4 +49,4 @@ gist = gist' Nothing
 -- See <https://developer.github.com/v3/gists/#get-a-single-gist>
 gistR :: Name Gist ->GithubRequest k Gist
 gistR gid =
-    GithubGet ["gists", untagName gid] []
+    GithubGet ["gists", toPathPart gid] []

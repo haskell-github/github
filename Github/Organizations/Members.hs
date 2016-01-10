@@ -31,4 +31,4 @@ membersOf = membersOf' Nothing
 --
 -- See <https://developer.github.com/v3/orgs/members/#members-list>
 membersOfR :: Name Organization -> Maybe Count -> GithubRequest k (Vector SimpleOwner)
-membersOfR organization = GithubPagedGet ["orgs", untagName organization, "members"] []
+membersOfR organization = GithubPagedGet ["orgs", toPathPart organization, "members"] []

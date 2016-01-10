@@ -1,6 +1,8 @@
 case $BUILD in
   stack)
-    stack --no-terminal test
+    stack --no-terminal test github
+    stack --no-terminal build github-samples
+    stack exec github-show-user
     ;;
   cabal)
     if [ -f configure.ac ]; then autoreconf -i; fi

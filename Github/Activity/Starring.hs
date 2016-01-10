@@ -27,7 +27,7 @@ stargazersFor auth user repo =
 -- See <https://developer.github.com/v3/activity/starring/#list-stargazers>
 stargazersForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector GithubOwner)
 stargazersForR user repo =
-    GithubPagedGet ["repos", untagName user, untagName repo, "stargazers"] []
+    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "stargazers"] []
 
 -- | All the public repos starred by the specified user.
 --
@@ -40,7 +40,7 @@ reposStarredBy auth user =
 -- See <https://developer.github.com/v3/activity/starring/#list-repositories-being-starred>
 reposStarredByR :: Name GithubOwner -> Maybe Count -> GithubRequest k (Vector Repo)
 reposStarredByR user =
-    GithubPagedGet ["users", untagName user, "starred"] []
+    GithubPagedGet ["users", toPathPart user, "starred"] []
 
 -- | All the repos starred by the authenticated user.
 myStarred :: GithubAuth -> IO (Either Error (Vector Repo))

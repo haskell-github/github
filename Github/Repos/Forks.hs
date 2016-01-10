@@ -30,4 +30,4 @@ forksFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/forks/#list-forks>
 forksForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector Repo)
 forksForR user repo =
-    GithubPagedGet ["repos", untagName user, untagName repo, "forks"] []
+    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "forks"] []

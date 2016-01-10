@@ -45,7 +45,7 @@ webhooksFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/hooks/#list-hooks>
 webhooksForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector RepoWebhook)
 webhooksForR user repo =
-    GithubPagedGet ["repos", untagName user, untagName repo, "hooks"] []
+    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "hooks"] []
 
 webhookFor' :: GithubAuth -> Name GithubOwner -> Name Repo -> Id RepoWebhook -> IO (Either Error RepoWebhook)
 webhookFor' auth user repo hookId =
@@ -55,7 +55,7 @@ webhookFor' auth user repo hookId =
 -- See <https://developer.github.com/v3/repos/hooks/#get-single-hook>
 webhookForR :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> GithubRequest k RepoWebhook
 webhookForR user repo hookId =
-    GithubGet ["repos", untagName user, untagName repo, "hooks", show $ untagId hookId] []
+    GithubGet ["repos", toPathPart user, toPathPart repo, "hooks", toPathPart hookId] []
 
 createRepoWebhook' :: GithubAuth -> Name GithubOwner -> Name Repo -> NewRepoWebhook -> IO (Either Error RepoWebhook)
 createRepoWebhook' auth user repo hook =
@@ -65,7 +65,7 @@ createRepoWebhook' auth user repo hook =
 -- See <https://developer.github.com/v3/repos/hooks/#create-a-hook>
 createRepoWebhookR :: Name GithubOwner -> Name Repo -> NewRepoWebhook -> GithubRequest 'True RepoWebhook
 createRepoWebhookR user repo hook =
-    GithubPost Post ["repos", untagName user, untagName repo, "hooks"] (encode hook)
+    GithubPost Post ["repos", toPathPart user, toPathPart repo, "hooks"] (encode hook)
 
 editRepoWebhook' :: GithubAuth -> Name GithubOwner -> Name Repo -> Id RepoWebhook -> EditRepoWebhook -> IO (Either Error RepoWebhook)
 editRepoWebhook' auth user repo hookId hookEdit =
@@ -75,7 +75,7 @@ editRepoWebhook' auth user repo hookId hookEdit =
 -- See <https://developer.github.com/v3/repos/hooks/#edit-a-hook>
 editRepoWebhookR :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> EditRepoWebhook -> GithubRequest 'True RepoWebhook
 editRepoWebhookR user repo hookId hookEdit =
-    GithubPost Patch ["repos", untagName user, untagName repo, "hooks", show $ untagId hookId] (encode hookEdit)
+    GithubPost Patch ["repos", toPathPart user, toPathPart repo, "hooks", toPathPart hookId] (encode hookEdit)
 
 testPushRepoWebhook' :: GithubAuth -> Name GithubOwner -> Name Repo -> Id RepoWebhook -> IO (Either Error Status)
 testPushRepoWebhook' auth user repo hookId =
@@ -109,7 +109,7 @@ deleteRepoWebhookR user repo hookId =
 
 createBaseWebhookPath :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> [String]
 createBaseWebhookPath user repo hookId =
-    ["repos", untagName user, untagName repo, "hooks", show $ untagId hookId]
+    ["repos", toPathPart user, toPathPart repo, "hooks", toPathPart hookId]
 
 createWebhookOpPath :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> Maybe String -> [String]
 createWebhookOpPath owner reqName webhookId Nothing = createBaseWebhookPath owner reqName webhookId

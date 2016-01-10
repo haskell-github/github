@@ -1,5 +1,6 @@
 packages:
 - '.'
+- 'samples/'
 extra-deps:
 - aeson-extra-0.2.3.0
 - http-link-header-1.0.1

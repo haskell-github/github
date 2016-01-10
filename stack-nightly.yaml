@@ -1,6 +1,7 @@
 resolver: nightly-2016-01-08
 packages:
 - '.'
+- 'samples/'
 extra-deps: []
 flags:
   github:

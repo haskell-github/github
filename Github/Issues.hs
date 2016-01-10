@@ -50,7 +50,7 @@ issue = issue' Nothing
 -- See <https://developer.github.com/v3/issues/#get-a-single-issue>
 issueR :: Name GithubOwner -> Name Repo -> Id Issue -> GithubRequest k Issue
 issueR user reqRepoName reqIssueNumber =
-    GithubGet ["repos", untagName user, untagName reqRepoName, "issues", show $ untagId reqIssueNumber] []
+    GithubGet ["repos", toPathPart user, toPathPart reqRepoName, "issues", toPathPart reqIssueNumber] []
 
 -- | All issues for a repo (given the repo owner and name), with optional
 -- restrictions as described in the @IssueLimitation@ data type.
@@ -71,7 +71,7 @@ issuesForRepo = issuesForRepo' Nothing
 -- See <https://developer.github.com/v3/issues/#list-issues-for-a-repository>
 issuesForRepoR :: Name GithubOwner -> Name Repo -> [IssueLimitation] -> Maybe Count -> GithubRequest k (Vector Issue)
 issuesForRepoR user reqRepoName issueLimitations =
-    GithubPagedGet ["repos", untagName user, untagName reqRepoName, "issues"] qs
+    GithubPagedGet ["repos", toPathPart user, toPathPart reqRepoName, "issues"] qs
   where
     qs = map convert issueLimitations
 
@@ -109,7 +109,7 @@ createIssue auth user repo ni =
 -- See <https://developer.github.com/v3/issues/#create-an-issue>
 createIssueR :: Name GithubOwner -> Name Repo -> NewIssue -> GithubRequest 'True Issue
 createIssueR user repo =
-    GithubPost Post ["repos", untagName user, untagName repo, "issues"] . encode
+    GithubPost Post ["repos", toPathPart user, toPathPart repo, "issues"] . encode
 
 -- Editing issues.
 
@@ -129,4 +129,4 @@ editIssue auth user repo iss edit =
 -- See <https://developer.github.com/v3/issues/#edit-an-issue>
 editIssueR :: Name GithubOwner -> Name Repo -> Id Issue -> EditIssue -> GithubRequest 'True Issue
 editIssueR user repo iss =
-    GithubPost Patch ["repos", untagName user, untagName repo, "issues", show $ untagId iss] . encode
+    GithubPost Patch ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iss] . encode

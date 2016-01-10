@@ -33,7 +33,7 @@ watchersFor' auth user repo =
 -- See <https://developer.github.com/v3/activity/watching/#list-watchers>
 watchersForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector GithubOwner)
 watchersForR user repo limit =
-    GithubPagedGet ["repos", untagName user, untagName repo, "watchers"] [] limit
+    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "watchers"] [] limit
 
 -- | All the public repos watched by the specified user.
 --
@@ -53,4 +53,4 @@ reposWatchedBy' auth user =
 -- See <https://developer.github.com/v3/activity/watching/#list-repositories-being-watched>
 reposWatchedByR :: Name GithubOwner -> Maybe Count -> GithubRequest k (Vector Repo)
 reposWatchedByR user =
-    GithubPagedGet ["users", untagName user, "subscriptions"] []
+    GithubPagedGet ["users", toPathPart user, "subscriptions"] []

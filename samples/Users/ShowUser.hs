@@ -1,52 +1,73 @@
-module ShowUser where
+{-# LANGUAGE OverloadedStrings #-}
+module Main (main) where
 
+import Prelude        ()
+import Prelude.Compat
+
+import Data.Maybe  (fromMaybe)
+import Data.Monoid ((<>))
+import Data.Text   (Text)
+import System.Environment (lookupEnv)
+
+import qualified Data.Text    as T
+import qualified Data.Text.IO as T
 import qualified Github.Users as Github
-import Data.Maybe (fromMaybe)
 
+getAuth :: IO (Maybe (Github.GithubAuth))
+getAuth = do
+  token <- lookupEnv "GITHUB_TOKEN"
+  pure (Github.GithubOAuth <$> token)
+
+main :: IO ()
 main = do
-  possibleUser <- Github.userInfoFor "mike-burns"
-  putStrLn $ either (("Error: "++) . show) formatUser possibleUser
+  auth <- getAuth
+  possibleUser <- Github.userInfoFor' auth "mike-burns"
+  T.putStrLn $ either (("Error: " <>) . tshow) formatUser possibleUser
 
-formatUser user@(Github.DetailedOrganization {}) =
-  "Organization: " ++ (formatName userName login) ++ "\t" ++
-    (fromMaybe "" company) ++ "\t" ++
-    (fromMaybe "" location) ++ "\n" ++
-    (fromMaybe "" blog) ++ "\t" ++ "\n" ++
-    htmlUrl ++ "\t" ++ (formatDate createdAt) ++ "\n\n" ++
+formatUser :: Github.GithubOwner -> Text
+formatUser user@(Github.GithubOrganization {}) =
+  "Organization: " <> (formatName userName login) <> "\t" <>
+    (fromMaybe "" company) <> "\t" <>
+    (fromMaybe "" location) <> "\n" <>
+    (fromMaybe "" blog) <> "\t" <> "\n" <>
+    htmlUrl <> "\t" <> tshow createdAt <> "\n\n" <>
     (fromMaybe "" bio)
   where
-    userName = Github.detailedOwnerName user
-    login = Github.detailedOwnerLogin user
-    company = Github.detailedOwnerCompany user
-    location = Github.detailedOwnerLocation user
-    blog = Github.detailedOwnerBlog user
-    htmlUrl = Github.detailedOwnerHtmlUrl user
-    createdAt = Github.detailedOwnerCreatedAt user
-    bio = Github.detailedOwnerBio user
+    userName = Github.githubOwnerName user
+    login = Github.githubOwnerLogin user
+    company = Github.githubOwnerCompany user
+    location = Github.githubOwnerLocation user
+    blog = Github.githubOwnerBlog user
+    htmlUrl = Github.githubOwnerHtmlUrl user
+    createdAt = Github.githubOwnerCreatedAt user
+    bio = Github.githubOwnerBio user
 
-formatUser user@(Github.DetailedUser {}) =
-  (formatName userName login) ++ "\t" ++ (fromMaybe "" company) ++ "\t" ++
-    (fromMaybe "" location) ++ "\n" ++
-    (fromMaybe "" blog) ++ "\t" ++ "<" ++ (fromMaybe "" email) ++ ">" ++ "\n" ++
-    htmlUrl ++ "\t" ++ (formatDate createdAt) ++ "\n" ++
-    "hireable: " ++ (formatHireable (fromMaybe False isHireable)) ++ "\n\n" ++
+formatUser user@(Github.GithubUser {}) =
+  (formatName userName login) <> "\t" <> (fromMaybe "" company) <> "\t" <>
+    (fromMaybe "" location) <> "\n" <>
+    (fromMaybe "" blog) <> "\t" <> "<" <> (fromMaybe "" email) <> ">" <> "\n" <>
+    htmlUrl <> "\t" <> tshow createdAt <> "\n" <>
+    "hireable: " <> formatHireable (fromMaybe False isHireable) <> "\n\n" <>
     (fromMaybe "" bio)
   where
-    userName = Github.detailedOwnerName user
-    login = Github.detailedOwnerLogin user
-    company = Github.detailedOwnerCompany user
-    location = Github.detailedOwnerLocation user
-    blog = Github.detailedOwnerBlog user
-    email = Github.detailedOwnerEmail user 
-    htmlUrl = Github.detailedOwnerHtmlUrl user
-    createdAt = Github.detailedOwnerCreatedAt user
-    isHireable = Github.detailedOwnerHireable user
-    bio = Github.detailedOwnerBio user
+    userName = Github.githubOwnerName user
+    login = Github.githubOwnerLogin user
+    company = Github.githubOwnerCompany user
+    location = Github.githubOwnerLocation user
+    blog = Github.githubOwnerBlog user
+    email = Github.githubOwnerEmail user
+    htmlUrl = Github.githubOwnerHtmlUrl user
+    createdAt = Github.githubOwnerCreatedAt user
+    isHireable = Github.githubOwnerHireable user
+    bio = Github.githubOwnerBio user
 
-formatName Nothing login = login
-formatName (Just name) login = name ++ "(" ++ login ++ ")"
+formatName :: Maybe Text -> Github.Name Github.GithubOwner -> Text
+formatName Nothing login = Github.untagName login
+formatName (Just name) login = name <> "(" <> Github.untagName login <> ")"
 
+formatHireable :: Bool -> Text
 formatHireable True = "yes"
 formatHireable False = "no"
 
-formatDate = show . Github.fromGithubDate
+tshow :: Show a => a -> Text
+tshow = T.pack . show
