@@ -10,7 +10,7 @@ import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe,
                            shouldSatisfy)
 
 import Github.Auth             (GithubAuth (..))
-import Github.Data.Definitions (DetailedOwner (..))
+import Github.Data.Definitions (GithubOwner (..))
 import Github.Request          (executeRequest)
 import Github.Users            (userInfoCurrent', userInfoFor')
 import Github.Users.Followers  (usersFollowedByR, usersFollowingR)
@@ -31,11 +31,11 @@ spec = do
   describe "userInfoFor" $ do
     it "decodes user json" $ do
       let userInfo = eitherDecodeStrict $(embedFile "fixtures/user.json")
-      detailedOwnerLogin (fromRightS userInfo) `shouldBe` "mike-burns"
+      githubOwnerLogin (fromRightS userInfo) `shouldBe` "mike-burns"
 
     it "returns information about the user" $ withAuth $ \auth -> do
       userInfo <- userInfoFor' (Just auth) "mike-burns"
-      detailedOwnerLogin (fromRightS userInfo) `shouldBe` "mike-burns"
+      githubOwnerLogin (fromRightS userInfo) `shouldBe` "mike-burns"
 
   describe "userInfoCurrent'" $ do
     it "returns information about the autenticated user" $ withAuth $ \auth -> do

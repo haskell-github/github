@@ -4,12 +4,12 @@ module Github.Data.Teams where
 
 import Github.Data.Definitions
 
-import Control.DeepSeq (NFData(..))
+import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
-import Data.Data       (Data, Typeable)
-import Data.Text       (Text)
-import Data.Vector     (Vector)
-import GHC.Generics    (Generic)
+import Data.Data                (Data, Typeable)
+import Data.Text                (Text)
+import Data.Vector              (Vector)
+import GHC.Generics             (Generic)
 
 import Github.Data.Id    (Id)
 import Github.Data.Name  (Name)
@@ -30,36 +30,36 @@ data Permission =
 
 instance NFData Permission where rnf = genericRnf
 
+data SimpleTeam = SimpleTeam {
+   simpleTeamId              :: !(Id Team)
+  ,simpleTeamUrl             :: !Text
+  ,simpleTeamName            :: !Text
+  ,simpleTeamSlug            :: !(Name Team)
+  ,simpleTeamDescription     :: !(Maybe Text)
+  ,simpleTeamPrivacy         :: !(Maybe Privacy)
+  ,simpleTeamPermission      :: !Permission
+  ,simpleTeamMembersUrl      :: !Text
+  ,simpleTeamRepositoriesUrl :: !Text
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData SimpleTeam where rnf = genericRnf
+
 data Team = Team {
    teamId              :: !(Id Team)
   ,teamUrl             :: !Text
-  ,teamName            :: !Text
-  ,teamSlug            :: !(Name Team)
+  ,teamName            :: !(Name Team)
+  ,teamSlug            :: !Text
   ,teamDescription     :: !(Maybe Text)
   ,teamPrivacy         :: !(Maybe Privacy)
   ,teamPermission      :: !Permission
   ,teamMembersUrl      :: !Text
   ,teamRepositoriesUrl :: !Text
+  ,teamMembersCount    :: !Int
+  ,teamReposCount      :: !Int
+  ,teamOrganization    :: !SimpleOwner
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Team where rnf = genericRnf
-
-data DetailedTeam = DetailedTeam {
-   detailedTeamId              :: !(Id Team)
-  ,detailedTeamUrl             :: !Text
-  ,detailedTeamName            :: !(Name Team)
-  ,detailedTeamSlug            :: !Text
-  ,detailedTeamDescription     :: !(Maybe Text)
-  ,detailedTeamPrivacy         :: !(Maybe Privacy)
-  ,detailedTeamPermission      :: !Permission
-  ,detailedTeamMembersUrl      :: !Text
-  ,detailedTeamRepositoriesUrl :: !Text
-  ,detailedTeamMembersCount    :: !Int
-  ,detailedTeamReposCount      :: !Int
-  ,detailedTeamOrganization    :: !GithubOwner
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData DetailedTeam where rnf = genericRnf
 
 data CreateTeam = CreateTeam {
    createTeamName        :: !(Name Team)

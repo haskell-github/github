@@ -13,10 +13,10 @@ module Github.Issues.Events (
     module Github.Data,
     ) where
 
+import Data.Vector    (Vector)
 import Github.Auth
 import Github.Data
 import Github.Request
-import Data.Vector (Vector)
 
 -- | All events that have happened on an issue.
 --

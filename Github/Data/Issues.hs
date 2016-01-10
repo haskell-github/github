@@ -6,24 +6,24 @@ import Github.Data.Definitions
 import Github.Data.Id           (Id)
 import Github.Data.PullRequests
 
-import Control.DeepSeq (NFData(..))
+import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
-import Data.Data       (Data, Typeable)
-import Data.Text       (Text)
-import Data.Time       (UTCTime)
-import Data.Vector     (Vector)
-import GHC.Generics    (Generic)
+import Data.Data                (Data, Typeable)
+import Data.Text                (Text)
+import Data.Time                (UTCTime)
+import Data.Vector              (Vector)
+import GHC.Generics             (Generic)
 
 data Issue = Issue {
    issueClosedAt    :: Maybe UTCTime
   ,issueUpdatedAt   :: UTCTime
   ,issueEventsUrl   :: Text
   ,issueHtmlUrl     :: Maybe Text
-  ,issueClosedBy    :: Maybe GithubOwner
+  ,issueClosedBy    :: Maybe SimpleOwner
   ,issueLabels      :: (Vector IssueLabel)
   ,issueNumber      :: Int
-  ,issueAssignee    :: Maybe GithubOwner
-  ,issueUser        :: GithubOwner
+  ,issueAssignee    :: Maybe SimpleOwner
+  ,issueUser        :: SimpleOwner
   ,issueTitle       :: Text
   ,issuePullRequest :: Maybe PullRequestReference
   ,issueUrl         :: Text
@@ -59,7 +59,7 @@ data EditIssue = EditIssue {
 instance NFData EditIssue where rnf = genericRnf
 
 data Milestone = Milestone {
-   milestoneCreator      :: GithubOwner
+   milestoneCreator      :: SimpleOwner
   ,milestoneDueOn        :: Maybe UTCTime
   ,milestoneOpenIssues   :: Int
   ,milestoneNumber       :: Int
@@ -83,7 +83,7 @@ instance NFData IssueLabel where rnf = genericRnf
 
 data IssueComment = IssueComment {
    issueCommentUpdatedAt :: UTCTime
-  ,issueCommentUser      :: GithubOwner
+  ,issueCommentUser      :: SimpleOwner
   ,issueCommentUrl       :: Text
   ,issueCommentHtmlUrl   :: Text
   ,issueCommentCreatedAt :: UTCTime
@@ -118,7 +118,7 @@ instance NFData EventType where rnf = genericRnf
 
 -- | Issue event
 data Event = Event {
-   eventActor     :: !GithubOwner
+   eventActor     :: !SimpleOwner
   ,eventType      :: !EventType
   ,eventCommitId  :: !(Maybe Text)
   ,eventUrl       :: !Text

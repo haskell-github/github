@@ -9,10 +9,10 @@ module Github.Issues.Milestones (
     module Github.Data,
     ) where
 
+import Data.Vector    (Vector)
 import Github.Auth
 import Github.Data
 import Github.Request
-import Data.Vector (Vector)
 
 -- | All milestones in the repo.
 --

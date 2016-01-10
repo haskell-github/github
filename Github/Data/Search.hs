@@ -5,12 +5,12 @@ module Github.Data.Search where
 import Github.Data.Issues (Issue)
 import Github.Data.Repos  (Repo)
 
-import Control.DeepSeq (NFData(..))
+import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
-import Data.Data       (Data, Typeable)
-import Data.Text       (Text)
-import Data.Vector     (Vector)
-import GHC.Generics    (Generic)
+import Data.Data                (Data, Typeable)
+import Data.Text                (Text)
+import Data.Vector              (Vector)
+import GHC.Generics             (Generic)
 
 data SearchReposResult = SearchReposResult {
    searchReposTotalCount :: !Int

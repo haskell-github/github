@@ -3,8 +3,8 @@
 module Github.OrganizationsSpec where
 
 import Github.Auth                  (GithubAuth (..))
-import Github.Data                  (GithubOwner (..), SimpleOrganization (..),
-                                     Team (..))
+import Github.Data                  (SimpleOwner (..), SimpleOrganization (..),
+                                     SimpleTeam (..))
 import Github.Organizations         (publicOrganizationsFor')
 import Github.Organizations.Members (membersOf')
 
@@ -40,12 +40,12 @@ spec = do
   describe "teamsOf" $ do
     it "parse" $ do
       let ts = eitherDecodeStrict $(embedFile "fixtures/list-teams.json")
-      teamName (head $ fromRightS ts) `shouldBe` "Justice League"
+      simpleTeamName (head $ fromRightS ts) `shouldBe` "Justice League"
 
   describe "membersOf" $ do
     it "parse" $ do
       let ms = eitherDecodeStrict $(embedFile "fixtures/members-list.json")
-      githubOwnerLogin (head $ fromRightS ms) `shouldBe` "octocat"
+      simpleOwnerLogin (head $ fromRightS ms) `shouldBe` "octocat"
 
     it "works" $ withAuth $ \auth -> do
       ms <- membersOf' (Just auth) "haskell"
