@@ -6,12 +6,13 @@ import Github.Data.Definitions
 import Github.Data.Id          (Id)
 import Github.Data.Name        (Name)
 
-import Control.DeepSeq (NFData)
-import Data.Data       (Data, Typeable)
-import Data.Text       (Text)
-import Data.Time       (UTCTime)
-import Data.Vector     (Vector)
-import GHC.Generics    (Generic)
+import Control.DeepSeq          (NFData (..))
+import Control.DeepSeq.Generics (genericRnf)
+import Data.Data                (Data, Typeable)
+import Data.Text                (Text)
+import Data.Time                (UTCTime)
+import Data.Vector              (Vector)
+import GHC.Generics             (Generic)
 
 data Gist = Gist {
    gistUser        :: !GithubOwner
@@ -28,7 +29,7 @@ data Gist = Gist {
   ,gistGitPullUrl  :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Gist
+instance NFData Gist where rnf = genericRnf
 
 data GistFile = GistFile {
    gistFileType     :: !Text
@@ -39,7 +40,7 @@ data GistFile = GistFile {
   ,gistFileContent  :: !(Maybe Text)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData GistFile
+instance NFData GistFile where rnf = genericRnf
 
 data GistComment = GistComment {
    gistCommentUser      :: !GithubOwner
@@ -50,4 +51,4 @@ data GistComment = GistComment {
   ,gistCommentId        :: !(Id GistComment)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData GistComment
+instance NFData GistComment where rnf = genericRnf

@@ -2,9 +2,10 @@
 {-# LANGUAGE DeriveGeneric      #-}
 module Github.Auth where
 
-import Control.DeepSeq (NFData)
-import Data.Data       (Data, Typeable)
-import GHC.Generics    (Generic)
+import Control.DeepSeq          (NFData (..))
+import Control.DeepSeq.Generics (genericRnf)
+import Data.Data                (Data, Typeable)
+import GHC.Generics             (Generic)
 
 import qualified Data.ByteString as BS
 
@@ -16,4 +17,4 @@ data GithubAuth = GithubBasicAuth BS.ByteString BS.ByteString
                                         String  -- token
                 deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData GithubAuth
+instance NFData GithubAuth where rnf = genericRnf

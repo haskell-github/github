@@ -5,7 +5,8 @@ module Github.Data.PullRequests where
 import Github.Data.Definitions
 import Github.Data.Repos       (Repo)
 
-import Control.DeepSeq (NFData)
+import Control.DeepSeq (NFData(..))
+import Control.DeepSeq.Generics (genericRnf)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
 import Data.Time       (UTCTime)
@@ -30,7 +31,7 @@ data PullRequest = PullRequest {
   ,pullRequestId        :: !Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData PullRequest
+instance NFData PullRequest where rnf = genericRnf
 
 data DetailedPullRequest = DetailedPullRequest {
   -- this is a duplication of a PullRequest
@@ -64,7 +65,7 @@ data DetailedPullRequest = DetailedPullRequest {
   ,detailedPullRequestMergeable      :: !(Maybe Bool)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData DetailedPullRequest
+instance NFData DetailedPullRequest where rnf = genericRnf
 
 data EditPullRequest = EditPullRequest {
    editPullRequestTitle :: !(Maybe Text)
@@ -72,7 +73,7 @@ data EditPullRequest = EditPullRequest {
   ,editPullRequestState :: !(Maybe EditPullRequestState)
 } deriving (Show, Generic)
 
-instance NFData EditPullRequest
+instance NFData EditPullRequest where rnf = genericRnf
 
 data CreatePullRequest =
       CreatePullRequest
@@ -88,7 +89,7 @@ data CreatePullRequest =
       }
     deriving (Show, Generic)
 
-instance NFData CreatePullRequest
+instance NFData CreatePullRequest where rnf = genericRnf
 
 data PullRequestLinks = PullRequestLinks {
    pullRequestLinksReviewComments :: !Text
@@ -97,7 +98,7 @@ data PullRequestLinks = PullRequestLinks {
   ,pullRequestLinksSelf           :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData PullRequestLinks
+instance NFData PullRequestLinks where rnf = genericRnf
 
 data PullRequestCommit = PullRequestCommit {
    pullRequestCommitLabel :: !Text
@@ -107,7 +108,7 @@ data PullRequestCommit = PullRequestCommit {
   ,pullRequestCommitRepo  :: !Repo
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData PullRequestCommit
+instance NFData PullRequestCommit where rnf = genericRnf
 
 data PullRequestEvent = PullRequestEvent {
    pullRequestEventAction      :: !PullRequestEventType
@@ -117,7 +118,7 @@ data PullRequestEvent = PullRequestEvent {
   ,pullRequestSender           :: !GithubOwner
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData PullRequestEvent
+instance NFData PullRequestEvent where rnf = genericRnf
 
 data PullRequestEventType =
     PullRequestOpened
@@ -130,7 +131,7 @@ data PullRequestEventType =
   | PullRequestUnlabeled
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData PullRequestEventType
+instance NFData PullRequestEventType where rnf = genericRnf
 
 data PullRequestReference = PullRequestReference {
   pullRequestReferenceHtmlUrl   :: !(Maybe Text)
@@ -138,11 +139,11 @@ data PullRequestReference = PullRequestReference {
   ,pullRequestReferenceDiffUrl  :: !(Maybe Text)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData PullRequestReference
+instance NFData PullRequestReference where rnf = genericRnf
 
 data EditPullRequestState =
     EditPullRequestStateOpen
   | EditPullRequestStateClosed
   deriving (Show, Generic)
 
-instance NFData EditPullRequestState
+instance NFData EditPullRequestState where rnf = genericRnf
