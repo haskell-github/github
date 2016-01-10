@@ -8,8 +8,22 @@ dependencies:
   - github
   - text
 
+library:
+  source-dirs: src
+
 executables:
   github-show-user:
     main: ShowUser.hs
     source-dirs: Users
-
+    dependencies:
+      - github-samples
+  github-list-followers:
+    main: ListFollowers.hs
+    source-dirs: Users/Followers
+    dependencies:
+      - github-samples
+  github-list-following:
+    main: ListFollowing.hs
+    source-dirs: Users/Followers
+    dependencies:
+      - github-samples

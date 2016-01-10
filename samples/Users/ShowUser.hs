@@ -1,28 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main (main) where
 
-import Prelude        ()
-import Prelude.Compat
+import Common
+import Prelude ()
 
-import Data.Maybe  (fromMaybe)
-import Data.Monoid ((<>))
-import Data.Text   (Text)
-import System.Environment (lookupEnv)
+import Data.Maybe (fromMaybe)
 
-import qualified Data.Text    as T
-import qualified Data.Text.IO as T
 import qualified Github.Users as Github
-
-getAuth :: IO (Maybe (Github.GithubAuth))
-getAuth = do
-  token <- lookupEnv "GITHUB_TOKEN"
-  pure (Github.GithubOAuth <$> token)
 
 main :: IO ()
 main = do
   auth <- getAuth
   possibleUser <- Github.userInfoFor' auth "mike-burns"
-  T.putStrLn $ either (("Error: " <>) . tshow) formatUser possibleUser
+  putStrLn $ either (("Error: " <>) . tshow) formatUser possibleUser
 
 formatUser :: Github.GithubOwner -> Text
 formatUser user@(Github.GithubOrganization {}) =
@@ -68,6 +58,3 @@ formatName (Just name) login = name <> "(" <> Github.untagName login <> ")"
 formatHireable :: Bool -> Text
 formatHireable True = "yes"
 formatHireable False = "no"
-
-tshow :: Show a => a -> Text
-tshow = T.pack . show
