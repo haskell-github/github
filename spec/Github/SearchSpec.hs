@@ -42,7 +42,7 @@ spec = do
       issueState issue2 `shouldBe` "open"
 
     it "performs an issue search via the API" $ do
-      let query = [("q", Just "Decouple in:title repo:phadej/github created:<=2015-12-01")]
+      let query = "Decouple in:title repo:phadej/github created:<=2015-12-01"
       issues <- searchIssuesIssues . fromRightS <$> searchIssues query
       length issues `shouldBe` 1
       issueId (V.head issues) `shouldBe` Id 119694665
