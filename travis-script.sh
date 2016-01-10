@@ -4,10 +4,12 @@ case $BUILD in
   stack)
     stack --no-terminal test github
     stack --no-terminal build github-samples
-    # TODO: automatise this
-    stack exec github-show-user
-    stack exec github-list-followers
-    stack exec github-list-following
+
+    # TODO: get executables from info
+    for testbin in show-user list-followers list-following; do
+        echo "Running " $testbin
+        stack exec github-$testbin
+    done
     ;;
   cabal)
     if [ -f configure.ac ]; then autoreconf -i; fi
