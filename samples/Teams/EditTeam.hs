@@ -1,11 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
+module Main (main) where
 
-module EditTeam where
+import Common
+import Prelude ()
 
-import qualified Github.Auth        as Github
-import qualified Github.Teams       as Github
-import           System.Environment (getArgs)
+import qualified Github.Organizations.Teams as Github
 
+main :: IO ()
 main = do
   args <- getArgs
   result <- case args of
@@ -13,9 +14,9 @@ main = do
                 Github.editTeam'
                   (Github.GithubOAuth token)
                   (read team_id)
-                  (Github.EditTeam team_name (Just desc) Github.PermissionPull)
+                  (Github.EditTeam (Github.mkName (Proxy :: Proxy Github.Team) $ fromString team_name) (Just $ fromString desc) Github.PermissionPull)
               _                                 ->
                 error "usage: EditTeam <token> <team_id> <team_name> <description>"
   case result of
-    Left err   -> putStrLn $ "Error: " ++ show err
-    Right team -> putStrLn $ show team
+    Left err   -> putStrLn $ "Error: " <> tshow err
+    Right team -> putStrLn $ tshow team

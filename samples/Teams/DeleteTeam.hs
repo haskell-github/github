@@ -1,16 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
+module Main (main) where
 
-module DeleteTeam where
+import Common
+import Prelude ()
 
-import qualified Github.Auth        as Github
-import qualified Github.Teams       as Github
-import           System.Environment (getArgs)
+import qualified Github.Organizations.Teams as Github
 
+main :: IO ()
 main = do
   args <- getArgs
   result <- case args of
               [token, team_id] -> Github.deleteTeam' (Github.GithubOAuth token) (read team_id)
               _                -> error "usage: DeleteTeam <token> <team_id>"
   case result of
-    Left err   -> putStrLn $ "Error: " ++ show err
-    Right team -> putStrLn $ show team
+    Left err   -> putStrLn $ "Error: " <> tshow err
+    Right team -> putStrLn $ tshow team

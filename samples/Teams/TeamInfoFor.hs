@@ -1,11 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
+module Main (main) where
 
-module TeamInfoFor where
+import Common
+import Prelude ()
 
-import qualified Github.Auth        as Github
-import qualified Github.Teams       as Github
-import           System.Environment (getArgs)
+import qualified Github.Organizations.Teams as Github
 
+main :: IO ()
 main = do
   args <- getArgs
   result <- case args of
@@ -13,5 +14,5 @@ main = do
               [team_id]        -> Github.teamInfoFor (read team_id)
               _                -> error "usage: TeamInfoFor <team_id> [auth token]"
   case result of
-    Left err   -> putStrLn $ "Error: " ++ show err
-    Right team -> putStrLn $ show team
+    Left err   -> putStrLn $ "Error: " <> tshow err
+    Right team -> putStrLn $ tshow team

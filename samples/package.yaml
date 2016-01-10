@@ -27,3 +27,23 @@ executables:
     source-dirs: Users/Followers
     dependencies:
       - github-samples
+  github-delete-team:
+    main: DeleteTeam.hs
+    source-dirs: Teams
+    dependencies:
+      - github-samples
+  github-edit-team:
+    main: EditTeam.hs
+    source-dirs: Teams
+    dependencies:
+      - github-samples
+  github-list-team-current:
+    main: ListTeamsCurrent.hs
+    source-dirs: Teams
+    dependencies:
+      - github-samples
+  github-teaminfo-fir:
+    main: TeamInfoFor.hs
+    source-dirs: Teams
+    dependencies:
+      - github-samples
