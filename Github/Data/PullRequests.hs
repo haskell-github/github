@@ -8,23 +8,24 @@ import Github.Data.Repos       (Repo)
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
+import Data.Time       (UTCTime)
 import GHC.Generics    (Generic)
 
 data PullRequest = PullRequest {
-   pullRequestClosedAt  :: !(Maybe GithubDate)
-  ,pullRequestCreatedAt :: !GithubDate
+   pullRequestClosedAt  :: !(Maybe UTCTime)
+  ,pullRequestCreatedAt :: !UTCTime
   ,pullRequestUser      :: !GithubOwner
   ,pullRequestPatchUrl  :: !Text
   ,pullRequestState     :: !Text
   ,pullRequestNumber    :: !Int
   ,pullRequestHtmlUrl   :: !Text
-  ,pullRequestUpdatedAt :: !GithubDate
+  ,pullRequestUpdatedAt :: !UTCTime
   ,pullRequestBody      :: !Text
   ,pullRequestIssueUrl  :: !Text
   ,pullRequestDiffUrl   :: !Text
   ,pullRequestUrl       :: !Text
   ,pullRequestLinks     :: !PullRequestLinks
-  ,pullRequestMergedAt  :: !(Maybe GithubDate)
+  ,pullRequestMergedAt  :: !(Maybe UTCTime)
   ,pullRequestTitle     :: !Text
   ,pullRequestId        :: !Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -33,20 +34,20 @@ instance NFData PullRequest
 
 data DetailedPullRequest = DetailedPullRequest {
   -- this is a duplication of a PullRequest
-   detailedPullRequestClosedAt       :: !(Maybe GithubDate)
-  ,detailedPullRequestCreatedAt      :: !GithubDate
+   detailedPullRequestClosedAt       :: !(Maybe UTCTime)
+  ,detailedPullRequestCreatedAt      :: !UTCTime
   ,detailedPullRequestUser           :: !GithubOwner
   ,detailedPullRequestPatchUrl       :: !Text
   ,detailedPullRequestState          :: !Text
   ,detailedPullRequestNumber         :: !Int
   ,detailedPullRequestHtmlUrl        :: !Text
-  ,detailedPullRequestUpdatedAt      :: !GithubDate
+  ,detailedPullRequestUpdatedAt      :: !UTCTime
   ,detailedPullRequestBody           :: !Text
   ,detailedPullRequestIssueUrl       :: !Text
   ,detailedPullRequestDiffUrl        :: !Text
   ,detailedPullRequestUrl            :: !Text
   ,detailedPullRequestLinks          :: !PullRequestLinks
-  ,detailedPullRequestMergedAt       :: !(Maybe GithubDate)
+  ,detailedPullRequestMergedAt       :: !(Maybe UTCTime)
   ,detailedPullRequestTitle          :: !Text
   ,detailedPullRequestId             :: !Int
 

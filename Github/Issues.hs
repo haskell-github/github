@@ -26,14 +26,8 @@ import Github.Request
 import Data.Aeson.Compat (encode)
 import Data.List         (intercalate)
 import Data.Text         (Text)
+import Data.Time.ISO8601 (formatISO8601)
 import Data.Vector       (Vector)
-#if MIN_VERSION_time(1,5,0)
-import Data.Time (defaultTimeLocale)
-#else
-import System.Locale (defaultTimeLocale)
-#endif
-
-import Data.Time.Format (formatTime)
 
 import qualified Data.ByteString.Char8 as BS8
 
@@ -94,8 +88,7 @@ issuesForRepoR user reqRepoName issueLimitations =
     convert Ascending        = ("direction", Just "asc")
     convert Descending       = ("direction", Just "desc")
     convert (PerPage n)      = ("per_page", Just . BS8.pack $ show n)
-    convert (Since t)        =
-        ("since", Just . BS8.pack $ formatTime defaultTimeLocale "%FT%TZ" t)
+    convert (Since t)        = ("since", Just . BS8.pack $ formatISO8601 t)
 
 -- Creating new issues.
 

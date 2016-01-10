@@ -3,12 +3,12 @@
 {-# LANGUAGE OverloadedStrings  #-}
 module Github.Data.Webhooks where
 
-import Github.Data.Definitions
-import Github.Data.Id          (Id)
+import Github.Data.Id (Id)
 
 import Control.DeepSeq (NFData)
 import Data.Data       (Data, Typeable)
 import Data.Text       (Text)
+import Data.Time       (UTCTime)
 import Data.Vector     (Vector)
 import GHC.Generics    (Generic)
 
@@ -23,8 +23,8 @@ data RepoWebhook = RepoWebhook {
   ,repoWebhookEvents       :: !(Vector RepoWebhookEvent)
   ,repoWebhookConfig       :: !(M.Map Text Text)
   ,repoWebhookLastResponse :: !RepoWebhookResponse
-  ,repoWebhookUpdatedAt    :: !GithubDate
-  ,repoWebhookCreatedAt    :: !GithubDate
+  ,repoWebhookUpdatedAt    :: !UTCTime
+  ,repoWebhookCreatedAt    :: !UTCTime
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData RepoWebhook
