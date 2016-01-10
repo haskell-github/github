@@ -1,3 +1,5 @@
+set -e
+
 case $BUILD in
   stack)
     mkdir -p ~/.local/bin;

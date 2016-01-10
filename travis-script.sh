@@ -1,8 +1,13 @@
+set -e
+
 case $BUILD in
   stack)
     stack --no-terminal test github
     stack --no-terminal build github-samples
+    # TODO: automatise this
     stack exec github-show-user
+    stack exec github-list-followers
+    stack exec github-list-following
     ;;
   cabal)
     if [ -f configure.ac ]; then autoreconf -i; fi
