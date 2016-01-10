@@ -68,7 +68,7 @@ pullRequestsForR :: Name GithubOwner -> Name Repo
                  -> Maybe Count
                  -> GithubRequest k (Vector SimplePullRequest)
 pullRequestsForR user repo state =
-    GithubPagedGet ["repos", untagName user, untagName repo, "pulls"] qs
+    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "pulls"] qs
   where
     qs = maybe [] (\s -> [("state", Just . BS8.pack $ s)]) state
 
@@ -92,7 +92,7 @@ pullRequest = pullRequest' Nothing
 -- See <https://developer.github.com/v3/pulls/#get-a-single-pull-request>
 pullRequestR :: Name GithubOwner -> Name Repo -> Id PullRequest -> GithubRequest k PullRequest
 pullRequestR user repo prid =
-    GithubGet ["repos", untagName user, untagName repo, "pulls", show $ untagId prid] []
+    GithubGet ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] []
 
 createPullRequest :: GithubAuth
                   -> Name GithubOwner
@@ -109,7 +109,7 @@ createPullRequestR :: Name GithubOwner
                    -> CreatePullRequest
                    -> GithubRequest 'True PullRequest
 createPullRequestR user repo cpr =
-    GithubPost Post ["repos", untagName user, untagName repo, "pulls"] (encode cpr)
+    GithubPost Post ["repos", toPathPart user, toPathPart repo, "pulls"] (encode cpr)
 
 -- | Update a pull request
 updatePullRequest :: GithubAuth -> Name GithubOwner -> Name Repo -> Id PullRequest -> EditPullRequest -> IO (Either Error PullRequest)
@@ -124,7 +124,7 @@ updatePullRequestR :: Name GithubOwner
                    -> EditPullRequest
                    -> GithubRequest 'True PullRequest
 updatePullRequestR user repo prid epr =
-    GithubPost Patch ["repos", untagName user, untagName repo, "pulls", show $ untagId prid] (encode epr)
+    GithubPost Patch ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] (encode epr)
 
 -- | All the commits on a pull request, given the repo owner, repo name, and
 -- the number of the pull request.
@@ -146,7 +146,7 @@ pullRequestCommitsIO = pullRequestCommits' Nothing
 -- See <https://developer.github.com/v3/pulls/#list-commits-on-a-pull-request>
 pullRequestCommitsR :: Name GithubOwner -> Name Repo -> Id PullRequest -> Maybe Count -> GithubRequest k (Vector Commit)
 pullRequestCommitsR user repo prid =
-    GithubPagedGet ["repos", untagName user, untagName repo, "pulls", show $ untagId prid, "commits"] []
+    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "commits"] []
 
 -- | The individual files that a pull request patches. Takes the repo owner and
 -- name, plus the number assigned to the pull request.
@@ -168,7 +168,7 @@ pullRequestFiles = pullRequestFiles' Nothing
 -- See <https://developer.github.com/v3/pulls/#list-pull-requests-files>
 pullRequestFilesR :: Name GithubOwner -> Name Repo -> Id PullRequest -> Maybe Count -> GithubRequest k (Vector File)
 pullRequestFilesR user repo prid =
-    GithubPagedGet ["repos", untagName user, untagName repo, "pulls", show $ untagId prid, "files"] []
+    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "files"] []
 
 -- | Check if pull request has been merged.
 isPullRequestMerged :: GithubAuth -> Name GithubOwner -> Name Repo -> Id PullRequest -> IO (Either Error Status)
@@ -179,7 +179,7 @@ isPullRequestMerged auth user repo prid =
 -- See <https://developer.github.com/v3/pulls/#get-if-a-pull-request-has-been-merged>
 isPullRequestMergedR :: Name GithubOwner -> Name Repo -> Id PullRequest -> GithubRequest k Status
 isPullRequestMergedR user repo prid = GithubStatus $
-    GithubGet ["repos", untagName user, untagName repo, "pulls", show $ untagId prid, "merge"] []
+    GithubGet ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "merge"] []
 
 -- | Merge a pull request.
 mergePullRequest :: GithubAuth -> Name GithubOwner -> Name Repo -> Id PullRequest -> Maybe String -> IO (Either Error Status)
@@ -192,7 +192,7 @@ mergePullRequestR :: Name GithubOwner -> Name Repo -> Id PullRequest -> Maybe St
 mergePullRequestR user repo prid commitMessage = GithubStatus $
     GithubPost Put paths (encode $ buildCommitMessageMap commitMessage)
   where
-    paths = ["repos", untagName user, untagName repo, "pulls", show $ untagId prid, "merge"]
+    paths = ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "merge"]
 
     buildCommitMessageMap :: Maybe String -> Value
     buildCommitMessageMap (Just msg) = object ["commit_message" .= msg ]

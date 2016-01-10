@@ -12,6 +12,7 @@ module Github.Data.Request (
     PostMethod(..),
     toMethod,
     Paths,
+    IsPathPart(..),
     QueryString,
     Count,
     ) where
@@ -24,7 +25,11 @@ import Network.HTTP.Types (Status)
 
 import qualified Data.ByteString           as BS
 import qualified Data.ByteString.Lazy      as LBS
+import qualified Data.Text                 as T
 import qualified Network.HTTP.Types.Method as Method
+
+import Github.Data.Id   (Id, untagId)
+import Github.Data.Name (Name, untagName)
 
 ------------------------------------------------------------------------------
 -- Auxillary types
@@ -33,6 +38,15 @@ import qualified Network.HTTP.Types.Method as Method
 type Paths = [String]
 type QueryString = [(BS.ByteString, Maybe BS.ByteString)]
 type Count = Int
+
+class IsPathPart a where
+    toPathPart :: a -> String
+
+instance IsPathPart (Name a) where
+    toPathPart = T.unpack . untagName
+
+instance IsPathPart (Id a) where
+    toPathPart = show . untagId
 
 -- | Http method of requests with body.
 data PostMethod = Post | Patch | Put

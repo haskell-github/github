@@ -1,0 +1,15 @@
+name: github-samples
+
+ghc-options: -Wall
+
+dependencies:
+  - base
+  - base-compat
+  - github
+  - text
+
+executables:
+  github-show-user:
+    main: ShowUser.hs
+    source-dirs: Users
+

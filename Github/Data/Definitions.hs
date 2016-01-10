@@ -35,16 +35,16 @@ data Error =
 
 data SimpleOwner = SimpleUserOwner {
    simpleOwnerAvatarUrl  :: !Text
-  ,simpleOwnerLogin      :: !(Name SimpleOwner)
+  ,simpleOwnerLogin      :: !(Name GithubOwner)
   ,simpleOwnerUrl        :: !Text
-  ,simpleOwnerId         :: !(Id SimpleOwner)
+  ,simpleOwnerId         :: !(Id GithubOwner)
   ,simpleOwnerGravatarId :: !(Maybe Text)
   }
   | SimpleOrganizationOwner {
    simpleOwnerAvatarUrl :: !Text
-  ,simpleOwnerLogin     :: !(Name SimpleOwner)
+  ,simpleOwnerLogin     :: !(Name GithubOwner)
   ,simpleOwnerUrl       :: !Text
-  ,simpleOwnerId        :: !(Id SimpleOwner)
+  ,simpleOwnerId        :: !(Id GithubOwner)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData SimpleOwner where rnf = genericRnf
@@ -183,9 +183,9 @@ data GithubOwner = GithubUser {
   ,githubOwnerCompany     :: !(Maybe Text)
   ,githubOwnerEmail       :: !(Maybe Text)
   ,githubOwnerUrl         :: !Text
-  ,githubOwnerId          :: !(Id SimpleOwner)
+  ,githubOwnerId          :: !(Id GithubOwner)
   ,githubOwnerHtmlUrl     :: !Text
-  ,githubOwnerLogin       :: !(Name SimpleOwner)
+  ,githubOwnerLogin       :: !(Name GithubOwner)
   }
   | GithubOrganization {
    githubOwnerCreatedAt   :: !UTCTime
@@ -201,9 +201,9 @@ data GithubOwner = GithubUser {
   ,githubOwnerLocation    :: !(Maybe Text)
   ,githubOwnerCompany     :: !(Maybe Text)
   ,githubOwnerUrl         :: !Text
-  ,githubOwnerId          :: !(Id SimpleOwner)
+  ,githubOwnerId          :: !(Id GithubOwner)
   ,githubOwnerHtmlUrl     :: !Text
-  ,githubOwnerLogin       :: !(Name SimpleOwner)
+  ,githubOwnerLogin       :: !(Name GithubOwner)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData GithubOwner where rnf = genericRnf

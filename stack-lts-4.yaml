@@ -1,5 +1,6 @@
 packages:
 - '.'
+- 'samples/'
 extra-deps: []
 resolver: lts-4.0
 flags:

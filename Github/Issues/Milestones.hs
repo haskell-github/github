@@ -30,7 +30,7 @@ milestones' auth user repo =
 -- | List milestones for a repository.
 -- See <https://developer.github.com/v3/issues/milestones/#list-milestones-for-a-repository>
 milestonesR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector Milestone)
-milestonesR user repo = GithubPagedGet ["repos", untagName user, untagName repo, "milestones"] []
+milestonesR user repo = GithubPagedGet ["repos", toPathPart user, toPathPart repo, "milestones"] []
 
 -- | Details on a specific milestone, given it's milestone number.
 --
@@ -43,4 +43,4 @@ milestone user repo mid =
 -- See <https://developer.github.com/v3/issues/milestones/#get-a-single-milestone>
 milestoneR :: Name GithubOwner -> Name Repo -> Id Milestone -> GithubRequest k Milestone
 milestoneR user repo mid =
-    GithubGet ["repos", untagName user, untagName repo, "milestones", show $ untagId mid] []
+    GithubGet ["repos", toPathPart user, toPathPart repo, "milestones", toPathPart mid] []

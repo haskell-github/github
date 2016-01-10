@@ -30,7 +30,7 @@ userInfoFor = executeRequest' . userInfoForR
 -- | Get a single user.
 -- See <https://developer.github.com/v3/users/#get-a-single-user>
 userInfoForR :: Name GithubOwner -> GithubRequest k GithubOwner
-userInfoForR userName = GithubGet ["users", untagName userName] []
+userInfoForR userName = GithubGet ["users", toPathPart userName] []
 
 -- | Retrieve information about the user associated with the supplied authentication.
 --

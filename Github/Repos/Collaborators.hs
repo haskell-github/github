@@ -31,7 +31,7 @@ collaboratorsOn' auth user repo =
 -- See <https://developer.github.com/v3/repos/collaborators/#list-collaborators>
 collaboratorsOnR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector GithubOwner)
 collaboratorsOnR user repo =
-    GithubPagedGet ["repos", untagName user, untagName repo, "collaborators"] []
+    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "collaborators"] []
 
 -- | Whether the user is collaborating on a repo. Takes the user in question,
 -- the user who owns the repo, and the repo name.
@@ -55,4 +55,4 @@ isCollaboratorOnR :: Name GithubOwner  -- ^ Repository owner
                   -> Name GithubOwner  -- ^ Collaborator?
                   -> GithubRequest k Status
 isCollaboratorOnR user repo coll = GithubStatus $
-    GithubGet ["repos", untagName user, untagName repo, "collaborators", untagName coll] []
+    GithubGet ["repos", toPathPart user, toPathPart repo, "collaborators", toPathPart coll] []

@@ -28,4 +28,4 @@ blob = blob' Nothing
 -- See <https://developer.github.com/v3/git/blobs/#get-a-blob>
 blobR :: Name GithubOwner -> Name Repo -> Name Blob -> GithubRequest k Blob
 blobR user repo sha =
-    GithubGet ["repos", untagName user, untagName repo, "git", "blobs", untagName sha] []
+    GithubGet ["repos", toPathPart user, toPathPart repo, "git", "blobs", toPathPart sha] []

@@ -30,7 +30,7 @@ publicOrganizationsFor = publicOrganizationsFor' Nothing
 -- | List user organizations.
 -- See <https://developer.github.com/v3/orgs/#list-user-organizations>
 publicOrganizationsForR :: Name GithubOwner -> Maybe Count -> GithubRequest k (Vector SimpleOrganization)
-publicOrganizationsForR userName = GithubPagedGet ["users", untagName userName, "orgs"] []
+publicOrganizationsForR userName = GithubPagedGet ["users", toPathPart userName, "orgs"] []
 
 -- | Details on a public organization. Takes the organization's login.
 --
@@ -47,4 +47,4 @@ publicOrganization = publicOrganization' Nothing
 -- | Get an organization.
 -- See <https://developer.github.com/v3/orgs/#get-an-organization>
 publicOrganizationR :: Name Organization -> GithubRequest k Organization
-publicOrganizationR reqOrganizationName = GithubGet ["orgs", untagName reqOrganizationName] []
+publicOrganizationR reqOrganizationName = GithubGet ["orgs", toPathPart reqOrganizationName] []

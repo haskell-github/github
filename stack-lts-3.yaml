@@ -1,5 +1,6 @@
 packages:
 - '.'
+- 'samples/'
 extra-deps:
 - http-link-header-1.0.1
 - iso8601-time-0.1.4

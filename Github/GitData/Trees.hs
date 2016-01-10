@@ -32,7 +32,7 @@ tree = tree' Nothing
 -- See <https://developer.github.com/v3/git/trees/#get-a-tree>
 treeR :: Name GithubOwner -> Name Repo -> Name Tree -> GithubRequest k Tree
 treeR user repo sha =
-    GithubGet  ["repos", untagName user, untagName repo, "git", "trees", untagName sha] []
+    GithubGet  ["repos", toPathPart user, toPathPart repo, "git", "trees", toPathPart sha] []
 
 -- | A recursively-nested tree for a SHA1.
 --
@@ -51,4 +51,4 @@ nestedTree = nestedTree' Nothing
 -- See <https://developer.github.com/v3/git/trees/#get-a-tree-recursively>
 nestedTreeR :: Name GithubOwner -> Name Repo -> Name Tree -> GithubRequest k Tree
 nestedTreeR user repo sha =
-    GithubGet  ["repos", untagName user, untagName repo, "git", "trees", untagName sha] [("recursive", Just "1")]
+    GithubGet  ["repos", toPathPart user, toPathPart repo, "git", "trees", toPathPart sha] [("recursive", Just "1")]
