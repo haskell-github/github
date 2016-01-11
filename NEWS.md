@@ -1,3 +1,12 @@
+Changes for 0.14.0
+
+Large API changes:
+
+- Use `Text` and `Vector` in place of `String` and `[]`.
+- Use `Name` and `Id` tagged types for names and identifiers.
+- Make detailed structures un-prefixed, simple ones prefixed with `Simple`. Example: `Team` and `SimpleTeam`.
+- Decouple request creation from execution (`*R` and `executeRequest*` functions).
+
 Changes for 0.5.0:
 
 * OAuth.

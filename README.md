@@ -12,12 +12,16 @@ Installation
 
 In your project's cabal file:
 
-    -- Packages needed in order to build this package.
-    Build-depends:       github
+```cabal
+-- Packages needed in order to build this package.
+Build-depends:       github
+```
 
 Or from the command line:
 
-    cabal install github
+```sh
+cabal install github
+```
 
 Example Usage
 =============
@@ -33,111 +37,27 @@ For details see the reference documentation on Hackage.
 Each module lines up with the hierarchy of
 [documentation from the Github API](http://developer.github.com/v3/).
 
-Each function has a sample written for it.
+Request functions (ending with `R`) construct a data type with can be executed
+in `IO` by `executeRequest` functions. They are all listed in `Github.All` module.
 
-All functions produce an `IO (Either Error a)`, where `a` is the actual thing
+IO functions produce an `IO (Either Error a)`, where `a` is the actual thing
 you want. You must call the function using IO goodness, then dispatch on the
 possible error message. Here's an example from the samples:
 
-    import qualified Github.Users.Followers as Github
-    import Data.List (intercalate)
+Many function have samples under
+[`samples/`](https://github.com/phadej/github/tree/master/samples) directory.
 
-    main = do
-      possibleUsers <- Github.usersFollowing "mike-burns"
-      putStrLn $ either (("Error: "++) . show)
-                        (intercalate "\n" . map formatUser)
+```hs
+import qualified Github.Users.Followers as Github
+
+main = do
+    possibleUsers <- Github.usersFollowing "mike-burns"
+    T.putStrLn $ either (("Error: " <>) . T.pack . show)
+                        (foldMap (formatUser . (<> "\n")))
                         possibleUsers
 
-    formatUser = Github.githubOwnerLogin
-
-API -> Module
-============
-
-<!---
-## Activity
-parseEvent? Don't know what support there is.
-
-## Enterprise 2.3
-
-No support? Not sure.
-
-## Miscellaneous
-
-### Emojis
-### Gitignore
-### Licenses
-### Markdown
-### Meta
-### Rate Limit
---->
-
-## Gists
-
-[Gists module](https://github.com/jwiegley/github/blob/master/Github/Gists.hs)
-
-- Comments on gist by gist id
-- Specific comment by comment id
-
-## Git Data
-
-[Git Data](https://github.com/jwiegley/github/tree/master/Github/GitData)
-
-- Blobs
-  - user/repo and commit sha
-- Commits
-  - user/repo and commit sha
-- References
-  - single reference by ref name
-  - history of references for a user/repo
-  - references by user/repo, limited by namespace (you can get tags by specifying "tags" here)
-- Trees
-
-## Issues
-
-[Issues](https://github.com/jwiegley/github/blob/master/Github/Issues.hs)
-
-- Create issue
-- Edit issue
-- Get issues for repo
-
-## Organizations
-
-[Orgs](https://github.com/jwiegley/github/tree/master/Github/Organizations)
-
-- get members by organization
-
-## Pull Requests
-
-[Pull Requests](https://github.com/jwiegley/github/tree/master/Github/PullRequests)
-
-- Review Comments by PR id or comment id
-
-
-## Repositories
-
-[Repos](https://github.com/jwiegley/github/tree/master/Github/Repos)
-
-- repos by user
-- repos by organization
-
-## Search
-
-[Search](https://github.com/jwiegley/github/blob/master/Github/Search.hs)
-
-- Repo search w/ authentication
-- Repo search w/o auth
-- Code search w/ auth
-- Code search w/o auth
-
-## Users
-
-[Users](https://github.com/jwiegley/github/blob/master/Github/Users.hs)
-
-- by name, with auth
-- by name, with password
-- by name, public info
-
-See `DetailedOwner` to know what data could be provided.
+formatUser = Github.untagName . Github.githubOwnerLogin
+```
 
 Test setup
 ==========
@@ -159,7 +79,8 @@ for details on how you can help.
 Copyright
 =========
 
-Copyright 2011, 2012 Mike Burns.
-Copyright 2013-2014 John Wiegley.
+Copyright 2011-2012 Mike Burns.
+Copyright 2013-2015 John Wiegley.
+Copyright 2016 Oleg Grenrus.
 
 Available under the BSD 3-clause license.
