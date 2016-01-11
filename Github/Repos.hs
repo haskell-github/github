@@ -6,6 +6,8 @@
 -- <http://developer.github.com/v3/repos/>
 module Github.Repos (
     -- * Querying repositories
+    currentUserRepos,
+    currentUserReposR,
     userRepos,
     userRepos',
     userReposR,
@@ -68,6 +70,19 @@ repoPublicityQueryString Owner   = [("type", Just "owner")]
 repoPublicityQueryString Member  = [("type", Just "member")]
 repoPublicityQueryString Public  = [("type", Just "public")]
 repoPublicityQueryString Private = [("type", Just "private")]
+
+-- | List your repositories.
+currentUserRepos :: GithubAuth -> RepoPublicity -> IO (Either Error (Vector Repo))
+currentUserRepos auth publicity =
+    executeRequest auth $ currentUserReposR publicity Nothing
+
+-- | List your repositories.
+-- See <https://developer.github.com/v3/repos/#list-your-repositories>
+currentUserReposR :: RepoPublicity -> Maybe Count -> GithubRequest k(Vector Repo)
+currentUserReposR publicity =
+    GithubPagedGet  ["user", "repos"] qs
+  where
+    qs = repoPublicityQueryString publicity
 
 -- | The repos for a user, by their login. Can be restricted to just repos they
 -- own, are a member of, or publicize. Private repos will return empty list.

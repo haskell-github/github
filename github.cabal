@@ -118,6 +118,7 @@ test-suite github-test
   other-modules:
     Github.CommitsSpec
     Github.OrganizationsSpec
+    Github.ReposSpec
     Github.SearchSpec
     Github.UsersSpec
   main-is: Spec.hs
