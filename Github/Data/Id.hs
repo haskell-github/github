@@ -14,7 +14,7 @@ import GHC.Generics      (Generic)
 
 -- | Numeric identifier.
 newtype Id entity = Id Int
-    deriving (Eq, Ord, Show, Read, Generic, Typeable, Data)
+    deriving (Eq, Ord, Show, Generic, Typeable, Data)
 
 -- | Smart constructor for 'Id'.
 mkId :: proxy entity -> Int -> Id entity

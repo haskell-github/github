@@ -1,18 +1,23 @@
 {-# LANGUAGE OverloadedStrings #-}
+module Main (main) where
 
-module AddTeamMembershipFor where
+import Common
+import Prelude ()
 
-import qualified Github.Auth              as Github
-import qualified Github.Teams.Memberships as Github
-import           System.Environment       (getArgs)
+import qualified Github.Organizations.Teams as Github
 
+main :: IO ()
 main = do
   args <- getArgs
   result <- case args of
               [token, team_id, username] ->
-                Github.addTeamMembershipFor' (Github.GithubOAuth token) (read team_id) username Github.RoleMember
+                Github.addTeamMembershipFor'
+                    (Github.GithubOAuth token)
+                    (Github.mkTeamId $ read team_id)
+                    (Github.mkOwnerName $ fromString username)
+                    Github.RoleMember
               _                          ->
                 error "usage: AddTeamMembershipFor <token> <team_id> <username>"
   case result of
-    Left err   -> putStrLn $ "Error: " ++ show err
-    Right team -> putStrLn $ show team
+    Left err   -> putStrLn $ "Error: " <> tshow err
+    Right team -> putStrLn $ tshow team

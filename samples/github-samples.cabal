@@ -20,6 +20,58 @@ library
       Common
   default-language: Haskell2010
 
+executable github-edit-team
+  main-is: EditTeam.hs
+  hs-source-dirs:
+      Teams
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      DeleteTeam
+      ListTeamsCurrent
+      Memberships.AddTeamMembershipFor
+      Memberships.DeleteTeamMembershipFor
+      Memberships.TeamMembershipInfoFor
+      TeamInfoFor
+  default-language: Haskell2010
+
+executable github-team-membership-info-for
+  main-is: TeamMembershipInfoFor.hs
+  hs-source-dirs:
+      Teams/Memberships
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      AddTeamMembershipFor
+      DeleteTeamMembershipFor
+  default-language: Haskell2010
+
+executable github-delete-team-membership-for
+  main-is: DeleteTeamMembershipFor.hs
+  hs-source-dirs:
+      Teams/Memberships
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      AddTeamMembershipFor
+      TeamMembershipInfoFor
+  default-language: Haskell2010
+
 executable github-show-user
   main-is: ShowUser.hs
   hs-source-dirs:
@@ -51,6 +103,22 @@ executable github-list-following
       ListFollowers
   default-language: Haskell2010
 
+executable github-add-team-membership-for
+  main-is: AddTeamMembershipFor.hs
+  hs-source-dirs:
+      Teams/Memberships
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      DeleteTeamMembershipFor
+      TeamMembershipInfoFor
+  default-language: Haskell2010
+
 executable github-list-followers
   main-is: ListFollowers.hs
   hs-source-dirs:
@@ -64,4 +132,64 @@ executable github-list-followers
     , github-samples
   other-modules:
       ListFollowing
+  default-language: Haskell2010
+
+executable github-list-team-current
+  main-is: ListTeamsCurrent.hs
+  hs-source-dirs:
+      Teams
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      DeleteTeam
+      EditTeam
+      Memberships.AddTeamMembershipFor
+      Memberships.DeleteTeamMembershipFor
+      Memberships.TeamMembershipInfoFor
+      TeamInfoFor
+  default-language: Haskell2010
+
+executable github-delete-team
+  main-is: DeleteTeam.hs
+  hs-source-dirs:
+      Teams
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      EditTeam
+      ListTeamsCurrent
+      Memberships.AddTeamMembershipFor
+      Memberships.DeleteTeamMembershipFor
+      Memberships.TeamMembershipInfoFor
+      TeamInfoFor
+  default-language: Haskell2010
+
+executable github-teaminfo-for
+  main-is: TeamInfoFor.hs
+  hs-source-dirs:
+      Teams
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      DeleteTeam
+      EditTeam
+      ListTeamsCurrent
+      Memberships.AddTeamMembershipFor
+      Memberships.DeleteTeamMembershipFor
+      Memberships.TeamMembershipInfoFor
   default-language: Haskell2010
