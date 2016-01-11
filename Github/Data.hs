@@ -196,7 +196,7 @@ instance FromJSON Diff where
 
 instance FromJSON Gist where
   parseJSON (Object o) =
-    Gist <$> o .: "user"
+    Gist <$> o .: "owner"
          <*> o .: "git_push_url"
          <*> o .: "url"
          <*> o .:? "description"
