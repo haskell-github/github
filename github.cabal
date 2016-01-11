@@ -6,7 +6,7 @@ Description:         The Github API provides programmatic access to the full
                      like references and trees. This library wraps all of that, exposing a basic but
                      Haskell-friendly set of functions and data structures.
                      .
-                     For more of an overview please see the README: <https://github.com/jwiegley/github/blob/master/README.md>
+                     For more of an overview please see the README: <https://github.com/phadej/github/blob/master/README.md>
 License:             BSD3
 License-file:        LICENSE
 Author:              Mike Burns, John Wiegley, Oleg Grenrus
@@ -18,82 +18,6 @@ Build-type:          Simple
 Tested-with:         GHC==7.8.4, GHC==7.10.2
 Cabal-version:       >=1.10
 Extra-source-files:  README.md
-                    ,samples/Gists/Comments/ShowComment.hs
-                    ,samples/Gists/Comments/ShowComments.hs
-                    ,samples/Gists/ListGists.hs
-                    ,samples/Gists/ShowGist.hs
-                    ,samples/GitData/Commits/GitShow.hs
-                    ,samples/GitData/References/GitCreateReference.hs
-                    ,samples/GitData/References/GitLsRemote.hs
-                    ,samples/GitData/References/GitLsRemoteTags.hs
-                    ,samples/GitData/References/GitLsRemoteWithRef.hs
-                    ,samples/GitData/Trees/GitLsTree.hs
-                    ,samples/GitData/Trees/GitLsTreeRecursively.hs
-                    ,samples/Issues/Comments/ShowComment.hs
-                    ,samples/Issues/Comments/ShowComments.hs
-                    ,samples/Issues/Events/ShowEvent.hs
-                    ,samples/Issues/Events/ShowIssueEvents.hs
-                    ,samples/Issues/Events/ShowRepoEvents.hs
-                    ,samples/Issues/Labels/ShowIssueLabels.hs
-                    ,samples/Issues/Labels/ShowLabel.hs
-                    ,samples/Issues/Labels/ShowMilestoneLabels.hs
-                    ,samples/Issues/Labels/ShowRepoLabels.hs
-                    ,samples/Issues/Labels/CreateLabels.hs
-                    ,samples/Issues/Milestones/ShowMilestone.hs
-                    ,samples/Issues/Milestones/ShowMilestones.hs
-                    ,samples/Issues/ShowIssue.hs
-                    ,samples/Issues/ShowRepoIssues.hs
-                    ,samples/Organizations/Members/ShowMembers.hs
-                    ,samples/Organizations/ShowPublicOrganization.hs
-                    ,samples/Organizations/ShowPublicOrganizations.hs
-                    ,samples/Organizations/Teams/CreateTeamFor.hs
-                    ,samples/Organizations/Teams/ListTeamsForOrganization.hs
-                    ,samples/Pulls/Diff.hs
-                    ,samples/Pulls/ListPulls.hs
-                    ,samples/Pulls/ReviewComments/ListComments.hs
-                    ,samples/Pulls/ReviewComments/ShowComment.hs
-                    ,samples/Pulls/ShowCommits.hs
-                    ,samples/Pulls/ShowPull.hs
-                    ,samples/Search/SearchRepos.hs
-                    ,samples/Search/SearchIssues.hs
-                    ,samples/Repos/Collaborators/IsCollaborator.hs
-                    ,samples/Repos/Collaborators/ListCollaborators.hs
-                    ,samples/Repos/Commits/CommitComment.hs
-                    ,samples/Repos/Commits/CommitComments.hs
-                    ,samples/Repos/Commits/GitDiff.hs
-                    ,samples/Repos/Commits/GitLog.hs
-                    ,samples/Repos/Commits/GitShow.hs
-                    ,samples/Repos/Commits/RepoComments.hs
-                    ,samples/Repos/Forks/ListForks.hs
-                    ,samples/Repos/ListBranches.hs
-                    ,samples/Repos/ListContributors.hs
-                    ,samples/Repos/ListContributorsWithAnonymous.hs
-                    ,samples/Repos/ListLanguages.hs
-                    ,samples/Repos/ListOrgRepos.hs
-                    ,samples/Repos/ListTags.hs
-                    ,samples/Repos/ListUserRepos.hs
-                    ,samples/Repos/ShowRepo.hs
-                    ,samples/Repos/Watching/ListWatched.hs
-                    ,samples/Repos/Watching/ListWatchers.hs
-                    ,samples/Repos/Starring/ListStarred.hs
-                    ,samples/Repos/Webhooks/CreateWebhook.hs
-                    ,samples/Repos/Webhooks/DeleteWebhook.hs
-                    ,samples/Repos/Webhooks/EditWebhook.hs
-                    ,samples/Repos/Webhooks/ListWebhook.hs
-                    ,samples/Repos/Webhooks/ListWebhooks.hs
-                    ,samples/Repos/Webhooks/PingWebhook.hs
-                    ,samples/Repos/Webhooks/TestPushWebhook.hs
-                    ,samples/Teams/DeleteTeam.hs
-                    ,samples/Teams/EditTeam.hs
-                    ,samples/Teams/ListTeamsCurrent.hs
-                    ,samples/Teams/TeamInfoFor.hs
-                    ,samples/Teams/Memberships/AddTeamMembershipFor.hs
-                    ,samples/Teams/Memberships/DeleteTeamMembershipFor.hs
-                    ,samples/Teams/Memberships/TeamMembershipInfoFor.hs
-                    ,samples/Users/Followers/ListFollowers.hs
-                    ,samples/Users/Followers/ListFollowing.hs
-                    ,samples/Users/ShowUser.hs
-                    ,LICENSE
 
 flag aeson-compat
   description: Whether to use aeson-compat or aeson-extra
@@ -102,7 +26,7 @@ flag aeson-compat
 
 source-repository head
   type: git
-  location: git://github.com/jwiegley/github.git
+  location: git://github.com/phadej/github.git
 
 Library
   -- Modules exported by the library.

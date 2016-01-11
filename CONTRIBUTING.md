@@ -4,7 +4,7 @@ Contributing
 When adding a new public function
 =================================
 
-* Write a sample in the appropriate place in the samples/ directory.
+* Write a test (or sample) in the appropriate place in the samples/ directory.
 * Implement the function.
 * Submit a pull request.
 
