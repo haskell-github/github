@@ -145,7 +145,7 @@ instance FromJSON File where
          <*> o .: "additions"
          <*> o .: "sha"
          <*> o .: "changes"
-         <*> o .: "patch"
+         <*> o .:? "patch"
          <*> o .: "filename"
          <*> o .: "deletions"
   parseJSON _          = fail "Could not build a File"

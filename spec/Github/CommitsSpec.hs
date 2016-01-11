@@ -3,12 +3,12 @@
 module Github.CommitsSpec where
 
 import Github.Auth          (GithubAuth (..))
-import Github.Repos.Commits (commitsFor', commitsForR)
+import Github.Repos.Commits (Commit, mkName, commitSha, commitsFor', commitsForR, diffR)
 import Github.Request       (executeRequest)
 
--- import Data.Aeson.Compat  (eitherDecodeStrict)
+import Control.Monad      (forM_)
 import Data.Either.Compat (isRight)
--- import Data.FileEmbed     (embedFile)
+import Data.Proxy         (Proxy (..))
 import System.Environment (lookupEnv)
 import Test.Hspec         (Spec, describe, it, pendingWith, shouldSatisfy)
 
@@ -38,3 +38,18 @@ spec = do
       cs <- executeRequest auth $ commitsForR "phadej" "github" (Just 40)
       cs `shouldSatisfy` isRight
       V.length (fromRightS cs) `shouldSatisfy` (< 70)
+
+  describe "diff" $ do
+    it "works" $ withAuth $ \auth -> do
+      cs <- executeRequest auth $ commitsForR "phadej" "github" (Just 30)
+      cs `shouldSatisfy` isRight
+      let commits = take 10 . V.toList . fromRightS $ cs
+      let pairs = zip commits $ drop 1 commits
+      forM_ pairs $ \(a, b) -> do
+        d <- executeRequest auth $ diffR "phadej" "github" (commitSha a) (commitSha b)
+        d `shouldSatisfy` isRight
+
+    it "issue #155" $ withAuth $ \auth -> do
+      let mkCommitName = mkName (Proxy :: Proxy Commit)
+      d <- executeRequest auth $ diffR "nomeata" "codespeed" (mkCommitName "ghc") (mkCommitName "tobami:master")
+      d `shouldSatisfy` isRight
