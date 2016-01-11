@@ -203,11 +203,11 @@ module Github.All (
     --
     -- Missing endpoints:
     --
-    -- * List your repositories
     -- * List all public repositories
     -- * List Teams
     -- * Get Branch
     -- * Enabling and disabling branch protection
+    currentUserReposR,
     userReposR,
 
     -- ** Collaborators
