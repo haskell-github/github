@@ -13,8 +13,8 @@ main = do
               [token, team_id, team_name, desc] ->
                 Github.editTeam'
                   (Github.GithubOAuth token)
-                  (read team_id)
-                  (Github.EditTeam (Github.mkName (Proxy :: Proxy Github.Team) $ fromString team_name) (Just $ fromString desc) Github.PermissionPull)
+                  (Github.mkTeamId $ read team_id)
+                  (Github.EditTeam (Github.mkTeamName $ fromString team_name) (Just $ fromString desc) Github.PermissionPull)
               _                                 ->
                 error "usage: EditTeam <token> <team_id> <team_name> <description>"
   case result of

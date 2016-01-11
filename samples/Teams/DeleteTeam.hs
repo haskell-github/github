@@ -10,7 +10,7 @@ main :: IO ()
 main = do
   args <- getArgs
   result <- case args of
-              [token, team_id] -> Github.deleteTeam' (Github.GithubOAuth token) (read team_id)
+              [token, team_id] -> Github.deleteTeam' (Github.GithubOAuth token) (Github.mkTeamId $ read team_id)
               _                -> error "usage: DeleteTeam <token> <team_id>"
   case result of
     Left err   -> putStrLn $ "Error: " <> tshow err

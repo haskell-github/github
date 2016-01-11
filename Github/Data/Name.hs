@@ -15,7 +15,7 @@ import Data.Text         (Text)
 import GHC.Generics      (Generic)
 
 newtype Name entity = N Text
-    deriving (Eq, Ord, Show, Read, Generic, Typeable, Data)
+    deriving (Eq, Ord, Show, Generic, Typeable, Data)
 
 -- | Smart constructor for 'Name'
 mkName :: proxy entity -> Text -> Name entity

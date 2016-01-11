@@ -42,8 +42,23 @@ executables:
     source-dirs: Teams
     dependencies:
       - github-samples
-  github-teaminfo-fir:
+  github-teaminfo-for:
     main: TeamInfoFor.hs
     source-dirs: Teams
+    dependencies:
+      - github-samples
+  github-add-team-membership-for:
+    main: AddTeamMembershipFor.hs
+    source-dirs: Teams/Memberships
+    dependencies:
+      - github-samples
+  github-delete-team-membership-for:
+    main: DeleteTeamMembershipFor.hs
+    source-dirs: Teams/Memberships
+    dependencies:
+      - github-samples
+  github-team-membership-info-for:
+    main: TeamMembershipInfoFor.hs
+    source-dirs: Teams/Memberships
     dependencies:
       - github-samples
