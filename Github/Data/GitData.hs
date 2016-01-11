@@ -3,6 +3,7 @@
 module Github.Data.GitData where
 
 import Github.Data.Definitions
+import Github.Data.Name        (Name)
 
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
@@ -13,7 +14,7 @@ import Data.Vector              (Vector)
 import GHC.Generics             (Generic)
 
 data Commit = Commit {
-   commitSha       :: !Text
+   commitSha       :: !(Name Commit)
   ,commitParents   :: !(Vector Tree)
   ,commitUrl       :: !Text
   ,commitGitCommit :: !GitCommit
@@ -26,7 +27,7 @@ data Commit = Commit {
 instance NFData Commit where rnf = genericRnf
 
 data Tree = Tree {
-   treeSha      :: !Text
+   treeSha      :: !(Name Tree)
   ,treeUrl      :: !Text
   ,treeGitTrees :: !(Vector GitTree)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -35,7 +36,7 @@ instance NFData Tree where rnf = genericRnf
 
 data GitTree = GitTree {
   gitTreeType  :: !Text
-  ,gitTreeSha  :: !Text
+  ,gitTreeSha  :: !(Name GitTree)
   -- Can be empty for submodule
   ,gitTreeUrl  :: !(Maybe Text)
   ,gitTreeSize :: !(Maybe Int)
@@ -51,7 +52,7 @@ data GitCommit = GitCommit {
   ,gitCommitCommitter :: !GitUser
   ,gitCommitAuthor    :: !GitUser
   ,gitCommitTree      :: !Tree
-  ,gitCommitSha       :: !(Maybe Text)
+  ,gitCommitSha       :: !(Maybe (Name GitCommit))
   ,gitCommitParents   :: !(Vector Tree)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -61,7 +62,7 @@ data Blob = Blob {
    blobUrl      :: !Text
   ,blobEncoding :: !Text
   ,blobContent  :: !Text
-  ,blobSha      :: !Text
+  ,blobSha      :: !(Name Blob)
   ,blobSize     :: !Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -145,7 +146,7 @@ data File = File {
   ,fileAdditions :: !Int
   ,fileSha       :: !Text
   ,fileChanges   :: !Int
-  ,filePatch     :: !Text
+  ,filePatch     :: !(Maybe Text)
   ,fileFilename  :: !Text
   ,fileDeletions :: !Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
