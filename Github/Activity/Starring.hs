@@ -19,13 +19,13 @@ import Github.Request
 -- | The list of users that have starred the specified Github repo.
 --
 -- > userInfoFor' Nothing "mike-burns"
-stargazersFor :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector GithubOwner))
+stargazersFor :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector SimpleOwner))
 stargazersFor auth user repo =
     executeRequestMaybe auth $ stargazersForR user repo Nothing
 
 -- | List Stargazers.
 -- See <https://developer.github.com/v3/activity/starring/#list-stargazers>
-stargazersForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector GithubOwner)
+stargazersForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector SimpleOwner)
 stargazersForR user repo =
     GithubPagedGet ["repos", toPathPart user, toPathPart repo, "stargazers"] []
 
