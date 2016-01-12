@@ -28,12 +28,14 @@ module Github.Data (
     untagName,
     mkOwnerName,
     mkTeamName,
+    mkOrganizationName,
     -- ** Id
     Id,
     mkId,
     untagId,
     mkOwnerId,
     mkTeamId,
+    mkOrganizationId,
     ) where
 
 import Prelude        ()
@@ -72,6 +74,12 @@ mkTeamId = Id
 
 mkTeamName :: T.Text -> Name Team
 mkTeamName = N
+
+mkOrganizationId :: Int -> Id Organization
+mkOrganizationId = Id
+
+mkOrganizationName :: T.Text -> Name Organization
+mkOrganizationName = N
 
 instance FromJSON Commit where
   parseJSON (Object o) =

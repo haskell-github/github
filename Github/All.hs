@@ -209,6 +209,12 @@ module Github.All (
     -- * Enabling and disabling branch protection
     currentUserReposR,
     userReposR,
+    organizationReposR,
+    repositoryR,
+    contributorsR,
+    languagesForR,
+    tagsForR,
+    branchesForR,
 
     -- ** Collaborators
     -- | See <https://developer.github.com/v3/repos/collaborators/>
