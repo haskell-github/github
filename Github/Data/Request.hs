@@ -18,6 +18,7 @@ module Github.Data.Request (
     ) where
 
 import Data.Aeson.Compat  (FromJSON)
+import Data.Hashable      (Hashable (..))
 import Data.Typeable      (Typeable)
 import Data.Vector        (Vector)
 import GHC.Generics       (Generic)
@@ -56,6 +57,8 @@ toMethod :: PostMethod -> Method.Method
 toMethod Post  = Method.methodPost
 toMethod Patch = Method.methodPatch
 toMethod Put   = Method.methodPut
+
+instance Hashable PostMethod
 
 ------------------------------------------------------------------------------
 -- Github request
@@ -108,3 +111,25 @@ instance Show (GithubRequest k a) where
                 showString "GithubStatus "
                     . showsPrec (appPrec + 1) req
       where appPrec = 10 :: Int
+
+instance Hashable (GithubRequest k a) where
+    hashWithSalt salt (GithubGet ps qs) =
+        salt `hashWithSalt` (0 :: Int)
+             `hashWithSalt` ps
+             `hashWithSalt` qs
+    hashWithSalt salt (GithubPagedGet ps qs l) =
+        salt `hashWithSalt` (1 :: Int)
+             `hashWithSalt` ps
+             `hashWithSalt` qs
+             `hashWithSalt` l
+    hashWithSalt salt (GithubPost m ps body) =
+        salt `hashWithSalt` (2 :: Int)
+             `hashWithSalt` m
+             `hashWithSalt` ps
+             `hashWithSalt` body
+    hashWithSalt salt (GithubDelete ps) =
+        salt `hashWithSalt` (3 :: Int)
+             `hashWithSalt` ps
+    hashWithSalt salt (GithubStatus req) =
+        salt `hashWithSalt` (4 :: Int)
+             `hashWithSalt` req
