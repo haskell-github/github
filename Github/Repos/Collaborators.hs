@@ -18,18 +18,18 @@ import Network.HTTP.Types (Status)
 -- | All the users who have collaborated on a repo.
 --
 -- > collaboratorsOn "thoughtbot" "paperclip"
-collaboratorsOn :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector GithubOwner))
+collaboratorsOn :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector SimpleOwner))
 collaboratorsOn = collaboratorsOn' Nothing
 
 -- | All the users who have collaborated on a repo.
 -- With authentication.
-collaboratorsOn' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector GithubOwner))
+collaboratorsOn' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector SimpleOwner))
 collaboratorsOn' auth user repo =
     executeRequestMaybe auth $ collaboratorsOnR user repo Nothing
 
 -- | List collaborators.
 -- See <https://developer.github.com/v3/repos/collaborators/#list-collaborators>
-collaboratorsOnR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector GithubOwner)
+collaboratorsOnR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector SimpleOwner)
 collaboratorsOnR user repo =
     GithubPagedGet ["repos", toPathPart user, toPathPart repo, "collaborators"] []
 
