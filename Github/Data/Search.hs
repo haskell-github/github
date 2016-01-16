@@ -7,6 +7,7 @@ import Github.Data.Repos  (Repo)
 
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
+import Data.Binary              (Binary)
 import Data.Data                (Data, Typeable)
 import Data.Text                (Text)
 import Data.Vector              (Vector)
@@ -18,6 +19,7 @@ data SearchReposResult = SearchReposResult {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData SearchReposResult where rnf = genericRnf
+instance Binary SearchReposResult
 
 data Code = Code {
    codeName    :: !Text
@@ -30,6 +32,7 @@ data Code = Code {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Code where rnf = genericRnf
+instance Binary Code
 
 data SearchCodeResult = SearchCodeResult {
    searchCodeTotalCount :: !Int
@@ -37,6 +40,7 @@ data SearchCodeResult = SearchCodeResult {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData SearchCodeResult where rnf = genericRnf
+instance Binary SearchCodeResult
 
 data SearchIssuesResult = SearchIssuesResult {
    searchIssuesTotalCount :: !Int
@@ -44,3 +48,4 @@ data SearchIssuesResult = SearchIssuesResult {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData SearchIssuesResult where rnf = genericRnf
+instance Binary SearchIssuesResult

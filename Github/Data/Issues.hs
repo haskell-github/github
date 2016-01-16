@@ -8,6 +8,7 @@ import Github.Data.PullRequests
 
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
+import Data.Binary              (Binary)
 import Data.Data                (Data, Typeable)
 import Data.Text                (Text)
 import Data.Time                (UTCTime)
@@ -36,6 +37,7 @@ data Issue = Issue {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Issue where rnf = genericRnf
+instance Binary Issue
 
 data NewIssue = NewIssue {
   newIssueTitle     :: Text
@@ -46,6 +48,7 @@ data NewIssue = NewIssue {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData NewIssue where rnf = genericRnf
+instance Binary NewIssue
 
 data EditIssue = EditIssue {
   editIssueTitle     :: Maybe Text
@@ -57,6 +60,7 @@ data EditIssue = EditIssue {
 } deriving  (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData EditIssue where rnf = genericRnf
+instance Binary EditIssue
 
 data Milestone = Milestone {
    milestoneCreator      :: SimpleOwner
@@ -72,6 +76,7 @@ data Milestone = Milestone {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Milestone where rnf = genericRnf
+instance Binary Milestone
 
 data IssueLabel = IssueLabel {
    labelColor :: Text
@@ -80,6 +85,7 @@ data IssueLabel = IssueLabel {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData IssueLabel where rnf = genericRnf
+instance Binary IssueLabel
 
 data IssueComment = IssueComment {
    issueCommentUpdatedAt :: UTCTime
@@ -92,6 +98,7 @@ data IssueComment = IssueComment {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData IssueComment where rnf = genericRnf
+instance Binary IssueComment
 
 data EventType =
     Mentioned     -- ^ The actor was @mentioned in an issue body.
@@ -115,6 +122,7 @@ data EventType =
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData EventType where rnf = genericRnf
+instance Binary EventType
 
 -- | Issue event
 data Event = Event {
@@ -128,6 +136,7 @@ data Event = Event {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Event where rnf = genericRnf
+instance Binary Event
 
 -- | A data structure for describing how to filter issues. This is used by
 -- @issuesForRepo@.
@@ -149,3 +158,4 @@ data IssueLimitation =
   deriving (Eq, Ord, Show, Typeable, Data, Generic)
 
 instance NFData IssueLimitation where rnf = genericRnf
+instance Binary IssueLimitation

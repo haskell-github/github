@@ -4,6 +4,7 @@ module Github.Auth where
 
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
+import Data.Binary              (Binary)
 import Data.Data                (Data, Typeable)
 import GHC.Generics             (Generic)
 
@@ -18,3 +19,4 @@ data GithubAuth = GithubBasicAuth BS.ByteString BS.ByteString
                 deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData GithubAuth where rnf = genericRnf
+instance Binary GithubAuth

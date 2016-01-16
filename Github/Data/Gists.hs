@@ -8,6 +8,7 @@ import Github.Data.Name        (Name)
 
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
+import Data.Binary              (Binary)
 import Data.Data                (Data, Typeable)
 import Data.Text                (Text)
 import Data.Time                (UTCTime)
@@ -30,6 +31,7 @@ data Gist = Gist {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Gist where rnf = genericRnf
+instance Binary Gist
 
 data GistFile = GistFile {
    gistFileType     :: !Text
@@ -41,6 +43,7 @@ data GistFile = GistFile {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData GistFile where rnf = genericRnf
+instance Binary GistFile
 
 data GistComment = GistComment {
    gistCommentUser      :: !SimpleOwner
@@ -52,3 +55,4 @@ data GistComment = GistComment {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData GistComment where rnf = genericRnf
+instance Binary GistComment
