@@ -563,17 +563,10 @@ instance FromJSON PingEvent where
               <*> o .: "hook_id"
   parseJSON _ = fail "Could not build a PingEvent"
 
-instance FromJSON SearchReposResult where
-  parseJSON (Object o) =
-    SearchReposResult <$> o .: "total_count"
-                      <*> o .:< "items"
-  parseJSON _ = fail "Could not build a SearchReposResult"
-
-instance FromJSON SearchIssuesResult where
-  parseJSON (Object o) =
-    SearchIssuesResult <$> o .: "total_count"
-                       <*> o .:< "items"
-  parseJSON _ = fail "Could not build a SearchIssuesResult"
+instance FromJSON entity => FromJSON (SearchResult entity) where
+  parseJSON = withObject "Searchresult" $ \o ->
+    SearchResult <$> o .: "total_count"
+                 <*> o .:< "items"
 
 instance FromJSON Repo where
   parseJSON (Object o) =
@@ -643,12 +636,6 @@ instance ToJSON EditRepo where
                    , "has_wiki"      .= hasWiki
                    , "has_downloads" .= hasDownloads
                    ]
-
-instance FromJSON SearchCodeResult where
-  parseJSON (Object o) =
-    SearchCodeResult <$> o .: "total_count"
-                     <*> o .:< "items"
-  parseJSON _ = fail "Could not build a SearchCodeResult"
 
 instance FromJSON Code where
   parseJSON (Object o ) =
