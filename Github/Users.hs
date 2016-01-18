@@ -10,7 +10,6 @@ module Github.Users (
 ,module Github.Data
 ) where
 
-import Github.Auth
 import Github.Data
 import Github.Request
 
@@ -35,11 +34,9 @@ userInfoForR userName = GithubGet ["users", toPathPart userName] []
 -- | Retrieve information about the user associated with the supplied authentication.
 --
 -- > userInfoCurrent' (GithubOAuth "...")
---
--- TODO: Change to require 'GithubAuth'?
-userInfoCurrent' :: Maybe GithubAuth -> IO (Either Error GithubOwner)
+userInfoCurrent' :: GithubAuth -> IO (Either Error GithubOwner)
 userInfoCurrent' auth =
-    executeRequestMaybe auth . unsafeDropAuthRequirements $ userInfoCurrentR
+    executeRequest auth $ userInfoCurrentR
 
 -- | Get the authenticated user.
 -- See <https://developer.github.com/v3/users/#get-the-authenticated-user>
