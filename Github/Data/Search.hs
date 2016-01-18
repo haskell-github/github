@@ -13,13 +13,13 @@ import Data.Text                (Text)
 import Data.Vector              (Vector)
 import GHC.Generics             (Generic)
 
-data SearchReposResult = SearchReposResult {
-   searchReposTotalCount :: !Int
-  ,searchReposRepos      :: !(Vector Repo)
+data SearchResult entity = SearchResult {
+   searchResultTotalCount :: !Int
+  ,searchResultResults    :: !(Vector entity)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData SearchReposResult where rnf = genericRnf
-instance Binary SearchReposResult
+instance NFData entity => NFData (SearchResult entity) where rnf = genericRnf
+instance Binary entity => Binary (SearchResult entity)
 
 data Code = Code {
    codeName    :: !Text
@@ -33,19 +33,3 @@ data Code = Code {
 
 instance NFData Code where rnf = genericRnf
 instance Binary Code
-
-data SearchCodeResult = SearchCodeResult {
-   searchCodeTotalCount :: !Int
-  ,searchCodeCodes      :: !(Vector Code)
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData SearchCodeResult where rnf = genericRnf
-instance Binary SearchCodeResult
-
-data SearchIssuesResult = SearchIssuesResult {
-   searchIssuesTotalCount :: !Int
-  ,searchIssuesIssues     :: !(Vector Issue)
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData SearchIssuesResult where rnf = genericRnf
-instance Binary SearchIssuesResult

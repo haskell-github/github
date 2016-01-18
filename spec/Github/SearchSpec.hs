@@ -13,7 +13,7 @@ import qualified Data.Vector as V
 
 import Github.Data.Id     (Id (..))
 import Github.Data.Issues (Issue (..))
-import Github.Search      (SearchIssuesResult (..), searchIssues)
+import Github.Search      (SearchResult (..), searchIssues)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -23,10 +23,10 @@ spec :: Spec
 spec = do
   describe "searchIssues" $ do
     it "decodes issue search response JSON" $ do
-      let searchIssuesResult = fromRightS $ eitherDecodeStrict $(embedFile "fixtures/issueSearch.json") :: SearchIssuesResult
-      searchIssuesTotalCount searchIssuesResult `shouldBe` 2
+      let searchIssuesResult = fromRightS $ eitherDecodeStrict $(embedFile "fixtures/issueSearch.json") :: SearchResult Issue
+      searchResultTotalCount searchIssuesResult `shouldBe` 2
 
-      let issues = searchIssuesIssues searchIssuesResult
+      let issues = searchResultResults searchIssuesResult
       V.length issues `shouldBe` 2
 
       let issue1 = issues V.! 0
@@ -43,6 +43,6 @@ spec = do
 
     it "performs an issue search via the API" $ do
       let query = "Decouple in:title repo:phadej/github created:<=2015-12-01"
-      issues <- searchIssuesIssues . fromRightS <$> searchIssues query
+      issues <- searchResultResults . fromRightS <$> searchIssues query
       length issues `shouldBe` 1
       issueId (V.head issues) `shouldBe` Id 119694665
