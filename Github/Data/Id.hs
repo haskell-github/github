@@ -8,6 +8,7 @@ module Github.Data.Id (
 
 import Control.DeepSeq   (NFData (..))
 import Data.Aeson.Compat (FromJSON (..), ToJSON (..))
+import Data.Binary       (Binary)
 import Data.Data         (Data, Typeable)
 import Data.Hashable     (Hashable)
 import GHC.Generics      (Generic)
@@ -24,6 +25,7 @@ untagId :: Id entity -> Int
 untagId (Id name) = name
 
 instance Hashable (Id entity)
+instance Binary (Id entity)
 
 instance NFData (Id entity) where
     rnf (Id s) = rnf s

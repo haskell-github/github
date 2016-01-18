@@ -7,6 +7,7 @@ import Github.Data.Id (Id)
 
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
+import Data.Binary.Orphans      (Binary)
 import Data.Data                (Data, Typeable)
 import Data.Text                (Text)
 import Data.Time                (UTCTime)
@@ -29,6 +30,7 @@ data RepoWebhook = RepoWebhook {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData RepoWebhook where rnf = genericRnf
+instance Binary RepoWebhook
 
 data RepoWebhookEvent =
    WebhookWildcardEvent
@@ -54,6 +56,7 @@ data RepoWebhookEvent =
    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData RepoWebhookEvent where rnf = genericRnf
+instance Binary RepoWebhookEvent
 
 data RepoWebhookResponse = RepoWebhookResponse {
    repoWebhookResponseCode    :: !(Maybe Int)
@@ -62,6 +65,7 @@ data RepoWebhookResponse = RepoWebhookResponse {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData RepoWebhookResponse where rnf = genericRnf
+instance Binary RepoWebhookResponse
 
 data PingEvent = PingEvent {
    pingEventZen    :: !Text
@@ -70,6 +74,7 @@ data PingEvent = PingEvent {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData PingEvent where rnf = genericRnf
+instance Binary PingEvent
 
 data NewRepoWebhook = NewRepoWebhook {
   newRepoWebhookName   :: !Text
@@ -79,6 +84,7 @@ data NewRepoWebhook = NewRepoWebhook {
 } deriving (Eq, Ord, Show, Typeable, Data, Generic)
 
 instance NFData NewRepoWebhook where rnf = genericRnf
+instance Binary NewRepoWebhook
 
 data EditRepoWebhook = EditRepoWebhook {
   editRepoWebhookConfig       :: !(Maybe (M.Map Text Text))
@@ -89,3 +95,4 @@ data EditRepoWebhook = EditRepoWebhook {
 } deriving (Eq, Ord, Show, Typeable, Data, Generic)
 
 instance NFData EditRepoWebhook where rnf = genericRnf
+instance Binary EditRepoWebhook

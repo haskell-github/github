@@ -6,6 +6,7 @@ import Github.Data.Definitions
 
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
+import Data.Binary              (Binary)
 import Data.Data                (Data, Typeable)
 import Data.Text                (Text)
 import Data.Vector              (Vector)
@@ -21,6 +22,7 @@ data Privacy =
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Privacy where rnf = genericRnf
+instance Binary Privacy
 
 data Permission =
     PermissionPull
@@ -29,6 +31,7 @@ data Permission =
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Permission where rnf = genericRnf
+instance Binary Permission
 
 data SimpleTeam = SimpleTeam {
    simpleTeamId              :: !(Id Team)
@@ -43,6 +46,7 @@ data SimpleTeam = SimpleTeam {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData SimpleTeam where rnf = genericRnf
+instance Binary SimpleTeam
 
 data Team = Team {
    teamId              :: !(Id Team)
@@ -60,6 +64,7 @@ data Team = Team {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Team where rnf = genericRnf
+instance Binary Team
 
 data CreateTeam = CreateTeam {
    createTeamName        :: !(Name Team)
@@ -69,7 +74,8 @@ data CreateTeam = CreateTeam {
   ,createTeamPermission  :: Permission
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData CreateTeam
+instance NFData CreateTeam where rnf = genericRnf
+instance Binary CreateTeam
 
 data EditTeam = EditTeam {
    editTeamName        :: !(Name Team)
@@ -79,6 +85,7 @@ data EditTeam = EditTeam {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData EditTeam where rnf = genericRnf
+instance Binary  EditTeam
 
 data Role =
      RoleMaintainer
@@ -86,6 +93,7 @@ data Role =
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Role
+instance Binary Role
 
 data ReqState =
      StatePending
@@ -93,6 +101,7 @@ data ReqState =
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData ReqState where rnf = genericRnf
+instance Binary ReqState
 
 data TeamMembership = TeamMembership {
   teamMembershipUrl      :: !Text,
@@ -101,9 +110,11 @@ data TeamMembership = TeamMembership {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData TeamMembership where rnf = genericRnf
+instance Binary TeamMembership
 
 data CreateTeamMembership = CreateTeamMembership {
   createTeamMembershipRole :: !Role
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData CreateTeamMembership where rnf = genericRnf
+instance Binary CreateTeamMembership

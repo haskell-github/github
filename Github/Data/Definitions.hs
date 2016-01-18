@@ -5,6 +5,7 @@ module Github.Data.Definitions where
 
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
+import Data.Binary.Orphans      (Binary)
 import Data.Data                (Data, Typeable)
 import Data.Text                (Text)
 import Data.Time                (UTCTime)
@@ -31,7 +32,9 @@ data Error =
   | ParseError Text -- ^ An error in the parser itself.
   | JsonError Text -- ^ The JSON is malformed or unexpected.
   | UserError Text -- ^ Incorrect input.
-  deriving Show
+  deriving (Show, Typeable)
+
+instance E.Exception Error
 
 data SimpleOwner = SimpleUserOwner {
    simpleOwnerAvatarUrl  :: !Text
@@ -48,6 +51,7 @@ data SimpleOwner = SimpleUserOwner {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData SimpleOwner where rnf = genericRnf
+instance Binary SimpleOwner
 
 data Stats = Stats {
    statsAdditions :: !Int
@@ -56,6 +60,7 @@ data Stats = Stats {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Stats where rnf = genericRnf
+instance Binary Stats
 
 data Comment = Comment {
    commentPosition  :: !(Maybe Int)
@@ -72,18 +77,21 @@ data Comment = Comment {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Comment where rnf = genericRnf
+instance Binary Comment
 
 data NewComment = NewComment {
    newCommentBody :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData NewComment where rnf = genericRnf
+instance Binary NewComment
 
 data EditComment = EditComment {
    editCommentBody :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData EditComment where rnf = genericRnf
+instance Binary EditComment
 
 data SimpleOrganization = SimpleOrganization {
    simpleOrganizationUrl       :: !Text
@@ -93,6 +101,7 @@ data SimpleOrganization = SimpleOrganization {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData SimpleOrganization where rnf = genericRnf
+instance Binary SimpleOrganization
 
 data Organization = Organization {
    organizationType        :: !Text
@@ -114,6 +123,7 @@ data Organization = Organization {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Organization where rnf = genericRnf
+instance Binary Organization
 
 data Content
   = ContentFile ContentFileData
@@ -121,6 +131,7 @@ data Content
  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Content where rnf = genericRnf
+instance Binary Content
 
 data ContentFileData = ContentFileData {
    contentFileInfo     :: !ContentInfo
@@ -130,6 +141,7 @@ data ContentFileData = ContentFileData {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData ContentFileData where rnf = genericRnf
+instance Binary ContentFileData
 
 -- | An item in a directory listing.
 data ContentItem = ContentItem {
@@ -138,11 +150,13 @@ data ContentItem = ContentItem {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData ContentItem where rnf = genericRnf
+instance Binary ContentItem
 
 data ContentItemType = ItemFile | ItemDir
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData ContentItemType where rnf = genericRnf
+instance Binary ContentItemType
 
 -- | Information common to both kinds of Content: files and directories.
 data ContentInfo = ContentInfo {
@@ -155,6 +169,7 @@ data ContentInfo = ContentInfo {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData ContentInfo where rnf = genericRnf
+instance Binary ContentInfo
 
 data Contributor
   -- | An existing Github user, with their number of contributions, avatar
@@ -165,6 +180,7 @@ data Contributor
  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Contributor where rnf = genericRnf
+instance Binary Contributor
 
 data GithubOwner = GithubUser {
    githubOwnerCreatedAt   :: !UTCTime
@@ -207,3 +223,4 @@ data GithubOwner = GithubUser {
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData GithubOwner where rnf = genericRnf
+instance Binary GithubOwner
