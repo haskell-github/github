@@ -14,7 +14,7 @@ before_cache:
 
 env:
   global:
-    secure: "IRtE1XwgzQKlD/fzNrapx8l3dVIC8/0BeQoA3C2qQM7BW2BVs5Z12tX/I1nco3E7J5SwfMWStGJxgghcI1t4uTKg6Q1CQDhNNy+Sr3jX9kd3Evvd3HacE/FiBBtIoiE1tIqd0/duCpJ+EH5d9Gd/Zk+1BWnDTdEdAYZVbc6sEMM="
+    secure: "C2YwYhIClWJKjKQ1AfsHn0Py5+6WkA79Ny6bfR9JxQ10aT3sq5FcZt0ZfwutK0+jQ5F6c3+L0yJaNm8dp1+0MGK0ALDE3vx9ftJkXLp/5LwSdfeHHiMLFoQsSs3mGw9DirxiHbWlDzBKNfRi397Vckh0sfEGx/rEBIs5PS86wIU="
 
 matrix:
   include:
