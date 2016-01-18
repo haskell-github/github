@@ -2,8 +2,7 @@
 {-# LANGUAGE DeriveGeneric      #-}
 module Github.Data.Search where
 
-import Github.Data.Issues (Issue)
-import Github.Data.Repos  (Repo)
+import Github.Data.Repos (Repo)
 
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)

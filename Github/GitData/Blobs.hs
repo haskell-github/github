@@ -7,7 +7,6 @@ module Github.GitData.Blobs (
     module Github.Data,
     ) where
 
-import Github.Auth
 import Github.Data
 import Github.Request
 

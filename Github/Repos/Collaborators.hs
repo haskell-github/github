@@ -9,11 +9,9 @@ module Github.Repos.Collaborators (
     module Github.Data,
     ) where
 
-import Data.Vector        (Vector)
-import Github.Auth
+import Data.Vector    (Vector)
 import Github.Data
 import Github.Request
-import Network.HTTP.Types (Status)
 
 -- | All the users who have collaborated on a repo.
 --
@@ -44,7 +42,7 @@ isCollaboratorOn :: Maybe GithubAuth
                  -> Name GithubOwner  -- ^ Repository owner
                  -> Name Repo         -- ^ Repository name
                  -> Name GithubOwner  -- ^ Collaborator?
-                 -> IO (Either Error Status)
+                 -> IO (Either Error Bool)
 isCollaboratorOn auth user repo coll =
     executeRequestMaybe auth $ isCollaboratorOnR user repo coll
 
@@ -53,6 +51,6 @@ isCollaboratorOn auth user repo coll =
 isCollaboratorOnR :: Name GithubOwner  -- ^ Repository owner
                   -> Name Repo         -- ^ Repository name
                   -> Name GithubOwner  -- ^ Collaborator?
-                  -> GithubRequest k Status
-isCollaboratorOnR user repo coll = GithubStatus $
+                  -> GithubRequest k Bool
+isCollaboratorOnR user repo coll = GithubStatus StatusOnlyOk $
     GithubGet ["repos", toPathPart user, toPathPart repo, "collaborators", toPathPart coll] []

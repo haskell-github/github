@@ -29,13 +29,11 @@ module Github.Repos.Webhooks (
     deleteRepoWebhookR,
 ) where
 
-import Github.Auth
 import Github.Data
 import Github.Request
 
-import Data.Aeson.Compat  (encode)
-import Data.Vector        (Vector)
-import Network.HTTP.Types (Status)
+import Data.Aeson.Compat (encode)
+import Data.Vector       (Vector)
 
 webhooksFor' :: GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector RepoWebhook))
 webhooksFor' auth user repo =
@@ -77,24 +75,24 @@ editRepoWebhookR :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> EditRepoW
 editRepoWebhookR user repo hookId hookEdit =
     GithubPost Patch ["repos", toPathPart user, toPathPart repo, "hooks", toPathPart hookId] (encode hookEdit)
 
-testPushRepoWebhook' :: GithubAuth -> Name GithubOwner -> Name Repo -> Id RepoWebhook -> IO (Either Error Status)
+testPushRepoWebhook' :: GithubAuth -> Name GithubOwner -> Name Repo -> Id RepoWebhook -> IO (Either Error Bool)
 testPushRepoWebhook' auth user repo hookId =
     executeRequest auth $ testPushRepoWebhookR user repo hookId
 
 -- | Test a push hook.
 -- See <https://developer.github.com/v3/repos/hooks/#test-a-push-hook>
-testPushRepoWebhookR :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> GithubRequest 'True Status
-testPushRepoWebhookR user repo hookId = GithubStatus $
+testPushRepoWebhookR :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> GithubRequest 'True Bool
+testPushRepoWebhookR user repo hookId = GithubStatus StatusOnlyOk $
     GithubPost Post (createWebhookOpPath user repo hookId $ Just "tests") (encode ())
 
-pingRepoWebhook' :: GithubAuth -> Name GithubOwner -> Name Repo -> Id RepoWebhook -> IO (Either Error Status)
+pingRepoWebhook' :: GithubAuth -> Name GithubOwner -> Name Repo -> Id RepoWebhook -> IO (Either Error Bool)
 pingRepoWebhook' auth user repo hookId =
     executeRequest auth $ pingRepoWebhookR user repo hookId
 
 -- | Ping a hook.
 -- See <https://developer.github.com/v3/repos/hooks/#ping-a-hook>
-pingRepoWebhookR :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> GithubRequest 'True Status
-pingRepoWebhookR user repo hookId = GithubStatus $
+pingRepoWebhookR :: Name GithubOwner -> Name Repo -> Id RepoWebhook -> GithubRequest 'True Bool
+pingRepoWebhookR user repo hookId = GithubStatus StatusOnlyOk $
     GithubPost Post (createWebhookOpPath user repo hookId $ Just "pings") (encode ())
 
 deleteRepoWebhook' :: GithubAuth -> Name GithubOwner -> Name Repo -> Id RepoWebhook -> IO (Either Error ())

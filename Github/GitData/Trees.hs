@@ -11,7 +11,6 @@ module Github.GitData.Trees (
     module Github.Data,
     ) where
 
-import Github.Auth
 import Github.Data
 import Github.Request
 
