@@ -8,7 +8,8 @@ module Github.Gists.Comments (
     module Github.Data,
     ) where
 
-import Data.Vector    (Vector)
+import Data.Vector (Vector)
+
 import Github.Data
 import Github.Request
 

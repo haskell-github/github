@@ -27,7 +27,6 @@ import qualified Data.ByteString       as BS
 import qualified Data.ByteString.Char8 as BS8
 import qualified Data.Text.Encoding    as TE
 
-import Github.Auth
 import Github.Data
 import Github.Request
 

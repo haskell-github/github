@@ -27,13 +27,11 @@ module Github.PullRequests (
     module Github.Data
     ) where
 
-import Github.Auth
 import Github.Data
 import Github.Request
 
 import Data.Aeson.Compat  (Value, encode, object, (.=))
 import Data.Vector        (Vector)
-import Network.HTTP.Types
 
 import qualified Data.ByteString.Char8 as BS8
 
@@ -171,25 +169,25 @@ pullRequestFilesR user repo prid =
     GithubPagedGet ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "files"] []
 
 -- | Check if pull request has been merged.
-isPullRequestMerged :: GithubAuth -> Name GithubOwner -> Name Repo -> Id PullRequest -> IO (Either Error Status)
+isPullRequestMerged :: GithubAuth -> Name GithubOwner -> Name Repo -> Id PullRequest -> IO (Either Error Bool)
 isPullRequestMerged auth user repo prid =
     executeRequest auth $ isPullRequestMergedR user repo prid
 
 -- | Get if a pull request has been merged.
 -- See <https://developer.github.com/v3/pulls/#get-if-a-pull-request-has-been-merged>
-isPullRequestMergedR :: Name GithubOwner -> Name Repo -> Id PullRequest -> GithubRequest k Status
-isPullRequestMergedR user repo prid = GithubStatus $
+isPullRequestMergedR :: Name GithubOwner -> Name Repo -> Id PullRequest -> GithubRequest k Bool
+isPullRequestMergedR user repo prid = GithubStatus StatusOnlyOk $
     GithubGet ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "merge"] []
 
 -- | Merge a pull request.
-mergePullRequest :: GithubAuth -> Name GithubOwner -> Name Repo -> Id PullRequest -> Maybe String -> IO (Either Error Status)
+mergePullRequest :: GithubAuth -> Name GithubOwner -> Name Repo -> Id PullRequest -> Maybe String -> IO (Either Error MergeResult)
 mergePullRequest auth user repo prid commitMessage =
     executeRequest auth $ mergePullRequestR user repo prid commitMessage
 
 -- | Merge a pull request (Merge Button).
 -- https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button
-mergePullRequestR :: Name GithubOwner -> Name Repo -> Id PullRequest -> Maybe String -> GithubRequest 'True Status
-mergePullRequestR user repo prid commitMessage = GithubStatus $
+mergePullRequestR :: Name GithubOwner -> Name Repo -> Id PullRequest -> Maybe String -> GithubRequest 'True MergeResult
+mergePullRequestR user repo prid commitMessage = GithubStatus StatusMerge $
     GithubPost Put paths (encode $ buildCommitMessageMap commitMessage)
   where
     paths = ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "merge"]

@@ -11,18 +11,19 @@ module Github.Data.Request (
     GithubRequest(..),
     PostMethod(..),
     toMethod,
+    StatusMap(..),
+    MergeResult(..),
     Paths,
     IsPathPart(..),
     QueryString,
     Count,
     ) where
 
-import Data.Aeson.Compat  (FromJSON)
-import Data.Hashable      (Hashable (..))
-import Data.Typeable      (Typeable)
-import Data.Vector        (Vector)
-import GHC.Generics       (Generic)
-import Network.HTTP.Types (Status)
+import Data.Aeson.Compat (FromJSON)
+import Data.Hashable     (Hashable (..))
+import Data.Typeable     (Typeable)
+import Data.Vector       (Vector)
+import GHC.Generics      (Generic)
 
 import qualified Data.ByteString           as BS
 import qualified Data.ByteString.Lazy      as LBS
@@ -60,6 +61,32 @@ toMethod Put   = Method.methodPut
 
 instance Hashable PostMethod
 
+-- | Result of merge operation
+data MergeResult = MergeSuccessful
+                 | MergeCannotPerform
+                 | MergeConflict
+    deriving (Eq, Ord, Read, Show, Enum, Bounded, Generic, Typeable)
+
+instance Hashable MergeResult
+
+-- | Status code transform
+data StatusMap a where
+    StatusOnlyOk :: StatusMap Bool
+    StatusMerge  :: StatusMap MergeResult
+    deriving (Typeable)
+
+deriving instance Eq (StatusMap a)
+
+instance Show (StatusMap a) where
+    showsPrec _ r =
+        case r of
+            StatusOnlyOk -> showString "StatusOnlyOK"
+            StatusMerge  -> showString "StatusMerge"
+
+instance Hashable (StatusMap a) where
+    hashWithSalt salt StatusOnlyOk = hashWithSalt salt (0 :: Int)
+    hashWithSalt salt StatusMerge  = hashWithSalt salt (1 :: Int)
+
 ------------------------------------------------------------------------------
 -- Github request
 ------------------------------------------------------------------------------
@@ -70,14 +97,12 @@ instance Hashable PostMethod
 -- * @a@ is the result type
 --
 -- /Note:/ 'GithubRequest' is not 'Functor' on purpose.
---
--- TODO: Add constructor for collection fetches.
 data GithubRequest (k :: Bool) a where
     GithubGet       :: FromJSON a => Paths -> QueryString -> GithubRequest k a
     GithubPagedGet  :: FromJSON (Vector a) => Paths -> QueryString -> Maybe Count -> GithubRequest k (Vector a)
     GithubPost      :: FromJSON a => PostMethod -> Paths -> LBS.ByteString -> GithubRequest 'True a
     GithubDelete    :: Paths -> GithubRequest 'True ()
-    GithubStatus    :: GithubRequest k () -> GithubRequest k Status
+    GithubStatus    :: StatusMap a -> GithubRequest k () -> GithubRequest k a
     deriving (Typeable)
 
 deriving instance Eq (GithubRequest k a)
@@ -107,8 +132,10 @@ instance Show (GithubRequest k a) where
             GithubDelete ps -> showParen (d > appPrec) $
                 showString "GithubDelete "
                     . showsPrec (appPrec + 1) ps
-            GithubStatus req -> showParen (d > appPrec) $
+            GithubStatus m req -> showParen (d > appPrec) $
                 showString "GithubStatus "
+                    . showsPrec (appPrec + 1) m
+                    . showString " "
                     . showsPrec (appPrec + 1) req
       where appPrec = 10 :: Int
 
@@ -130,6 +157,7 @@ instance Hashable (GithubRequest k a) where
     hashWithSalt salt (GithubDelete ps) =
         salt `hashWithSalt` (3 :: Int)
              `hashWithSalt` ps
-    hashWithSalt salt (GithubStatus req) =
+    hashWithSalt salt (GithubStatus sm req) =
         salt `hashWithSalt` (4 :: Int)
+             `hashWithSalt` sm
              `hashWithSalt` req

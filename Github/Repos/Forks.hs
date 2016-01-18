@@ -8,7 +8,6 @@ module Github.Repos.Forks (
     ) where
 
 import Data.Vector    (Vector)
-import Github.Auth
 import Github.Data
 import Github.Request
 

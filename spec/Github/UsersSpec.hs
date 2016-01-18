@@ -39,7 +39,7 @@ spec = do
 
   describe "userInfoCurrent'" $ do
     it "returns information about the autenticated user" $ withAuth $ \auth -> do
-      userInfo <- userInfoCurrent' (Just auth)
+      userInfo <- userInfoCurrent' auth
       userInfo `shouldSatisfy` isRight
 
   describe "usersFollowing" $ do

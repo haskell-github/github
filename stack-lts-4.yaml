@@ -2,7 +2,7 @@ packages:
 - '.'
 - 'samples/'
 extra-deps: []
-resolver: lts-4.0
+resolver: lts-4.2
 flags:
   github:
      aeson-compat: true

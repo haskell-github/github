@@ -18,7 +18,6 @@ import Data.Text (Text)
 
 import qualified Data.Text.Encoding as TE
 
-import Github.Auth
 import Github.Data
 import Github.Request
 

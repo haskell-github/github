@@ -25,6 +25,7 @@ module Github.Request (
     -- * Tools
     makeHttpRequest,
     parseResponse,
+    parseStatus,
     getNextUrl,
     ) where
 
@@ -46,7 +47,7 @@ import Data.Monoid                ((<>))
 import Data.Text                  (Text)
 
 import Network.HTTP.Client          (HttpException (..), Manager, Request (..),
-                                     RequestBody (..), Response (..),
+                                     RequestBody (..), Response (..), CookieJar,
                                      applyBasicAuth, httpLbs, newManager,
                                      parseUrl, setQueryString)
 import Network.HTTP.Client.Internal (setUri)
@@ -54,7 +55,7 @@ import Network.HTTP.Client.TLS      (tlsManagerSettings)
 import Network.HTTP.Link.Parser     (parseLinkHeaderBS)
 import Network.HTTP.Link.Types      (Link (..), LinkParam (..), href,
                                      linkParams)
-import Network.HTTP.Types           (Method, RequestHeaders, Status (..),
+import Network.HTTP.Types           (Method, RequestHeaders, ResponseHeaders, Status (..),
                                      methodDelete)
 import Network.URI                  (URI)
 
@@ -67,8 +68,6 @@ import qualified Data.Vector           as V
 import Github.Auth         (GithubAuth (..))
 import Github.Data         (Error (..))
 import Github.Data.Request
-
-import Debug.Trace
 
 -- | Execute 'GithubRequest' in 'IO'
 executeRequest :: Show a
@@ -106,10 +105,10 @@ executeRequestWithMgr mgr auth req =
             httpReq <- makeHttpRequest (Just auth) req
             _ <- httpLbs httpReq mgr
             pure . Right $ ()
-        GithubStatus {} -> do
+        GithubStatus sm _ -> do
             httpReq <- makeHttpRequest (Just auth) req
             res <- httpLbs httpReq mgr
-            pure . Right . responseStatus $ res
+            pure . parseStatus sm . responseStatus $ res
 
 -- | Like 'executeRequest' but without authentication.
 executeRequest' :: Show a
@@ -137,14 +136,11 @@ executeRequestWithMgr' mgr req =
             httpReq <- makeHttpRequest Nothing req
             performPagedRequest (flip  httpLbs mgr) predicate httpReq
           where
-            predicate = maybe (const True) (\l' -> (< l') . V.length . xxx) l
-        GithubStatus {} -> do
+            predicate = maybe (const True) (\l' -> (< l') . V.length) l
+        GithubStatus sm _ -> do
             httpReq <- makeHttpRequest Nothing req
             res <- httpLbs httpReq mgr
-            pure . Right . responseStatus $ res
-
-xxx :: V.Vector a -> V.Vector a
-xxx v = traceShow (V.length v) v
+            pure . parseStatus sm  . responseStatus $ res
 
 -- | Helper for picking between 'executeRequest' and 'executeRequest''.
 --
@@ -169,25 +165,27 @@ makeHttpRequest :: MonadThrow m
                 -> GithubRequest k a
                 -> m Request
 makeHttpRequest auth r = case r of
-    GithubStatus req  -> makeHttpRequest auth req
+    GithubStatus sm req -> do
+        req' <- makeHttpRequest auth req
+        return $ setCheckStatus (Just sm) req'
     GithubGet paths qs -> do
         req <- parseUrl $ url paths
         return $ setReqHeaders
-               . setCheckStatus
+               . setCheckStatus Nothing
                . setAuthRequest auth
                . setQueryString qs
                $ req
     GithubPagedGet paths qs _ -> do
         req <- parseUrl $ url paths
         return $ setReqHeaders
-               . setCheckStatus
+               . setCheckStatus Nothing
                . setAuthRequest auth
                . setQueryString qs
                $ req
     GithubPost m paths body -> do
         req <- parseUrl $ url paths
         return $ setReqHeaders
-               . setCheckStatus
+               . setCheckStatus Nothing
                . setAuthRequest auth
                . setBody body
                . setMethod (toMethod m)
@@ -195,7 +193,7 @@ makeHttpRequest auth r = case r of
     GithubDelete paths -> do
         req <- parseUrl $ url paths
         return $ setReqHeaders
-               . setCheckStatus
+               . setCheckStatus Nothing
                . setAuthRequest auth
                . setMethod methodDelete
                $ req
@@ -211,8 +209,8 @@ makeHttpRequest auth r = case r of
     setReqHeaders :: Request -> Request
     setReqHeaders req = req { requestHeaders = reqHeaders <> requestHeaders req }
 
-    setCheckStatus :: Request -> Request
-    setCheckStatus req = req { checkStatus = successOrMissing }
+    setCheckStatus :: Maybe (StatusMap a) -> Request -> Request
+    setCheckStatus sm req = req { checkStatus = successOrMissing sm }
 
     setMethod :: Method -> Request -> Request
     setMethod m req = req { method = m }
@@ -233,9 +231,15 @@ makeHttpRequest auth r = case r of
     getOAuthHeader (GithubOAuth token) = [("Authorization", BS8.pack ("token " ++ token))]
     getOAuthHeader _                   = []
 
-    successOrMissing s@(Status sci _) hs cookiejar
-      | (200 <= sci && sci < 300) || sci == 404 = Nothing
+    successOrMissing :: Maybe (StatusMap a) -> Status -> ResponseHeaders -> CookieJar -> Maybe E.SomeException
+    successOrMissing sm s@(Status sci _) hs cookiejar
+      | check     = Nothing
       | otherwise = Just $ E.toException $ StatusCodeException s hs cookiejar
+      where 
+        check = case sm of
+          Nothing            -> 200 <= sci && sci < 300
+          Just StatusOnlyOk  -> sci == 204 || sci == 404
+          Just StatusMerge   -> sci `elem` [204, 405, 409]
 
 -- | Get Link rel=next from request headers.
 getNextUrl :: Response a -> Maybe URI
@@ -255,6 +259,17 @@ parseResponse :: (FromJSON a, MonadError Error m) => Response LBS.ByteString -> 
 parseResponse res = case eitherDecode (responseBody res) of
     Right x  -> return x
     Left err -> throwError . ParseError . T.pack $ err
+
+parseStatus :: StatusMap a -> Status -> Either Error a
+parseStatus StatusOnlyOk (Status sci _)
+    | sci == 204 = Right True
+    | sci == 404 = Right False
+    | otherwise  = Left $ JsonError $ "invalid status: " <> T.pack (show sci)
+parseStatus StatusMerge (Status sci _)
+    | sci == 204 = Right MergeSuccessful
+    | sci == 405 = Right MergeCannotPerform
+    | sci == 409 = Right MergeConflict
+    | otherwise  = Left $ JsonError $ "invalid status: " <> T.pack (show sci)
 
 performPagedRequest :: forall a m. (FromJSON a, Monoid a, MonadThrow m)
                     => (Request -> m (Response LBS.ByteString))  -- ^ `httpLbs` analogue
