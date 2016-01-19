@@ -12,6 +12,26 @@
 -- |
 -- License     :  BSD-3-Clause
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- This module provides data types and helper methods, which makes possible
+-- to build alternative API request intepreters in addition to provided
+-- 'IO' functions.
+--
+-- Simple example using @operational@ package. See @samples\/Operational\/Operational.hs@
+--
+-- > type GithubMonad a = Program (GH.GithubRequest 'False) a
+-- >
+-- > -- | Intepret GithubMonad value into IO
+-- > runGithubMonad :: Manager -> GH.GithubAuth -> GithubMonad a -> ExceptT GH.Error IO a
+-- > runGithubMonad mgr auth m = case view m of
+-- >    Return a   -> return a
+-- >    req :>>= k -> do
+-- >        b <- ExceptT $ GH.executeRequestWithMgr mgr auth req
+-- >        runGithubMonad mgr auth (k b)
+-- >
+-- > -- | Lift request into GithubMonad
+-- > githubRequest :: GH.GithubRequest 'False a -> GithubMonad a
+-- > githubRequest = singleton
 module Github.Request (
     -- * Types
     GithubRequest(..),
@@ -76,8 +96,7 @@ import Github.Data         (Error (..))
 import Github.Data.Request
 
 -- | Execute 'GithubRequest' in 'IO'
-executeRequest :: Show a
-               => GithubAuth -> GithubRequest k a -> IO (Either Error a)
+executeRequest :: GithubAuth -> GithubRequest k a -> IO (Either Error a)
 executeRequest auth req = do
     manager <- newManager tlsManagerSettings
     x <- executeRequestWithMgr manager auth req
@@ -87,8 +106,7 @@ executeRequest auth req = do
     pure x
 
 -- | Like 'executeRequest' but with provided 'Manager'.
-executeRequestWithMgr :: Show a
-                      => Manager
+executeRequestWithMgr :: Manager
                       -> GithubAuth
                       -> GithubRequest k a
                       -> IO (Either Error a)
@@ -118,8 +136,7 @@ executeRequestWithMgr mgr auth req = runExceptT $
     httpLbs' req' = lift (httpLbs req' mgr) `catch` onHttpException
 
 -- | Like 'executeRequest' but without authentication.
-executeRequest' :: Show a
-               => GithubRequest 'False a -> IO (Either Error a)
+executeRequest' :: GithubRequest 'False a -> IO (Either Error a)
 executeRequest' req = do
     manager <- newManager tlsManagerSettings
     x <- executeRequestWithMgr' manager req
@@ -129,8 +146,7 @@ executeRequest' req = do
     pure x
 
 -- | Like 'executeRequestWithMgr' but without authentication.
-executeRequestWithMgr' :: Show a
-                       => Manager
+executeRequestWithMgr' :: Manager
                        -> GithubRequest 'False a
                        -> IO (Either Error a)
 executeRequestWithMgr' mgr req = runExceptT $
@@ -155,8 +171,7 @@ executeRequestWithMgr' mgr req = runExceptT $
 -- | Helper for picking between 'executeRequest' and 'executeRequest''.
 --
 -- The use is discouraged.
-executeRequestMaybe :: Show a
-                    => Maybe GithubAuth -> GithubRequest 'False a
+executeRequestMaybe :: Maybe GithubAuth -> GithubRequest 'False a
                     -> IO (Either Error a)
 executeRequestMaybe = maybe executeRequest' executeRequest
 

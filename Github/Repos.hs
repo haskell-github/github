@@ -64,7 +64,7 @@ import Prelude.Compat
 
 import Control.Applicative ((<|>))
 import Data.Aeson.Compat   (encode)
-import Data.Vector    (Vector)
+import Data.Vector         (Vector)
 
 import Github.Data
 import Github.Request
