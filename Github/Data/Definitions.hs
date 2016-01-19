@@ -11,6 +11,7 @@ import Data.Text                (Text)
 import Data.Time                (UTCTime)
 import Data.Vector              (Vector)
 import GHC.Generics             (Generic)
+import Network.HTTP.Client      (HttpException)
 
 import qualified Control.Exception as E
 
@@ -28,10 +29,10 @@ data CommitQueryOption = CommitQuerySha !Text
 -- | Errors have been tagged according to their source, so you can more easily
 -- dispatch and handle them.
 data Error =
-    HTTPConnectionError E.SomeException -- ^ A HTTP error occurred. The actual caught error is included.
-  | ParseError Text -- ^ An error in the parser itself.
-  | JsonError Text -- ^ The JSON is malformed or unexpected.
-  | UserError Text -- ^ Incorrect input.
+    HTTPError !HttpException -- ^ A HTTP error occurred. The actual caught error is included.
+  | ParseError !Text -- ^ An error in the parser itself.
+  | JsonError !Text -- ^ The JSON is malformed or unexpected.
+  | UserError !Text -- ^ Incorrect input.
   deriving (Show, Typeable)
 
 instance E.Exception Error

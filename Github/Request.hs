@@ -38,7 +38,7 @@ import Control.Monad.Except (MonadError (..))
 import Control.Monad.Error (MonadError (..))
 #endif
 
-import Control.Monad.Catch        (MonadThrow)
+import Control.Monad.Catch        (MonadThrow, MonadCatch(..))
 import Control.Monad.Trans.Class  (lift)
 import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
 import Data.Aeson.Compat          (FromJSON, eitherDecode)
@@ -86,29 +86,32 @@ executeRequestWithMgr :: Show a
                       -> GithubAuth
                       -> GithubRequest k a
                       -> IO (Either Error a)
-executeRequestWithMgr mgr auth req =
+executeRequestWithMgr mgr auth req = runExceptT $
     case req of
         GithubGet {} -> do
             httpReq <- makeHttpRequest (Just auth) req
-            res <- httpLbs httpReq mgr
-            pure $ parseResponse res
+            res <- httpLbs' httpReq
+            parseResponse res
         GithubPagedGet _ _ l -> do
             httpReq <- makeHttpRequest (Just auth) req
-            performPagedRequest (flip  httpLbs mgr) predicate httpReq
+            performPagedRequest httpLbs' predicate httpReq
           where
             predicate = maybe (const True) (\l' -> (< l') . V.length ) l
         GithubPost {} -> do
             httpReq <- makeHttpRequest (Just auth) req
-            res <- httpLbs httpReq mgr
-            pure $ parseResponse res
+            res <- httpLbs' httpReq
+            parseResponse res
         GithubDelete {} -> do
             httpReq <- makeHttpRequest (Just auth) req
-            _ <- httpLbs httpReq mgr
-            pure . Right $ ()
+            _ <- httpLbs' httpReq
+            pure ()
         GithubStatus sm _ -> do
             httpReq <- makeHttpRequest (Just auth) req
-            res <- httpLbs httpReq mgr
-            pure . parseStatus sm . responseStatus $ res
+            res <- httpLbs' httpReq
+            parseStatus sm . responseStatus $ res
+  where
+    httpLbs' :: Request -> ExceptT Error IO (Response LBS.ByteString)
+    httpLbs' req = lift (httpLbs req mgr) `catch` onHttpException
 
 -- | Like 'executeRequest' but without authentication.
 executeRequest' :: Show a
@@ -126,21 +129,24 @@ executeRequestWithMgr' :: Show a
                        => Manager
                        -> GithubRequest 'False a
                        -> IO (Either Error a)
-executeRequestWithMgr' mgr req =
+executeRequestWithMgr' mgr req = runExceptT $
     case req of
         GithubGet {} -> do
             httpReq <- makeHttpRequest Nothing req
-            res <- httpLbs httpReq mgr
-            pure $ parseResponse res
+            res <- httpLbs' httpReq
+            parseResponse res
         GithubPagedGet _ _ l -> do
             httpReq <- makeHttpRequest Nothing req
-            performPagedRequest (flip  httpLbs mgr) predicate httpReq
+            performPagedRequest httpLbs' predicate httpReq
           where
             predicate = maybe (const True) (\l' -> (< l') . V.length) l
         GithubStatus sm _ -> do
             httpReq <- makeHttpRequest Nothing req
-            res <- httpLbs httpReq mgr
-            pure . parseStatus sm  . responseStatus $ res
+            res <- httpLbs' httpReq
+            parseStatus sm  . responseStatus $ res
+  where
+    httpLbs' :: Request -> ExceptT Error IO (Response LBS.ByteString)
+    httpLbs' req = lift (httpLbs req mgr) `catch` onHttpException
 
 -- | Helper for picking between 'executeRequest' and 'executeRequest''.
 --
@@ -260,27 +266,27 @@ parseResponse res = case eitherDecode (responseBody res) of
     Right x  -> return x
     Left err -> throwError . ParseError . T.pack $ err
 
-parseStatus :: StatusMap a -> Status -> Either Error a
+parseStatus :: MonadError Error m => StatusMap a -> Status -> m a
 parseStatus StatusOnlyOk (Status sci _)
-    | sci == 204 = Right True
-    | sci == 404 = Right False
-    | otherwise  = Left $ JsonError $ "invalid status: " <> T.pack (show sci)
+    | sci == 204 = return True
+    | sci == 404 = return False
+    | otherwise  = throwError $ JsonError $ "invalid status: " <> T.pack (show sci)
 parseStatus StatusMerge (Status sci _)
-    | sci == 204 = Right MergeSuccessful
-    | sci == 405 = Right MergeCannotPerform
-    | sci == 409 = Right MergeConflict
-    | otherwise  = Left $ JsonError $ "invalid status: " <> T.pack (show sci)
+    | sci == 204 = return MergeSuccessful
+    | sci == 405 = return MergeCannotPerform
+    | sci == 409 = return MergeConflict
+    | otherwise  = throwError $ JsonError $ "invalid status: " <> T.pack (show sci)
 
-performPagedRequest :: forall a m. (FromJSON a, Monoid a, MonadThrow m)
+performPagedRequest :: forall a m. (FromJSON a, Monoid a, MonadCatch m, MonadError Error m)
                     => (Request -> m (Response LBS.ByteString))  -- ^ `httpLbs` analogue
                     -> (a -> Bool)                               -- ^ predicate to continue iteration
                     -> Request                                   -- ^ initial request
-                    -> m (Either Error a)
-performPagedRequest httpLbs' predicate = runExceptT . go mempty
+                    -> m a
+performPagedRequest httpLbs' predicate = go mempty
   where
-    go :: a -> Request -> ExceptT Error m a
+    go :: a -> Request -> m a
     go acc req = do
-        res <- lift $ httpLbs' req
+        res <- httpLbs' req
         m <- parseResponse res
         let m' = acc <> m
         case (predicate m', getNextUrl res) of
@@ -288,3 +294,6 @@ performPagedRequest httpLbs' predicate = runExceptT . go mempty
                 req' <- setUri req uri
                 go m' req'
             (_, _)           -> return m'
+
+onHttpException :: MonadError Error m => HttpException -> m a
+onHttpException = throwError . HTTPError
