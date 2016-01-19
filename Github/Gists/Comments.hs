@@ -1,4 +1,9 @@
--- | The loving comments people have left on Gists, described on
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The loving comments people have left on Gists, described on
 -- <http://developer.github.com/v3/gists/comments/>.
 module Github.Gists.Comments (
     commentsOn,

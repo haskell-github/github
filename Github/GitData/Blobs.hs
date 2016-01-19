@@ -1,4 +1,9 @@
--- | The API for dealing with git blobs from Github repos, as described in
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The API for dealing with git blobs from Github repos, as described in
 -- <http://developer.github.com/v3/git/blobs/>.
 module Github.GitData.Blobs (
     blob,

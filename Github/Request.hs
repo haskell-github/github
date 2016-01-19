@@ -8,6 +8,10 @@
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneDeriving  #-}
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 module Github.Request (
     -- * Types
     GithubRequest(..),
@@ -22,11 +26,12 @@ module Github.Request (
     executeRequestWithMgr',
     executeRequestMaybe,
     unsafeDropAuthRequirements,
-    -- * Tools
+    -- * Helpers
     makeHttpRequest,
     parseResponse,
     parseStatus,
     getNextUrl,
+    performPagedRequest,
     ) where
 
 import Prelude        ()
@@ -38,7 +43,7 @@ import Control.Monad.Except (MonadError (..))
 import Control.Monad.Error (MonadError (..))
 #endif
 
-import Control.Monad.Catch        (MonadThrow, MonadCatch(..))
+import Control.Monad.Catch        (MonadCatch (..), MonadThrow)
 import Control.Monad.Trans.Class  (lift)
 import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
 import Data.Aeson.Compat          (FromJSON, eitherDecode)
@@ -46,17 +51,17 @@ import Data.List                  (find, intercalate)
 import Data.Monoid                ((<>))
 import Data.Text                  (Text)
 
-import Network.HTTP.Client          (HttpException (..), Manager, Request (..),
-                                     RequestBody (..), Response (..), CookieJar,
-                                     applyBasicAuth, httpLbs, newManager,
-                                     parseUrl, setQueryString)
+import Network.HTTP.Client          (CookieJar, HttpException (..), Manager,
+                                     Request (..), RequestBody (..),
+                                     Response (..), applyBasicAuth, httpLbs,
+                                     newManager, parseUrl, setQueryString)
 import Network.HTTP.Client.Internal (setUri)
 import Network.HTTP.Client.TLS      (tlsManagerSettings)
 import Network.HTTP.Link.Parser     (parseLinkHeaderBS)
 import Network.HTTP.Link.Types      (Link (..), LinkParam (..), href,
                                      linkParams)
-import Network.HTTP.Types           (Method, RequestHeaders, ResponseHeaders, Status (..),
-                                     methodDelete)
+import Network.HTTP.Types           (Method, RequestHeaders, ResponseHeaders,
+                                     Status (..), methodDelete)
 import Network.URI                  (URI)
 
 import qualified Control.Exception     as E
@@ -111,7 +116,7 @@ executeRequestWithMgr mgr auth req = runExceptT $
             parseStatus sm . responseStatus $ res
   where
     httpLbs' :: Request -> ExceptT Error IO (Response LBS.ByteString)
-    httpLbs' req = lift (httpLbs req mgr) `catch` onHttpException
+    httpLbs' req' = lift (httpLbs req' mgr) `catch` onHttpException
 
 -- | Like 'executeRequest' but without authentication.
 executeRequest' :: Show a
@@ -146,7 +151,7 @@ executeRequestWithMgr' mgr req = runExceptT $
             parseStatus sm  . responseStatus $ res
   where
     httpLbs' :: Request -> ExceptT Error IO (Response LBS.ByteString)
-    httpLbs' req = lift (httpLbs req mgr) `catch` onHttpException
+    httpLbs' req' = lift (httpLbs req' mgr) `catch` onHttpException
 
 -- | Helper for picking between 'executeRequest' and 'executeRequest''.
 --
@@ -166,6 +171,15 @@ unsafeDropAuthRequirements r                 =
 -- Tools
 ------------------------------------------------------------------------------
 
+-- | Create @http-client@ 'Request'.
+--
+-- * for 'GithubPagedGet', the initial request is created.
+-- * for 'GithubStatus', the 'Request' for underlying 'GithubRequest' is created,
+--   status checking is modifying accordingly.
+--
+-- @
+-- parseResponse :: 'Maybe' 'GithubAuth' -> 'GithubRequest' k a -> 'Maybe' 'Request'
+-- @
 makeHttpRequest :: MonadThrow m
                 => Maybe GithubAuth
                 -> GithubRequest k a
@@ -241,13 +255,13 @@ makeHttpRequest auth r = case r of
     successOrMissing sm s@(Status sci _) hs cookiejar
       | check     = Nothing
       | otherwise = Just $ E.toException $ StatusCodeException s hs cookiejar
-      where 
+      where
         check = case sm of
           Nothing            -> 200 <= sci && sci < 300
           Just StatusOnlyOk  -> sci == 204 || sci == 404
           Just StatusMerge   -> sci `elem` [204, 405, 409]
 
--- | Get Link rel=next from request headers.
+-- | Get @Link@ header with @rel=next@ from the request headers.
 getNextUrl :: Response a -> Maybe URI
 getNextUrl req = do
     linkHeader <- lookup "Link" (responseHeaders req)
@@ -261,11 +275,21 @@ getNextUrl req = do
     relNextLinkParam :: (LinkParam, Text)
     relNextLinkParam = (Rel, "next")
 
+-- | Parse API response.
+--
+-- @
+-- parseResponse :: 'FromJSON' a => 'Response' 'LBS.ByteString' -> 'Either' 'Error' a
+-- @
 parseResponse :: (FromJSON a, MonadError Error m) => Response LBS.ByteString -> m a
 parseResponse res = case eitherDecode (responseBody res) of
     Right x  -> return x
     Left err -> throwError . ParseError . T.pack $ err
 
+-- | Helper for handling of 'RequestStatus'.
+--
+-- @
+-- parseStatus :: 'StatusMap' a -> 'Status' -> 'Either' 'Error' a
+-- @
 parseStatus :: MonadError Error m => StatusMap a -> Status -> m a
 parseStatus StatusOnlyOk (Status sci _)
     | sci == 204 = return True
@@ -277,6 +301,17 @@ parseStatus StatusMerge (Status sci _)
     | sci == 409 = return MergeConflict
     | otherwise  = throwError $ JsonError $ "invalid status: " <> T.pack (show sci)
 
+-- | Helper for making paginated requests. Responses, @a@ are combined monoidally.
+--
+-- @
+-- performPagedRequest :: ('FromJSON' a, 'Monoid' a)
+--                     => ('Request' -> 'ExceptT' 'Error' 'IO' ('Response' 'LBS.ByteString'))
+--                     -> (a -> 'Bool')
+--                     -> 'Request'
+--                     -> 'ExceptT' 'Error' 'IO' a
+-- @
+--
+-- /TODO:/ require only 'Semigroup'.
 performPagedRequest :: forall a m. (FromJSON a, Monoid a, MonadCatch m, MonadError Error m)
                     => (Request -> m (Response LBS.ByteString))  -- ^ `httpLbs` analogue
                     -> (a -> Bool)                               -- ^ predicate to continue iteration

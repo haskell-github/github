@@ -1,7 +1,11 @@
 {-# LANGUAGE CPP               #-}
 {-# LANGUAGE OverloadedStrings #-}
-
--- | The repo commits API as described on
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The repo commits API as described on
 -- <http://developer.github.com/v3/repos/commits/>.
 module Github.Repos.Commits (
     CommitQueryOption(..),

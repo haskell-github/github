@@ -1,5 +1,10 @@
 {-# LANGUAGE DataKinds #-}
--- | The Github issue comments API from
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The Github issue comments API from
 -- <http://developer.github.com/v3/issues/comments/>.
 module Github.Issues.Comments (
     comment,

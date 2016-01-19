@@ -1,5 +1,10 @@
 {-# LANGUAGE DataKinds #-}
--- | The GithubOwner teams API as described on
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The GithubOwner teams API as described on
 -- <http://developer.github.com/v3/orgs/teams/>.
 module Github.Organizations.Teams (
     teamsOf,

@@ -1,6 +1,11 @@
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE OverloadedStrings #-}
--- | The API for dealing with labels on Github issues as described on
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The API for dealing with labels on Github issues as described on
 -- <http://developer.github.com/v3/issues/labels/>.
 module Github.Issues.Labels (
     labelsOnRepo,

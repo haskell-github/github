@@ -1,4 +1,9 @@
--- | The repo collaborators API as described on
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The repo collaborators API as described on
 -- <http://developer.github.com/v3/repos/collaborators/>.
 module Github.Repos.Collaborators (
     collaboratorsOn,

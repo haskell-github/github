@@ -2,11 +2,14 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE OverloadedStrings  #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-
--- | This module re-exports the @Github.Data.Definitions@ module, adding
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- This module re-exports the @Github.Data.Definitions@ module, adding
 -- instances of @FromJSON@ to it. If you wish to use the data without the
 -- instances, use the @Github.Data.Definitions@ module instead.
-
 module Github.Data (
     -- * Module re-exports
     module Github.Auth,

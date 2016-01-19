@@ -1,4 +1,9 @@
--- | The milestones API as described on
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The milestones API as described on
 -- <http://developer.github.com/v3/issues/milestones/>.
 module Github.Issues.Milestones (
     milestones,

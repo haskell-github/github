@@ -1,9 +1,12 @@
 {-# LANGUAGE CPP               #-}
 {-# LANGUAGE OverloadedStrings #-}
-
--- | Verification of incomming webhook payloads, as described at
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- Verification of incomming webhook payloads, as described at
 -- <https://developer.github.com/webhooks/securing/>
-
 module Github.Repos.Webhooks.Validate (
   isValidPayload
 ) where

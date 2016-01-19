@@ -1,4 +1,7 @@
+-----------------------------------------------------------------------------
 -- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
 -- This module re-exports all request constructrors and
 -- data definitions from this package.
@@ -291,7 +294,9 @@ module Github.All (
     usersFollowedByR,
 
     -- * Data definitions
-    module Github.Data
+    module Github.Data,
+    -- * Request handling
+    module Github.Request,
     ) where
 
 import Github.Activity.Starring
@@ -319,6 +324,7 @@ import Github.Repos.Comments
 import Github.Repos.Commits
 import Github.Repos.Forks
 import Github.Repos.Webhooks
+import Github.Request
 import Github.Search
 import Github.Users
 import Github.Users.Followers

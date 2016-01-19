@@ -2,7 +2,12 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric      #-}
 {-# LANGUAGE OverloadedStrings  #-}
--- | The Github Repos API, as documented at
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The Github Repos API, as documented at
 -- <http://developer.github.com/v3/repos/>
 module Github.Repos (
     -- * Querying repositories

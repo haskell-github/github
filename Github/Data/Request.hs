@@ -7,6 +7,11 @@
 {-# LANGUAGE KindSignatures     #-}
 {-# LANGUAGE OverloadedStrings  #-}
 {-# LANGUAGE StandaloneDeriving #-}
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
 module Github.Data.Request (
     GithubRequest(..),
     PostMethod(..),
@@ -51,6 +56,8 @@ instance IsPathPart (Id a) where
     toPathPart = show . untagId
 
 -- | Http method of requests with body.
+--
+-- /TODO/: Rename to CommandMethod
 data PostMethod = Post | Patch | Put
     deriving (Eq, Ord, Read, Show, Enum, Bounded, Generic, Typeable)
 

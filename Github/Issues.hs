@@ -1,7 +1,12 @@
 {-# LANGUAGE CPP               #-}
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE OverloadedStrings #-}
--- | The issues API as described on <http://developer.github.com/v3/issues/>.
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The issues API as described on <http://developer.github.com/v3/issues/>.
 module Github.Issues (
     issue,
     issue',

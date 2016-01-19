@@ -1,6 +1,11 @@
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE OverloadedStrings #-}
--- | The pull requests API as documented at
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The pull requests API as documented at
 -- <http://developer.github.com/v3/pulls/>.
 module Github.PullRequests (
     pullRequestsFor'',
@@ -30,8 +35,8 @@ module Github.PullRequests (
 import Github.Data
 import Github.Request
 
-import Data.Aeson.Compat  (Value, encode, object, (.=))
-import Data.Vector        (Vector)
+import Data.Aeson.Compat (Value, encode, object, (.=))
+import Data.Vector       (Vector)
 
 import qualified Data.ByteString.Char8 as BS8
 
