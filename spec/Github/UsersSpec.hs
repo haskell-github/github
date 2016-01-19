@@ -3,7 +3,7 @@
 module Github.UsersSpec where
 
 import Data.Aeson.Compat  (eitherDecodeStrict)
-import Data.Either.Compat (isRight)
+import Data.Either.Compat (isRight, isLeft)
 import Data.FileEmbed     (embedFile)
 import System.Environment (lookupEnv)
 import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe,
@@ -36,6 +36,10 @@ spec = do
     it "returns information about the user" $ withAuth $ \auth -> do
       userInfo <- userInfoFor' (Just auth) "mike-burns"
       githubOwnerLogin (fromRightS userInfo) `shouldBe` "mike-burns"
+
+    it "catches http exceptions" $ withAuth $ \auth -> do
+      userInfo <- userInfoFor' (Just auth) "i-hope-this-user-will-never-exist"
+      userInfo `shouldSatisfy` isLeft
 
   describe "userInfoCurrent'" $ do
     it "returns information about the autenticated user" $ withAuth $ \auth -> do
