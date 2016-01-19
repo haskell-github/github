@@ -71,7 +71,7 @@ createComment auth user repo iss body =
 -- See <https://developer.github.com/v3/issues/comments/#create-a-comment>
 createCommentR :: Name GithubOwner -> Name Repo -> Id Issue -> Text -> GithubRequest 'True Comment
 createCommentR user repo iss body =
-    GithubPost Post parts (encode $ NewComment body)
+    GithubCommand Post parts (encode $ NewComment body)
   where
     parts = ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iss, "comments"]
 
@@ -88,6 +88,6 @@ editComment auth user repo commid body =
 -- See <https://developer.github.com/v3/issues/comments/#edit-a-comment>
 editCommentR :: Name GithubOwner -> Name Repo -> Id Comment -> Text -> GithubRequest 'True Comment
 editCommentR user repo commid body =
-    GithubPost Patch parts (encode $ EditComment body)
+    GithubCommand Patch parts (encode $ EditComment body)
   where
     parts = ["repos", toPathPart user, toPathPart repo, "issues", "comments", toPathPart commid]

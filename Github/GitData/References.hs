@@ -73,7 +73,7 @@ createReference auth user repo newRef =
 -- See <https://developer.github.com/v3/git/refs/#create-a-reference>
 createReferenceR :: Name GithubOwner -> Name Repo -> NewGitReference -> GithubRequest 'True GitReference
 createReferenceR user repo newRef =
-     GithubPost Post  ["repos", toPathPart user, toPathPart repo , "git", "refs"] (encode newRef)
+     GithubCommand Post  ["repos", toPathPart user, toPathPart repo , "git", "refs"] (encode newRef)
 
 -- | Limited references by a namespace.
 --

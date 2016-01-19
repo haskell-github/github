@@ -15,7 +15,7 @@
 module Github.Request (
     -- * Types
     GithubRequest(..),
-    PostMethod(..),
+    CommandMethod(..),
     toMethod,
     Paths,
     QueryString,
@@ -61,7 +61,7 @@ import Network.HTTP.Link.Parser     (parseLinkHeaderBS)
 import Network.HTTP.Link.Types      (Link (..), LinkParam (..), href,
                                      linkParams)
 import Network.HTTP.Types           (Method, RequestHeaders, ResponseHeaders,
-                                     Status (..), methodDelete)
+                                     Status (..))
 import Network.URI                  (URI)
 
 import qualified Control.Exception     as E
@@ -102,14 +102,12 @@ executeRequestWithMgr mgr auth req = runExceptT $
             performPagedRequest httpLbs' predicate httpReq
           where
             predicate = maybe (const True) (\l' -> (< l') . V.length ) l
-        GithubPost {} -> do
+        GithubCommand m _ _ -> do
             httpReq <- makeHttpRequest (Just auth) req
             res <- httpLbs' httpReq
-            parseResponse res
-        GithubDelete {} -> do
-            httpReq <- makeHttpRequest (Just auth) req
-            _ <- httpLbs' httpReq
-            pure ()
+            case m of
+                Delete -> pure ()
+                _      -> parseResponse res
         GithubStatus sm _ -> do
             httpReq <- makeHttpRequest (Just auth) req
             res <- httpLbs' httpReq
@@ -202,20 +200,13 @@ makeHttpRequest auth r = case r of
                . setAuthRequest auth
                . setQueryString qs
                $ req
-    GithubPost m paths body -> do
+    GithubCommand m paths body -> do
         req <- parseUrl $ url paths
         return $ setReqHeaders
                . setCheckStatus Nothing
                . setAuthRequest auth
                . setBody body
                . setMethod (toMethod m)
-               $ req
-    GithubDelete paths -> do
-        req <- parseUrl $ url paths
-        return $ setReqHeaders
-               . setCheckStatus Nothing
-               . setAuthRequest auth
-               . setMethod methodDelete
                $ req
   where
     url :: Paths -> String

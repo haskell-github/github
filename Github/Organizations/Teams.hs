@@ -31,6 +31,9 @@ module Github.Organizations.Teams (
     module Github.Data,
     ) where
 
+import Prelude        ()
+import Prelude.Compat
+
 import Data.Aeson.Compat (encode)
 import Data.Vector       (Vector)
 
@@ -91,7 +94,7 @@ createTeamFor' auth org cteam =
 -- See <https://developer.github.com/v3/orgs/teams/#create-team>
 createTeamForR :: Name Organization -> CreateTeam -> GithubRequest 'True Team
 createTeamForR org cteam =
-    GithubPost Post ["orgs", toPathPart org, "teams"] (encode cteam)
+    GithubCommand Post ["orgs", toPathPart org, "teams"] (encode cteam)
 
 -- | Edit a team, by id.
 --
@@ -107,7 +110,7 @@ editTeam' auth tid eteam =
 -- See <https://developer.github.com/v3/orgs/teams/#edit-team>
 editTeamR :: Id Team -> EditTeam -> GithubRequest 'True Team
 editTeamR tid eteam =
-    GithubPost Patch ["teams", toPathPart tid] (encode eteam)
+    GithubCommand Patch ["teams", toPathPart tid] (encode eteam)
 
 -- | Delete a team, by id.
 --
@@ -120,7 +123,7 @@ deleteTeam' auth tid =
 -- See <https://developer.github.com/v3/orgs/teams/#delete-team>
 deleteTeamR :: Id Team -> GithubRequest 'True ()
 deleteTeamR tid =
-    GithubDelete ["teams", toPathPart tid]
+    GithubCommand Delete ["teams", toPathPart tid] mempty
 
 -- | Retrieve team mebership information for a user.
 -- | With authentication
@@ -153,7 +156,7 @@ addTeamMembershipFor' auth tid user role =
 -- See <https://developer.github.com/v3/orgs/teams/#add-team-membership>
 addTeamMembershipForR :: Id Team -> Name GithubOwner -> Role -> GithubRequest 'True TeamMembership
 addTeamMembershipForR tid user role =
-    GithubPost Put ["teams", toPathPart tid, "memberships", toPathPart user] (encode $ CreateTeamMembership role)
+    GithubCommand Put ["teams", toPathPart tid, "memberships", toPathPart user] (encode $ CreateTeamMembership role)
 
 -- | Delete a member of a team.
 --
@@ -166,7 +169,7 @@ deleteTeamMembershipFor' auth tid user =
 -- See <https://developer.github.com/v3/orgs/teams/#remove-team-membership>
 deleteTeamMembershipForR :: Id Team -> Name GithubOwner -> GithubRequest 'True ()
 deleteTeamMembershipForR tid user =
-    GithubDelete ["teams", toPathPart tid, "memberships", toPathPart user]
+    GithubCommand Delete ["teams", toPathPart tid, "memberships", toPathPart user] mempty
 
 -- | List teams for current authenticated user
 --

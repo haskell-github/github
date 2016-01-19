@@ -59,10 +59,13 @@ module Github.Repos (
     module Github.Data,
     ) where
 
+import Prelude        ()
+import Prelude.Compat
+
 import Control.Applicative ((<|>))
 import Data.Aeson.Compat   (encode)
-
 import Data.Vector    (Vector)
+
 import Github.Data
 import Github.Request
 
@@ -164,7 +167,7 @@ createRepo' auth nrepo =
 -- See <https://developer.github.com/v3/repos/#create>
 createRepoR :: NewRepo -> GithubRequest 'True Repo
 createRepoR nrepo =
-    GithubPost Post ["user", "repos"] (encode nrepo)
+    GithubCommand Post ["user", "repos"] (encode nrepo)
 
 -- | Create a new repository for an organization.
 --
@@ -177,7 +180,7 @@ createOrganizationRepo' auth org nrepo =
 -- See <https://developer.github.com/v3/repos/#create>
 createOrganizationRepoR :: Name Organization -> NewRepo -> GithubRequest 'True Repo
 createOrganizationRepoR org nrepo =
-    GithubPost Post ["orgs", toPathPart org, "repos"] (encode nrepo)
+    GithubCommand Post ["orgs", toPathPart org, "repos"] (encode nrepo)
 
 -- | Edit an existing repository.
 --
@@ -195,7 +198,7 @@ editRepo auth user repo body =
 -- See <https://developer.github.com/v3/repos/#edit>
 editRepoR :: Name GithubOwner -> Name Repo -> EditRepo -> GithubRequest 'True Repo
 editRepoR user repo body =
-    GithubPost Patch ["repos", toPathPart user, toPathPart repo] (encode b)
+    GithubCommand Patch ["repos", toPathPart user, toPathPart repo] (encode b)
   where
     -- if no name is given, use curent name
     b = body {editName = editName body <|> Just repo}
@@ -358,4 +361,4 @@ deleteRepo auth user repo =
 
 deleteRepoR :: Name GithubOwner -> Name Repo -> GithubRequest 'True ()
 deleteRepoR user repo =
-    GithubDelete ["repos", toPathPart user, toPathPart repo]
+    GithubCommand Delete ["repos", toPathPart user, toPathPart repo] mempty

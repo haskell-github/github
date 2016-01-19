@@ -41,8 +41,6 @@ collaboratorsOnR user repo =
 --
 -- > isCollaboratorOn Nothing "mike-burns" "thoughtbot" "paperclip"
 -- > isCollaboratorOn Nothing "johnson" "thoughtbot" "paperclip"
---
--- TODO: GithubStatus
 isCollaboratorOn :: Maybe GithubAuth
                  -> Name GithubOwner  -- ^ Repository owner
                  -> Name Repo         -- ^ Repository name

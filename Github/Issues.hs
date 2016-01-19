@@ -113,7 +113,7 @@ createIssue auth user repo ni =
 -- See <https://developer.github.com/v3/issues/#create-an-issue>
 createIssueR :: Name GithubOwner -> Name Repo -> NewIssue -> GithubRequest 'True Issue
 createIssueR user repo =
-    GithubPost Post ["repos", toPathPart user, toPathPart repo, "issues"] . encode
+    GithubCommand Post ["repos", toPathPart user, toPathPart repo, "issues"] . encode
 
 -- Editing issues.
 
@@ -133,4 +133,4 @@ editIssue auth user repo iss edit =
 -- See <https://developer.github.com/v3/issues/#edit-an-issue>
 editIssueR :: Name GithubOwner -> Name Repo -> Id Issue -> EditIssue -> GithubRequest 'True Issue
 editIssueR user repo iss =
-    GithubPost Patch ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iss] . encode
+    GithubCommand Patch ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iss] . encode
