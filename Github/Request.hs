@@ -48,8 +48,9 @@ import Control.Monad.Trans.Class  (lift)
 import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
 import Data.Aeson.Compat          (FromJSON, eitherDecode)
 import Data.List                  (find, intercalate)
-import Data.Monoid                ((<>))
+import Data.Semigroup             (Semigroup (..))
 import Data.Text                  (Text)
+import Data.Vector.Instances      ()
 
 import Network.HTTP.Client          (CookieJar, HttpException (..), Manager,
                                      Request (..), RequestBody (..),
@@ -295,31 +296,31 @@ parseStatus StatusMerge (Status sci _)
 -- | Helper for making paginated requests. Responses, @a@ are combined monoidally.
 --
 -- @
--- performPagedRequest :: ('FromJSON' a, 'Monoid' a)
+-- performPagedRequest :: ('FromJSON' a, 'Semigroup' a)
 --                     => ('Request' -> 'ExceptT' 'Error' 'IO' ('Response' 'LBS.ByteString'))
 --                     -> (a -> 'Bool')
 --                     -> 'Request'
 --                     -> 'ExceptT' 'Error' 'IO' a
 -- @
---
--- /TODO:/ require only 'Semigroup'.
-performPagedRequest :: forall a m. (FromJSON a, Monoid a, MonadCatch m, MonadError Error m)
+performPagedRequest :: forall a m. (FromJSON a, Semigroup a, MonadCatch m, MonadError Error m)
                     => (Request -> m (Response LBS.ByteString))  -- ^ `httpLbs` analogue
                     -> (a -> Bool)                               -- ^ predicate to continue iteration
                     -> Request                                   -- ^ initial request
                     -> m a
-performPagedRequest httpLbs' predicate = go mempty
+performPagedRequest httpLbs' predicate initReq = do
+    res <- httpLbs' initReq
+    m <- parseResponse res
+    go m res initReq
   where
-    go :: a -> Request -> m a
-    go acc req = do
-        res <- httpLbs' req
-        m <- parseResponse res
-        let m' = acc <> m
-        case (predicate m', getNextUrl res) of
+    go :: a -> Response LBS.ByteString -> Request -> m a
+    go acc res req =
+        case (predicate acc, getNextUrl res) of
             (True, Just uri) -> do
                 req' <- setUri req uri
-                go m' req'
-            (_, _)           -> return m'
+                res' <- httpLbs' req
+                m <- parseResponse res
+                go (acc <> m) res' req'
+            (_, _)           -> return acc
 
 onHttpException :: MonadError Error m => HttpException -> m a
 onHttpException = throwError . HTTPError
