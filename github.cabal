@@ -9,15 +9,12 @@ Description:
   .
   For supported endpoints see "Github.All" module.
   .
-  >{-# LANGUAGE OverloadedStrings #-}
-  >module Main (main) where
+  > import qualified Github.All as GH
   >
-  >import qualified Github.All as GH
-  >
-  >main :: IO ()
-  >main = do
-  >    possibleUser <- GH.executeRequest' $ GH.userInfoR "phadej"
-  >    print possibleUser
+  > main :: IO ()
+  > main = do
+  >     possibleUser <- GH.executeRequest' $ GH.userInfoR "phadej"
+  >     print possibleUser
   .
   For more of an overview please see the README: <https://github.com/phadej/github/blob/master/README.md>
 License:             BSD3
