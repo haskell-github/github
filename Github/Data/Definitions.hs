@@ -14,8 +14,8 @@ import Prelude.Compat
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
 import Control.Monad            (mfilter)
-import Data.Aeson.Compat        (FromJSON (..), withObject, withText, (.:),
-                                 (.:?), Object)
+import Data.Aeson.Compat        (FromJSON (..), Object, withObject, withText,
+                                 (.:), (.:?))
 import Data.Aeson.Types         (Parser)
 import Data.Binary.Orphans      (Binary)
 import Data.Data                (Data, Typeable)
@@ -219,7 +219,7 @@ parseOrganization obj = Organization
 
 instance FromJSON User where
     parseJSON = mfilter ((== OwnerUser) . userType) . withObject "User" parseUser
-        
+
 instance FromJSON Organization where
     parseJSON = withObject "Organization" parseOrganization
 
@@ -228,4 +228,4 @@ instance FromJSON GithubOwner where
         t <- obj .: "type"
         case t of
             OwnerUser         -> GithubOwner . Left <$> parseUser obj
-            OwnerOrganization -> GithubOwner . Right <$> parseOrganization obj 
+            OwnerOrganization -> GithubOwner . Right <$> parseOrganization obj

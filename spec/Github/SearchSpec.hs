@@ -23,7 +23,7 @@ spec :: Spec
 spec = do
   describe "searchIssues" $ do
     it "decodes issue search response JSON" $ do
-      let searchIssuesResult = fromRightS $ eitherDecodeStrict $(embedFile "fixtures/issueSearch.json") :: SearchResult Issue
+      let searchIssuesResult = fromRightS $ eitherDecodeStrict $(embedFile "fixtures/issue-search.json") :: SearchResult Issue
       searchResultTotalCount searchIssuesResult `shouldBe` 2
 
       let issues = searchResultResults searchIssuesResult

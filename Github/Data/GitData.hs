@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric      #-}
+{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -7,17 +8,24 @@
 --
 module Github.Data.GitData where
 
+import Prelude        ()
+import Prelude.Compat
+
 import Github.Data.Definitions
 import Github.Data.Name        (Name)
 
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
+import Data.Aeson.Compat        (FromJSON (..), ToJSON (..), object, withObject,
+                                 (.!=), (.:), (.:?), (.=))
 import Data.Binary              (Binary)
 import Data.Data                (Data, Typeable)
 import Data.Text                (Text)
 import Data.Time                (UTCTime)
 import Data.Vector              (Vector)
 import GHC.Generics             (Generic)
+
+import qualified Data.Vector as V
 
 -- | The options for querying commits.
 data CommitQueryOption = CommitQuerySha !Text
@@ -188,3 +196,118 @@ data File = File {
 
 instance NFData File where rnf = genericRnf
 instance Binary File
+
+-- JSON instances
+
+instance FromJSON Stats where
+  parseJSON = withObject "Stats" $ \o ->
+    Stats <$> o .: "additions"
+          <*> o .: "total"
+          <*> o .: "deletions"
+
+instance FromJSON Commit where
+  parseJSON = withObject "Commit" $ \o ->
+    Commit <$> o .: "sha"
+           <*> o .: "parents"
+           <*> o .: "url"
+           <*> o .: "commit"
+           <*> o .:? "committer"
+           <*> o .:? "author"
+           <*> o .:? "files" .!= V.empty
+           <*> o .:? "stats"
+
+instance FromJSON Tree where
+  parseJSON = withObject "Tree" $ \o ->
+    Tree <$> o .: "sha"
+         <*> o .: "url"
+         <*> o .:? "tree" .!= V.empty
+
+instance FromJSON GitTree where
+  parseJSON = withObject "GitTree" $ \o ->
+    GitTree <$> o .: "type"
+         <*> o .: "sha"
+         <*> o .:? "url"
+         <*> o .:? "size"
+         <*> o .: "path"
+         <*> o .: "mode"
+
+instance FromJSON GitCommit where
+  parseJSON = withObject "GitCommit" $ \o ->
+    GitCommit <$> o .: "message"
+              <*> o .: "url"
+              <*> o .: "committer"
+              <*> o .: "author"
+              <*> o .: "tree"
+              <*> o .:? "sha"
+              <*> o .:? "parents" .!= V.empty
+
+instance FromJSON GitUser where
+  parseJSON = withObject "GitUser" $ \o ->
+    GitUser <$> o .: "name"
+            <*> o .: "email"
+            <*> o .: "date"
+
+instance FromJSON File where
+  parseJSON = withObject "File" $ \o ->
+    File <$> o .: "blob_url"
+         <*> o .: "status"
+         <*> o .: "raw_url"
+         <*> o .: "additions"
+         <*> o .: "sha"
+         <*> o .: "changes"
+         <*> o .:? "patch"
+         <*> o .: "filename"
+         <*> o .: "deletions"
+
+instance ToJSON NewGitReference where
+  toJSON (NewGitReference r s) = object [ "ref" .= r, "sha" .= s  ]
+
+instance FromJSON GitReference where
+  parseJSON = withObject "GitReference" $ \o ->
+    GitReference <$> o .: "object"
+                 <*> o .: "url"
+                 <*> o .: "ref"
+
+instance FromJSON GitObject where
+  parseJSON = withObject "GitObject" $ \o ->
+    GitObject <$> o .: "type"
+           <*> o .: "sha"
+           <*> o .: "url"
+
+instance FromJSON Diff where
+  parseJSON = withObject "Diff" $ \o ->
+    Diff <$> o .: "status"
+         <*> o .: "behind_by"
+         <*> o .: "patch_url"
+         <*> o .: "url"
+         <*> o .: "base_commit"
+         <*> o .:? "commits" .!= V.empty
+         <*> o .: "total_commits"
+         <*> o .: "html_url"
+         <*> o .:? "files" .!= V.empty
+         <*> o .: "ahead_by"
+         <*> o .: "diff_url"
+         <*> o .: "permalink_url"
+
+instance FromJSON Blob where
+  parseJSON = withObject "Blob" $ \o ->
+    Blob <$> o .: "url"
+         <*> o .: "encoding"
+         <*> o .: "content"
+         <*> o .: "sha"
+         <*> o .: "size"
+
+instance FromJSON Tag where
+  parseJSON = withObject "Tag" $ \o ->
+    Tag <$> o .: "name"
+        <*> o .: "zipball_url"
+        <*> o .: "tarball_url"
+        <*> o .: "commit"
+
+instance FromJSON Branch where
+  parseJSON = withObject "Branch" $ \o ->
+    Branch <$> o .: "name" <*> o .: "commit"
+
+instance FromJSON BranchCommit where
+  parseJSON = withObject "BranchCommit" $ \o ->
+    BranchCommit <$> o .: "sha" <*> o .: "url"

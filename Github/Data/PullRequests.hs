@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric      #-}
+{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -7,11 +8,17 @@
 --
 module Github.Data.PullRequests where
 
+import Prelude        ()
+import Prelude.Compat
+
 import Github.Data.Definitions
 import Github.Data.Repos       (Repo)
 
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
+import Data.Aeson.Compat        (FromJSON (..), ToJSON (..), Value (..), object,
+                                 withObject, (.:), (.:?), (.=))
+import Data.Aeson.Types         (Object, Parser)
 import Data.Binary.Orphans      (Binary)
 import Data.Data                (Data, Typeable)
 import Data.Text                (Text)
@@ -162,3 +169,123 @@ data EditPullRequestState =
 
 instance NFData EditPullRequestState where rnf = genericRnf
 instance Binary EditPullRequestState
+
+-- JSON instances
+
+
+instance FromJSON SimplePullRequest where
+  parseJSON = withObject "SimplePullRequest" $ \o ->
+      SimplePullRequest
+        <$> o .:? "closed_at"
+        <*> o .: "created_at"
+        <*> o .: "user"
+        <*> o .: "patch_url"
+        <*> o .: "state"
+        <*> o .: "number"
+        <*> o .: "html_url"
+        <*> o .: "updated_at"
+        <*> o .: "body"
+        <*> o .: "issue_url"
+        <*> o .: "diff_url"
+        <*> o .: "url"
+        <*> o .: "_links"
+        <*> o .:? "merged_at"
+        <*> o .: "title"
+        <*> o .: "id"
+
+instance ToJSON EditPullRequestState where
+  toJSON (EditPullRequestStateOpen) = String "open"
+  toJSON (EditPullRequestStateClosed) = String "closed"
+
+instance ToJSON EditPullRequest where
+  toJSON (EditPullRequest t b s) =
+    object $ filter notNull [ "title" .= t, "body" .= b, "state" .= s ]
+    where notNull (_, Null) = False
+          notNull (_, _) = True
+
+instance ToJSON CreatePullRequest where
+  toJSON (CreatePullRequest t b headPR basePR) =
+    object [ "title" .= t, "body" .= b, "head" .= headPR, "base" .= basePR ]
+  toJSON (CreatePullRequestIssue issueNum headPR basePR) =
+    object [ "issue" .= issueNum, "head" .= headPR, "base" .= basePR]
+
+instance FromJSON PullRequest where
+  parseJSON = withObject "PullRequest" $ \o ->
+      PullRequest
+        <$> o .:? "closed_at"
+        <*> o .: "created_at"
+        <*> o .: "user"
+        <*> o .: "patch_url"
+        <*> o .: "state"
+        <*> o .: "number"
+        <*> o .: "html_url"
+        <*> o .: "updated_at"
+        <*> o .: "body"
+        <*> o .: "issue_url"
+        <*> o .: "diff_url"
+        <*> o .: "url"
+        <*> o .: "_links"
+        <*> o .:? "merged_at"
+        <*> o .: "title"
+        <*> o .: "id"
+        <*> o .:? "merged_by"
+        <*> o .: "changed_files"
+        <*> o .: "head"
+        <*> o .: "comments"
+        <*> o .: "deletions"
+        <*> o .: "additions"
+        <*> o .: "review_comments"
+        <*> o .: "base"
+        <*> o .: "commits"
+        <*> o .: "merged"
+        <*> o .:? "mergeable"
+
+instance FromJSON PullRequestLinks where
+  parseJSON = withObject "PullRequestLinks" $ \o ->
+    PullRequestLinks <$> o <.:> ["review_comments", "href"]
+                     <*> o <.:> ["comments", "href"]
+                     <*> o <.:> ["html", "href"]
+                     <*> o <.:> ["self", "href"]
+
+instance FromJSON PullRequestCommit where
+  parseJSON = withObject "PullRequestCommit" $ \o ->
+    PullRequestCommit <$> o .: "label"
+                      <*> o .: "ref"
+                      <*> o .: "sha"
+                      <*> o .: "user"
+                      <*> o .: "repo"
+
+instance FromJSON PullRequestEvent where
+  parseJSON = withObject "PullRequestEvent" $ \o ->
+    PullRequestEvent <$> o .: "action"
+                     <*> o .: "number"
+                     <*> o .: "pull_request"
+                     <*> o .: "repository"
+                     <*> o .: "sender"
+
+instance FromJSON PullRequestEventType where
+  parseJSON (String "opened") = pure PullRequestOpened
+  parseJSON (String "closed") = pure PullRequestClosed
+  parseJSON (String "synchronize") = pure PullRequestSynchronized
+  parseJSON (String "reopened") = pure PullRequestReopened
+  parseJSON (String "assigned") = pure PullRequestAssigned
+  parseJSON (String "unassigned") = pure PullRequestUnassigned
+  parseJSON (String "labeled") = pure PullRequestLabeled
+  parseJSON (String "unlabeled") = pure PullRequestUnlabeled
+  parseJSON _ = fail "Could not build a PullRequestEventType"
+
+instance FromJSON PullRequestReference where
+  parseJSON = withObject "PullRequestReference" $ \o ->
+    PullRequestReference <$> o .:? "html_url"
+                         <*> o .:? "patch_url"
+                         <*> o .:? "diff_url"
+
+-- Helpers
+
+-- | Produce the value for the last key by traversing.
+(<.:>) :: FromJSON v => Object -> [Text] -> Parser v
+obj  <.:> [key]      = obj .: key
+obj  <.:> (key:keys) = do
+    obj' <- obj .: key
+    obj' <.:> keys
+_obj <.:> []         = fail "<.:> never happens - empty path"

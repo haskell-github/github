@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric      #-}
+{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -7,17 +8,21 @@
 --
 module Github.Data.Gists where
 
+import Prelude        ()
+import Prelude.Compat
+
 import Github.Data.Definitions
 import Github.Data.Id          (Id)
 import Github.Data.Name        (Name)
 
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
+import Data.Aeson.Compat        (FromJSON (..), withObject, (.:), (.:?))
 import Data.Binary              (Binary)
 import Data.Data                (Data, Typeable)
+import Data.HashMap.Strict      (HashMap)
 import Data.Text                (Text)
 import Data.Time                (UTCTime)
-import Data.Vector              (Vector)
 import GHC.Generics             (Generic)
 
 data Gist = Gist {
@@ -31,12 +36,27 @@ data Gist = Gist {
   ,gistUpdatedAt   :: !UTCTime
   ,gistHtmlUrl     :: !Text
   ,gistId          :: !(Name Gist)
-  ,gistFiles       :: !(Vector GistFile)
+  ,gistFiles       :: !(HashMap Text GistFile)
   ,gistGitPullUrl  :: !Text
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+} deriving (Show, Data, Typeable, Eq, Generic)
 
 instance NFData Gist where rnf = genericRnf
 instance Binary Gist
+
+instance FromJSON Gist where
+  parseJSON = withObject "Gist" $ \o ->
+    Gist <$> o .: "owner"
+         <*> o .: "git_push_url"
+         <*> o .: "url"
+         <*> o .:? "description"
+         <*> o .: "created_at"
+         <*> o .: "public"
+         <*> o .: "comments"
+         <*> o .: "updated_at"
+         <*> o .: "html_url"
+         <*> o .: "id"
+         <*> o .: "files"
+         <*> o .: "git_push_url"
 
 data GistFile = GistFile {
    gistFileType     :: !Text
@@ -45,10 +65,19 @@ data GistFile = GistFile {
   ,gistFileLanguage :: !(Maybe Text)
   ,gistFileFilename :: !Text
   ,gistFileContent  :: !(Maybe Text)
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+} deriving (Show, Data, Typeable, Eq, Generic)
 
 instance NFData GistFile where rnf = genericRnf
 instance Binary GistFile
+
+instance FromJSON GistFile where
+  parseJSON = withObject "GistFile" $ \o ->
+    GistFile <$> o .: "type"
+             <*> o .: "raw_url"
+             <*> o .: "size"
+             <*> o .:? "language"
+             <*> o .: "filename"
+             <*> o .:? "content"
 
 data GistComment = GistComment {
    gistCommentUser      :: !SimpleUser
@@ -61,3 +90,12 @@ data GistComment = GistComment {
 
 instance NFData GistComment where rnf = genericRnf
 instance Binary GistComment
+
+instance FromJSON GistComment where
+  parseJSON = withObject "GistComment" $ \o ->
+    GistComment <$> o .: "user"
+                <*> o .: "url"
+                <*> o .: "created_at"
+                <*> o .: "body"
+                <*> o .: "updated_at"
+                <*> o .: "id"

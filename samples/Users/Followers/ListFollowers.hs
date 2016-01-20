@@ -15,5 +15,5 @@ main = do
                       (foldMap ((<> "\n") . formatUser))
                       possibleUsers
 
-formatUser :: Github.SimpleOwner -> Text
-formatUser = Github.untagName . Github.simpleOwnerLogin
+formatUser :: Github.SimpleUser -> Text
+formatUser = Github.untagName . Github.simpleUserLogin

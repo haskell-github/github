@@ -31,7 +31,7 @@ main = do
     case auth' of
         Nothing -> return ()
         Just auth -> do
-            user <- runExceptT $ runGithubMonad manager auth $ do
+            owner <- runExceptT $ runGithubMonad manager auth $ do
                 repo <- githubRequest $ GH.repositoryR "phadej" "github"
-                githubRequest $ GH.userInfoForR (GH.simpleOwnerLogin . GH.repoOwner $ repo)
-            print user
+                githubRequest $ GH.ownerInfoForR (GH.simpleOwnerLogin . GH.repoOwner $ repo)
+            print owner
