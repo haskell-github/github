@@ -4,16 +4,17 @@ module Main (main) where
 import Common
 import Prelude ()
 
-import qualified Github.Organizations.Teams as Github
+import qualified GitHub
+import qualified GitHub.Endpoints.Organizations.Teams as GitHub
 
 main :: IO ()
 main = do
   args <- getArgs
   result <- case args of
               [team_id, username, token] ->
-                Github.teamMembershipInfoFor' (Just $ Github.GithubOAuth token) (Github.mkTeamId $ read team_id) (Github.mkOwnerName $ fromString username)
+                GitHub.teamMembershipInfoFor' (Just $ GitHub.GithubOAuth token) (GitHub.mkTeamId $ read team_id) (GitHub.mkOwnerName $ fromString username)
               [team_id, username]        ->
-                Github.teamMembershipInfoFor (Github.mkTeamId $ read team_id) (Github.mkOwnerName $ fromString username)
+                GitHub.teamMembershipInfoFor (GitHub.mkTeamId $ read team_id) (GitHub.mkOwnerName $ fromString username)
               _                          ->
                 error "usage: TeamMembershipInfoFor <team_id> <username> [token]"
   case result of

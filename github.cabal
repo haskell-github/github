@@ -1,15 +1,15 @@
-Name:                github
-Version:             0.14.0
-Synopsis:            Access to the Github API, v3.
-Description:
-  The Github API provides programmatic access to the full
-  Github Web site, from Issues to Gists to repos down to the underlying git data
+name:                github
+version:             0.14.0
+synopsis:            Access to the GitHub API, v3.
+description:
+  The GitHub API provides programmatic access to the full
+  GitHub Web site, from Issues to Gists to repos down to the underlying git data
   like references and trees. This library wraps all of that, exposing a basic but
   Haskell-friendly set of functions and data structures.
   .
-  For supported endpoints see "Github.All" module.
+  For supported endpoints see "GitHub" module.
   .
-  > import qualified Github.All as GH
+  > import qualified GitHub as GH
   >
   > main :: IO ()
   > main = do
@@ -17,17 +17,17 @@ Description:
   >     print possibleUser
   .
   For more of an overview please see the README: <https://github.com/phadej/github/blob/master/README.md>
-License:             BSD3
-License-file:        LICENSE
-Author:              Mike Burns, John Wiegley, Oleg Grenrus
-Maintainer:          Oleg Grenrus <oleg.grenrus@iki.fi>
-Homepage:            https://github.com/phadej/github
-Copyright:           Copyright 2012-2013 Mike Burns, Copyright 2013-2015 John Wiegley, Copyright 2016 Oleg Grenrus
-Category:            Network
-Build-type:          Simple
-Tested-with:         GHC==7.8.4, GHC==7.10.2
-Cabal-version:       >=1.10
-Extra-source-files:
+license:             BSD3
+license-file:        LICENSE
+author:              Mike Burns, John Wiegley, Oleg Grenrus
+maintainer:          Oleg Grenrus <oleg.grenrus@iki.fi>
+homepage:            https://github.com/phadej/github
+copyright:           Copyright 2012-2013 Mike Burns, Copyright 2013-2015 John Wiegley, Copyright 2016 Oleg Grenrus
+category:            Network
+build-type:          Simple
+tested-with:         GHC==7.8.4, GHC==7.10.2
+cabal-version:       >=1.10
+extra-source-files:
   README.md,
   fixtures/issue-search.json,
   fixtures/list-teams.json,
@@ -45,58 +45,59 @@ source-repository head
   location: git://github.com/phadej/github.git
 
 Library
-  -- Modules exported by the library.
-  Default-Language: Haskell2010
-  GHC-Options: -Wall
-  Exposed-modules: Github.All,
-                   Github.Activity.Starring,
-                   Github.Activity.Watching,
-                   Github.Auth,
-                   Github.Data,
-                   Github.Data.Comments,
-                   Github.Data.Content,
-                   Github.Data.Definitions,
-                   Github.Data.Gists,
-                   Github.Data.GitData,
-                   Github.Data.Id,
-                   Github.Data.Issues,
-                   Github.Data.Name,
-                   Github.Data.PullRequests,
-                   Github.Data.Repos,
-                   Github.Data.Request,
-                   Github.Data.Search,
-                   Github.Data.Teams,
-                   Github.Data.Webhooks,
-                   Github.Gists,
-                   Github.Gists.Comments,
-                   Github.GitData.Commits,
-                   Github.GitData.References,
-                   Github.GitData.Trees,
-                   Github.GitData.Blobs,
-                   Github.Issues,
-                   Github.Issues.Comments,
-                   Github.Issues.Events,
-                   Github.Issues.Labels,
-                   Github.Issues.Milestones,
-                   Github.Organizations,
-                   Github.Organizations.Members,
-                   Github.Organizations.Teams,
-                   Github.PullRequests,
-                   Github.PullRequests.ReviewComments,
-                   Github.Repos,
-                   Github.Repos.Collaborators,
-                   Github.Repos.Comments,
-                   Github.Repos.Commits,
-                   Github.Repos.Forks,
-                   Github.Repos.Webhooks
-                   Github.Repos.Webhooks.Validate,
-                   Github.Users,
-                   Github.Users.Followers
-                   Github.Search
-                   Github.Request
+  default-language: Haskell2010
+  ghc-options: -Wall
+  hs-source-dirs: src
+  exposed-modules:
+    GitHub
+    GitHub.Auth
+    GitHub.Data
+    GitHub.Data.Comments
+    GitHub.Data.Content
+    GitHub.Data.Definitions
+    GitHub.Data.Gists
+    GitHub.Data.GitData
+    GitHub.Data.Id
+    GitHub.Data.Issues
+    GitHub.Data.Name
+    GitHub.Data.PullRequests
+    GitHub.Data.Repos
+    GitHub.Data.Request
+    GitHub.Data.Search
+    GitHub.Data.Teams
+    GitHub.Data.Webhooks
+    GitHub.Data.Webhooks.Validate
+    GitHub.Endpoints.Activity.Starring
+    GitHub.Endpoints.Activity.Watching
+    GitHub.Endpoints.Gists
+    GitHub.Endpoints.Gists.Comments
+    GitHub.Endpoints.GitData.Blobs
+    GitHub.Endpoints.GitData.Commits
+    GitHub.Endpoints.GitData.References
+    GitHub.Endpoints.GitData.Trees
+    GitHub.Endpoints.Issues
+    GitHub.Endpoints.Issues.Comments
+    GitHub.Endpoints.Issues.Events
+    GitHub.Endpoints.Issues.Labels
+    GitHub.Endpoints.Issues.Milestones
+    GitHub.Endpoints.Organizations
+    GitHub.Endpoints.Organizations.Members
+    GitHub.Endpoints.Organizations.Teams
+    GitHub.Endpoints.PullRequests
+    GitHub.Endpoints.PullRequests.ReviewComments
+    GitHub.Endpoints.Repos
+    GitHub.Endpoints.Repos.Collaborators
+    GitHub.Endpoints.Repos.Comments
+    GitHub.Endpoints.Repos.Commits
+    GitHub.Endpoints.Repos.Forks
+    GitHub.Endpoints.Repos.Webhooks
+    GitHub.Endpoints.Search
+    GitHub.Endpoints.Users
+    GitHub.Endpoints.Users.Followers
+    GitHub.Request
 
   -- Packages needed in order to build this package.
-  Build-depends: base                  >= 4.7      && <4.9,
+  build-depends: base                  >= 4.7      && <4.9,
                  aeson                 >=0.7.0.6   && <0.11,
                  attoparsec            >=0.11.3.4  && <0.14,
                  base-compat           >=0.6.0     && <0.10,
@@ -129,21 +130,21 @@ Library
                  void                  >=0.7       && <0.8
 
   if flag(aeson-compat)
-    Build-depends: aeson-compat >=0.3.0.0 && <0.4
+    build-depends: aeson-compat >=0.3.0.0 && <0.4
   else
-    Build-depends: aeson-extra  >=0.2.0.0 && <0.3
+    build-depends: aeson-extra  >=0.2.0.0 && <0.3
 
 test-suite github-test
   default-language: Haskell2010
   type: exitcode-stdio-1.0
   hs-source-dirs: spec
   other-modules:
-    Github.ActivitySpec
-    Github.CommitsSpec
-    Github.OrganizationsSpec
-    Github.ReposSpec
-    Github.SearchSpec
-    Github.UsersSpec
+    GitHub.ActivitySpec
+    GitHub.CommitsSpec
+    GitHub.OrganizationsSpec
+    GitHub.ReposSpec
+    GitHub.SearchSpec
+    GitHub.UsersSpec
   main-is: Spec.hs
   ghc-options: -Wall
   build-depends: base,

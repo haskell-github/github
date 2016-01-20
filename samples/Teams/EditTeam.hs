@@ -4,17 +4,18 @@ module Main (main) where
 import Common
 import Prelude ()
 
-import qualified Github.Organizations.Teams as Github
+import qualified GitHub
+import qualified GitHub.Endpoints.Organizations.Teams as GitHub
 
 main :: IO ()
 main = do
   args <- getArgs
   result <- case args of
               [token, team_id, team_name, desc] ->
-                Github.editTeam'
-                  (Github.GithubOAuth token)
-                  (Github.mkTeamId $ read team_id)
-                  (Github.EditTeam (Github.mkTeamName $ fromString team_name) (Just $ fromString desc) Github.PermissionPull)
+                GitHub.editTeam'
+                  (GitHub.GithubOAuth token)
+                  (GitHub.mkTeamId $ read team_id)
+                  (GitHub.EditTeam (GitHub.mkTeamName $ fromString team_name) (Just $ fromString desc) GitHub.PermissionPull)
               _                                 ->
                 error "usage: EditTeam <token> <team_id> <team_name> <description>"
   case result of

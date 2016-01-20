@@ -4,13 +4,14 @@ module Main (main) where
 import Common
 import Prelude ()
 
-import qualified Github.Organizations.Teams as Github
+import qualified GitHub
+import qualified GitHub.Endpoints.Organizations.Teams as GitHub
 
 main :: IO ()
 main = do
   args <- getArgs
   result <- case args of
-              [token] -> Github.listTeamsCurrent' (Github.GithubOAuth token)
+              [token] -> GitHub.listTeamsCurrent' (GitHub.GithubOAuth token)
               _       -> error "usage: ListTeamsCurrent <token>"
   case result of
     Left err    -> putStrLn $ "Error: " <> tshow err

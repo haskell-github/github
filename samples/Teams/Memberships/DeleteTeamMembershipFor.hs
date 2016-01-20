@@ -4,17 +4,18 @@ module Main (main) where
 import Common
 import Prelude ()
 
-import qualified Github.Organizations.Teams as Github
+import qualified GitHub
+import qualified GitHub.Endpoints.Organizations.Teams as GitHub
 
 main :: IO ()
 main = do
   args <- getArgs
   result <- case args of
               [token, team_id, username] ->
-                Github.deleteTeamMembershipFor'
-                    (Github.GithubOAuth token)
-                    (Github.mkTeamId $ read team_id)
-                    (Github.mkOwnerName $ fromString username)
+                GitHub.deleteTeamMembershipFor'
+                    (GitHub.GithubOAuth token)
+                    (GitHub.mkTeamId $ read team_id)
+                    (GitHub.mkOwnerName $ fromString username)
               _                          ->
                 error "usage: DeleteTeamMembershipFor <token> <team_id> <username>"
   case result of

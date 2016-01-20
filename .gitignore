@@ -9,3 +9,5 @@ cabal.sandbox.config
 *.o
 .stack-work
 run.sh
+src/hightlight.js
+src/style.css

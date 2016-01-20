@@ -10,7 +10,7 @@ import Control.Monad.Operational
 import Network.HTTP.Client        (Manager, newManager)
 import Network.HTTP.Client.TLS    (tlsManagerSettings)
 
-import qualified Github.All as GH
+import qualified GitHub as GH
 
 type GithubMonad a = Program (GH.GithubRequest 'False) a
 

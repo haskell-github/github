@@ -4,17 +4,16 @@ module Main (main) where
 import Common
 import Prelude ()
 
-import qualified Github.Request         as Github
-import qualified Github.Users.Followers as Github
+import qualified GitHub
 
 main :: IO ()
 main = do
     auth <- getAuth
-    possibleUsers <- Github.executeRequestMaybe auth $ Github.usersFollowedByR "mike-burns" Nothing
+    possibleUsers <- GitHub.executeRequestMaybe auth $ GitHub.usersFollowedByR "mike-burns" Nothing
     putStrLn $ either (("Error: " <>) . tshow)
                       (foldMap ((<> "\n") . formatUser))
                       possibleUsers
 
-formatUser :: Github.SimpleUser -> Text
-formatUser = Github.untagName . Github.simpleUserLogin
+formatUser :: GitHub.SimpleUser -> Text
+formatUser = GitHub.untagName . GitHub.simpleUserLogin
 
