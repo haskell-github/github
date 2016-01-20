@@ -25,11 +25,11 @@ data Issue = Issue {
   ,issueUpdatedAt   :: UTCTime
   ,issueEventsUrl   :: Text
   ,issueHtmlUrl     :: Maybe Text
-  ,issueClosedBy    :: Maybe SimpleOwner
+  ,issueClosedBy    :: Maybe SimpleUser
   ,issueLabels      :: (Vector IssueLabel)
   ,issueNumber      :: Int
-  ,issueAssignee    :: Maybe SimpleOwner
-  ,issueUser        :: SimpleOwner
+  ,issueAssignee    :: Maybe SimpleUser
+  ,issueUser        :: SimpleUser
   ,issueTitle       :: Text
   ,issuePullRequest :: Maybe PullRequestReference
   ,issueUrl         :: Text
@@ -68,7 +68,7 @@ instance NFData EditIssue where rnf = genericRnf
 instance Binary EditIssue
 
 data Milestone = Milestone {
-   milestoneCreator      :: SimpleOwner
+   milestoneCreator      :: SimpleUser
   ,milestoneDueOn        :: Maybe UTCTime
   ,milestoneOpenIssues   :: Int
   ,milestoneNumber       :: Int
@@ -94,7 +94,7 @@ instance Binary IssueLabel
 
 data IssueComment = IssueComment {
    issueCommentUpdatedAt :: UTCTime
-  ,issueCommentUser      :: SimpleOwner
+  ,issueCommentUser      :: SimpleUser
   ,issueCommentUrl       :: Text
   ,issueCommentHtmlUrl   :: Text
   ,issueCommentCreatedAt :: UTCTime
@@ -131,7 +131,7 @@ instance Binary EventType
 
 -- | Issue event
 data Event = Event {
-   eventActor     :: !SimpleOwner
+   eventActor     :: !SimpleUser
   ,eventType      :: !EventType
   ,eventCommitId  :: !(Maybe Text)
   ,eventUrl       :: !Text

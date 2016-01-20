@@ -7,13 +7,14 @@
 -- The Github Users API, as described at
 -- <http://developer.github.com/v3/users/>.
 module Github.Users (
- userInfoFor
-,userInfoFor'
-,userInfoForR
-,userInfoCurrent'
-,userInfoCurrentR
-,module Github.Data
-) where
+    userInfoFor,
+    userInfoFor',
+    userInfoForR,
+    ownerInfoForR,
+    userInfoCurrent',
+    userInfoCurrentR,
+    module Github.Data,
+    ) where
 
 import Github.Data
 import Github.Request
@@ -22,28 +23,33 @@ import Github.Request
 -- With authentification
 --
 -- > userInfoFor' (Just ("github-username", "github-password")) "mike-burns"
-userInfoFor' :: Maybe GithubAuth -> Name GithubOwner -> IO (Either Error GithubOwner)
+userInfoFor' :: Maybe GithubAuth -> Name User -> IO (Either Error User)
 userInfoFor' auth = executeRequestMaybe auth . userInfoForR
 
 -- | The information for a single user, by login name.
 --
 -- > userInfoFor "mike-burns"
-userInfoFor :: Name GithubOwner -> IO (Either Error GithubOwner)
+userInfoFor :: Name User -> IO (Either Error User)
 userInfoFor = executeRequest' . userInfoForR
 
 -- | Get a single user.
 -- See <https://developer.github.com/v3/users/#get-a-single-user>
-userInfoForR :: Name GithubOwner -> GithubRequest k GithubOwner
-userInfoForR userName = GithubGet ["users", toPathPart userName] []
+userInfoForR :: Name User -> GithubRequest k User
+userInfoForR user = GithubGet ["users", toPathPart user] []
+
+-- | Get a single user or an organization.
+-- See <https://developer.github.com/v3/users/#get-a-single-user>
+ownerInfoForR :: Name GithubOwner -> GithubRequest k GithubOwner
+ownerInfoForR owner = GithubGet ["users", toPathPart owner] []
 
 -- | Retrieve information about the user associated with the supplied authentication.
 --
 -- > userInfoCurrent' (GithubOAuth "...")
-userInfoCurrent' :: GithubAuth -> IO (Either Error GithubOwner)
+userInfoCurrent' :: GithubAuth -> IO (Either Error User)
 userInfoCurrent' auth =
     executeRequest auth $ userInfoCurrentR
 
 -- | Get the authenticated user.
 -- See <https://developer.github.com/v3/users/#get-the-authenticated-user>
-userInfoCurrentR :: GithubRequest 'True GithubOwner
+userInfoCurrentR :: GithubRequest 'True User
 userInfoCurrentR = GithubGet ["user"] []

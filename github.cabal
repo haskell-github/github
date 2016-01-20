@@ -30,7 +30,13 @@ Category:            Network
 Build-type:          Simple
 Tested-with:         GHC==7.8.4, GHC==7.10.2
 Cabal-version:       >=1.10
-Extra-source-files:  README.md
+Extra-source-files:
+  README.md,
+  fixtures/issue-search.json,
+  fixtures/list-teams.json,
+  fixtures/members-list.json,
+  fixtures/user-organizations.json,
+  fixtures/user.json
 
 flag aeson-compat
   description: Whether to use aeson-compat or aeson-extra
@@ -50,6 +56,8 @@ Library
                    Github.Activity.Watching,
                    Github.Auth,
                    Github.Data,
+                   Github.Data.Comments,
+                   Github.Data.Content,
                    Github.Data.Definitions,
                    Github.Data.Gists,
                    Github.Data.GitData,
@@ -100,7 +108,6 @@ Library
                  binary-orphans        >=0.1.0.0   && <0.2,
                  byteable              >=0.1.1     && <0.2,
                  bytestring            >=0.10.4.0  && <0.11,
-                 case-insensitive      >=1.2.0.4   && <1.3,
                  containers            >=0.5.5.1   && <0.6,
                  cryptohash            >=0.11      && <0.12,
                  deepseq               >=1.3.0.2   && <1.5,
@@ -121,7 +128,8 @@ Library
                  transformers-compat   >=0.4.0.3   && <0.6,
                  unordered-containers  >=0.2       && <0.3,
                  vector                >=0.10.12.3 && <0.12,
-                 vector-instances      >=3.3.0.1   && <3.4
+                 vector-instances      >=3.3.0.1   && <3.4,
+                 void                  >=0.7       && <0.8
 
   if flag(aeson-compat)
     Build-depends: aeson-compat >=0.3.0.0 && <0.4
@@ -133,6 +141,7 @@ test-suite github-test
   type: exitcode-stdio-1.0
   hs-source-dirs: spec
   other-modules:
+    Github.ActivitySpec
     Github.CommitsSpec
     Github.OrganizationsSpec
     Github.ReposSpec

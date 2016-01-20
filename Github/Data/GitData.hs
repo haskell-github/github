@@ -19,13 +19,30 @@ import Data.Time                (UTCTime)
 import Data.Vector              (Vector)
 import GHC.Generics             (Generic)
 
+-- | The options for querying commits.
+data CommitQueryOption = CommitQuerySha !Text
+                       | CommitQueryPath !Text
+                       | CommitQueryAuthor !Text
+                       | CommitQuerySince !UTCTime
+                       | CommitQueryUntil !UTCTime
+                       deriving (Show, Eq, Ord, Generic, Typeable, Data)
+
+data Stats = Stats {
+   statsAdditions :: !Int
+  ,statsTotal     :: !Int
+  ,statsDeletions :: !Int
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Stats where rnf = genericRnf
+instance Binary Stats
+
 data Commit = Commit {
    commitSha       :: !(Name Commit)
   ,commitParents   :: !(Vector Tree)
   ,commitUrl       :: !Text
   ,commitGitCommit :: !GitCommit
-  ,commitCommitter :: !(Maybe SimpleOwner)
-  ,commitAuthor    :: !(Maybe SimpleOwner)
+  ,commitCommitter :: !(Maybe SimpleUser)
+  ,commitAuthor    :: !(Maybe SimpleUser)
   ,commitFiles     :: !(Vector File)
   ,commitStats     :: !(Maybe Stats)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)

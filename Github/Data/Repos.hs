@@ -55,7 +55,7 @@ data Repo = Repo {
 instance NFData Repo where rnf = genericRnf
 instance Binary Repo
 
-data RepoRef = RepoRef SimpleOwner (Name Repo) -- Repo owner and name
+data RepoRef = RepoRef !SimpleOwner !(Name Repo) -- Repo owner and name
  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData RepoRef where rnf = genericRnf
@@ -113,3 +113,19 @@ data Language = Language !Text !Int
 
 instance NFData Language where rnf = genericRnf
 instance Binary Language
+
+data Contributor
+  -- | An existing Github user, with their number of contributions, avatar
+  -- URL, login, URL, ID, and Gravatar ID.
+  = KnownContributor !Int !Text !(Name User) !Text !(Id User) !Text
+  -- | An unknown Github user with their number of contributions and recorded name.
+  | AnonymousContributor !Int !Text
+ deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Contributor where rnf = genericRnf
+instance Binary Contributor
+
+contributorToSimpleUser :: Contributor -> Maybe SimpleUser
+contributorToSimpleUser (AnonymousContributor _ _) = Nothing
+contributorToSimpleUser (KnownContributor _contributions avatarUrl name url uid _gravatarid) =
+    Just $ SimpleUser uid name avatarUrl url OwnerUser

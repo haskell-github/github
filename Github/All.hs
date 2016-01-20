@@ -283,6 +283,7 @@ module Github.All (
     -- * Update the authenticated user
     -- * Get all users
     userInfoForR,
+    ownerInfoForR,
     userInfoCurrentR,
 
     -- ** Followers

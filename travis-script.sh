@@ -25,7 +25,10 @@ case $BUILD in
     # Check that the resulting source distribution can be built & installed.
     # If there are no other `.tar.gz` files in `dist`, this can be even simpler:
     # `cabal install --force-reinstalls dist/*-*.tar.gz`
-    SRC_TGZ=$(cabal info . | awk '{print $2;exit}').tar.gz &&
-        (cd dist && cabal install --force-reinstalls "$SRC_TGZ")
+    export SRCPKG=$(cabal info . | awk '{print $2;exit}')
+    cd dist
+    tar -xzvf $SRCPKG.tar.gz
+    cd $SRCPKG
+    cabal configure --enable-tests && cabal build && cabal install --force-reinstalls
     ;;
 esac

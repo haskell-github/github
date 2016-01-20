@@ -6,6 +6,8 @@ Large API changes:
 - Use `Name` and `Id` tagged types for names and identifiers.
 - Make detailed structures un-prefixed, simple ones prefixed with `Simple`. Example: `Team` and `SimpleTeam`.
 - Decouple request creation from execution (`*R` and `executeRequest*` functions).
+- Add `Binary` instances for all data
+- `GithubOwner` is a `newtype` of `Either User Organization`. There's still `SimpleOwner`.
 
 Changes for 0.5.0:
 
@@ -30,7 +32,7 @@ Changes for 0.4.0:
 Changes for 0.3.0:
 
 * Re-instantiate the Blobs API.
-* `repoDescription1 and `repoPushedAt` are a `Maybe GithubDate`.
+* `repoDescription1` and `repoPushedAt` are a `Maybe GithubDate`.
 * Add `deleteRepo`, `editRepo`, and `createRepo`.
 * Private gists, issues, organizations, pull requests, and users.
 * Lock down `tls` and `tls-extra` instead of keeping up with the

@@ -21,20 +21,20 @@ import Github.Request
 -- | The public organizations for a user, given the user's login, with authorization
 --
 -- > publicOrganizationsFor' (Just ("github-username", "github-password")) "mike-burns"
-publicOrganizationsFor' :: Maybe GithubAuth -> Name GithubOwner -> IO (Either Error (Vector SimpleOrganization))
+publicOrganizationsFor' :: Maybe GithubAuth -> Name User -> IO (Either Error (Vector SimpleOrganization))
 publicOrganizationsFor' auth org =
     executeRequestMaybe auth $ publicOrganizationsForR org Nothing
 
 -- | List user organizations. The public organizations for a user, given the user's login.
 --
 -- > publicOrganizationsFor "mike-burns"
-publicOrganizationsFor :: Name GithubOwner -> IO (Either Error (Vector SimpleOrganization))
+publicOrganizationsFor :: Name User -> IO (Either Error (Vector SimpleOrganization))
 publicOrganizationsFor = publicOrganizationsFor' Nothing
 
 -- | List user organizations.
 -- See <https://developer.github.com/v3/orgs/#list-user-organizations>
-publicOrganizationsForR :: Name GithubOwner -> Maybe Count -> GithubRequest k (Vector SimpleOrganization)
-publicOrganizationsForR userName = GithubPagedGet ["users", toPathPart userName, "orgs"] []
+publicOrganizationsForR :: Name User -> Maybe Count -> GithubRequest k (Vector SimpleOrganization)
+publicOrganizationsForR user = GithubPagedGet ["users", toPathPart user, "orgs"] []
 
 -- | Details on a public organization. Takes the organization's login.
 --

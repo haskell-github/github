@@ -7,12 +7,31 @@
 -- License     :  BSD-3-Clause
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
--- This module re-exports the @Github.Data.Definitions@ module, adding
--- instances of @FromJSON@ to it. If you wish to use the data without the
--- instances, use the @Github.Data.Definitions@ module instead.
+-- This module re-exports the @Github.Data.@ submodules.
 module Github.Data (
+    -- * Tagged types
+    -- ** Name
+    Name,
+    mkName,
+    untagName,
+    mkOwnerName,
+    mkTeamName,
+    mkOrganizationName,
+    mkRepoName,
+    fromUserName,
+    fromOrganizationName,
+    -- ** Id
+    Id,
+    mkId,
+    untagId,
+    mkOwnerId,
+    mkTeamId,
+    mkOrganizationId,
+    mkRepoId,
     -- * Module re-exports
     module Github.Auth,
+    module Github.Data.Comments,
+    module Github.Data.Content,
     module Github.Data.Definitions,
     module Github.Data.Gists,
     module Github.Data.GitData,
@@ -23,24 +42,6 @@ module Github.Data (
     module Github.Data.Search,
     module Github.Data.Teams,
     module Github.Data.Webhooks,
-
-    -- * Tagged types
-    -- ** Name
-    Name,
-    mkName,
-    untagName,
-    mkOwnerName,
-    mkTeamName,
-    mkOrganizationName,
-    mkRepoName,
-    -- ** Id
-    Id,
-    mkId,
-    untagId,
-    mkOwnerId,
-    mkTeamId,
-    mkOrganizationId,
-    mkRepoId,
     ) where
 
 import Prelude        ()
@@ -55,6 +56,8 @@ import qualified Data.Text         as T
 import qualified Data.Vector       as V
 
 import Github.Auth
+import Github.Data.Comments
+import Github.Data.Content
 import Github.Data.Definitions
 import Github.Data.Gists
 import Github.Data.GitData
@@ -92,6 +95,12 @@ mkRepoId = Id
 mkRepoName :: T.Text -> Name Repo
 mkRepoName = N
 
+fromOrganizationName :: Name Organization -> Name GithubOwner
+fromOrganizationName = N . untagName
+
+fromUserName :: Name User -> Name GithubOwner
+fromUserName = N . untagName
+
 instance FromJSON Commit where
   parseJSON (Object o) =
     Commit <$> o .: "sha"
@@ -100,7 +109,7 @@ instance FromJSON Commit where
            <*> o .: "commit"
            <*> o .:? "committer"
            <*> o .:? "author"
-           <*> o .:< "files"
+           <*> o .:? "files" .!= V.empty
            <*> o .:? "stats"
   parseJSON _          = fail "Could not build a Commit"
 
@@ -108,7 +117,7 @@ instance FromJSON Tree where
   parseJSON (Object o) =
     Tree <$> o .: "sha"
          <*> o .: "url"
-         <*> o .:< "tree"
+         <*> o .:? "tree" .!= V.empty
   parseJSON _          = fail "Could not build a Tree"
 
 instance FromJSON GitTree where
@@ -129,25 +138,8 @@ instance FromJSON GitCommit where
               <*> o .: "author"
               <*> o .: "tree"
               <*> o .:? "sha"
-              <*> o .:< "parents"
+              <*> o .:? "parents" .!= V.empty
   parseJSON _          = fail "Could not build a GitCommit"
-
-instance FromJSON SimpleOwner where
-  parseJSON (Object o)
-    | o `at` "gravatar_id" == Nothing =
-      SimpleOrganizationOwner
-          <$> o .: "avatar_url"
-          <*> o .: "login"
-          <*> o .: "url"
-          <*> o .: "id"
-    | otherwise =
-      SimpleUserOwner
-          <$> o .: "avatar_url"
-          <*> o .: "login"
-          <*> o .: "url"
-          <*> o .: "id"
-          <*> o .: "gravatar_id"
-  parseJSON v          = fail $ "Could not build a SimpleGithubOwner out of " ++ (show v)
 
 instance FromJSON GitUser where
   parseJSON (Object o) =
@@ -204,10 +196,10 @@ instance FromJSON Diff where
          <*> o .: "patch_url"
          <*> o .: "url"
          <*> o .: "base_commit"
-         <*> o .:< "commits"
+         <*> o .:? "commits" .!= V.empty
          <*> o .: "total_commits"
          <*> o .: "html_url"
-         <*> o .:< "files"
+         <*> o .:? "files" .!= V.empty
          <*> o .: "ahead_by"
          <*> o .: "diff_url"
          <*> o .: "permalink_url"
@@ -388,34 +380,6 @@ instance FromJSON EventType where
   parseJSON (String "head_ref_restored") = pure HeadRefRestored
   parseJSON _ = fail "Could not build an EventType"
 
-instance FromJSON SimpleOrganization where
-  parseJSON (Object o) =
-    SimpleOrganization <$> o .: "url"
-                       <*> o .: "avatar_url"
-                       <*> o .: "id"
-                       <*> o .: "login"
-  parseJSON _ = fail "Could not build a SimpleOrganization"
-
-instance FromJSON Organization where
-  parseJSON (Object o) =
-    Organization <$> o .: "type"
-                 <*> o .:? "blog"
-                 <*> o .:? "location"
-                 <*> o .: "login"
-                 <*> o .: "followers"
-                 <*> o .:? "company"
-                 <*> o .: "avatar_url"
-                 <*> o .: "public_gists"
-                 <*> o .: "html_url"
-                 <*> o .:? "email"
-                 <*> o .: "following"
-                 <*> o .: "public_repos"
-                 <*> o .: "url"
-                 <*> o .: "created_at"
-                 <*> o .:? "name"
-                 <*> o .: "id"
-  parseJSON _ = fail "Could not build an Organization"
-
 instance FromJSON SimplePullRequest where
   parseJSON (Object o) =
       SimplePullRequest
@@ -575,9 +539,9 @@ instance FromJSON PingEvent where
   parseJSON _ = fail "Could not build a PingEvent"
 
 instance FromJSON entity => FromJSON (SearchResult entity) where
-  parseJSON = withObject "Searchresult" $ \o ->
+  parseJSON = withObject "SearchResult" $ \o ->
     SearchResult <$> o .: "total_count"
-                 <*> o .:< "items"
+                 <*> o .:? "items" .!= V.empty
 
 instance FromJSON Repo where
   parseJSON (Object o) =
@@ -666,18 +630,21 @@ instance FromJSON RepoRef where
   parseJSON _ = fail "Could not build a RepoRef"
 
 instance FromJSON Contributor where
-  parseJSON (Object o)
-    | o `at` "type" == (Just "Anonymous") =
-      AnonymousContributor <$> o .: "contributions"
-                           <*> o .: "name"
-    | otherwise =
-      KnownContributor <$> o .: "contributions"
-                       <*> o .: "avatar_url"
-                       <*> o .: "login"
-                       <*> o .: "url"
-                       <*> o .: "id"
-                       <*> o .: "gravatar_id"
-  parseJSON _ = fail "Could not build a Contributor"
+    parseJSON = withObject "Contributor" $ \o -> do
+        t <- o .: "type"
+        case t of
+            _ | t == ("Anonymous" :: T.Text) ->
+                AnonymousContributor
+                    <$> o .: "contributions"
+                    <*> o .: "name"
+            _ | otherwise ->
+                KnownContributor
+                    <$> o .: "contributions"
+                    <*> o .: "avatar_url"
+                    <*> o .: "login"
+                    <*> o .: "url"
+                    <*> o .: "id"
+                    <*> o .: "gravatar_id"
 
 instance FromJSON Languages where
   parseJSON (Object o) =
@@ -701,47 +668,6 @@ instance FromJSON Branch where
 instance FromJSON BranchCommit where
   parseJSON (Object o) = BranchCommit <$> o .: "sha" <*> o .: "url"
   parseJSON _ = fail "Could not build a BranchCommit"
-
-instance FromJSON GithubOwner where
-  parseJSON (Object o)
-    | o `at` "gravatar_id" == Nothing =
-      GithubOrganization <$> o .: "created_at"
-                   <*> o .: "type"
-                   <*> o .: "public_gists"
-                   <*> o .: "avatar_url"
-                   <*> o .: "followers"
-                   <*> o .: "following"
-                   <*> o .:? "blog"
-                   <*> o .:? "bio"
-                   <*> o .: "public_repos"
-                   <*> o .:? "name"
-                   <*> o .:? "location"
-                   <*> o .:? "company"
-                   <*> o .: "url"
-                   <*> o .: "id"
-                   <*> o .: "html_url"
-                   <*> o .: "login"
-    | otherwise =
-      GithubUser <$> o .: "created_at"
-                   <*> o .: "type"
-                   <*> o .: "public_gists"
-                   <*> o .: "avatar_url"
-                   <*> o .: "followers"
-                   <*> o .: "following"
-                   <*> o .:? "hireable"
-                   <*> o .: "gravatar_id"
-                   <*> o .:? "blog"
-                   <*> o .:? "bio"
-                   <*> o .: "public_repos"
-                   <*> o .:? "name"
-                   <*> o .:? "location"
-                   <*> o .:? "company"
-                   <*> o .:? "email"
-                   <*> o .: "url"
-                   <*> o .: "id"
-                   <*> o .: "html_url"
-                   <*> o .: "login"
-  parseJSON _ = fail "Could not build a GithubOwner"
 
 instance FromJSON Privacy where
   parseJSON (String attr) =
@@ -941,13 +867,6 @@ instance FromJSON ContentInfo where
                 <*> o .: "html_url"
   parseJSON _ = fail "Could not build a ContentInfo"
 
--- | A slightly less generic version of Aeson's '.:?', using `V.empty' instead
--- of 'Nothing'.
-(.:<) :: (FromJSON a) => Object -> T.Text -> Parser (V.Vector a)
-obj .:< key = case Map.lookup key obj of
-                   Nothing -> pure V.empty
-                   Just v  -> parseJSON v
-
 -- | Produce all values for the given key.
 values :: (Eq k, Hashable k, FromJSON v) => Map.HashMap k Value -> k -> Parser v
 obj `values` key =
@@ -961,10 +880,6 @@ obj <.:> (key:keys) =
   let (Object nextObj) = findWithDefault (Object Map.empty) key obj in
       nextObj <.:> keys
 _ <.:> [] = fail "must have a pair"
-
--- | Produce the value for the given key, maybe.
-at :: Object -> T.Text -> Maybe Value
-obj `at` key = Map.lookup key obj
 
 -- Taken from Data.Map:
 findWithDefault :: (Eq k, Hashable k) => v -> k -> Map.HashMap k v -> v

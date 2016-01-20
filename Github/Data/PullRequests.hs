@@ -21,7 +21,7 @@ import GHC.Generics             (Generic)
 data SimplePullRequest = SimplePullRequest {
    simplePullRequestClosedAt  :: !(Maybe UTCTime)
   ,simplePullRequestCreatedAt :: !UTCTime
-  ,simplePullRequestUser      :: !SimpleOwner
+  ,simplePullRequestUser      :: !SimpleUser
   ,simplePullRequestPatchUrl  :: !Text
   ,simplePullRequestState     :: !Text
   ,simplePullRequestNumber    :: !Int
@@ -44,7 +44,7 @@ data PullRequest = PullRequest {
   -- this is a duplication of a PullRequest
    pullRequestClosedAt       :: !(Maybe UTCTime)
   ,pullRequestCreatedAt      :: !UTCTime
-  ,pullRequestUser           :: !SimpleOwner
+  ,pullRequestUser           :: !SimpleUser
   ,pullRequestPatchUrl       :: !Text
   ,pullRequestState          :: !Text
   ,pullRequestNumber         :: !Int
@@ -58,7 +58,7 @@ data PullRequest = PullRequest {
   ,pullRequestMergedAt       :: !(Maybe UTCTime)
   ,pullRequestTitle          :: !Text
   ,pullRequestId             :: !Int
-  ,pullRequestMergedBy       :: !(Maybe SimpleOwner)
+  ,pullRequestMergedBy       :: !(Maybe SimpleUser)
   ,pullRequestChangedFiles   :: !Int
   ,pullRequestHead           :: !PullRequestCommit
   ,pullRequestComments       :: !Int
@@ -114,7 +114,7 @@ data PullRequestCommit = PullRequestCommit {
    pullRequestCommitLabel :: !Text
   ,pullRequestCommitRef   :: !Text
   ,pullRequestCommitSha   :: !Text
-  ,pullRequestCommitUser  :: !SimpleOwner
+  ,pullRequestCommitUser  :: !SimpleUser
   ,pullRequestCommitRepo  :: !Repo
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -126,7 +126,7 @@ data PullRequestEvent = PullRequestEvent {
   ,pullRequestEventNumber      :: !Int
   ,pullRequestEventPullRequest :: !PullRequest
   ,pullRequestRepository       :: !Repo
-  ,pullRequestSender           :: !SimpleOwner
+  ,pullRequestSender           :: !SimpleUser
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData PullRequestEvent where rnf = genericRnf

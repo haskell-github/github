@@ -65,7 +65,7 @@ data Team = Team {
   ,teamRepositoriesUrl :: !Text
   ,teamMembersCount    :: !Int
   ,teamReposCount      :: !Int
-  ,teamOrganization    :: !SimpleOwner
+  ,teamOrganization    :: !SimpleOrganization
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Team where rnf = genericRnf
