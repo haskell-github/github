@@ -1,4 +1,9 @@
--- | The repo collaborators API as described on
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The repo collaborators API as described on
 -- <http://developer.github.com/v3/repos/collaborators/>.
 module Github.Repos.Collaborators (
     collaboratorsOn,
@@ -36,8 +41,6 @@ collaboratorsOnR user repo =
 --
 -- > isCollaboratorOn Nothing "mike-burns" "thoughtbot" "paperclip"
 -- > isCollaboratorOn Nothing "johnson" "thoughtbot" "paperclip"
---
--- TODO: GithubStatus
 isCollaboratorOn :: Maybe GithubAuth
                  -> Name GithubOwner  -- ^ Repository owner
                  -> Name Repo         -- ^ Repository name

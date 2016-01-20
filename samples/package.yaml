@@ -17,6 +17,11 @@ executables:
     source-dirs: Users
     dependencies:
       - github-samples
+  github-show-user-2:
+    main: ShowUser2.hs
+    source-dirs: Users
+    dependencies:
+      - github-samples
   github-list-followers:
     main: ListFollowers.hs
     source-dirs: Users/Followers
@@ -62,3 +67,13 @@ executables:
     source-dirs: Teams/Memberships
     dependencies:
       - github-samples
+  github-operational:
+    main: Operational.hs
+    source-dirs: Operational
+    dependencies:
+      - github-samples
+      - http-client
+      - http-client-tls
+      - operational
+      - transformers
+      - transformers-compat

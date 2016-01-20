@@ -1,4 +1,9 @@
--- | The Github issue events API, which is described on
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The Github issue events API, which is described on
 -- <http://developer.github.com/v3/issues/events/>
 module Github.Issues.Events (
     eventsForIssue,

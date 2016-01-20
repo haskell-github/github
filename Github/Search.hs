@@ -1,5 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
--- | The Github Search API, as described at
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The Github Search API, as described at
 -- <http://developer.github.com/v3/search/>.
 module Github.Search(
     searchRepos',

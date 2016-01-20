@@ -7,9 +7,14 @@
 {-# LANGUAGE KindSignatures     #-}
 {-# LANGUAGE OverloadedStrings  #-}
 {-# LANGUAGE StandaloneDeriving #-}
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
 module Github.Data.Request (
     GithubRequest(..),
-    PostMethod(..),
+    CommandMethod(..),
     toMethod,
     StatusMap(..),
     MergeResult(..),
@@ -51,15 +56,32 @@ instance IsPathPart (Id a) where
     toPathPart = show . untagId
 
 -- | Http method of requests with body.
-data PostMethod = Post | Patch | Put
-    deriving (Eq, Ord, Read, Show, Enum, Bounded, Generic, Typeable)
+data CommandMethod a where
+    Post   :: CommandMethod a
+    Patch  :: CommandMethod a
+    Put    :: CommandMethod a
+    Delete :: CommandMethod ()
+    deriving (Typeable)
 
-toMethod :: PostMethod -> Method.Method
-toMethod Post  = Method.methodPost
-toMethod Patch = Method.methodPatch
-toMethod Put   = Method.methodPut
+deriving instance Eq (CommandMethod a)
 
-instance Hashable PostMethod
+instance Show (CommandMethod a) where
+    showsPrec _ Post    = showString "Post"
+    showsPrec _ Patch   = showString "Patch"
+    showsPrec _ Put     = showString "Put"
+    showsPrec _ Delete  = showString "Delete"
+
+instance Hashable (CommandMethod a) where
+    hashWithSalt salt Post    = hashWithSalt salt (0 :: Int)
+    hashWithSalt salt Patch   = hashWithSalt salt (1 :: Int)
+    hashWithSalt salt Put     = hashWithSalt salt (2 :: Int)
+    hashWithSalt salt Delete  = hashWithSalt salt (3 :: Int)
+
+toMethod :: CommandMethod a -> Method.Method
+toMethod Post   = Method.methodPost
+toMethod Patch  = Method.methodPatch
+toMethod Put    = Method.methodPut
+toMethod Delete = Method.methodDelete
 
 -- | Result of merge operation
 data MergeResult = MergeSuccessful
@@ -78,10 +100,8 @@ data StatusMap a where
 deriving instance Eq (StatusMap a)
 
 instance Show (StatusMap a) where
-    showsPrec _ r =
-        case r of
-            StatusOnlyOk -> showString "StatusOnlyOK"
-            StatusMerge  -> showString "StatusMerge"
+    showsPrec _ StatusOnlyOk  = showString "StatusOnlyOK"
+    showsPrec _ StatusMerge   = showString "StatusMerge"
 
 instance Hashable (StatusMap a) where
     hashWithSalt salt StatusOnlyOk = hashWithSalt salt (0 :: Int)
@@ -100,8 +120,7 @@ instance Hashable (StatusMap a) where
 data GithubRequest (k :: Bool) a where
     GithubGet       :: FromJSON a => Paths -> QueryString -> GithubRequest k a
     GithubPagedGet  :: FromJSON (Vector a) => Paths -> QueryString -> Maybe Count -> GithubRequest k (Vector a)
-    GithubPost      :: FromJSON a => PostMethod -> Paths -> LBS.ByteString -> GithubRequest 'True a
-    GithubDelete    :: Paths -> GithubRequest 'True ()
+    GithubCommand   :: FromJSON a => CommandMethod a -> Paths -> LBS.ByteString -> GithubRequest 'True a
     GithubStatus    :: StatusMap a -> GithubRequest k () -> GithubRequest k a
     deriving (Typeable)
 
@@ -122,16 +141,13 @@ instance Show (GithubRequest k a) where
                     . showsPrec (appPrec + 1) qs
                     . showString " "
                     . showsPrec (appPrec + 1) l
-            GithubPost m ps body -> showParen (d > appPrec) $
-                showString "GithubPost "
+            GithubCommand m ps body -> showParen (d > appPrec) $
+                showString "GithubCommand "
                     . showsPrec (appPrec + 1) m
                     . showString " "
                     . showsPrec (appPrec + 1) ps
                     . showString " "
                     . showsPrec (appPrec + 1) body
-            GithubDelete ps -> showParen (d > appPrec) $
-                showString "GithubDelete "
-                    . showsPrec (appPrec + 1) ps
             GithubStatus m req -> showParen (d > appPrec) $
                 showString "GithubStatus "
                     . showsPrec (appPrec + 1) m
@@ -149,15 +165,12 @@ instance Hashable (GithubRequest k a) where
              `hashWithSalt` ps
              `hashWithSalt` qs
              `hashWithSalt` l
-    hashWithSalt salt (GithubPost m ps body) =
+    hashWithSalt salt (GithubCommand m ps body) =
         salt `hashWithSalt` (2 :: Int)
              `hashWithSalt` m
              `hashWithSalt` ps
              `hashWithSalt` body
-    hashWithSalt salt (GithubDelete ps) =
-        salt `hashWithSalt` (3 :: Int)
-             `hashWithSalt` ps
     hashWithSalt salt (GithubStatus sm req) =
-        salt `hashWithSalt` (4 :: Int)
+        salt `hashWithSalt` (3 :: Int)
              `hashWithSalt` sm
              `hashWithSalt` req

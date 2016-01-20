@@ -1,4 +1,9 @@
--- | The pull request review comments API as described at
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The pull request review comments API as described at
 -- <http://developer.github.com/v3/pulls/comments/>.
 module Github.PullRequests.ReviewComments (
     pullRequestReviewCommentsIO,

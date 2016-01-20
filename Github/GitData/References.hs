@@ -1,5 +1,10 @@
 {-# LANGUAGE DataKinds #-}
--- | The underlying git references on a Github repo, exposed for the world to
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The underlying git references on a Github repo, exposed for the world to
 -- see. The git internals documentation will also prove handy for understanding
 -- these. API documentation at <http://developer.github.com/v3/git/refs/>.
 module Github.GitData.References (
@@ -68,7 +73,7 @@ createReference auth user repo newRef =
 -- See <https://developer.github.com/v3/git/refs/#create-a-reference>
 createReferenceR :: Name GithubOwner -> Name Repo -> NewGitReference -> GithubRequest 'True GitReference
 createReferenceR user repo newRef =
-     GithubPost Post  ["repos", toPathPart user, toPathPart repo , "git", "refs"] (encode newRef)
+     GithubCommand Post  ["repos", toPathPart user, toPathPart repo , "git", "refs"] (encode newRef)
 
 -- | Limited references by a namespace.
 --

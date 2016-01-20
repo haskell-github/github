@@ -1,6 +1,11 @@
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE OverloadedStrings #-}
--- | The pull requests API as documented at
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The pull requests API as documented at
 -- <http://developer.github.com/v3/pulls/>.
 module Github.PullRequests (
     pullRequestsFor'',
@@ -30,8 +35,8 @@ module Github.PullRequests (
 import Github.Data
 import Github.Request
 
-import Data.Aeson.Compat  (Value, encode, object, (.=))
-import Data.Vector        (Vector)
+import Data.Aeson.Compat (Value, encode, object, (.=))
+import Data.Vector       (Vector)
 
 import qualified Data.ByteString.Char8 as BS8
 
@@ -107,7 +112,7 @@ createPullRequestR :: Name GithubOwner
                    -> CreatePullRequest
                    -> GithubRequest 'True PullRequest
 createPullRequestR user repo cpr =
-    GithubPost Post ["repos", toPathPart user, toPathPart repo, "pulls"] (encode cpr)
+    GithubCommand Post ["repos", toPathPart user, toPathPart repo, "pulls"] (encode cpr)
 
 -- | Update a pull request
 updatePullRequest :: GithubAuth -> Name GithubOwner -> Name Repo -> Id PullRequest -> EditPullRequest -> IO (Either Error PullRequest)
@@ -122,7 +127,7 @@ updatePullRequestR :: Name GithubOwner
                    -> EditPullRequest
                    -> GithubRequest 'True PullRequest
 updatePullRequestR user repo prid epr =
-    GithubPost Patch ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] (encode epr)
+    GithubCommand Patch ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] (encode epr)
 
 -- | All the commits on a pull request, given the repo owner, repo name, and
 -- the number of the pull request.
@@ -188,7 +193,7 @@ mergePullRequest auth user repo prid commitMessage =
 -- https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button
 mergePullRequestR :: Name GithubOwner -> Name Repo -> Id PullRequest -> Maybe String -> GithubRequest 'True MergeResult
 mergePullRequestR user repo prid commitMessage = GithubStatus StatusMerge $
-    GithubPost Put paths (encode $ buildCommitMessageMap commitMessage)
+    GithubCommand Put paths (encode $ buildCommitMessageMap commitMessage)
   where
     paths = ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "merge"]
 

@@ -1,4 +1,9 @@
--- | The user followers API as described on
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The user followers API as described on
 -- <http://developer.github.com/v3/users/followers/>.
 module Github.Users.Followers (
     usersFollowing,

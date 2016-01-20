@@ -1,4 +1,9 @@
--- | The gists API as described at <http://developer.github.com/v3/gists/>.
+-----------------------------------------------------------------------------
+-- |
+-- License     :  BSD-3-Clause
+-- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
+--
+-- The gists API as described at <http://developer.github.com/v3/gists/>.
 module Github.Gists (
     gists,
     gists',
