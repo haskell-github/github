@@ -25,7 +25,7 @@ homepage:            https://github.com/phadej/github
 copyright:           Copyright 2012-2013 Mike Burns, Copyright 2013-2015 John Wiegley, Copyright 2016 Oleg Grenrus
 category:            Network
 build-type:          Simple
-tested-with:         GHC==7.8.4, GHC==7.10.2
+tested-with:         GHC==7.6.3, GHC==7.8.4, GHC==7.10.3
 cabal-version:       >=1.10
 extra-source-files:
   README.md,
@@ -98,18 +98,18 @@ Library
     GitHub.Request
 
   -- Packages needed in order to build this package.
-  build-depends: base                  >= 4.7      && <4.9,
+  Build-depends: base                  >=4.6.0.1   && <4.9,
                  aeson                 >=0.7.0.6   && <0.11,
                  attoparsec            >=0.11.3.4  && <0.14,
                  base-compat           >=0.6.0     && <0.10,
                  base16-bytestring     >=0.1.1.6   && <0.2,
-                 binary                >=0.7.1.0   && <0.9,
+                 binary                >=0.5.1.0   && <0.9,
                  binary-orphans        >=0.1.0.0   && <0.2,
                  byteable              >=0.1.1     && <0.2,
-                 bytestring            >=0.10.4.0  && <0.11,
-                 containers            >=0.5.5.1   && <0.6,
+                 bytestring            >=0.10.0.2  && <0.11,
+                 containers            >=0.5.0.0   && <0.6,
                  cryptohash            >=0.11      && <0.12,
-                 deepseq               >=1.3.0.2   && <1.5,
+                 deepseq               >=1.3.0.1   && <1.5,
                  deepseq-generics      >=0.1.1.2   && <0.3,
                  exceptions            >=0.8.0.2   && <0.9,
                  hashable              >=1.2.3.3   && <1.3,
@@ -122,7 +122,7 @@ Library
                  network-uri           >=2.6.0.3   && <2.7,
                  semigroups            >=0.16.2.2  && <0.19,
                  text                  >=1.2.0.6   && <1.3,
-                 time                  >=1.4       && <1.7,
+                 time                  >=1.4.0.1   && <1.7,
                  transformers          >=0.3.0.0   && <0.6,
                  transformers-compat   >=0.4.0.3   && <0.6,
                  unordered-containers  >=0.2       && <0.3,
@@ -153,6 +153,7 @@ test-suite github-test
                  vector,
                  unordered-containers,
                  file-embed,
+                 tagged,
                  hspec
   if flag(aeson-compat)
     build-depends: aeson-compat

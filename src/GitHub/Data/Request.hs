@@ -122,7 +122,9 @@ data Request (k :: Bool) a where
     PagedQuery   :: FromJSON (Vector a) => Paths -> QueryString -> Maybe Count -> Request k (Vector a)
     Command      :: FromJSON a => CommandMethod a -> Paths -> LBS.ByteString -> Request 'True a
     StatusQuery  :: StatusMap a -> Request k () -> Request k a
+#if __GLASGOW_HASKELL >= 708
     deriving (Typeable)
+#endif
 
 deriving instance Eq (Request k a)
 
