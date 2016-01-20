@@ -4,13 +4,14 @@ module Main (main) where
 import Common
 import Prelude ()
 
-import qualified Github.Organizations.Teams as Github
+import qualified GitHub
+import qualified GitHub.Endpoints.Organizations.Teams as GitHub
 
 main :: IO ()
 main = do
   args <- getArgs
   result <- case args of
-              [token, team_id] -> Github.deleteTeam' (Github.GithubOAuth token) (Github.mkTeamId $ read team_id)
+              [token, team_id] -> GitHub.deleteTeam' (GitHub.GithubOAuth token) (GitHub.mkTeamId $ read team_id)
               _                -> error "usage: DeleteTeam <token> <team_id>"
   case result of
     Left err   -> putStrLn $ "Error: " <> tshow err

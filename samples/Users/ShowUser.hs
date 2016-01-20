@@ -6,15 +6,16 @@ import Prelude ()
 
 import Data.Maybe (fromMaybe)
 
-import qualified Github.Users as Github
+import qualified GitHub
+import qualified GitHub.Endpoints.Users as GitHub
 
 main :: IO ()
 main = do
   auth <- getAuth
-  possibleUser <- Github.userInfoFor' auth "mike-burns"
+  possibleUser <- GitHub.userInfoFor' auth "mike-burns"
   putStrLn $ either (("Error: " <>) . tshow) formatUser possibleUser
 
-formatUser :: Github.User -> Text
+formatUser :: GitHub.User -> Text
 formatUser user =
   (formatName userName login) <> "\t" <> (fromMaybe "" company) <> "\t" <>
     (fromMaybe "" location) <> "\n" <>
@@ -23,20 +24,20 @@ formatUser user =
     "hireable: " <> formatHireable (fromMaybe False isHireable) <> "\n\n" <>
     (fromMaybe "" bio)
   where
-    userName = Github.userName user
-    login = Github.userLogin user
-    company = Github.userCompany user
-    location = Github.userLocation user
-    blog = Github.userBlog user
-    email = Github.userEmail user
-    htmlUrl = Github.userHtmlUrl user
-    createdAt = Github.userCreatedAt user
-    isHireable = Github.userHireable user
-    bio = Github.userBio user
+    userName = GitHub.userName user
+    login = GitHub.userLogin user
+    company = GitHub.userCompany user
+    location = GitHub.userLocation user
+    blog = GitHub.userBlog user
+    email = GitHub.userEmail user
+    htmlUrl = GitHub.userHtmlUrl user
+    createdAt = GitHub.userCreatedAt user
+    isHireable = GitHub.userHireable user
+    bio = GitHub.userBio user
 
-formatName :: Maybe Text -> Github.Name Github.User -> Text
-formatName Nothing login = Github.untagName login
-formatName (Just name) login = name <> "(" <> Github.untagName login <> ")"
+formatName :: Maybe Text -> GitHub.Name GitHub.User -> Text
+formatName Nothing login = GitHub.untagName login
+formatName (Just name) login = name <> "(" <> GitHub.untagName login <> ")"
 
 formatHireable :: Bool -> Text
 formatHireable True = "yes"

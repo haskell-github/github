@@ -38,7 +38,8 @@ Each module lines up with the hierarchy of
 [documentation from the Github API](http://developer.github.com/v3/).
 
 Request functions (ending with `R`) construct a data type with can be executed
-in `IO` by `executeRequest` functions. They are all listed in `Github.All` module.
+in `IO` by `executeRequest` functions. They are all listed in the root `GitHub`
+module.
 
 IO functions produce an `IO (Either Error a)`, where `a` is the actual thing
 you want. You must call the function using IO goodness, then dispatch on the
@@ -48,15 +49,15 @@ Many function have samples under
 [`samples/`](https://github.com/phadej/github/tree/master/samples) directory.
 
 ```hs
-import qualified Github.Users.Followers as Github
+import qualified GitHub.Endpoints.Users.Followers as Github
 
 main = do
-    possibleUsers <- Github.usersFollowing "mike-burns"
+    possibleUsers <- GitHub.usersFollowing "mike-burns"
     T.putStrLn $ either (("Error: " <>) . T.pack . show)
                         (foldMap (formatUser . (<> "\n")))
                         possibleUsers
 
-formatUser = Github.untagName . Github.githubOwnerLogin
+formatUser = GitHub.untagName . GitHub.githubOwnerLogin
 ```
 
 Test setup

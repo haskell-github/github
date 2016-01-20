@@ -24,12 +24,12 @@ import System.Environment (lookupEnv)
 import System.Environment (getArgs)
 
 import qualified Data.Text   as T
-import qualified Github.Data as Github
+import qualified GitHub
 
-getAuth :: IO (Maybe (Github.GithubAuth))
+getAuth :: IO (Maybe (GitHub.GithubAuth))
 getAuth = do
     token <- lookupEnv "GITHUB_TOKEN"
-    pure (Github.GithubOAuth <$> token)
+    pure (GitHub.GithubOAuth <$> token)
 
 tshow :: Show a => a -> Text
 tshow = T.pack . show

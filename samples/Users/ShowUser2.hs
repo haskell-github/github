@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main (main) where
 
-import qualified Github.All as GH
+import qualified GitHub as GH
 
 main :: IO ()
 main = do
