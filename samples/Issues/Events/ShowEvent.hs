@@ -34,5 +34,5 @@ formatEvent event = formatEvent' event (Github.eventType event)
     "Issue assigned to " ++ loginName event ++ " on " ++ createdAt event
 
 loginName = Github.githubOwnerLogin . Github.eventActor
-createdAt = show . Github.fromGithubDate . Github.eventCreatedAt
+createdAt = show . Github.fromDate . Github.eventCreatedAt
 withCommitId event f = maybe "" f (Github.eventCommitId event)

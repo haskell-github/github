@@ -12,16 +12,16 @@ import Network.HTTP.Client.TLS    (tlsManagerSettings)
 
 import qualified GitHub as GH
 
-type GithubMonad a = Program (GH.GithubRequest 'False) a
+type GithubMonad a = Program (GH.Request 'False) a
 
-runGithubMonad :: Manager -> GH.GithubAuth -> GithubMonad a -> ExceptT GH.Error IO a
-runGithubMonad mgr auth m = case view m of
+runMonad :: Manager -> GH.Auth -> GithubMonad a -> ExceptT GH.Error IO a
+runMonad mgr auth m = case view m of
     Return a   -> return a
     req :>>= k -> do
         b <- ExceptT $ GH.executeRequestWithMgr mgr auth req
-        runGithubMonad mgr auth (k b)
+        runMonad mgr auth (k b)
 
-githubRequest :: GH.GithubRequest 'False a -> GithubMonad a
+githubRequest :: GH.Request 'False a -> GithubMonad a
 githubRequest = singleton
 
 main :: IO ()
@@ -31,7 +31,7 @@ main = do
     case auth' of
         Nothing -> return ()
         Just auth -> do
-            owner <- runExceptT $ runGithubMonad manager auth $ do
+            owner <- runExceptT $ runMonad manager auth $ do
                 repo <- githubRequest $ GH.repositoryR "phadej" "github"
                 githubRequest $ GH.ownerInfoForR (GH.simpleOwnerLogin . GH.repoOwner $ repo)
             print owner

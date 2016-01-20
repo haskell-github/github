@@ -5,7 +5,7 @@ import Github.GitData.References
 
 main :: IO ()
 main = do
-  let auth = Auth.GithubOAuth "oauthtoken"
+  let auth = Auth.OAuth "oauthtoken"
   newlyCreatedGitRef <- createReference auth "myrepo" "myowner" NewGitReference {
        newGitReferenceRef = "refs/heads/fav_tag"
       ,newGitReferenceSha = "aa218f56b14c9653891f9e74264a383fa43fefbd"

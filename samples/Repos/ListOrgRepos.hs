@@ -20,7 +20,7 @@ formatRepo repo =
     "watchers: " ++ (show $ Github.repoWatchers repo) ++ "\t" ++
     "forks: " ++ (show $ Github.repoForks repo)
 
-formatDate (Just date) = show . Github.fromGithubDate $ date
+formatDate (Just date) = show . Github.fromDate $ date
 formatDate Nothing = "????"
 
 formatLanguage (Just language) = "language: " ++ language ++ "\t"

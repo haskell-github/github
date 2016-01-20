@@ -64,8 +64,11 @@ data Repo = Repo {
 instance NFData Repo where rnf = genericRnf
 instance Binary Repo
 
-data RepoRef = RepoRef !SimpleOwner !(Name Repo) -- Repo owner and name
- deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data RepoRef = RepoRef
+    { repoRefOwner :: !SimpleOwner
+    , repoRefRepo  :: !(Name Repo)
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData RepoRef where rnf = genericRnf
 instance Binary RepoRef
@@ -100,13 +103,13 @@ instance NFData EditRepo where rnf = genericRnf
 instance Binary EditRepo
 
 -- | Filter the list of the user's repos using any of these constructors.
-data RepoPublicity =
-    All     -- ^ All repos accessible to the user.
-  | Owner   -- ^ Only repos owned by the user.
-  | Public  -- ^ Only public repos.
-  | Private -- ^ Only private repos.
-  | Member  -- ^ Only repos to which the user is a member but not an owner.
- deriving (Show, Eq, Ord, Typeable, Data, Generic)
+data RepoPublicity
+    = RepoPublicityAll     -- ^ All repos accessible to the user.
+    | RepoPublicityOwner   -- ^ Only repos owned by the user.
+    | RepoPublicityPublic  -- ^ Only public repos.
+    | RepoPublicityPrivate -- ^ Only private repos.
+    | RepoPublicityMember  -- ^ Only repos to which the user is a member but not an owner.
+    deriving (Show, Eq, Ord, Typeable, Data, Generic)
 
 -- | This is only used for the FromJSON instance.
 data Languages = Languages { getLanguages :: Vector Language }

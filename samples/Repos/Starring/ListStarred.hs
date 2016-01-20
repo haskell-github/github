@@ -18,7 +18,7 @@ formatRepo repo =
     (formatDate $ Github.repoUpdatedAt repo) ++ "\n" ++
     formatLanguage (Github.repoLanguage repo)
 
-formatDate (Just date) = show . Github.fromGithubDate $ date
+formatDate (Just date) = show . Github.fromDate $ date
 formatDate Nothing = ""
 
 formatLanguage (Just language) = "language: " ++ language ++ "\t"

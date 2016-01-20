@@ -44,39 +44,39 @@ renderCommitQueryOption (CommitQueryUntil date)    = ("until", Just $ BS8.pack $
 -- | The commit history for a repo.
 --
 -- > commitsFor "mike-burns" "github"
-commitsFor :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector Commit))
+commitsFor :: Name Owner -> Name Repo -> IO (Either Error (Vector Commit))
 commitsFor = commitsFor' Nothing
 
 -- | The commit history for a repo.
 -- With authentication.
 --
--- > commitsFor' (Just (GithubBasicAuth (user, password))) "mike-burns" "github"
-commitsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector Commit))
+-- > commitsFor' (Just (BasicAuth (user, password))) "mike-burns" "github"
+commitsFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Commit))
 commitsFor' auth user repo =
     commitsWithOptionsFor' auth user repo []
 
 -- | List commits on a repository.
 -- See <https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository>
-commitsForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector Commit)
+commitsForR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector Commit)
 commitsForR user repo limit = commitsWithOptionsForR user repo limit []
 
-commitsWithOptionsFor :: Name GithubOwner -> Name Repo -> [CommitQueryOption] -> IO (Either Error (Vector Commit))
+commitsWithOptionsFor :: Name Owner -> Name Repo -> [CommitQueryOption] -> IO (Either Error (Vector Commit))
 commitsWithOptionsFor = commitsWithOptionsFor' Nothing
 
 -- | The commit history for a repo, with commits filtered to satisfy a list of
 -- query options.
 -- With authentication.
 --
--- > commitsWithOptionsFor' (Just (GithubBasicAuth (user, password))) "mike-burns" "github" [CommitQueryAuthor "djeik"]
-commitsWithOptionsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> [CommitQueryOption] -> IO (Either Error (Vector Commit))
+-- > commitsWithOptionsFor' (Just (BasicAuth (user, password))) "mike-burns" "github" [CommitQueryAuthor "djeik"]
+commitsWithOptionsFor' :: Maybe Auth -> Name Owner -> Name Repo -> [CommitQueryOption] -> IO (Either Error (Vector Commit))
 commitsWithOptionsFor' auth user repo opts =
     executeRequestMaybe auth $ commitsWithOptionsForR user repo Nothing opts
 
 -- | List commits on a repository.
 -- See <https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository>
-commitsWithOptionsForR :: Name GithubOwner -> Name Repo -> Maybe Count -> [CommitQueryOption] -> GithubRequest k (Vector Commit)
+commitsWithOptionsForR :: Name Owner -> Name Repo -> Maybe Count -> [CommitQueryOption] -> Request k (Vector Commit)
 commitsWithOptionsForR user repo limit opts =
-    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "commits"] qs limit
+    PagedQuery ["repos", toPathPart user, toPathPart repo, "commits"] qs limit
   where
     qs = map renderCommitQueryOption opts
 
@@ -84,38 +84,38 @@ commitsWithOptionsForR user repo limit opts =
 -- | Details on a specific SHA1 for a repo.
 --
 -- > commit "mike-burns" "github" "9d1a9a361266c3c890b1108ad2fdf52f824b1b81"
-commit :: Name GithubOwner -> Name Repo -> Name Commit -> IO (Either Error Commit)
+commit :: Name Owner -> Name Repo -> Name Commit -> IO (Either Error Commit)
 commit = commit' Nothing
 
 -- | Details on a specific SHA1 for a repo.
 -- With authentication.
 --
--- > commit (Just $ GithubBasicAuth (username, password)) "mike-burns" "github" "9d1a9a361266c3c890b1108ad2fdf52f824b1b81"
-commit' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Name Commit -> IO (Either Error Commit)
+-- > commit (Just $ BasicAuth (username, password)) "mike-burns" "github" "9d1a9a361266c3c890b1108ad2fdf52f824b1b81"
+commit' :: Maybe Auth -> Name Owner -> Name Repo -> Name Commit -> IO (Either Error Commit)
 commit' auth user repo sha =
     executeRequestMaybe auth $ commitR user repo sha
 
--- | Get a single commit.
+-- | Query a single commit.
 -- See <https://developer.github.com/v3/repos/commits/#get-a-single-commit>
-commitR :: Name GithubOwner -> Name Repo -> Name Commit -> GithubRequest k Commit
+commitR :: Name Owner -> Name Repo -> Name Commit -> Request k Commit
 commitR user repo sha =
-    GithubGet ["repos", toPathPart user, toPathPart repo, "commits", toPathPart sha] []
+    Query ["repos", toPathPart user, toPathPart repo, "commits", toPathPart sha] []
 
 -- | The diff between two treeishes on a repo.
 --
 -- > diff "thoughtbot" "paperclip" "41f685f6e01396936bb8cd98e7cca517e2c7d96b" "HEAD"
-diff :: Name GithubOwner -> Name Repo -> Name Commit -> Name Commit -> IO (Either Error Diff)
+diff :: Name Owner -> Name Repo -> Name Commit -> Name Commit -> IO (Either Error Diff)
 diff = diff' Nothing
 
 -- | The diff between two treeishes on a repo.
 --
 -- > diff "thoughtbot" "paperclip" "41f685f6e01396936bb8cd98e7cca517e2c7d96b" "HEAD"
-diff' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Name Commit -> Name Commit -> IO (Either Error Diff)
+diff' :: Maybe Auth -> Name Owner -> Name Repo -> Name Commit -> Name Commit -> IO (Either Error Diff)
 diff' auth user repo base headref =
     executeRequestMaybe auth $ diffR user repo base headref
 
 -- | Compare two commits.
 -- See <https://developer.github.com/v3/repos/commits/#compare-two-commits>
-diffR :: Name GithubOwner -> Name Repo -> Name Commit -> Name Commit -> GithubRequest k Diff
+diffR :: Name Owner -> Name Repo -> Name Commit -> Name Commit -> Request k Diff
 diffR user repo base headref =
-    GithubGet ["repos", toPathPart user, toPathPart repo, "compare", toPathPart base ++ "..." ++ toPathPart headref] []
+    Query ["repos", toPathPart user, toPathPart repo, "compare", toPathPart base ++ "..." ++ toPathPart headref] []

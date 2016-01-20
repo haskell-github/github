@@ -47,7 +47,7 @@ import qualified Data.ByteString.Char8 as BS8
 --
 -- State can be one of @all@, @open@, or @closed@. Default is @open@.
 --
-pullRequestsFor'' :: Maybe GithubAuth -> Maybe String -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector SimplePullRequest))
+pullRequestsFor'' :: Maybe Auth -> Maybe String -> Name Owner -> Name Repo -> IO (Either Error (Vector SimplePullRequest))
 pullRequestsFor'' auth state user repo =
     executeRequestMaybe auth $ pullRequestsForR user repo state Nothing
 
@@ -55,23 +55,23 @@ pullRequestsFor'' auth state user repo =
 -- | With authentification
 --
 -- > pullRequestsFor' (Just ("github-username", "github-password")) "rails" "rails"
-pullRequestsFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector SimplePullRequest))
+pullRequestsFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector SimplePullRequest))
 pullRequestsFor' auth = pullRequestsFor'' auth Nothing
 
 -- | All pull requests for the repo, by owner and repo name.
 --
 -- > pullRequestsFor "rails" "rails"
-pullRequestsFor :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector SimplePullRequest))
+pullRequestsFor :: Name Owner -> Name Repo -> IO (Either Error (Vector SimplePullRequest))
 pullRequestsFor = pullRequestsFor'' Nothing Nothing
 
 -- | List pull requests.
 -- See <https://developer.github.com/v3/pulls/#list-pull-requests>
-pullRequestsForR :: Name GithubOwner -> Name Repo
+pullRequestsForR :: Name Owner -> Name Repo
                  -> Maybe String  -- ^ State
                  -> Maybe Count
-                 -> GithubRequest k (Vector SimplePullRequest)
+                 -> Request k (Vector SimplePullRequest)
 pullRequestsForR user repo state =
-    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "pulls"] qs
+    PagedQuery ["repos", toPathPart user, toPathPart repo, "pulls"] qs
   where
     qs = maybe [] (\s -> [("state", Just . BS8.pack $ s)]) state
 
@@ -80,7 +80,7 @@ pullRequestsForR user repo state =
 -- | With authentification
 --
 -- > pullRequest' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 562
-pullRequest' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Id PullRequest -> IO (Either Error PullRequest)
+pullRequest' :: Maybe Auth -> Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error PullRequest)
 pullRequest' auth user repo prid =
     executeRequestMaybe auth $ pullRequestR user repo prid
 
@@ -88,17 +88,17 @@ pullRequest' auth user repo prid =
 -- repo owner and name along with the number assigned to the pull request.
 --
 -- > pullRequest "thoughtbot" "paperclip" 562
-pullRequest :: Name GithubOwner -> Name Repo -> Id PullRequest -> IO (Either Error PullRequest)
+pullRequest :: Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error PullRequest)
 pullRequest = pullRequest' Nothing
 
--- | Get a single pull request.
+-- | Query a single pull request.
 -- See <https://developer.github.com/v3/pulls/#get-a-single-pull-request>
-pullRequestR :: Name GithubOwner -> Name Repo -> Id PullRequest -> GithubRequest k PullRequest
+pullRequestR :: Name Owner -> Name Repo -> Id PullRequest -> Request k PullRequest
 pullRequestR user repo prid =
-    GithubGet ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] []
+    Query ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] []
 
-createPullRequest :: GithubAuth
-                  -> Name GithubOwner
+createPullRequest :: Auth
+                  -> Name Owner
                   -> Name Repo
                   -> CreatePullRequest
                   -> IO (Either Error PullRequest)
@@ -107,34 +107,34 @@ createPullRequest auth user repo cpr =
 
 -- | Create a pull request.
 -- See <https://developer.github.com/v3/pulls/#create-a-pull-request>
-createPullRequestR :: Name GithubOwner
+createPullRequestR :: Name Owner
                    -> Name Repo
                    -> CreatePullRequest
-                   -> GithubRequest 'True PullRequest
+                   -> Request 'True PullRequest
 createPullRequestR user repo cpr =
-    GithubCommand Post ["repos", toPathPart user, toPathPart repo, "pulls"] (encode cpr)
+    Command Post ["repos", toPathPart user, toPathPart repo, "pulls"] (encode cpr)
 
 -- | Update a pull request
-updatePullRequest :: GithubAuth -> Name GithubOwner -> Name Repo -> Id PullRequest -> EditPullRequest -> IO (Either Error PullRequest)
+updatePullRequest :: Auth -> Name Owner -> Name Repo -> Id PullRequest -> EditPullRequest -> IO (Either Error PullRequest)
 updatePullRequest auth user repo prid epr =
     executeRequest auth $ updatePullRequestR user repo prid epr
 
 -- | Update a pull request.
 -- See <https://developer.github.com/v3/pulls/#update-a-pull-request>
-updatePullRequestR :: Name GithubOwner
+updatePullRequestR :: Name Owner
                    -> Name Repo
                    -> Id PullRequest
                    -> EditPullRequest
-                   -> GithubRequest 'True PullRequest
+                   -> Request 'True PullRequest
 updatePullRequestR user repo prid epr =
-    GithubCommand Patch ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] (encode epr)
+    Command Patch ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] (encode epr)
 
 -- | All the commits on a pull request, given the repo owner, repo name, and
 -- the number of the pull request.
 -- | With authentification
 --
 -- > pullRequestCommits' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 688
-pullRequestCommits' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector Commit))
+pullRequestCommits' :: Maybe Auth -> Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector Commit))
 pullRequestCommits' auth user repo prid =
     executeRequestMaybe auth $ pullRequestCommitsR user repo prid Nothing
 
@@ -142,21 +142,21 @@ pullRequestCommits' auth user repo prid =
 -- the number of the pull request.
 --
 -- > pullRequestCommits "thoughtbot" "paperclip" 688
-pullRequestCommitsIO :: Name GithubOwner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector Commit))
+pullRequestCommitsIO :: Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector Commit))
 pullRequestCommitsIO = pullRequestCommits' Nothing
 
 -- | List commits on a pull request.
 -- See <https://developer.github.com/v3/pulls/#list-commits-on-a-pull-request>
-pullRequestCommitsR :: Name GithubOwner -> Name Repo -> Id PullRequest -> Maybe Count -> GithubRequest k (Vector Commit)
+pullRequestCommitsR :: Name Owner -> Name Repo -> Id PullRequest -> Maybe Count -> Request k (Vector Commit)
 pullRequestCommitsR user repo prid =
-    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "commits"] []
+    PagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "commits"] []
 
 -- | The individual files that a pull request patches. Takes the repo owner and
 -- name, plus the number assigned to the pull request.
 -- | With authentification
 --
 -- > pullRequestFiles' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 688
-pullRequestFiles' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector File))
+pullRequestFiles' :: Maybe Auth -> Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector File))
 pullRequestFiles' auth user repo prid =
     executeRequestMaybe auth $ pullRequestFilesR user repo prid Nothing
 
@@ -164,36 +164,36 @@ pullRequestFiles' auth user repo prid =
 -- name, plus the number assigned to the pull request.
 --
 -- > pullRequestFiles "thoughtbot" "paperclip" 688
-pullRequestFiles :: Name GithubOwner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector File))
+pullRequestFiles :: Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector File))
 pullRequestFiles = pullRequestFiles' Nothing
 
 -- | List pull requests files.
 -- See <https://developer.github.com/v3/pulls/#list-pull-requests-files>
-pullRequestFilesR :: Name GithubOwner -> Name Repo -> Id PullRequest -> Maybe Count -> GithubRequest k (Vector File)
+pullRequestFilesR :: Name Owner -> Name Repo -> Id PullRequest -> Maybe Count -> Request k (Vector File)
 pullRequestFilesR user repo prid =
-    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "files"] []
+    PagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "files"] []
 
 -- | Check if pull request has been merged.
-isPullRequestMerged :: GithubAuth -> Name GithubOwner -> Name Repo -> Id PullRequest -> IO (Either Error Bool)
+isPullRequestMerged :: Auth -> Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error Bool)
 isPullRequestMerged auth user repo prid =
     executeRequest auth $ isPullRequestMergedR user repo prid
 
--- | Get if a pull request has been merged.
+-- | Query if a pull request has been merged.
 -- See <https://developer.github.com/v3/pulls/#get-if-a-pull-request-has-been-merged>
-isPullRequestMergedR :: Name GithubOwner -> Name Repo -> Id PullRequest -> GithubRequest k Bool
-isPullRequestMergedR user repo prid = GithubStatus StatusOnlyOk $
-    GithubGet ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "merge"] []
+isPullRequestMergedR :: Name Owner -> Name Repo -> Id PullRequest -> Request k Bool
+isPullRequestMergedR user repo prid = StatusQuery StatusOnlyOk $
+    Query ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "merge"] []
 
 -- | Merge a pull request.
-mergePullRequest :: GithubAuth -> Name GithubOwner -> Name Repo -> Id PullRequest -> Maybe String -> IO (Either Error MergeResult)
+mergePullRequest :: Auth -> Name Owner -> Name Repo -> Id PullRequest -> Maybe String -> IO (Either Error MergeResult)
 mergePullRequest auth user repo prid commitMessage =
     executeRequest auth $ mergePullRequestR user repo prid commitMessage
 
 -- | Merge a pull request (Merge Button).
 -- https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button
-mergePullRequestR :: Name GithubOwner -> Name Repo -> Id PullRequest -> Maybe String -> GithubRequest 'True MergeResult
-mergePullRequestR user repo prid commitMessage = GithubStatus StatusMerge $
-    GithubCommand Put paths (encode $ buildCommitMessageMap commitMessage)
+mergePullRequestR :: Name Owner -> Name Repo -> Id PullRequest -> Maybe String -> Request 'True MergeResult
+mergePullRequestR user repo prid commitMessage = StatusQuery StatusMerge $
+    Command Put paths (encode $ buildCommitMessageMap commitMessage)
   where
     paths = ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "merge"]
 

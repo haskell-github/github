@@ -13,7 +13,7 @@ main = do
   result <- case args of
               [token, team_id, username] ->
                 GitHub.addTeamMembershipFor'
-                    (GitHub.GithubOAuth token)
+                    (GitHub.OAuth token)
                     (GitHub.mkTeamId $ read team_id)
                     (GitHub.mkOwnerName $ fromString username)
                     GitHub.RoleMember

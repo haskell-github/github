@@ -23,7 +23,7 @@ import GitHub.Request
 -- With authentification
 --
 -- > userInfoFor' (Just ("github-username", "github-password")) "mike-burns"
-userInfoFor' :: Maybe GithubAuth -> Name User -> IO (Either Error User)
+userInfoFor' :: Maybe Auth -> Name User -> IO (Either Error User)
 userInfoFor' auth = executeRequestMaybe auth . userInfoForR
 
 -- | The information for a single user, by login name.
@@ -32,24 +32,24 @@ userInfoFor' auth = executeRequestMaybe auth . userInfoForR
 userInfoFor :: Name User -> IO (Either Error User)
 userInfoFor = executeRequest' . userInfoForR
 
--- | Get a single user.
+-- | Query a single user.
 -- See <https://developer.github.com/v3/users/#get-a-single-user>
-userInfoForR :: Name User -> GithubRequest k User
-userInfoForR user = GithubGet ["users", toPathPart user] []
+userInfoForR :: Name User -> Request k User
+userInfoForR user = Query ["users", toPathPart user] []
 
--- | Get a single user or an organization.
+-- | Query a single user or an organization.
 -- See <https://developer.github.com/v3/users/#get-a-single-user>
-ownerInfoForR :: Name GithubOwner -> GithubRequest k GithubOwner
-ownerInfoForR owner = GithubGet ["users", toPathPart owner] []
+ownerInfoForR :: Name Owner -> Request k Owner
+ownerInfoForR owner = Query ["users", toPathPart owner] []
 
 -- | Retrieve information about the user associated with the supplied authentication.
 --
--- > userInfoCurrent' (GithubOAuth "...")
-userInfoCurrent' :: GithubAuth -> IO (Either Error User)
+-- > userInfoCurrent' (OAuth "...")
+userInfoCurrent' :: Auth -> IO (Either Error User)
 userInfoCurrent' auth =
     executeRequest auth $ userInfoCurrentR
 
--- | Get the authenticated user.
+-- | Query the authenticated user.
 -- See <https://developer.github.com/v3/users/#get-the-authenticated-user>
-userInfoCurrentR :: GithubRequest 'True User
-userInfoCurrentR = GithubGet ["user"] []
+userInfoCurrentR :: Request 'True User
+userInfoCurrentR = Query ["user"] []

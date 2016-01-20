@@ -7,7 +7,7 @@ import qualified Data.Map as M
 
 main :: IO ()
 main = do
-  let auth = Auth.GithubOAuth "oauthtoken"
+  let auth = Auth.OAuth "oauthtoken"
   let config = M.fromList [("url", "https://foo3.io"), ("content_type", "application/json"), ("insecure_ssl", "1")]
   let webhookDef = NewRepoWebhook {
         newRepoWebhookName = "web",

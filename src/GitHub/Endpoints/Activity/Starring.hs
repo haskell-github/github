@@ -24,34 +24,34 @@ import GitHub.Request
 -- | The list of users that have starred the specified Github repo.
 --
 -- > userInfoFor' Nothing "mike-burns"
-stargazersFor :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector SimpleUser))
+stargazersFor :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector SimpleUser))
 stargazersFor auth user repo =
     executeRequestMaybe auth $ stargazersForR user repo Nothing
 
 -- | List Stargazers.
 -- See <https://developer.github.com/v3/activity/starring/#list-stargazers>
-stargazersForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector SimpleUser)
+stargazersForR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector SimpleUser)
 stargazersForR user repo =
-    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "stargazers"] []
+    PagedQuery ["repos", toPathPart user, toPathPart repo, "stargazers"] []
 
 -- | All the public repos starred by the specified user.
 --
 -- > reposStarredBy Nothing "croaky"
-reposStarredBy :: Maybe GithubAuth -> Name GithubOwner -> IO (Either Error (Vector Repo))
+reposStarredBy :: Maybe Auth -> Name Owner -> IO (Either Error (Vector Repo))
 reposStarredBy auth user =
     executeRequestMaybe auth $ reposStarredByR user Nothing
 
 -- | List repositories being starred.
 -- See <https://developer.github.com/v3/activity/starring/#list-repositories-being-starred>
-reposStarredByR :: Name GithubOwner -> Maybe Count -> GithubRequest k (Vector Repo)
+reposStarredByR :: Name Owner -> Maybe Count -> Request k (Vector Repo)
 reposStarredByR user =
-    GithubPagedGet ["users", toPathPart user, "starred"] []
+    PagedQuery ["users", toPathPart user, "starred"] []
 
 -- | All the repos starred by the authenticated user.
-myStarred :: GithubAuth -> IO (Either Error (Vector Repo))
+myStarred :: Auth -> IO (Either Error (Vector Repo))
 myStarred auth =
     executeRequest auth $ myStarredR Nothing
 
 -- | All the repos starred by the authenticated user.
-myStarredR :: Maybe Count -> GithubRequest 'True (Vector Repo)
-myStarredR = GithubPagedGet ["user", "starred"] []
+myStarredR :: Maybe Count -> Request 'True (Vector Repo)
+myStarredR = PagedQuery ["user", "starred"] []

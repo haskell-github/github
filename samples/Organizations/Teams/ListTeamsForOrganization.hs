@@ -9,7 +9,7 @@ import           System.Environment         (getArgs)
 main = do
   args <- getArgs
   result <- case args of
-              [team, token] -> Github.teamsOf' (Just $ Github.GithubOAuth token) team
+              [team, token] -> Github.teamsOf' (Just $ Github.OAuth token) team
               [team]        -> Github.teamsOf team
               _             -> error "usage: ListTeamsForOrganization <team> [auth token]"
   case result of

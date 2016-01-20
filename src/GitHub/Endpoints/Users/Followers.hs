@@ -27,8 +27,8 @@ usersFollowing user =
 
 -- | List followers of a user.
 -- See <https://developer.github.com/v3/users/followers/#list-followers-of-a-user>
-usersFollowingR :: Name User -> Maybe Count -> GithubRequest k (Vector SimpleUser)
-usersFollowingR user = GithubPagedGet ["users", toPathPart user, "followers"] []
+usersFollowingR :: Name User -> Maybe Count -> Request k (Vector SimpleUser)
+usersFollowingR user = PagedQuery ["users", toPathPart user, "followers"] []
 
 -- | All the users that the given user follows.
 --
@@ -39,5 +39,5 @@ usersFollowedBy user =
 
 -- | List users followed by another user.
 -- See <https://developer.github.com/v3/users/followers/#list-users-followed-by-another-user>
-usersFollowedByR :: Name User -> Maybe Count -> GithubRequest k (Vector SimpleUser)
-usersFollowedByR user = GithubPagedGet ["users", toPathPart user, "following"] []
+usersFollowedByR :: Name User -> Maybe Count -> Request k (Vector SimpleUser)
+usersFollowedByR user = PagedQuery ["users", toPathPart user, "following"] []

@@ -7,7 +7,7 @@ import Data.List
 
 main :: IO ()
 main = do
-  let auth = Auth.GithubOAuth "oauthtoken"
+  let auth = Auth.OAuth "oauthtoken"
   possibleWebhooks <- W.webhooksFor' auth "repoOwner" "repoName"
   case possibleWebhooks of
     (Left err) -> putStrLn $ "Error: " ++ (show err)

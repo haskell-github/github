@@ -8,8 +8,8 @@ import Report
 -- The example requires wl-pprint module "The Wadler/Leijen Pretty Printer"
 import Text.PrettyPrint.ANSI.Leijen
 
-auth ::  Maybe Github.GithubAuth
-auth = Just $ Github.GithubEnterpriseOAuth
+auth ::  Maybe Github.Auth
+auth = Just $ Github.EnterpriseOAuth
                     "https://github.example.com/api"
                     "1a79a4d60de6718e8e5b326e338ae533"
 

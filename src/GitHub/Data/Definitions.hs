@@ -73,8 +73,8 @@ instance Binary SimpleOrganization
 
 -- | Sometimes we don't know the type of the owner, e.g. in 'Repo'
 data SimpleOwner = SimpleOwner
-    { simpleOwnerId        :: !(Id GithubOwner)
-    , simpleOwnerLogin     :: !(Name GithubOwner)
+    { simpleOwnerId        :: !(Id Owner)
+    , simpleOwnerLogin     :: !(Name Owner)
     , simpleOwnerUrl       :: !Text
     , simpleOwnerAvatarUrl :: !Text
     , simpleOwnerType      :: !OwnerType
@@ -132,15 +132,15 @@ data Organization = Organization
 instance NFData Organization where rnf = genericRnf
 instance Binary Organization
 
--- | In practic, you cam't have concrete values of 'GithubOwner'.
-newtype GithubOwner = GithubOwner (Either User Organization)
+-- | In practic, you cam't have concrete values of 'Owner'.
+newtype Owner = Owner (Either User Organization)
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData GithubOwner where rnf = genericRnf
-instance Binary GithubOwner
+instance NFData Owner where rnf = genericRnf
+instance Binary Owner
 
-fromGithubOwner :: GithubOwner -> Either User Organization
-fromGithubOwner (GithubOwner owner) = owner
+fromOwner :: Owner -> Either User Organization
+fromOwner (Owner owner) = owner
 
 -- JSON instances
 
@@ -223,9 +223,9 @@ instance FromJSON User where
 instance FromJSON Organization where
     parseJSON = withObject "Organization" parseOrganization
 
-instance FromJSON GithubOwner where
-    parseJSON = withObject "GithubOwner" $ \obj -> do
+instance FromJSON Owner where
+    parseJSON = withObject "Owner" $ \obj -> do
         t <- obj .: "type"
         case t of
-            OwnerUser         -> GithubOwner . Left <$> parseUser obj
-            OwnerOrganization -> GithubOwner . Right <$> parseOrganization obj
+            OwnerUser         -> Owner . Left <$> parseUser obj
+            OwnerOrganization -> Owner . Right <$> parseOrganization obj

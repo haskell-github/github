@@ -4,7 +4,7 @@
 -- License     :  BSD-3-Clause
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
--- The GithubOwner teams API as described on
+-- The Owner teams API as described on
 -- <http://developer.github.com/v3/orgs/teams/>.
 module GitHub.Endpoints.Organizations.Teams (
     teamsOf,
@@ -40,16 +40,16 @@ import Data.Vector       (Vector)
 import GitHub.Data
 import GitHub.Request
 
--- | List teams.  List the teams of an GithubOwner.
+-- | List teams.  List the teams of an Owner.
 -- When authenticated, lists private teams visible to the authenticated user.
--- When unauthenticated, lists only public teams for an GithubOwner.
+-- When unauthenticated, lists only public teams for an Owner.
 --
--- > teamsOf' (Just $ GithubOAuth "token") "thoughtbot"
-teamsOf' :: Maybe GithubAuth -> Name Organization -> IO (Either Error (Vector SimpleTeam))
+-- > teamsOf' (Just $ OAuth "token") "thoughtbot"
+teamsOf' :: Maybe Auth -> Name Organization -> IO (Either Error (Vector SimpleTeam))
 teamsOf' auth org =
     executeRequestMaybe auth $ teamsOfR org Nothing
 
--- | List the public teams of an GithubOwner.
+-- | List the public teams of an Owner.
 --
 -- > teamsOf "thoughtbot"
 teamsOf :: Name Organization -> IO (Either Error (Vector SimpleTeam))
@@ -57,33 +57,33 @@ teamsOf = teamsOf' Nothing
 
 -- | List teams.
 -- See <https://developer.github.com/v3/orgs/teams/#list-teams>
-teamsOfR :: Name Organization -> Maybe Count -> GithubRequest k (Vector SimpleTeam)
-teamsOfR org = GithubPagedGet ["orgs", toPathPart org, "teams"] []
+teamsOfR :: Name Organization -> Maybe Count -> Request k (Vector SimpleTeam)
+teamsOfR org = PagedQuery ["orgs", toPathPart org, "teams"] []
 
 -- | The information for a single team, by team id.
 -- | With authentication
 --
--- > teamInfoFor' (Just $ GithubOAuth "token") 1010101
-teamInfoFor' :: Maybe GithubAuth -> Id Team -> IO (Either Error Team)
+-- > teamInfoFor' (Just $ OAuth "token") 1010101
+teamInfoFor' :: Maybe Auth -> Id Team -> IO (Either Error Team)
 teamInfoFor' auth tid =
     executeRequestMaybe auth $ teamInfoForR tid
 
 -- | The information for a single team, by team id.
 --
--- > teamInfoFor' (Just $ GithubOAuth "token") 1010101
+-- > teamInfoFor' (Just $ OAuth "token") 1010101
 teamInfoFor :: Id Team -> IO (Either Error Team)
 teamInfoFor = teamInfoFor' Nothing
 
--- | Get team.
+-- | Query team.
 -- See <https://developer.github.com/v3/orgs/teams/#get-team>
-teamInfoForR  :: Id Team -> GithubRequest k Team
+teamInfoForR  :: Id Team -> Request k Team
 teamInfoForR tid =
-    GithubGet ["teams", toPathPart tid] []
+    Query ["teams", toPathPart tid] []
 
--- | Create a team under an GithubOwner
+-- | Create a team under an Owner
 --
--- > createTeamFor' (GithubOAuth "token") "GithubOwner" (CreateTeam "newteamname" "some description" [] PermssionPull)
-createTeamFor' :: GithubAuth
+-- > createTeamFor' (OAuth "token") "Owner" (CreateTeam "newteamname" "some description" [] PermssionPull)
+createTeamFor' :: Auth
                -> Name Organization
                -> CreateTeam
                -> IO (Either Error Team)
@@ -92,14 +92,14 @@ createTeamFor' auth org cteam =
 
 -- | Create team.
 -- See <https://developer.github.com/v3/orgs/teams/#create-team>
-createTeamForR :: Name Organization -> CreateTeam -> GithubRequest 'True Team
+createTeamForR :: Name Organization -> CreateTeam -> Request 'True Team
 createTeamForR org cteam =
-    GithubCommand Post ["orgs", toPathPart org, "teams"] (encode cteam)
+    Command Post ["orgs", toPathPart org, "teams"] (encode cteam)
 
 -- | Edit a team, by id.
 --
 -- > editTeamFor'
-editTeam' :: GithubAuth
+editTeam' :: Auth
           -> Id Team
           -> EditTeam
           -> IO (Either Error Team)
@@ -108,76 +108,76 @@ editTeam' auth tid eteam =
 
 -- | Edit team.
 -- See <https://developer.github.com/v3/orgs/teams/#edit-team>
-editTeamR :: Id Team -> EditTeam -> GithubRequest 'True Team
+editTeamR :: Id Team -> EditTeam -> Request 'True Team
 editTeamR tid eteam =
-    GithubCommand Patch ["teams", toPathPart tid] (encode eteam)
+    Command Patch ["teams", toPathPart tid] (encode eteam)
 
 -- | Delete a team, by id.
 --
--- > deleteTeam' (GithubOAuth "token") 1010101
-deleteTeam' :: GithubAuth -> Id Team -> IO (Either Error ())
+-- > deleteTeam' (OAuth "token") 1010101
+deleteTeam' :: Auth -> Id Team -> IO (Either Error ())
 deleteTeam' auth tid =
     executeRequest auth $ deleteTeamR tid
 
 -- | Delete team.
 -- See <https://developer.github.com/v3/orgs/teams/#delete-team>
-deleteTeamR :: Id Team -> GithubRequest 'True ()
+deleteTeamR :: Id Team -> Request 'True ()
 deleteTeamR tid =
-    GithubCommand Delete ["teams", toPathPart tid] mempty
+    Command Delete ["teams", toPathPart tid] mempty
 
 -- | Retrieve team mebership information for a user.
 -- | With authentication
 --
--- > teamMembershipInfoFor' (Just $ GithubOAuth "token") 1010101 "mburns"
-teamMembershipInfoFor' :: Maybe GithubAuth -> Id Team -> Name GithubOwner -> IO (Either Error TeamMembership)
+-- > teamMembershipInfoFor' (Just $ OAuth "token") 1010101 "mburns"
+teamMembershipInfoFor' :: Maybe Auth -> Id Team -> Name Owner -> IO (Either Error TeamMembership)
 teamMembershipInfoFor' auth tid user =
     executeRequestMaybe auth $ teamMembershipInfoForR tid user
 
--- | Get team membership.
+-- | Query team membership.
 -- See <https://developer.github.com/v3/orgs/teams/#get-team-membership
-teamMembershipInfoForR :: Id Team -> Name GithubOwner -> GithubRequest k TeamMembership
+teamMembershipInfoForR :: Id Team -> Name Owner -> Request k TeamMembership
 teamMembershipInfoForR tid user =
-    GithubGet ["teams", toPathPart tid, "memberships", toPathPart user] []
+    Query ["teams", toPathPart tid, "memberships", toPathPart user] []
 
 -- | Retrieve team mebership information for a user.
 --
 -- > teamMembershipInfoFor 1010101 "mburns"
-teamMembershipInfoFor :: Id Team -> Name GithubOwner -> IO (Either Error TeamMembership)
+teamMembershipInfoFor :: Id Team -> Name Owner -> IO (Either Error TeamMembership)
 teamMembershipInfoFor = teamMembershipInfoFor' Nothing
 
 -- | Add (or invite) a member to a team.
 --
--- > addTeamMembershipFor' (GithubOAuth "token") 1010101 "mburns" RoleMember
-addTeamMembershipFor' :: GithubAuth -> Id Team -> Name GithubOwner -> Role-> IO (Either Error TeamMembership)
+-- > addTeamMembershipFor' (OAuth "token") 1010101 "mburns" RoleMember
+addTeamMembershipFor' :: Auth -> Id Team -> Name Owner -> Role-> IO (Either Error TeamMembership)
 addTeamMembershipFor' auth tid user role =
     executeRequest auth $ addTeamMembershipForR tid user role
 
 -- | Add team membership.
 -- See <https://developer.github.com/v3/orgs/teams/#add-team-membership>
-addTeamMembershipForR :: Id Team -> Name GithubOwner -> Role -> GithubRequest 'True TeamMembership
+addTeamMembershipForR :: Id Team -> Name Owner -> Role -> Request 'True TeamMembership
 addTeamMembershipForR tid user role =
-    GithubCommand Put ["teams", toPathPart tid, "memberships", toPathPart user] (encode $ CreateTeamMembership role)
+    Command Put ["teams", toPathPart tid, "memberships", toPathPart user] (encode $ CreateTeamMembership role)
 
 -- | Delete a member of a team.
 --
--- > deleteTeamMembershipFor' (GithubOAuth "token") 1010101 "mburns"
-deleteTeamMembershipFor' :: GithubAuth -> Id Team -> Name GithubOwner -> IO (Either Error ())
+-- > deleteTeamMembershipFor' (OAuth "token") 1010101 "mburns"
+deleteTeamMembershipFor' :: Auth -> Id Team -> Name Owner -> IO (Either Error ())
 deleteTeamMembershipFor' auth tid user =
     executeRequest auth $ deleteTeamMembershipForR tid user
 
 -- | Remove team membership.
 -- See <https://developer.github.com/v3/orgs/teams/#remove-team-membership>
-deleteTeamMembershipForR :: Id Team -> Name GithubOwner -> GithubRequest 'True ()
+deleteTeamMembershipForR :: Id Team -> Name Owner -> Request 'True ()
 deleteTeamMembershipForR tid user =
-    GithubCommand Delete ["teams", toPathPart tid, "memberships", toPathPart user] mempty
+    Command Delete ["teams", toPathPart tid, "memberships", toPathPart user] mempty
 
 -- | List teams for current authenticated user
 --
--- > listTeamsCurrent' (GithubOAuth "token")
-listTeamsCurrent' :: GithubAuth -> IO (Either Error (Vector Team))
+-- > listTeamsCurrent' (OAuth "token")
+listTeamsCurrent' :: Auth -> IO (Either Error (Vector Team))
 listTeamsCurrent' auth = executeRequest auth $ listTeamsCurrentR Nothing
 
 -- | List user teams.
 -- See <https://developer.github.com/v3/orgs/teams/#list-user-teams>
-listTeamsCurrentR :: Maybe Count -> GithubRequest 'True (Vector Team)
-listTeamsCurrentR = GithubPagedGet ["user", "teams"] []
+listTeamsCurrentR :: Maybe Count -> Request 'True (Vector Team)
+listTeamsCurrentR = PagedQuery ["user", "teams"] []

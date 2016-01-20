@@ -6,7 +6,7 @@
 -- This module re-exports all request constructrors and data definitions from
 -- this package.
 --
--- See "GitHub.Request" module for executing 'GithubRequest', or other modules
+-- See "GitHub.Request" module for executing 'Request', or other modules
 -- of this package (e.g. "GitHub.Users") for already composed versions.
 --
 -- The missing endpoints lists show which endpoints we know are missing, there
@@ -32,7 +32,7 @@ module GitHub (
     --
     -- Missing endpoints:
     --
-    -- * Get a Repository Subscription
+    -- * Query a Repository Subscription
     -- * Set a Repository Subscription
     -- * Delete a Repository Subscription
     watchersForR,
@@ -43,7 +43,7 @@ module GitHub (
     --
     -- Missing endpoints:
     --
-    -- * Get a specific revision of a gist
+    -- * Query a specific revision of a gist
     -- * Create a gist
     -- * Edit a gist
     -- * List gist commits
@@ -165,7 +165,7 @@ module GitHub (
     -- Missing endpoints:
     --
     -- * List team members
-    -- * Get team member (deprecated)
+    -- * Query team member (deprecated)
     -- * Add team member (deprecated)
     -- * Remove team member (deprecated)
     -- * List team repos
@@ -212,7 +212,7 @@ module GitHub (
     --
     -- * List all public repositories
     -- * List Teams
-    -- * Get Branch
+    -- * Query Branch
     -- * Enabling and disabling branch protection
     currentUserReposR,
     userReposR,
@@ -281,7 +281,7 @@ module GitHub (
     -- Missing endpoints:
     --
     -- * Update the authenticated user
-    -- * Get all users
+    -- * Query all users
     userInfoForR,
     ownerInfoForR,
     userInfoCurrentR,

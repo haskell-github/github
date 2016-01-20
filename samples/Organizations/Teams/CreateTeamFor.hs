@@ -11,7 +11,7 @@ main = do
   result <- case args of
               [token, org, team, desc, repos] ->
                 Github.createTeamFor'
-                  (Github.GithubOAuth token)
+                  (Github.OAuth token)
                   org
                   (Github.CreateTeam team (Just desc) (read repos :: [String]) Github.PermissionPull)
               _                               ->

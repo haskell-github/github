@@ -19,19 +19,19 @@ import GitHub.Request
 -- | All the repos that are forked off the given repo.
 --
 -- > forksFor "thoughtbot" "paperclip"
-forksFor :: Name GithubOwner -> Name Repo -> IO (Either Error  (Vector Repo))
+forksFor :: Name Owner -> Name Repo -> IO (Either Error  (Vector Repo))
 forksFor = forksFor' Nothing
 
 -- | All the repos that are forked off the given repo.
 -- | With authentication
 --
--- > forksFor' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
-forksFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error  (Vector Repo))
+-- > forksFor' (Just (User (user, password))) "thoughtbot" "paperclip"
+forksFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error  (Vector Repo))
 forksFor' auth user repo =
     executeRequestMaybe auth $ forksForR user repo Nothing
 
 -- | List forks.
 -- See <https://developer.github.com/v3/repos/forks/#list-forks>
-forksForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector Repo)
+forksForR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector Repo)
 forksForR user repo =
-    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "forks"] []
+    PagedQuery ["repos", toPathPart user, toPathPart repo, "forks"] []

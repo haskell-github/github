@@ -13,7 +13,7 @@
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
 module GitHub.Data.Request (
-    GithubRequest(..),
+    Request(..),
     CommandMethod(..),
     toMethod,
     StatusMap(..),
@@ -116,61 +116,61 @@ instance Hashable (StatusMap a) where
 -- * @k@ describes whether authentication is required. It's required for non-@GET@ requests.
 -- * @a@ is the result type
 --
--- /Note:/ 'GithubRequest' is not 'Functor' on purpose.
-data GithubRequest (k :: Bool) a where
-    GithubGet       :: FromJSON a => Paths -> QueryString -> GithubRequest k a
-    GithubPagedGet  :: FromJSON (Vector a) => Paths -> QueryString -> Maybe Count -> GithubRequest k (Vector a)
-    GithubCommand   :: FromJSON a => CommandMethod a -> Paths -> LBS.ByteString -> GithubRequest 'True a
-    GithubStatus    :: StatusMap a -> GithubRequest k () -> GithubRequest k a
+-- /Note:/ 'Request' is not 'Functor' on purpose.
+data Request (k :: Bool) a where
+    Query        :: FromJSON a => Paths -> QueryString -> Request k a
+    PagedQuery   :: FromJSON (Vector a) => Paths -> QueryString -> Maybe Count -> Request k (Vector a)
+    Command      :: FromJSON a => CommandMethod a -> Paths -> LBS.ByteString -> Request 'True a
+    StatusQuery  :: StatusMap a -> Request k () -> Request k a
     deriving (Typeable)
 
-deriving instance Eq (GithubRequest k a)
+deriving instance Eq (Request k a)
 
-instance Show (GithubRequest k a) where
+instance Show (Request k a) where
     showsPrec d r =
         case r of
-            GithubGet ps qs -> showParen (d > appPrec) $
-                showString "GithubGet "
+            Query ps qs -> showParen (d > appPrec) $
+                showString "Query "
                     . showsPrec (appPrec + 1) ps
                     . showString " "
                     . showsPrec (appPrec + 1) qs
-            GithubPagedGet ps qs l -> showParen (d > appPrec) $
-                showString "GithubPagedGet "
+            PagedQuery ps qs l -> showParen (d > appPrec) $
+                showString "PagedQuery "
                     . showsPrec (appPrec + 1) ps
                     . showString " "
                     . showsPrec (appPrec + 1) qs
                     . showString " "
                     . showsPrec (appPrec + 1) l
-            GithubCommand m ps body -> showParen (d > appPrec) $
-                showString "GithubCommand "
+            Command m ps body -> showParen (d > appPrec) $
+                showString "Command "
                     . showsPrec (appPrec + 1) m
                     . showString " "
                     . showsPrec (appPrec + 1) ps
                     . showString " "
                     . showsPrec (appPrec + 1) body
-            GithubStatus m req -> showParen (d > appPrec) $
-                showString "GithubStatus "
+            StatusQuery m req -> showParen (d > appPrec) $
+                showString "Status "
                     . showsPrec (appPrec + 1) m
                     . showString " "
                     . showsPrec (appPrec + 1) req
       where appPrec = 10 :: Int
 
-instance Hashable (GithubRequest k a) where
-    hashWithSalt salt (GithubGet ps qs) =
+instance Hashable (Request k a) where
+    hashWithSalt salt (Query ps qs) =
         salt `hashWithSalt` (0 :: Int)
              `hashWithSalt` ps
              `hashWithSalt` qs
-    hashWithSalt salt (GithubPagedGet ps qs l) =
+    hashWithSalt salt (PagedQuery ps qs l) =
         salt `hashWithSalt` (1 :: Int)
              `hashWithSalt` ps
              `hashWithSalt` qs
              `hashWithSalt` l
-    hashWithSalt salt (GithubCommand m ps body) =
+    hashWithSalt salt (Command m ps body) =
         salt `hashWithSalt` (2 :: Int)
              `hashWithSalt` m
              `hashWithSalt` ps
              `hashWithSalt` body
-    hashWithSalt salt (GithubStatus sm req) =
+    hashWithSalt salt (StatusQuery sm req) =
         salt `hashWithSalt` (3 :: Int)
              `hashWithSalt` sm
              `hashWithSalt` req

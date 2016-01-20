@@ -11,9 +11,9 @@ module GitHub.Data.Webhooks.Validate (
   isValidPayload
 ) where
 
-#if !MIN_VERSION_base(4,8,0)
-import Control.Applicative
-#endif
+import Prelude        ()
+import Prelude.Compat
+
 import           Crypto.Hash
 import           Data.Byteable          (constEqBytes, toBytes)
 import qualified Data.ByteString.Base16 as Hex

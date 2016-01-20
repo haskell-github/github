@@ -12,7 +12,7 @@ main = do
   args <- getArgs
   result <- case args of
               [team_id, username, token] ->
-                GitHub.teamMembershipInfoFor' (Just $ GitHub.GithubOAuth token) (GitHub.mkTeamId $ read team_id) (GitHub.mkOwnerName $ fromString username)
+                GitHub.teamMembershipInfoFor' (Just $ GitHub.OAuth token) (GitHub.mkTeamId $ read team_id) (GitHub.mkOwnerName $ fromString username)
               [team_id, username]        ->
                 GitHub.teamMembershipInfoFor (GitHub.mkTeamId $ read team_id) (GitHub.mkOwnerName $ fromString username)
               _                          ->

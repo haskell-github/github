@@ -8,8 +8,8 @@ import Report
 -- The example requires wl-pprint module "The Wadler/Leijen Pretty Printer"
 import Text.PrettyPrint.ANSI.Leijen
 
-auth ::  Maybe Github.GithubAuth
-auth = Just $ Github.GithubBasicAuth "yourgithub id" "somepassword"
+auth ::  Maybe Github.Auth
+auth = Just $ Github.BasicAuth "yourgithub id" "somepassword"
 
 mkIssue :: ReportedIssue -> Doc
 mkIssue (Issue n t h) = hsep [

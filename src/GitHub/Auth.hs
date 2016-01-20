@@ -16,12 +16,13 @@ import GHC.Generics             (Generic)
 import qualified Data.ByteString as BS
 
 -- | The Github auth data type
-data GithubAuth = GithubBasicAuth BS.ByteString BS.ByteString
-                | GithubOAuth String -- ^ token
-                | GithubEnterpriseOAuth String  -- custom API endpoint without
-                                                -- trailing slash
-                                        String  -- token
-                deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data Auth
+    = BasicAuth BS.ByteString BS.ByteString
+    | OAuth String -- ^ token
+    | EnterpriseOAuth String  -- custom API endpoint without
+                              -- trailing slash
+                      String  -- token
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData GithubAuth where rnf = genericRnf
-instance Binary GithubAuth
+instance NFData Auth where rnf = genericRnf
+instance Binary Auth

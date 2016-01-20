@@ -9,6 +9,6 @@ main = do
                     (intercalate "\n" . map formatWatcher)
                     possibleWatchers
 
-formatWatcher :: Github.GithubOwner -> String
+formatWatcher :: Github.Owner -> String
 formatWatcher user =
   (Github.githubOwnerLogin user) ++ " (" ++ (Github.githubOwnerUrl user) ++ ")"
