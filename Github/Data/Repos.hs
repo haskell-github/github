@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric      #-}
+{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -7,18 +8,26 @@
 --
 module Github.Data.Repos where
 
+import Prelude        ()
+import Prelude.Compat
+
 import Github.Data.Definitions
 import Github.Data.Id          (Id)
 import Github.Data.Name        (Name)
 
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
+import Data.Aeson.Compat        (FromJSON (..), ToJSON (..), object, withObject,
+                                 (.:), (.:?), (.=))
 import Data.Binary              (Binary)
 import Data.Data                (Data, Typeable)
 import Data.Text                (Text)
 import Data.Time                (UTCTime)
 import Data.Vector              (Vector)
 import GHC.Generics             (Generic)
+
+import qualified Data.HashMap.Strict as HM
+import qualified Data.Vector         as V
 
 data Repo = Repo {
    repoSshUrl          :: !(Maybe Text)
@@ -55,7 +64,7 @@ data Repo = Repo {
 instance NFData Repo where rnf = genericRnf
 instance Binary Repo
 
-data RepoRef = RepoRef SimpleOwner (Name Repo) -- Repo owner and name
+data RepoRef = RepoRef !SimpleOwner !(Name Repo) -- Repo owner and name
  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData RepoRef where rnf = genericRnf
@@ -113,3 +122,117 @@ data Language = Language !Text !Int
 
 instance NFData Language where rnf = genericRnf
 instance Binary Language
+
+data Contributor
+  -- | An existing Github user, with their number of contributions, avatar
+  -- URL, login, URL, ID, and Gravatar ID.
+  = KnownContributor !Int !Text !(Name User) !Text !(Id User) !Text
+  -- | An unknown Github user with their number of contributions and recorded name.
+  | AnonymousContributor !Int !Text
+ deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Contributor where rnf = genericRnf
+instance Binary Contributor
+
+contributorToSimpleUser :: Contributor -> Maybe SimpleUser
+contributorToSimpleUser (AnonymousContributor _ _) = Nothing
+contributorToSimpleUser (KnownContributor _contributions avatarUrl name url uid _gravatarid) =
+    Just $ SimpleUser uid name avatarUrl url OwnerUser
+
+-- JSON instances
+
+instance FromJSON Repo where
+  parseJSON = withObject "Repo" $ \o ->
+    Repo <$> o .:? "ssh_url"
+         <*> o .: "description"
+         <*> o .:? "created_at"
+         <*> o .: "html_url"
+         <*> o .:? "svn_url"
+         <*> o .:? "forks"
+         <*> o .:? "homepage"
+         <*> o .: "fork"
+         <*> o .:? "git_url"
+         <*> o .: "private"
+         <*> o .:? "clone_url"
+         <*> o .:? "size"
+         <*> o .:? "updated_at"
+         <*> o .:? "watchers"
+         <*> o .: "owner"
+         <*> o .: "name"
+         <*> o .:? "language"
+         <*> o .:? "master_branch"
+         <*> o .:? "pushed_at"
+         <*> o .: "id"
+         <*> o .: "url"
+         <*> o .:? "open_issues"
+         <*> o .:? "has_wiki"
+         <*> o .:? "has_issues"
+         <*> o .:? "has_downloads"
+         <*> o .:? "parent"
+         <*> o .:? "source"
+         <*> o .: "hooks_url"
+         <*> o .: "stargazers_count"
+
+instance ToJSON NewRepo where
+  toJSON (NewRepo { newRepoName         = name
+                  , newRepoDescription  = description
+                  , newRepoHomepage     = homepage
+                  , newRepoPrivate      = private
+                  , newRepoHasIssues    = hasIssues
+                  , newRepoHasWiki      = hasWiki
+                  , newRepoAutoInit     = autoInit
+                  }) = object
+                  [ "name"                .= name
+                  , "description"         .= description
+                  , "homepage"            .= homepage
+                  , "private"             .= private
+                  , "has_issues"          .= hasIssues
+                  , "has_wiki"            .= hasWiki
+                  , "auto_init"           .= autoInit
+                  ]
+
+instance ToJSON EditRepo where
+  toJSON (EditRepo { editName         = name
+                   , editDescription  = description
+                   , editHomepage     = homepage
+                   , editPublic       = public
+                   , editHasIssues    = hasIssues
+                   , editHasWiki      = hasWiki
+                   , editHasDownloads = hasDownloads
+                   }) = object
+                   [ "name"          .= name
+                   , "description"   .= description
+                   , "homepage"      .= homepage
+                   , "public"        .= public
+                   , "has_issues"    .= hasIssues
+                   , "has_wiki"      .= hasWiki
+                   , "has_downloads" .= hasDownloads
+                   ]
+
+instance FromJSON RepoRef where
+  parseJSON = withObject "RepoRef" $ \o ->
+    RepoRef <$> o .: "owner"
+            <*> o .: "name"
+
+instance FromJSON Contributor where
+    parseJSON = withObject "Contributor" $ \o -> do
+        t <- o .: "type"
+        case t of
+            _ | t == ("Anonymous" :: Text) ->
+                AnonymousContributor
+                    <$> o .: "contributions"
+                    <*> o .: "name"
+            _ | otherwise ->
+                KnownContributor
+                    <$> o .: "contributions"
+                    <*> o .: "avatar_url"
+                    <*> o .: "login"
+                    <*> o .: "url"
+                    <*> o .: "id"
+                    <*> o .: "gravatar_id"
+
+instance FromJSON Languages where
+  parseJSON = withObject "Languages" $ \o ->
+    Languages . V.fromList <$>
+      traverse (\name -> Language name <$> o .: name)
+           (HM.keys o)

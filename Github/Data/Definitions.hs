@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric      #-}
+{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -7,225 +8,224 @@
 --
 module Github.Data.Definitions where
 
+import Prelude        ()
+import Prelude.Compat
+
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
+import Control.Monad            (mfilter)
+import Data.Aeson.Compat        (FromJSON (..), Object, withObject, withText,
+                                 (.:), (.:?))
+import Data.Aeson.Types         (Parser)
 import Data.Binary.Orphans      (Binary)
 import Data.Data                (Data, Typeable)
 import Data.Text                (Text)
 import Data.Time                (UTCTime)
-import Data.Vector              (Vector)
 import GHC.Generics             (Generic)
 import Network.HTTP.Client      (HttpException)
 
 import qualified Control.Exception as E
+import qualified Data.Text         as T
 
 import Github.Data.Id
 import Github.Data.Name
 
--- | The options for querying commits.
-data CommitQueryOption = CommitQuerySha !Text
-                       | CommitQueryPath !Text
-                       | CommitQueryAuthor !Text
-                       | CommitQuerySince !UTCTime
-                       | CommitQueryUntil !UTCTime
-                       deriving (Show, Eq, Ord)
-
 -- | Errors have been tagged according to their source, so you can more easily
 -- dispatch and handle them.
-data Error =
-    HTTPError !HttpException -- ^ A HTTP error occurred. The actual caught error is included.
-  | ParseError !Text -- ^ An error in the parser itself.
-  | JsonError !Text -- ^ The JSON is malformed or unexpected.
-  | UserError !Text -- ^ Incorrect input.
-  deriving (Show, Typeable)
+data Error
+    = HTTPError !HttpException -- ^ A HTTP error occurred. The actual caught error is included.
+    | ParseError !Text -- ^ An error in the parser itself.
+    | JsonError !Text -- ^ The JSON is malformed or unexpected.
+    | UserError !Text -- ^ Incorrect input.
+    deriving (Show, Typeable)
 
 instance E.Exception Error
 
-data SimpleOwner = SimpleUserOwner {
-   simpleOwnerAvatarUrl  :: !Text
-  ,simpleOwnerLogin      :: !(Name GithubOwner)
-  ,simpleOwnerUrl        :: !Text
-  ,simpleOwnerId         :: !(Id GithubOwner)
-  ,simpleOwnerGravatarId :: !(Maybe Text)
-  }
-  | SimpleOrganizationOwner {
-   simpleOwnerAvatarUrl :: !Text
-  ,simpleOwnerLogin     :: !(Name GithubOwner)
-  ,simpleOwnerUrl       :: !Text
-  ,simpleOwnerId        :: !(Id GithubOwner)
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+-- | Type of the repository owners.
+data OwnerType = OwnerUser | OwnerOrganization
+    deriving (Eq, Ord, Enum, Bounded, Show, Read, Generic, Typeable, Data)
 
-instance NFData SimpleOwner where rnf = genericRnf
-instance Binary SimpleOwner
+instance NFData OwnerType
+instance Binary OwnerType
 
-data Stats = Stats {
-   statsAdditions :: !Int
-  ,statsTotal     :: !Int
-  ,statsDeletions :: !Int
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data SimpleUser = SimpleUser
+    { simpleUserId        :: !(Id User)
+    , simpleUserLogin     :: !(Name User)
+    , simpleUserAvatarUrl :: !Text
+    , simpleUserUrl       :: !Text
+    , simpleUserType      :: !OwnerType  -- ^ Should always be 'OwnerUser'
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Stats where rnf = genericRnf
-instance Binary Stats
+instance NFData SimpleUser where rnf = genericRnf
+instance Binary SimpleUser
 
-data Comment = Comment {
-   commentPosition  :: !(Maybe Int)
-  ,commentLine      :: !(Maybe Int)
-  ,commentBody      :: !Text
-  ,commentCommitId  :: !(Maybe Text)
-  ,commentUpdatedAt :: !UTCTime
-  ,commentHtmlUrl   :: !(Maybe Text)
-  ,commentUrl       :: !Text
-  ,commentCreatedAt :: !(Maybe UTCTime)
-  ,commentPath      :: !(Maybe Text)
-  ,commentUser      :: !SimpleOwner
-  ,commentId        :: !(Id Comment)
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData Comment where rnf = genericRnf
-instance Binary Comment
-
-data NewComment = NewComment {
-   newCommentBody :: !Text
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData NewComment where rnf = genericRnf
-instance Binary NewComment
-
-data EditComment = EditComment {
-   editCommentBody :: !Text
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData EditComment where rnf = genericRnf
-instance Binary EditComment
-
-data SimpleOrganization = SimpleOrganization {
-   simpleOrganizationUrl       :: !Text
-  ,simpleOrganizationAvatarUrl :: !Text
-  ,simpleOrganizationId        :: !(Id Organization)
-  ,simpleOrganizationLogin     :: !Text
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data SimpleOrganization = SimpleOrganization
+    { simpleOrganizationId        :: !(Id Organization)
+    , simpleOrganizationLogin     :: !(Name Organization)
+    , simpleOrganizationUrl       :: !Text
+    , simpleOrganizationAvatarUrl :: !Text
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData SimpleOrganization where rnf = genericRnf
 instance Binary SimpleOrganization
 
-data Organization = Organization {
-   organizationType        :: !Text
-  ,organizationBlog        :: !(Maybe Text)
-  ,organizationLocation    :: !(Maybe Text)
-  ,organizationLogin       :: !(Name Organization)
-  ,organizationFollowers   :: !Int
-  ,organizationCompany     :: !(Maybe Text)
-  ,organizationAvatarUrl   :: !Text
-  ,organizationPublicGists :: !Int
-  ,organizationHtmlUrl     :: !Text
-  ,organizationEmail       :: !(Maybe Text)
-  ,organizationFollowing   :: !Int
-  ,organizationPublicRepos :: !Int
-  ,organizationUrl         :: !Text
-  ,organizationCreatedAt   :: !UTCTime
-  ,organizationName        :: !(Maybe Text)
-  ,organizationId          :: !(Id Organization)
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+-- | Sometimes we don't know the type of the owner, e.g. in 'Repo'
+data SimpleOwner = SimpleOwner
+    { simpleOwnerId        :: !(Id GithubOwner)
+    , simpleOwnerLogin     :: !(Name GithubOwner)
+    , simpleOwnerUrl       :: !Text
+    , simpleOwnerAvatarUrl :: !Text
+    , simpleOwnerType      :: !OwnerType
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData SimpleOwner where rnf = genericRnf
+instance Binary SimpleOwner
+
+data User = User
+    { userId          :: !(Id User)
+    , userLogin       :: !(Name User)
+    , userName        :: !(Maybe Text)
+    , userType        :: !OwnerType  -- ^ Should always be 'OwnerUser'
+    , userCreatedAt   :: !UTCTime
+    , userPublicGists :: !Int
+    , userAvatarUrl   :: !Text
+    , userFollowers   :: !Int
+    , userFollowing   :: !Int
+    , userHireable    :: !(Maybe Bool)
+    , userBlog        :: !(Maybe Text)
+    , userBio         :: !(Maybe Text)
+    , userPublicRepos :: !Int
+    , userLocation    :: !(Maybe Text)
+    , userCompany     :: !(Maybe Text)
+    , userEmail       :: !(Maybe Text)
+    , userUrl         :: !Text
+    , userHtmlUrl     :: !Text
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData User where rnf = genericRnf
+instance Binary User
+
+data Organization = Organization
+    { organizationId          :: !(Id Organization)
+    , organizationLogin       :: !(Name Organization)
+    , organizationName        :: !(Maybe Text)
+    , organizationType        :: !OwnerType  -- ^ Should always be 'OwnerOrganization'
+    , organizationBlog        :: !(Maybe Text)
+    , organizationLocation    :: !(Maybe Text)
+    , organizationFollowers   :: !Int
+    , organizationCompany     :: !(Maybe Text)
+    , organizationAvatarUrl   :: !Text
+    , organizationPublicGists :: !Int
+    , organizationHtmlUrl     :: !Text
+    , organizationEmail       :: !(Maybe Text)
+    , organizationFollowing   :: !Int
+    , organizationPublicRepos :: !Int
+    , organizationUrl         :: !Text
+    , organizationCreatedAt   :: !UTCTime
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Organization where rnf = genericRnf
 instance Binary Organization
 
-data Content
-  = ContentFile ContentFileData
-  | ContentDirectory (Vector ContentItem)
- deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData Content where rnf = genericRnf
-instance Binary Content
-
-data ContentFileData = ContentFileData {
-   contentFileInfo     :: !ContentInfo
-  ,contentFileEncoding :: !Text
-  ,contentFileSize     :: !Int
-  ,contentFileContent  :: !Text
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData ContentFileData where rnf = genericRnf
-instance Binary ContentFileData
-
--- | An item in a directory listing.
-data ContentItem = ContentItem {
-   contentItemType :: !ContentItemType
-  ,contentItemInfo :: !ContentInfo
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData ContentItem where rnf = genericRnf
-instance Binary ContentItem
-
-data ContentItemType = ItemFile | ItemDir
-  deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData ContentItemType where rnf = genericRnf
-instance Binary ContentItemType
-
--- | Information common to both kinds of Content: files and directories.
-data ContentInfo = ContentInfo {
-   contentName    :: !Text
-  ,contentPath    :: !Text
-  ,contentSha     :: !Text
-  ,contentUrl     :: !Text
-  ,contentGitUrl  :: !Text
-  ,contentHtmlUrl :: !Text
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData ContentInfo where rnf = genericRnf
-instance Binary ContentInfo
-
-data Contributor
-  -- | An existing Github user, with their number of contributions, avatar
-  -- URL, login, URL, ID, and Gravatar ID.
-  = KnownContributor Int Text (Name Contributor) Text (Id Contributor) Text
-  -- | An unknown Github user with their number of contributions and recorded name.
-  | AnonymousContributor Int Text
- deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData Contributor where rnf = genericRnf
-instance Binary Contributor
-
-data GithubOwner = GithubUser {
-   githubOwnerCreatedAt   :: !UTCTime
-  ,githubOwnerType        :: !Text
-  ,githubOwnerPublicGists :: !Int
-  ,githubOwnerAvatarUrl   :: !Text
-  ,githubOwnerFollowers   :: !Int
-  ,githubOwnerFollowing   :: !Int
-  ,githubOwnerHireable    :: !(Maybe Bool)
-  ,githubOwnerGravatarId  :: !(Maybe Text)
-  ,githubOwnerBlog        :: !(Maybe Text)
-  ,githubOwnerBio         :: !(Maybe Text)
-  ,githubOwnerPublicRepos :: !Int
-  ,githubOwnerName        :: !(Maybe Text)
-  ,githubOwnerLocation    :: !(Maybe Text)
-  ,githubOwnerCompany     :: !(Maybe Text)
-  ,githubOwnerEmail       :: !(Maybe Text)
-  ,githubOwnerUrl         :: !Text
-  ,githubOwnerId          :: !(Id GithubOwner)
-  ,githubOwnerHtmlUrl     :: !Text
-  ,githubOwnerLogin       :: !(Name GithubOwner)
-  }
-  | GithubOrganization {
-   githubOwnerCreatedAt   :: !UTCTime
-  ,githubOwnerType        :: !Text
-  ,githubOwnerPublicGists :: !Int
-  ,githubOwnerAvatarUrl   :: !Text
-  ,githubOwnerFollowers   :: !Int
-  ,githubOwnerFollowing   :: !Int
-  ,githubOwnerBlog        :: !(Maybe Text)
-  ,githubOwnerBio         :: !(Maybe Text)
-  ,githubOwnerPublicRepos :: !Int
-  ,githubOwnerName        :: !(Maybe Text)
-  ,githubOwnerLocation    :: !(Maybe Text)
-  ,githubOwnerCompany     :: !(Maybe Text)
-  ,githubOwnerUrl         :: !Text
-  ,githubOwnerId          :: !(Id GithubOwner)
-  ,githubOwnerHtmlUrl     :: !Text
-  ,githubOwnerLogin       :: !(Name GithubOwner)
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+-- | In practic, you cam't have concrete values of 'GithubOwner'.
+newtype GithubOwner = GithubOwner (Either User Organization)
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData GithubOwner where rnf = genericRnf
 instance Binary GithubOwner
+
+fromGithubOwner :: GithubOwner -> Either User Organization
+fromGithubOwner (GithubOwner owner) = owner
+
+-- JSON instances
+
+instance FromJSON OwnerType where
+    parseJSON = withText "Owner type" $ \t ->
+        case t of
+            "User"          -> pure $ OwnerUser
+            "Organization"  -> pure $ OwnerOrganization
+            _               -> fail $ "Unknown owner type: " ++ T.unpack t
+
+instance FromJSON SimpleUser where
+    parseJSON = withObject "SimpleUser" $ \obj -> do
+        SimpleUser
+            <$> obj .: "id"
+            <*> obj .: "login"
+            <*> obj .: "avatar_url"
+            <*> obj .: "url"
+            <*> obj .: "type"
+
+instance FromJSON SimpleOrganization where
+    parseJSON = withObject "SimpleOrganization" $ \obj ->
+        SimpleOrganization
+            <$> obj .: "id"
+            <*> obj .: "login"
+            <*> obj .: "url"
+            <*> obj .: "avatar_url"
+
+instance FromJSON SimpleOwner where
+    parseJSON = withObject "SimpleOwner" $ \obj -> do
+        SimpleOwner
+            <$> obj .: "id"
+            <*> obj .: "login"
+            <*> obj .: "url"
+            <*> obj .: "avatar_url"
+            <*> obj .: "type"
+
+parseUser :: Object -> Parser User
+parseUser obj = User
+    <$> obj .: "id"
+    <*> obj .: "login"
+    <*> obj .:? "name"
+    <*> obj .: "type"
+    <*> obj .: "created_at"
+    <*> obj .: "public_gists"
+    <*> obj .: "avatar_url"
+    <*> obj .: "followers"
+    <*> obj .: "following"
+    <*> obj .:? "hireable"
+    <*> obj .:? "blog"
+    <*> obj .:? "bio"
+    <*> obj .: "public_repos"
+    <*> obj .:? "location"
+    <*> obj .:? "company"
+    <*> obj .:? "email"
+    <*> obj .: "url"
+    <*> obj .: "html_url"
+
+parseOrganization :: Object -> Parser Organization
+parseOrganization obj = Organization
+    <$> obj .: "id"
+    <*> obj .: "login"
+    <*> obj .:? "name"
+    <*> obj .: "type"
+    <*> obj .:? "blog"
+    <*> obj .:? "location"
+    <*> obj .: "followers"
+    <*> obj .:? "company"
+    <*> obj .: "avatar_url"
+    <*> obj .: "public_gists"
+    <*> obj .: "html_url"
+    <*> obj .:? "email"
+    <*> obj .: "following"
+    <*> obj .: "public_repos"
+    <*> obj .: "url"
+    <*> obj .: "created_at"
+
+instance FromJSON User where
+    parseJSON = mfilter ((== OwnerUser) . userType) . withObject "User" parseUser
+
+instance FromJSON Organization where
+    parseJSON = withObject "Organization" parseOrganization
+
+instance FromJSON GithubOwner where
+    parseJSON = withObject "GithubOwner" $ \obj -> do
+        t <- obj .: "type"
+        case t of
+            OwnerUser         -> GithubOwner . Left <$> parseUser obj
+            OwnerOrganization -> GithubOwner . Right <$> parseOrganization obj

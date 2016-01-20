@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric      #-}
+{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -7,10 +8,15 @@
 --
 module Github.Data.Teams where
 
+import Prelude        ()
+import Prelude.Compat
+
 import Github.Data.Definitions
 
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
+import Data.Aeson.Compat        (FromJSON (..), ToJSON (..), Value (..), object,
+                                 withObject, (.!=), (.:), (.:?), (.=))
 import Data.Binary              (Binary)
 import Data.Data                (Data, Typeable)
 import Data.Text                (Text)
@@ -65,7 +71,7 @@ data Team = Team {
   ,teamRepositoriesUrl :: !Text
   ,teamMembersCount    :: !Int
   ,teamReposCount      :: !Int
-  ,teamOrganization    :: !SimpleOwner
+  ,teamOrganization    :: !SimpleOrganization
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Team where rnf = genericRnf
@@ -123,3 +129,117 @@ data CreateTeamMembership = CreateTeamMembership {
 
 instance NFData CreateTeamMembership where rnf = genericRnf
 instance Binary CreateTeamMembership
+
+-- JSON Instances
+
+instance FromJSON SimpleTeam where
+  parseJSON = withObject "SimpleTeam" $ \o ->
+    SimpleTeam <$> o .: "id"
+               <*> o .: "url"
+               <*> o .: "name"
+               <*> o .: "slug"
+               <*> o .:?"description" .!= Nothing
+               <*> o .:?"privacy" .!= Nothing
+               <*> o .: "permission"
+               <*> o .: "members_url"
+               <*> o .: "repositories_url"
+
+instance FromJSON Team where
+  parseJSON = withObject "Team" $ \o ->
+    Team <$> o .: "id"
+         <*> o .: "url"
+         <*> o .: "name"
+         <*> o .: "slug"
+         <*> o .:?"description" .!= Nothing
+         <*> o .:?"privacy" .!= Nothing
+         <*> o .: "permission"
+         <*> o .: "members_url"
+         <*> o .: "repositories_url"
+         <*> o .: "members_count"
+         <*> o .: "repos_count"
+         <*> o .: "organization"
+
+instance ToJSON CreateTeam where
+  toJSON (CreateTeam name desc repo_names {-privacy-} permissions) =
+    object [ "name"        .= name
+           , "description" .= desc
+           , "repo_names"  .= repo_names
+           {-, "privacy" .= privacy-}
+           , "permissions" .= permissions ]
+
+instance ToJSON EditTeam where
+  toJSON (EditTeam name desc {-privacy-} permissions) =
+    object [ "name"        .= name
+           , "description" .= desc
+           {-, "privacy" .= privacy-}
+           , "permissions" .= permissions ]
+
+instance FromJSON TeamMembership where
+  parseJSON = withObject "TeamMembership" $ \o ->
+    TeamMembership <$> o .: "url"
+                   <*> o .: "role"
+                   <*> o .: "state"
+
+instance FromJSON CreateTeamMembership where
+  parseJSON = withObject "CreateTeamMembership" $ \o ->
+    CreateTeamMembership <$> o .: "role"
+
+instance ToJSON CreateTeamMembership where
+  toJSON (CreateTeamMembership { createTeamMembershipRole = role }) =
+    object [ "role" .= role ]
+
+instance FromJSON Role where
+  parseJSON (String attr) =
+    case attr of
+      "maintainer" -> return RoleMaintainer
+      "member"     -> return RoleMember
+      _            -> fail "Unknown Role"
+  parseJSON _ = fail "Could not build Role"
+
+instance ToJSON Role where
+  toJSON RoleMaintainer = String "maintainer"
+  toJSON RoleMember     = String "member"
+
+instance ToJSON Permission where
+  toJSON attr =
+    String $
+      case attr of
+        PermissionPull  -> "pull"
+        PermissionPush  -> "push"
+        PermissionAdmin -> "admin"
+
+instance FromJSON Permission where
+  parseJSON (String attr) =
+    case attr of
+      "pull"  -> return PermissionPull
+      "push"  -> return PermissionPush
+      "admin" -> return PermissionAdmin
+      _       -> fail "Unknown Permission Attribute"
+  parseJSON _ = fail "Could not build Permission"
+
+instance FromJSON Privacy where
+  parseJSON (String attr) =
+    case attr of
+      "secret" -> return PrivacySecret
+      "closed" -> return PrivacyClosed
+      _        -> fail "Unknown Privacy Attribute"
+  parseJSON _ = fail "Could not build Privacy"
+
+instance ToJSON Privacy where
+  toJSON attr =
+    String $
+      case attr of
+        PrivacySecret -> "secret"
+        PrivacyClosed -> "closed"
+
+instance FromJSON ReqState where
+  parseJSON (String attr) =
+    case attr of
+      "active"  -> return StateActive
+      "pending" -> return StatePending
+      _         -> fail "Unknown ReqState"
+  parseJSON _ = fail "Could not build ReqState"
+
+instance ToJSON ReqState where
+  toJSON StateActive  = String "active"
+  toJSON StatePending = String "pending"

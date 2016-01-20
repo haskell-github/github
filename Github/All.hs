@@ -6,8 +6,8 @@
 -- This module re-exports all request constructrors and data definitions from
 -- this package.
 --
--- See 'Github.Request' module for executing 'GithubRequest', or other modules
--- of this package (e.g. 'Github.Users') for already composed versions.
+-- See "Github.Request" module for executing 'GithubRequest', or other modules
+-- of this package (e.g. "Github.Users") for already composed versions.
 --
 -- The missing endpoints lists show which endpoints we know are missing, there
 -- might be more.
@@ -283,6 +283,7 @@ module Github.All (
     -- * Update the authenticated user
     -- * Get all users
     userInfoForR,
+    ownerInfoForR,
     userInfoCurrentR,
 
     -- ** Followers

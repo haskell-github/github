@@ -14,25 +14,8 @@ main = do
   possibleUser <- Github.userInfoFor' auth "mike-burns"
   putStrLn $ either (("Error: " <>) . tshow) formatUser possibleUser
 
-formatUser :: Github.GithubOwner -> Text
-formatUser user@(Github.GithubOrganization {}) =
-  "Organization: " <> (formatName userName login) <> "\t" <>
-    (fromMaybe "" company) <> "\t" <>
-    (fromMaybe "" location) <> "\n" <>
-    (fromMaybe "" blog) <> "\t" <> "\n" <>
-    htmlUrl <> "\t" <> tshow createdAt <> "\n\n" <>
-    (fromMaybe "" bio)
-  where
-    userName = Github.githubOwnerName user
-    login = Github.githubOwnerLogin user
-    company = Github.githubOwnerCompany user
-    location = Github.githubOwnerLocation user
-    blog = Github.githubOwnerBlog user
-    htmlUrl = Github.githubOwnerHtmlUrl user
-    createdAt = Github.githubOwnerCreatedAt user
-    bio = Github.githubOwnerBio user
-
-formatUser user@(Github.GithubUser {}) =
+formatUser :: Github.User -> Text
+formatUser user =
   (formatName userName login) <> "\t" <> (fromMaybe "" company) <> "\t" <>
     (fromMaybe "" location) <> "\n" <>
     (fromMaybe "" blog) <> "\t" <> "<" <> (fromMaybe "" email) <> ">" <> "\n" <>
@@ -40,18 +23,18 @@ formatUser user@(Github.GithubUser {}) =
     "hireable: " <> formatHireable (fromMaybe False isHireable) <> "\n\n" <>
     (fromMaybe "" bio)
   where
-    userName = Github.githubOwnerName user
-    login = Github.githubOwnerLogin user
-    company = Github.githubOwnerCompany user
-    location = Github.githubOwnerLocation user
-    blog = Github.githubOwnerBlog user
-    email = Github.githubOwnerEmail user
-    htmlUrl = Github.githubOwnerHtmlUrl user
-    createdAt = Github.githubOwnerCreatedAt user
-    isHireable = Github.githubOwnerHireable user
-    bio = Github.githubOwnerBio user
+    userName = Github.userName user
+    login = Github.userLogin user
+    company = Github.userCompany user
+    location = Github.userLocation user
+    blog = Github.userBlog user
+    email = Github.userEmail user
+    htmlUrl = Github.userHtmlUrl user
+    createdAt = Github.userCreatedAt user
+    isHireable = Github.userHireable user
+    bio = Github.userBio user
 
-formatName :: Maybe Text -> Github.Name Github.GithubOwner -> Text
+formatName :: Maybe Text -> Github.Name Github.User -> Text
 formatName Nothing login = Github.untagName login
 formatName (Just name) login = name <> "(" <> Github.untagName login <> ")"
 

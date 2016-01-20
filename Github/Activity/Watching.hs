@@ -23,20 +23,20 @@ import Github.Request
 -- | The list of users that are watching the specified Github repo.
 --
 -- > watchersFor "thoughtbot" "paperclip"
-watchersFor :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector SimpleOwner))
+watchersFor :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector SimpleUser))
 watchersFor = watchersFor' Nothing
 
 -- | The list of users that are watching the specified Github repo.
 -- With authentication
 --
 -- > watchersFor' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
-watchersFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector SimpleOwner))
+watchersFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector SimpleUser))
 watchersFor' auth user repo =
     executeRequestMaybe auth $ watchersForR user repo Nothing
 
 -- | List watchers.
 -- See <https://developer.github.com/v3/activity/watching/#list-watchers>
-watchersForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector SimpleOwner)
+watchersForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector SimpleUser)
 watchersForR user repo limit =
     GithubPagedGet ["repos", toPathPart user, toPathPart repo, "watchers"] [] limit
 
