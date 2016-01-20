@@ -3,10 +3,14 @@
 -- License     :  BSD-3-Clause
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
--- This module re-exports all request constructrors and
--- data definitions from this package.
+-- This module re-exports all request constructrors and data definitions from
+-- this package.
 --
--- The missing endpoints lists are exhausive, they indicate endpoints we know are missing.
+-- See 'Github.Request' module for executing 'GithubRequest', or other modules
+-- of this package (e.g. 'Github.Users') for already composed versions.
+--
+-- The missing endpoints lists show which endpoints we know are missing, there
+-- might be more.
 module Github.All (
     -- * Activity
     -- | See <https://developer.github.com/v3/activity/>

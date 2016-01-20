@@ -17,6 +17,11 @@ executables:
     source-dirs: Users
     dependencies:
       - github-samples
+  github-show-user-2:
+    main: ShowUser2.hs
+    source-dirs: Users
+    dependencies:
+      - github-samples
   github-list-followers:
     main: ListFollowers.hs
     source-dirs: Users/Followers

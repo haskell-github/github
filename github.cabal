@@ -1,12 +1,25 @@
 Name:                github
 Version:             0.14.0
 Synopsis:            Access to the Github API, v3.
-Description:         The Github API provides programmatic access to the full
-                     Github Web site, from Issues to Gists to repos down to the underlying git data
-                     like references and trees. This library wraps all of that, exposing a basic but
-                     Haskell-friendly set of functions and data structures.
-                     .
-                     For more of an overview please see the README: <https://github.com/phadej/github/blob/master/README.md>
+Description:
+  The Github API provides programmatic access to the full
+  Github Web site, from Issues to Gists to repos down to the underlying git data
+  like references and trees. This library wraps all of that, exposing a basic but
+  Haskell-friendly set of functions and data structures.
+  .
+  For supported endpoints see "Github.All" module.
+  .
+  >{-# LANGUAGE OverloadedStrings #-}
+  >module Main (main) where
+  >
+  >import qualified Github.All as GH
+  >
+  >main :: IO ()
+  >main = do
+  >    possibleUser <- GH.executeRequest' $ GH.userInfoR "phadej"
+  >    print possibleUser
+  .
+  For more of an overview please see the README: <https://github.com/phadej/github/blob/master/README.md>
 License:             BSD3
 License-file:        LICENSE
 Author:              Mike Burns, John Wiegley, Oleg Grenrus
