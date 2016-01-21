@@ -332,8 +332,8 @@ performPagedRequest httpLbs' predicate initReq = do
         case (predicate acc, getNextUrl res) of
             (True, Just uri) -> do
                 req' <- setUri req uri
-                res' <- httpLbs' req
-                m <- parseResponse res
+                res' <- httpLbs' req'
+                m <- parseResponse res'
                 go (acc <> m) res' req'
             (_, _)           -> return acc
 
