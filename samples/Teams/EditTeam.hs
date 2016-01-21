@@ -4,6 +4,8 @@ module Main (main) where
 import Common
 import Prelude ()
 
+import Data.String (fromString)
+
 import qualified GitHub
 import qualified GitHub.Endpoints.Organizations.Teams as GitHub
 
@@ -13,7 +15,7 @@ main = do
   result <- case args of
               [token, team_id, team_name, desc] ->
                 GitHub.editTeam'
-                  (GitHub.OAuth token)
+                  (GitHub.OAuth $ fromString token)
                   (GitHub.mkTeamId $ read team_id)
                   (GitHub.EditTeam (GitHub.mkTeamName $ fromString team_name) (Just $ fromString desc) GitHub.PermissionPull)
               _                                 ->

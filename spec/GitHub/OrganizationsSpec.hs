@@ -2,15 +2,17 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module GitHub.OrganizationsSpec where
 
-import GitHub.Auth                  (Auth (..))
-import GitHub.Data                  (SimpleOwner (..), SimpleOrganization (..),
-                                     SimpleTeam (..))
+import GitHub.Auth                            (Auth (..))
+import GitHub.Data                            (SimpleOrganization (..),
+                                               SimpleOwner (..),
+                                               SimpleTeam (..))
 import GitHub.Endpoints.Organizations         (publicOrganizationsFor')
 import GitHub.Endpoints.Organizations.Members (membersOf')
 
 import Data.Aeson.Compat  (eitherDecodeStrict)
 import Data.Either.Compat (isRight)
 import Data.FileEmbed     (embedFile)
+import Data.String        (fromString)
 import System.Environment (lookupEnv)
 import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe,
                            shouldSatisfy)
@@ -24,7 +26,7 @@ withAuth action = do
   mtoken <- lookupEnv "GITHUB_TOKEN"
   case mtoken of
     Nothing    -> pendingWith "no GITHUB_TOKEN"
-    Just token -> action (OAuth token)
+    Just token -> action (OAuth $ fromString token)
 
 spec :: Spec
 spec = do

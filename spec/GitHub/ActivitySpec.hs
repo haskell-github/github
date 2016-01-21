@@ -2,11 +2,12 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module GitHub.ActivitySpec where
 
-import GitHub.Auth          (Auth (..))
+import GitHub.Auth                        (Auth (..))
 import GitHub.Endpoints.Activity.Watching (watchersForR)
-import GitHub.Request       (executeRequest)
+import GitHub.Request                     (executeRequest)
 
 import Data.Either.Compat (isRight)
+import Data.String        (fromString)
 import System.Environment (lookupEnv)
 import Test.Hspec         (Spec, describe, it, pendingWith, shouldSatisfy)
 
@@ -21,7 +22,7 @@ withAuth action = do
   mtoken <- lookupEnv "GITHUB_TOKEN"
   case mtoken of
     Nothing    -> pendingWith "no GITHUB_TOKEN"
-    Just token -> action (OAuth token)
+    Just token -> action (OAuth $ fromString token)
 
 spec :: Spec
 spec = do

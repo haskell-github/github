@@ -2,10 +2,11 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module GitHub.ReposSpec where
 
-import GitHub.Auth          (Auth (..))
-import GitHub.Endpoints.Repos (currentUserRepos, userRepos', RepoPublicity(..))
+import GitHub.Auth            (Auth (..))
+import GitHub.Endpoints.Repos (RepoPublicity (..), currentUserRepos, userRepos')
 
 import Data.Either.Compat (isRight)
+import Data.String        (fromString)
 import System.Environment (lookupEnv)
 import Test.Hspec         (Spec, describe, it, pendingWith, shouldSatisfy)
 
@@ -18,7 +19,7 @@ withAuth action = do
   mtoken <- lookupEnv "GITHUB_TOKEN"
   case mtoken of
     Nothing    -> pendingWith "no GITHUB_TOKEN"
-    Just token -> action (OAuth token)
+    Just token -> action (OAuth $ fromString token)
 
 spec :: Spec
 spec = do
