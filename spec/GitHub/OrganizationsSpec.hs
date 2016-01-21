@@ -2,7 +2,7 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module GitHub.OrganizationsSpec where
 
-import GitHub.Auth                  (GithubAuth (..))
+import GitHub.Auth                  (Auth (..))
 import GitHub.Data                  (SimpleOwner (..), SimpleOrganization (..),
                                      SimpleTeam (..))
 import GitHub.Endpoints.Organizations         (publicOrganizationsFor')
@@ -19,12 +19,12 @@ fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
 fromRightS (Left a) = error $ "Expected a Right and got a Left" ++ show a
 
-withAuth :: (GithubAuth -> IO ()) -> IO ()
+withAuth :: (Auth -> IO ()) -> IO ()
 withAuth action = do
   mtoken <- lookupEnv "GITHUB_TOKEN"
   case mtoken of
     Nothing    -> pendingWith "no GITHUB_TOKEN"
-    Just token -> action (GithubOAuth token)
+    Just token -> action (OAuth token)
 
 spec :: Spec
 spec = do

@@ -11,5 +11,5 @@ main = do
 formatComment comment =
   (Github.githubOwnerLogin $ Github.issueCommentUser comment) ++
     " commented " ++
-    (show $ Github.fromGithubDate $ Github.issueCommentUpdatedAt comment) ++
+    (show $ Github.fromDate $ Github.issueCommentUpdatedAt comment) ++
     "\n" ++ (Github.issueCommentBody comment)

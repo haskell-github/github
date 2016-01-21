@@ -29,8 +29,8 @@ import GitHub.Request
 -- | Perform a repository search.
 -- With authentication.
 --
--- > searchRepos' (Just $ GithubBasicAuth "github-username" "github-password') "a in%3Aname language%3Ahaskell created%3A>2013-10-01&per_page=100"
-searchRepos' :: Maybe GithubAuth -> Text -> IO (Either Error (SearchResult Repo))
+-- > searchRepos' (Just $ BasicAuth "github-username" "github-password') "a in%3Aname language%3Ahaskell created%3A>2013-10-01&per_page=100"
+searchRepos' :: Maybe Auth -> Text -> IO (Either Error (SearchResult Repo))
 searchRepos' auth = executeRequestMaybe auth . searchReposR
 
 -- | Perform a repository search.
@@ -42,14 +42,14 @@ searchRepos = searchRepos' Nothing
 
 -- | Search repositories.
 -- See <https://developer.github.com/v3/search/#search-repositories>
-searchReposR :: Text -> GithubRequest k (SearchResult Repo)
-searchReposR searchString = GithubGet ["search", "repositories"] [("q", Just $ TE.encodeUtf8 searchString)]
+searchReposR :: Text -> Request k (SearchResult Repo)
+searchReposR searchString = Query ["search", "repositories"] [("q", Just $ TE.encodeUtf8 searchString)]
 
 -- | Perform a code search.
 -- With authentication.
 --
--- > searchCode' (Just $ GithubBasicAuth "github-username" "github-password') "a in%3Aname language%3Ahaskell created%3A>2013-10-01&per_page=100"
-searchCode' :: Maybe GithubAuth -> Text -> IO (Either Error (SearchResult Code))
+-- > searchCode' (Just $ BasicAuth "github-username" "github-password') "a in%3Aname language%3Ahaskell created%3A>2013-10-01&per_page=100"
+searchCode' :: Maybe Auth -> Text -> IO (Either Error (SearchResult Code))
 searchCode' auth = executeRequestMaybe auth . searchCodeR
 
 -- | Perform a code search.
@@ -61,14 +61,14 @@ searchCode = searchCode' Nothing
 
 -- | Search code.
 -- See <https://developer.github.com/v3/search/#search-code>
-searchCodeR :: Text -> GithubRequest k (SearchResult Code)
-searchCodeR searchString = GithubGet ["search", "code"] [("q", Just $ TE.encodeUtf8 searchString)]
+searchCodeR :: Text -> Request k (SearchResult Code)
+searchCodeR searchString = Query ["search", "code"] [("q", Just $ TE.encodeUtf8 searchString)]
 
 -- | Perform an issue search.
 -- With authentication.
 --
--- > searchIssues' (Just $ GithubBasicAuth "github-username" "github-password') "a repo%3Aphadej%2Fgithub&per_page=100"
-searchIssues' :: Maybe GithubAuth -> Text -> IO (Either Error (SearchResult Issue))
+-- > searchIssues' (Just $ BasicAuth "github-username" "github-password') "a repo%3Aphadej%2Fgithub&per_page=100"
+searchIssues' :: Maybe Auth -> Text -> IO (Either Error (SearchResult Issue))
 searchIssues' auth = executeRequestMaybe auth . searchIssuesR
 
 -- | Perform an issue search.
@@ -80,5 +80,5 @@ searchIssues = searchIssues' Nothing
 
 -- | Search issues.
 -- See <https://developer.github.com/v3/search/#search-issues>
-searchIssuesR :: Text -> GithubRequest k (SearchResult Issue)
-searchIssuesR searchString = GithubGet ["search", "issues"] [("q", Just $ TE.encodeUtf8 searchString)]
+searchIssuesR :: Text -> Request k (SearchResult Issue)
+searchIssuesR searchString = Query ["search", "issues"] [("q", Just $ TE.encodeUtf8 searchString)]

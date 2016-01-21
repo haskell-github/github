@@ -64,10 +64,10 @@ import GitHub.Data.Search
 import GitHub.Data.Teams
 import GitHub.Data.Webhooks
 
-mkOwnerId :: Int -> Id GithubOwner
+mkOwnerId :: Int -> Id Owner
 mkOwnerId = Id
 
-mkOwnerName :: Text -> Name GithubOwner
+mkOwnerName :: Text -> Name Owner
 mkOwnerName = N
 
 mkTeamId :: Int -> Id Team
@@ -88,8 +88,8 @@ mkRepoId = Id
 mkRepoName :: Text -> Name Repo
 mkRepoName = N
 
-fromOrganizationName :: Name Organization -> Name GithubOwner
+fromOrganizationName :: Name Organization -> Name Owner
 fromOrganizationName = N . untagName
 
-fromUserName :: Name User -> Name GithubOwner
+fromUserName :: Name User -> Name Owner
 fromUserName = N . untagName

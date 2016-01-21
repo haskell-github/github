@@ -27,9 +27,9 @@ commentsOn gid =
 
 -- | List comments on a gist.
 -- See <https://developer.github.com/v3/gists/comments/#list-comments-on-a-gist>
-commentsOnR :: Name Gist -> Maybe Count -> GithubRequest k (Vector GistComment)
+commentsOnR :: Name Gist -> Maybe Count -> Request k (Vector GistComment)
 commentsOnR gid =
-    GithubPagedGet ["gists", toPathPart gid, "comments"] []
+    PagedQuery ["gists", toPathPart gid, "comments"] []
 
 -- | A specific comment, by the comment ID.
 --
@@ -38,8 +38,8 @@ comment :: Id GistComment -> IO (Either Error GistComment)
 comment cid =
     executeRequest' $ gistCommentR cid
 
--- | Get a single comment.
+-- | Query a single comment.
 -- See <https://developer.github.com/v3/gists/comments/#get-a-single-comment>
-gistCommentR :: Id GistComment -> GithubRequest k GistComment
+gistCommentR :: Id GistComment -> Request k GistComment
 gistCommentR cid =
-    GithubGet ["gists", "comments", toPathPart cid] []
+    Query ["gists", "comments", toPathPart cid] []

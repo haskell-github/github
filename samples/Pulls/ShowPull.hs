@@ -12,7 +12,7 @@ main = do
 formatPullRequest p =
   (Github.githubOwnerLogin $ Github.detailedPullRequestUser p) ++
     " opened this pull request " ++
-    (formatGithubDate $ Github.detailedPullRequestCreatedAt p) ++ "\n" ++
+    (formatDate $ Github.detailedPullRequestCreatedAt p) ++ "\n" ++
     (Github.detailedPullRequestTitle p) ++ "\n" ++
     (Github.detailedPullRequestBody p) ++ "\n" ++
     (Github.detailedPullRequestState p) ++ "\n" ++
@@ -21,4 +21,4 @@ formatPullRequest p =
     (show $ Github.detailedPullRequestComments p) ++ " comments\n" ++
     (Github.detailedPullRequestHtmlUrl p)
 
-formatGithubDate = show . Github.fromGithubDate
+formatDate = show . Github.fromDate

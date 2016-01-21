@@ -2,7 +2,7 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module GitHub.ActivitySpec where
 
-import GitHub.Auth          (GithubAuth (..))
+import GitHub.Auth          (Auth (..))
 import GitHub.Endpoints.Activity.Watching (watchersForR)
 import GitHub.Request       (executeRequest)
 
@@ -16,12 +16,12 @@ fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
 fromRightS (Left a) = error $ "Expected a Right and got a Left" ++ show a
 
-withAuth :: (GithubAuth -> IO ()) -> IO ()
+withAuth :: (Auth -> IO ()) -> IO ()
 withAuth action = do
   mtoken <- lookupEnv "GITHUB_TOKEN"
   case mtoken of
     Nothing    -> pendingWith "no GITHUB_TOKEN"
-    Just token -> action (GithubOAuth token)
+    Just token -> action (OAuth token)
 
 spec :: Spec
 spec = do

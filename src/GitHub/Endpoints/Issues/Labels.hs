@@ -50,62 +50,62 @@ import GitHub.Request
 -- | All the labels available to use on any issue in the repo.
 --
 -- > labelsOnRepo "thoughtbot" "paperclip"
-labelsOnRepo :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector IssueLabel))
+labelsOnRepo :: Name Owner -> Name Repo -> IO (Either Error (Vector IssueLabel))
 labelsOnRepo = labelsOnRepo' Nothing
 
 -- | All the labels available to use on any issue in the repo using authentication.
 --
--- > labelsOnRepo' (Just (GithubUser (user password))) "thoughtbot" "paperclip"
-labelsOnRepo' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector IssueLabel))
+-- > labelsOnRepo' (Just (User (user password))) "thoughtbot" "paperclip"
+labelsOnRepo' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector IssueLabel))
 labelsOnRepo' auth user repo =
     executeRequestMaybe auth $ labelsOnRepoR user repo Nothing
 
 -- | List all labels for this repository.
 -- See <https://developer.github.com/v3/issues/labels/#list-all-labels-for-this-repository>
-labelsOnRepoR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector IssueLabel)
+labelsOnRepoR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector IssueLabel)
 labelsOnRepoR user repo =
-    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "labels"] []
+    PagedQuery ["repos", toPathPart user, toPathPart repo, "labels"] []
 
 -- | A label by name.
 --
 -- > label "thoughtbot" "paperclip" "bug"
-label :: Name GithubOwner -> Name Repo -> Name IssueLabel -> IO (Either Error IssueLabel)
+label :: Name Owner -> Name Repo -> Name IssueLabel -> IO (Either Error IssueLabel)
 label = label' Nothing
 
 -- | A label by name using authentication.
 --
--- > label' (Just (GithubUser (user password))) "thoughtbot" "paperclip" "bug"
-label' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Name IssueLabel -> IO (Either Error IssueLabel)
+-- > label' (Just (User (user password))) "thoughtbot" "paperclip" "bug"
+label' :: Maybe Auth -> Name Owner -> Name Repo -> Name IssueLabel -> IO (Either Error IssueLabel)
 label' auth user repo lbl =
     executeRequestMaybe auth $ labelR user repo lbl
 
--- | Get a single label.
+-- | Query a single label.
 -- See <https://developer.github.com/v3/issues/labels/#get-a-single-label>
-labelR :: Name GithubOwner -> Name Repo -> Name IssueLabel -> GithubRequest k IssueLabel
+labelR :: Name Owner -> Name Repo -> Name IssueLabel -> Request k IssueLabel
 labelR user repo lbl =
-    GithubGet ["repos", toPathPart user, toPathPart repo, "labels", toPathPart lbl] []
+    Query ["repos", toPathPart user, toPathPart repo, "labels", toPathPart lbl] []
 
 -- | Create a label
 --
--- > createLabel (GithubUser (user password)) "thoughtbot" "paperclip" "bug" "f29513"
-createLabel :: GithubAuth -> Name GithubOwner -> Name Repo -> Name IssueLabel -> String -> IO (Either Error IssueLabel)
+-- > createLabel (User (user password)) "thoughtbot" "paperclip" "bug" "f29513"
+createLabel :: Auth -> Name Owner -> Name Repo -> Name IssueLabel -> String -> IO (Either Error IssueLabel)
 createLabel auth user repo lbl color =
     executeRequest auth $ createLabelR user repo lbl color
 
 -- | Create a label.
 -- See <https://developer.github.com/v3/issues/labels/#create-a-label>
-createLabelR :: Name GithubOwner -> Name Repo -> Name IssueLabel -> String -> GithubRequest 'True IssueLabel
+createLabelR :: Name Owner -> Name Repo -> Name IssueLabel -> String -> Request 'True IssueLabel
 createLabelR user repo lbl color =
-    GithubCommand Post paths $ encode body
+    Command Post paths $ encode body
   where
     paths = ["repos", toPathPart user, toPathPart repo, "labels"]
     body = object ["name" .= untagName lbl, "color" .= color]
 
 -- | Update a label
 --
--- > updateLabel (GithubUser (user password)) "thoughtbot" "paperclip" "bug" "new-bug" "ff1111"
-updateLabel :: GithubAuth
-            -> Name GithubOwner
+-- > updateLabel (User (user password)) "thoughtbot" "paperclip" "bug" "new-bug" "ff1111"
+updateLabel :: Auth
+            -> Name Owner
             -> Name Repo
             -> Name IssueLabel   -- ^ old label name
             -> Name IssueLabel   -- ^ new label name
@@ -116,56 +116,56 @@ updateLabel auth user repo oldLbl newLbl color =
 
 -- | Update a label.
 -- See <https://developer.github.com/v3/issues/labels/#update-a-label>
-updateLabelR :: Name GithubOwner
+updateLabelR :: Name Owner
              -> Name Repo
              -> Name IssueLabel   -- ^ old label name
              -> Name IssueLabel   -- ^ new label name
              -> String            -- ^ new color
-             -> GithubRequest 'True IssueLabel
+             -> Request 'True IssueLabel
 updateLabelR user repo oldLbl newLbl color =
-    GithubCommand Patch paths (encode body)
+    Command Patch paths (encode body)
   where
     paths = ["repos", toPathPart user, toPathPart repo, "labels", toPathPart oldLbl]
     body = object ["name" .= untagName newLbl, "color" .= color]
 
 -- | Delete a label
 --
--- > deleteLabel (GithubUser (user password)) "thoughtbot" "paperclip" "bug"
-deleteLabel :: GithubAuth -> Name GithubOwner -> Name Repo -> Name IssueLabel -> IO (Either Error ())
+-- > deleteLabel (User (user password)) "thoughtbot" "paperclip" "bug"
+deleteLabel :: Auth -> Name Owner -> Name Repo -> Name IssueLabel -> IO (Either Error ())
 deleteLabel auth user repo lbl =
     executeRequest auth $ deleteLabelR user repo lbl
 
 -- | Delete a label.
 -- See <https://developer.github.com/v3/issues/labels/#delete-a-label>
-deleteLabelR :: Name GithubOwner -> Name Repo -> Name IssueLabel -> GithubRequest 'True ()
+deleteLabelR :: Name Owner -> Name Repo -> Name IssueLabel -> Request 'True ()
 deleteLabelR user repo lbl =
-    GithubCommand Delete ["repos", toPathPart user, toPathPart repo, "labels", toPathPart lbl] mempty
+    Command Delete ["repos", toPathPart user, toPathPart repo, "labels", toPathPart lbl] mempty
 
 -- | The labels on an issue in a repo.
 --
 -- > labelsOnIssue "thoughtbot" "paperclip" 585
-labelsOnIssue :: Name GithubOwner -> Name Repo -> Id Issue -> IO (Either Error (Vector IssueLabel))
+labelsOnIssue :: Name Owner -> Name Repo -> Id Issue -> IO (Either Error (Vector IssueLabel))
 labelsOnIssue = labelsOnIssue' Nothing
 
 -- | The labels on an issue in a repo using authentication.
 --
--- > labelsOnIssue' (Just (GithubUser (user password))) "thoughtbot" "paperclip" (Id 585)
-labelsOnIssue' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Id Issue -> IO (Either Error (Vector IssueLabel))
+-- > labelsOnIssue' (Just (User (user password))) "thoughtbot" "paperclip" (Id 585)
+labelsOnIssue' :: Maybe Auth -> Name Owner -> Name Repo -> Id Issue -> IO (Either Error (Vector IssueLabel))
 labelsOnIssue' auth user repo iid =
     executeRequestMaybe auth $ labelsOnIssueR user repo iid Nothing
 
 -- | List labels on an issue.
 -- See <https://developer.github.com/v3/issues/labels/#list-labels-on-an-issue>
-labelsOnIssueR :: Name GithubOwner -> Name Repo -> Id Issue -> Maybe Count -> GithubRequest k (Vector IssueLabel)
+labelsOnIssueR :: Name Owner -> Name Repo -> Id Issue -> Maybe Count -> Request k (Vector IssueLabel)
 labelsOnIssueR user repo iid =
-    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"] []
+    PagedQuery ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"] []
 
 -- | Add labels to an issue.
 --
--- > addLabelsToIssue (GithubUser (user password)) "thoughtbot" "paperclip" (Id 585) ["Label1" "Label2"]
+-- > addLabelsToIssue (User (user password)) "thoughtbot" "paperclip" (Id 585) ["Label1" "Label2"]
 addLabelsToIssue :: Foldable f
-                 => GithubAuth
-                 -> Name GithubOwner
+                 => Auth
+                 -> Name Owner
                  -> Name Repo
                  -> Id Issue
                  -> f (Name IssueLabel)
@@ -176,35 +176,35 @@ addLabelsToIssue auth user repo iid lbls =
 -- | Add lables to an issue.
 -- See <https://developer.github.com/v3/issues/labels/#add-labels-to-an-issue>
 addLabelsToIssueR :: Foldable f
-                  => Name GithubOwner
+                  => Name Owner
                   -> Name Repo
                   -> Id Issue
                   -> f (Name IssueLabel)
-                  -> GithubRequest 'True (Vector IssueLabel)
+                  -> Request 'True (Vector IssueLabel)
 addLabelsToIssueR user repo iid lbls =
-    GithubCommand Post paths (encode $ toList lbls)
+    Command Post paths (encode $ toList lbls)
   where
     paths = ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"]
 
 -- | Remove a label from an issue.
 --
--- > removeLabelFromIssue (GithubUser (user password)) "thoughtbot" "paperclip" (Id 585) "bug"
-removeLabelFromIssue :: GithubAuth -> Name GithubOwner -> Name Repo -> Id Issue -> Name IssueLabel -> IO (Either Error ())
+-- > removeLabelFromIssue (User (user password)) "thoughtbot" "paperclip" (Id 585) "bug"
+removeLabelFromIssue :: Auth -> Name Owner -> Name Repo -> Id Issue -> Name IssueLabel -> IO (Either Error ())
 removeLabelFromIssue auth user repo iid lbl =
     executeRequest auth $ removeLabelFromIssueR user repo iid lbl
 
 -- | Remove a label from an issue.
 -- See <https://developer.github.com/v3/issues/labels/#remove-a-label-from-an-issue>
-removeLabelFromIssueR :: Name GithubOwner -> Name Repo -> Id Issue -> Name IssueLabel -> GithubRequest 'True ()
+removeLabelFromIssueR :: Name Owner -> Name Repo -> Id Issue -> Name IssueLabel -> Request 'True ()
 removeLabelFromIssueR user repo iid lbl =
-    GithubCommand Delete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels", toPathPart lbl] mempty
+    Command Delete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels", toPathPart lbl] mempty
 
 -- | Replace all labels on an issue. Sending an empty list will remove all labels from the issue.
 --
--- > replaceAllLabelsForIssue (GithubUser (user password)) "thoughtbot" "paperclip" (Id 585) ["Label1" "Label2"]
+-- > replaceAllLabelsForIssue (User (user password)) "thoughtbot" "paperclip" (Id 585) ["Label1" "Label2"]
 replaceAllLabelsForIssue :: Foldable f
-                         => GithubAuth
-                         -> Name GithubOwner
+                         => Auth
+                         -> Name Owner
                          -> Name Repo
                          -> Id Issue
                          -> f (Name IssueLabel)
@@ -217,44 +217,44 @@ replaceAllLabelsForIssue auth user repo iid lbls =
 --
 -- Sending an empty list will remove all labels from the issue.
 replaceAllLabelsForIssueR :: Foldable f
-                          => Name GithubOwner
+                          => Name Owner
                           -> Name Repo
                           -> Id Issue
                           -> f (Name IssueLabel)
-                          -> GithubRequest 'True (Vector IssueLabel)
+                          -> Request 'True (Vector IssueLabel)
 replaceAllLabelsForIssueR user repo iid lbls =
-    GithubCommand Put paths (encode $ toList lbls)
+    Command Put paths (encode $ toList lbls)
   where
     paths = ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"]
 
 -- | Remove all labels from an issue.
 --
--- > removeAllLabelsFromIssue (GithubUser (user password)) "thoughtbot" "paperclip" (Id 585)
-removeAllLabelsFromIssue :: GithubAuth -> Name GithubOwner -> Name Repo -> Id Issue -> IO (Either Error ())
+-- > removeAllLabelsFromIssue (User (user password)) "thoughtbot" "paperclip" (Id 585)
+removeAllLabelsFromIssue :: Auth -> Name Owner -> Name Repo -> Id Issue -> IO (Either Error ())
 removeAllLabelsFromIssue auth user repo iid =
     executeRequest auth $ removeAllLabelsFromIssueR user repo iid
 
 -- | Remove all labels from an issue.
 -- See <https://developer.github.com/v3/issues/labels/#remove-all-labels-from-an-issue>
-removeAllLabelsFromIssueR :: Name GithubOwner -> Name Repo -> Id Issue -> GithubRequest 'True ()
+removeAllLabelsFromIssueR :: Name Owner -> Name Repo -> Id Issue -> Request 'True ()
 removeAllLabelsFromIssueR user repo iid =
-    GithubCommand Delete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"] mempty
+    Command Delete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"] mempty
 
 -- | All the labels on a repo's milestone given the milestone ID.
 --
 -- > labelsOnMilestone "thoughtbot" "paperclip" (Id 2)
-labelsOnMilestone :: Name GithubOwner -> Name Repo -> Id Milestone -> IO (Either Error (Vector IssueLabel))
+labelsOnMilestone :: Name Owner -> Name Repo -> Id Milestone -> IO (Either Error (Vector IssueLabel))
 labelsOnMilestone = labelsOnMilestone' Nothing
 
 -- | All the labels on a repo's milestone given the milestone ID using authentication.
 --
--- > labelsOnMilestone' (Just (GithubUser (user password))) "thoughtbot" "paperclip" (Id 2)
-labelsOnMilestone' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> Id Milestone -> IO (Either Error (Vector IssueLabel))
+-- > labelsOnMilestone' (Just (User (user password))) "thoughtbot" "paperclip" (Id 2)
+labelsOnMilestone' :: Maybe Auth -> Name Owner -> Name Repo -> Id Milestone -> IO (Either Error (Vector IssueLabel))
 labelsOnMilestone' auth user repo mid =
     executeRequestMaybe auth $ labelsOnMilestoneR user repo mid Nothing
 
--- | Get labels for every issue in a milestone.
+-- | Query labels for every issue in a milestone.
 -- See <https://developer.github.com/v3/issues/labels/#get-labels-for-every-issue-in-a-milestone>
-labelsOnMilestoneR :: Name GithubOwner -> Name Repo -> Id Milestone -> Maybe Count -> GithubRequest k (Vector IssueLabel)
+labelsOnMilestoneR :: Name Owner -> Name Repo -> Id Milestone -> Maybe Count -> Request k (Vector IssueLabel)
 labelsOnMilestoneR user repo mid =
-    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "milestones", toPathPart mid, "labels"] []
+    PagedQuery ["repos", toPathPart user, toPathPart repo, "milestones", toPathPart mid, "labels"] []

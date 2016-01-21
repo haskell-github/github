@@ -23,39 +23,39 @@ import GitHub.Request
 -- | The list of users that are watching the specified Github repo.
 --
 -- > watchersFor "thoughtbot" "paperclip"
-watchersFor :: Name GithubOwner -> Name Repo -> IO (Either Error (Vector SimpleUser))
+watchersFor :: Name Owner -> Name Repo -> IO (Either Error (Vector SimpleUser))
 watchersFor = watchersFor' Nothing
 
 -- | The list of users that are watching the specified Github repo.
 -- With authentication
 --
--- > watchersFor' (Just (GithubUser (user, password))) "thoughtbot" "paperclip"
-watchersFor' :: Maybe GithubAuth -> Name GithubOwner -> Name Repo -> IO (Either Error (Vector SimpleUser))
+-- > watchersFor' (Just (User (user, password))) "thoughtbot" "paperclip"
+watchersFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector SimpleUser))
 watchersFor' auth user repo =
     executeRequestMaybe auth $ watchersForR user repo Nothing
 
 -- | List watchers.
 -- See <https://developer.github.com/v3/activity/watching/#list-watchers>
-watchersForR :: Name GithubOwner -> Name Repo -> Maybe Count -> GithubRequest k (Vector SimpleUser)
+watchersForR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector SimpleUser)
 watchersForR user repo limit =
-    GithubPagedGet ["repos", toPathPart user, toPathPart repo, "watchers"] [] limit
+    PagedQuery ["repos", toPathPart user, toPathPart repo, "watchers"] [] limit
 
 -- | All the public repos watched by the specified user.
 --
 -- > reposWatchedBy "croaky"
-reposWatchedBy :: Name GithubOwner -> IO (Either Error (Vector Repo))
+reposWatchedBy :: Name Owner -> IO (Either Error (Vector Repo))
 reposWatchedBy = reposWatchedBy' Nothing
 
 -- | All the public repos watched by the specified user.
 -- With authentication
 --
--- > reposWatchedBy' (Just (GithubUser (user, password))) "croaky"
-reposWatchedBy' :: Maybe GithubAuth -> Name GithubOwner -> IO (Either Error (Vector Repo))
+-- > reposWatchedBy' (Just (User (user, password))) "croaky"
+reposWatchedBy' :: Maybe Auth -> Name Owner -> IO (Either Error (Vector Repo))
 reposWatchedBy' auth user =
     executeRequestMaybe auth $ reposWatchedByR user Nothing
 
 -- | List repositories being watched.
 -- See <https://developer.github.com/v3/activity/watching/#list-repositories-being-watched>
-reposWatchedByR :: Name GithubOwner -> Maybe Count -> GithubRequest k (Vector Repo)
+reposWatchedByR :: Name Owner -> Maybe Count -> Request k (Vector Repo)
 reposWatchedByR user =
-    GithubPagedGet ["users", toPathPart user, "subscriptions"] []
+    PagedQuery ["users", toPathPart user, "subscriptions"] []

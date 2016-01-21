@@ -6,7 +6,7 @@ import Github.Data.Definitions
 
 main :: IO ()
 main = do
-  let auth = Auth.GithubOAuth "oauthtoken"
+  let auth = Auth.OAuth "oauthtoken"
   let editWebhookDef = EditRepoWebhook {
         editRepoWebhookRemoveEvents = Just [WebhookWildcardEvent],
         editRepoWebhookAddEvents = Just [WebhookCommitCommentEvent, WebhookGollumEvent],

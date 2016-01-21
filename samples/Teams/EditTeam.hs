@@ -13,7 +13,7 @@ main = do
   result <- case args of
               [token, team_id, team_name, desc] ->
                 GitHub.editTeam'
-                  (GitHub.GithubOAuth token)
+                  (GitHub.OAuth token)
                   (GitHub.mkTeamId $ read team_id)
                   (GitHub.EditTeam (GitHub.mkTeamName $ fromString team_name) (Just $ fromString desc) GitHub.PermissionPull)
               _                                 ->

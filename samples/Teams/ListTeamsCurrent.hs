@@ -11,7 +11,7 @@ main :: IO ()
 main = do
   args <- getArgs
   result <- case args of
-              [token] -> GitHub.listTeamsCurrent' (GitHub.GithubOAuth token)
+              [token] -> GitHub.listTeamsCurrent' (GitHub.OAuth token)
               _       -> error "usage: ListTeamsCurrent <token>"
   case result of
     Left err    -> putStrLn $ "Error: " <> tshow err

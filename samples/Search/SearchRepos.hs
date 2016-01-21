@@ -53,4 +53,4 @@ formatRepo r =
             where n' = max 0 (n - length s) 
 
 formatMaybeDate = maybe "???" formatDate
-formatDate = show . Github.fromGithubDate
+formatDate = show . Github.fromDate

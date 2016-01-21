@@ -10,7 +10,7 @@ main = do
 
 formatComment comment =
   (Github.githubOwnerLogin $ Github.gistCommentUser comment) ++ "\n" ++
-    (formatGithubDate $ Github.gistCommentUpdatedAt comment) ++ "\n\n" ++
+    (formatDate $ Github.gistCommentUpdatedAt comment) ++ "\n\n" ++
     (Github.gistCommentBody comment)
 
-formatGithubDate = show . Github.fromGithubDate
+formatDate = show . Github.fromDate

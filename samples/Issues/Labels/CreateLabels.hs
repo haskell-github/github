@@ -5,7 +5,7 @@ import           Data.List            (intercalate)
 import qualified Github.Auth          as Github
 import qualified Github.Issues.Labels as Github
 main = do
-  let auth = Github.GithubBasicAuth "user" "password"
+  let auth = Github.BasicAuth "user" "password"
   possibleLabel <- Github.createLabel auth "thoughtbot" "papperclip" "sample label" "ff00ff"
   case possibleLabel of
        (Left error) -> putStrLn $ "Error: " ++ show error

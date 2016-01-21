@@ -6,7 +6,7 @@ import qualified Github.Data.Definitions as Def
 
 main :: IO ()
 main = do
-  let auth = Auth.GithubOAuth "oauthtoken"
+  let auth = Auth.OAuth "oauthtoken"
   possibleWebhook <- W.webhookFor' auth "repoOwner" "repoName" 123
   case possibleWebhook of
     (Left err) -> putStrLn $ "Error: " ++ (show err)

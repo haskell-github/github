@@ -15,9 +15,9 @@ formatPullRequest pullRequest =
     (take 80 $ Github.pullRequestBody pullRequest) ++ "\n" ++
     (Github.githubOwnerLogin $ Github.pullRequestUser pullRequest) ++
     " submitted to thoughtbot/paperclip " ++
-    (formatGithubDate $ Github.pullRequestCreatedAt pullRequest) ++
+    (formatDate $ Github.pullRequestCreatedAt pullRequest) ++
     " updated " ++
-    (formatGithubDate $ Github.pullRequestUpdatedAt pullRequest) ++ "\n" ++
+    (formatDate $ Github.pullRequestUpdatedAt pullRequest) ++ "\n" ++
     (Github.pullRequestHtmlUrl pullRequest)
 
-formatGithubDate = show . Github.fromGithubDate
+formatDate = show . Github.fromDate

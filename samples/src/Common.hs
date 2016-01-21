@@ -26,10 +26,10 @@ import System.Environment (getArgs)
 import qualified Data.Text   as T
 import qualified GitHub
 
-getAuth :: IO (Maybe (GitHub.GithubAuth))
+getAuth :: IO (Maybe (GitHub.Auth))
 getAuth = do
     token <- lookupEnv "GITHUB_TOKEN"
-    pure (GitHub.GithubOAuth <$> token)
+    pure (GitHub.OAuth <$> token)
 
 tshow :: Show a => a -> Text
 tshow = T.pack . show

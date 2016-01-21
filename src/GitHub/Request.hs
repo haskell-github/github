@@ -19,22 +19,22 @@
 --
 -- Simple example using @operational@ package. See @samples\/Operational\/Operational.hs@
 --
--- > type GithubMonad a = Program (GH.GithubRequest 'False) a
+-- > type GithubMonad a = Program (GH.Request 'False) a
 -- >
 -- > -- | Intepret GithubMonad value into IO
--- > runGithubMonad :: Manager -> GH.GithubAuth -> GithubMonad a -> ExceptT GH.Error IO a
--- > runGithubMonad mgr auth m = case view m of
+-- > runMonad :: Manager -> GH.Auth -> GithubMonad a -> ExceptT GH.Error IO a
+-- > runMonad mgr auth m = case view m of
 -- >    Return a   -> return a
 -- >    req :>>= k -> do
 -- >        b <- ExceptT $ GH.executeRequestWithMgr mgr auth req
--- >        runGithubMonad mgr auth (k b)
+-- >        runMonad mgr auth (k b)
 -- >
--- > -- | Lift request into GithubMonad
--- > githubRequest :: GH.GithubRequest 'False a -> GithubMonad a
+-- > -- | Lift request into Monad
+-- > githubRequest :: GH.Request 'False a -> GithubMonad a
 -- > githubRequest = singleton
 module GitHub.Request (
     -- * Types
-    GithubRequest(..),
+    Request(..),
     CommandMethod(..),
     toMethod,
     Paths,
@@ -73,7 +73,7 @@ import Data.Text                  (Text)
 import Data.Vector.Instances      ()
 
 import Network.HTTP.Client          (CookieJar, HttpException (..), Manager,
-                                     Request (..), RequestBody (..),
+                                     RequestBody (..), requestHeaders, checkStatus, method, requestBody,
                                      Response (..), applyBasicAuth, httpLbs,
                                      newManager, parseUrl, setQueryString)
 import Network.HTTP.Client.Internal (setUri)
@@ -90,13 +90,14 @@ import qualified Data.ByteString.Char8 as BS8
 import qualified Data.ByteString.Lazy  as LBS
 import qualified Data.Text             as T
 import qualified Data.Vector           as V
+import qualified Network.HTTP.Client   as HTTP
 
-import GitHub.Auth         (GithubAuth (..))
+import GitHub.Auth         (Auth (..))
 import GitHub.Data         (Error (..))
 import GitHub.Data.Request
 
--- | Execute 'GithubRequest' in 'IO'
-executeRequest :: GithubAuth -> GithubRequest k a -> IO (Either Error a)
+-- | Execute 'Request' in 'IO'
+executeRequest :: Auth -> Request k a -> IO (Either Error a)
 executeRequest auth req = do
     manager <- newManager tlsManagerSettings
     x <- executeRequestWithMgr manager auth req
@@ -107,36 +108,36 @@ executeRequest auth req = do
 
 -- | Like 'executeRequest' but with provided 'Manager'.
 executeRequestWithMgr :: Manager
-                      -> GithubAuth
-                      -> GithubRequest k a
+                      -> Auth
+                      -> Request k a
                       -> IO (Either Error a)
 executeRequestWithMgr mgr auth req = runExceptT $
     case req of
-        GithubGet {} -> do
+        Query {} -> do
             httpReq <- makeHttpRequest (Just auth) req
             res <- httpLbs' httpReq
             parseResponse res
-        GithubPagedGet _ _ l -> do
+        PagedQuery _ _ l -> do
             httpReq <- makeHttpRequest (Just auth) req
             performPagedRequest httpLbs' predicate httpReq
           where
             predicate = maybe (const True) (\l' -> (< l') . V.length ) l
-        GithubCommand m _ _ -> do
+        Command m _ _ -> do
             httpReq <- makeHttpRequest (Just auth) req
             res <- httpLbs' httpReq
             case m of
                 Delete -> pure ()
                 _      -> parseResponse res
-        GithubStatus sm _ -> do
+        StatusQuery sm _ -> do
             httpReq <- makeHttpRequest (Just auth) req
             res <- httpLbs' httpReq
             parseStatus sm . responseStatus $ res
   where
-    httpLbs' :: Request -> ExceptT Error IO (Response LBS.ByteString)
+    httpLbs' :: HTTP.Request -> ExceptT Error IO (Response LBS.ByteString)
     httpLbs' req' = lift (httpLbs req' mgr) `catch` onHttpException
 
 -- | Like 'executeRequest' but without authentication.
-executeRequest' :: GithubRequest 'False a -> IO (Either Error a)
+executeRequest' :: Request 'False a -> IO (Either Error a)
 executeRequest' req = do
     manager <- newManager tlsManagerSettings
     x <- executeRequestWithMgr' manager req
@@ -147,37 +148,37 @@ executeRequest' req = do
 
 -- | Like 'executeRequestWithMgr' but without authentication.
 executeRequestWithMgr' :: Manager
-                       -> GithubRequest 'False a
+                       -> Request 'False a
                        -> IO (Either Error a)
 executeRequestWithMgr' mgr req = runExceptT $
     case req of
-        GithubGet {} -> do
+        Query {} -> do
             httpReq <- makeHttpRequest Nothing req
             res <- httpLbs' httpReq
             parseResponse res
-        GithubPagedGet _ _ l -> do
+        PagedQuery _ _ l -> do
             httpReq <- makeHttpRequest Nothing req
             performPagedRequest httpLbs' predicate httpReq
           where
             predicate = maybe (const True) (\l' -> (< l') . V.length) l
-        GithubStatus sm _ -> do
+        StatusQuery sm _ -> do
             httpReq <- makeHttpRequest Nothing req
             res <- httpLbs' httpReq
             parseStatus sm  . responseStatus $ res
   where
-    httpLbs' :: Request -> ExceptT Error IO (Response LBS.ByteString)
+    httpLbs' :: HTTP.Request -> ExceptT Error IO (Response LBS.ByteString)
     httpLbs' req' = lift (httpLbs req' mgr) `catch` onHttpException
 
 -- | Helper for picking between 'executeRequest' and 'executeRequest''.
 --
 -- The use is discouraged.
-executeRequestMaybe :: Maybe GithubAuth -> GithubRequest 'False a
+executeRequestMaybe :: Maybe Auth -> Request 'False a
                     -> IO (Either Error a)
 executeRequestMaybe = maybe executeRequest' executeRequest
 
 -- | Partial function to drop authentication need.
-unsafeDropAuthRequirements :: GithubRequest 'True a -> GithubRequest k a
-unsafeDropAuthRequirements (GithubGet ps qs) = GithubGet ps qs
+unsafeDropAuthRequirements :: Request 'True a -> Request k a
+unsafeDropAuthRequirements (Query ps qs) = Query ps qs
 unsafeDropAuthRequirements r                 =
     error $ "Trying to drop authenatication from" ++ show r
 
@@ -187,36 +188,36 @@ unsafeDropAuthRequirements r                 =
 
 -- | Create @http-client@ 'Request'.
 --
--- * for 'GithubPagedGet', the initial request is created.
--- * for 'GithubStatus', the 'Request' for underlying 'GithubRequest' is created,
+-- * for 'PagedQuery', the initial request is created.
+-- * for 'Status', the 'Request' for underlying 'Request' is created,
 --   status checking is modifying accordingly.
 --
 -- @
--- parseResponse :: 'Maybe' 'GithubAuth' -> 'GithubRequest' k a -> 'Maybe' 'Request'
+-- parseResponse :: 'Maybe' 'Auth' -> 'Request' k a -> 'Maybe' 'Request'
 -- @
 makeHttpRequest :: MonadThrow m
-                => Maybe GithubAuth
-                -> GithubRequest k a
-                -> m Request
+                => Maybe Auth
+                -> Request k a
+                -> m HTTP.Request
 makeHttpRequest auth r = case r of
-    GithubStatus sm req -> do
+    StatusQuery sm req -> do
         req' <- makeHttpRequest auth req
         return $ setCheckStatus (Just sm) req'
-    GithubGet paths qs -> do
+    Query paths qs -> do
         req <- parseUrl $ url paths
         return $ setReqHeaders
                . setCheckStatus Nothing
                . setAuthRequest auth
                . setQueryString qs
                $ req
-    GithubPagedGet paths qs _ -> do
+    PagedQuery paths qs _ -> do
         req <- parseUrl $ url paths
         return $ setReqHeaders
                . setCheckStatus Nothing
                . setAuthRequest auth
                . setQueryString qs
                $ req
-    GithubCommand m paths body -> do
+    Command m paths body -> do
         req <- parseUrl $ url paths
         return $ setReqHeaders
                . setCheckStatus Nothing
@@ -230,16 +231,16 @@ makeHttpRequest auth r = case r of
 
     baseUrl :: String
     baseUrl = case auth of
-        Just (GithubEnterpriseOAuth endpoint _)  -> endpoint
+        Just (EnterpriseOAuth endpoint _)  -> endpoint
         _                                        -> "https://api.github.com"
 
-    setReqHeaders :: Request -> Request
+    setReqHeaders :: HTTP.Request -> HTTP.Request
     setReqHeaders req = req { requestHeaders = reqHeaders <> requestHeaders req }
 
-    setCheckStatus :: Maybe (StatusMap a) -> Request -> Request
+    setCheckStatus :: Maybe (StatusMap a) -> HTTP.Request -> HTTP.Request
     setCheckStatus sm req = req { checkStatus = successOrMissing sm }
 
-    setMethod :: Method -> Request -> Request
+    setMethod :: Method -> HTTP.Request -> HTTP.Request
     setMethod m req = req { method = m }
 
     reqHeaders :: RequestHeaders
@@ -247,15 +248,15 @@ makeHttpRequest auth r = case r of
         <> [("User-Agent", "github.hs/0.7.4")]
         <> [("Accept", "application/vnd.github.preview")]
 
-    setBody :: LBS.ByteString -> Request -> Request
+    setBody :: LBS.ByteString -> HTTP.Request -> HTTP.Request
     setBody body req = req { requestBody = RequestBodyLBS body }
 
-    setAuthRequest :: Maybe GithubAuth -> Request -> Request
-    setAuthRequest (Just (GithubBasicAuth user pass)) = applyBasicAuth user pass
+    setAuthRequest :: Maybe Auth -> HTTP.Request -> HTTP.Request
+    setAuthRequest (Just (BasicAuth user pass)) = applyBasicAuth user pass
     setAuthRequest _                                  = id
 
-    getOAuthHeader :: GithubAuth -> RequestHeaders
-    getOAuthHeader (GithubOAuth token) = [("Authorization", BS8.pack ("token " ++ token))]
+    getOAuthHeader :: Auth -> RequestHeaders
+    getOAuthHeader (OAuth token) = [("Authorization", BS8.pack ("token " ++ token))]
     getOAuthHeader _                   = []
 
     successOrMissing :: Maybe (StatusMap a) -> Status -> ResponseHeaders -> CookieJar -> Maybe E.SomeException
@@ -268,7 +269,7 @@ makeHttpRequest auth r = case r of
           Just StatusOnlyOk  -> sci == 204 || sci == 404
           Just StatusMerge   -> sci `elem` [204, 405, 409]
 
--- | Get @Link@ header with @rel=next@ from the request headers.
+-- | Query @Link@ header with @rel=next@ from the request headers.
 getNextUrl :: Response a -> Maybe URI
 getNextUrl req = do
     linkHeader <- lookup "Link" (responseHeaders req)
@@ -312,22 +313,22 @@ parseStatus StatusMerge (Status sci _)
 --
 -- @
 -- performPagedRequest :: ('FromJSON' a, 'Semigroup' a)
---                     => ('Request' -> 'ExceptT' 'Error' 'IO' ('Response' 'LBS.ByteString'))
+--                     => ('HTTP.Request' -> 'ExceptT' 'Error' 'IO' ('Response' 'LBS.ByteString'))
 --                     -> (a -> 'Bool')
---                     -> 'Request'
+--                     -> 'HTTP.Request'
 --                     -> 'ExceptT' 'Error' 'IO' a
 -- @
 performPagedRequest :: forall a m. (FromJSON a, Semigroup a, MonadCatch m, MonadError Error m)
-                    => (Request -> m (Response LBS.ByteString))  -- ^ `httpLbs` analogue
-                    -> (a -> Bool)                               -- ^ predicate to continue iteration
-                    -> Request                                   -- ^ initial request
+                    => (HTTP.Request -> m (Response LBS.ByteString))  -- ^ `httpLbs` analogue
+                    -> (a -> Bool)                                    -- ^ predicate to continue iteration
+                    -> HTTP.Request                                   -- ^ initial request
                     -> m a
 performPagedRequest httpLbs' predicate initReq = do
     res <- httpLbs' initReq
     m <- parseResponse res
     go m res initReq
   where
-    go :: a -> Response LBS.ByteString -> Request -> m a
+    go :: a -> Response LBS.ByteString -> HTTP.Request -> m a
     go acc res req =
         case (predicate acc, getNextUrl res) of
             (True, Just uri) -> do

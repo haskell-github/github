@@ -15,7 +15,7 @@ formatFork fork =
   (formatCloneUrl $ Github.repoCloneUrl fork)
 
 formatPushedAt Nothing         = ""
-formatPushedAt (Just pushedAt) = show $ Github.fromGithubDate pushedAt
+formatPushedAt (Just pushedAt) = show $ Github.fromDate pushedAt
 
 formatCloneUrl Nothing         = ""
 formatCloneUrl (Just cloneUrl) = cloneUrl

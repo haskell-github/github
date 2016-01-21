@@ -20,8 +20,8 @@ import GitHub.Request
 -- | All the users who are members of the specified organization,
 -- | with or without authentication.
 --
--- > membersOf' (Just $ GithubOAuth "token") "thoughtbot"
-membersOf' :: Maybe GithubAuth -> Name Organization -> IO (Either Error (Vector SimpleUser))
+-- > membersOf' (Just $ OAuth "token") "thoughtbot"
+membersOf' :: Maybe Auth -> Name Organization -> IO (Either Error (Vector SimpleUser))
 membersOf' auth org =
     executeRequestMaybe auth $ membersOfR org Nothing
 
@@ -35,5 +35,5 @@ membersOf = membersOf' Nothing
 -- | All the users who are members of the specified organization.
 --
 -- See <https://developer.github.com/v3/orgs/members/#members-list>
-membersOfR :: Name Organization -> Maybe Count -> GithubRequest k (Vector SimpleUser)
-membersOfR organization = GithubPagedGet ["orgs", toPathPart organization, "members"] []
+membersOfR :: Name Organization -> Maybe Count -> Request k (Vector SimpleUser)
+membersOfR organization = PagedQuery ["orgs", toPathPart organization, "members"] []
