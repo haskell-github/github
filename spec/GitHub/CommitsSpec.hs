@@ -8,9 +8,10 @@ import GitHub.Request       (executeRequest)
 
 import Control.Monad      (forM_)
 import Data.Either.Compat (isRight)
+import Data.List          (sort, nub)
 import Data.Proxy         (Proxy (..))
 import System.Environment (lookupEnv)
-import Test.Hspec         (Spec, describe, it, pendingWith, shouldSatisfy)
+import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe, shouldSatisfy)
 
 import qualified Data.Vector as V
 
@@ -37,7 +38,10 @@ spec = do
     it "limits the response" $ withAuth $ \auth -> do
       cs <- executeRequest auth $ commitsForR "phadej" "github" (Just 40)
       cs `shouldSatisfy` isRight
-      V.length (fromRightS cs) `shouldSatisfy` (< 70)
+      let cs' = fromRightS cs
+      V.length cs' `shouldSatisfy` (< 70)
+      let hashes = sort $ map commitSha $ V.toList cs'
+      hashes `shouldBe` nub hashes
 
   describe "diff" $ do
     it "works" $ withAuth $ \auth -> do
