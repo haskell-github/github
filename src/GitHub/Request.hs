@@ -73,9 +73,10 @@ import Data.Text                  (Text)
 import Data.Vector.Instances      ()
 
 import Network.HTTP.Client          (CookieJar, HttpException (..), Manager,
-                                     RequestBody (..), requestHeaders, checkStatus, method, requestBody,
-                                     Response (..), applyBasicAuth, httpLbs,
-                                     newManager, parseUrl, setQueryString)
+                                     RequestBody (..), Response (..),
+                                     applyBasicAuth, checkStatus, httpLbs,
+                                     method, newManager, parseUrl, requestBody,
+                                     requestHeaders, setQueryString)
 import Network.HTTP.Client.Internal (setUri)
 import Network.HTTP.Client.TLS      (tlsManagerSettings)
 import Network.HTTP.Link.Parser     (parseLinkHeaderBS)
@@ -85,12 +86,11 @@ import Network.HTTP.Types           (Method, RequestHeaders, ResponseHeaders,
                                      Status (..))
 import Network.URI                  (URI)
 
-import qualified Control.Exception     as E
-import qualified Data.ByteString.Char8 as BS8
-import qualified Data.ByteString.Lazy  as LBS
-import qualified Data.Text             as T
-import qualified Data.Vector           as V
-import qualified Network.HTTP.Client   as HTTP
+import qualified Control.Exception    as E
+import qualified Data.ByteString.Lazy as LBS
+import qualified Data.Text            as T
+import qualified Data.Vector          as V
+import qualified Network.HTTP.Client  as HTTP
 
 import GitHub.Auth         (Auth (..))
 import GitHub.Data         (Error (..))
@@ -232,7 +232,7 @@ makeHttpRequest auth r = case r of
     baseUrl :: String
     baseUrl = case auth of
         Just (EnterpriseOAuth endpoint _)  -> endpoint
-        _                                        -> "https://api.github.com"
+        _                                  -> "https://api.github.com"
 
     setReqHeaders :: HTTP.Request -> HTTP.Request
     setReqHeaders req = req { requestHeaders = reqHeaders <> requestHeaders req }
@@ -256,8 +256,9 @@ makeHttpRequest auth r = case r of
     setAuthRequest _                                  = id
 
     getOAuthHeader :: Auth -> RequestHeaders
-    getOAuthHeader (OAuth token) = [("Authorization", BS8.pack ("token " ++ token))]
-    getOAuthHeader _                   = []
+    getOAuthHeader (OAuth token)             = [("Authorization", "token " <> token)]
+    getOAuthHeader (EnterpriseOAuth _ token) = [("Authorization", "token " <> token)]
+    getOAuthHeader _                         = []
 
     successOrMissing :: Maybe (StatusMap a) -> Status -> ResponseHeaders -> CookieJar -> Maybe E.SomeException
     successOrMissing sm s@(Status sci _) hs cookiejar

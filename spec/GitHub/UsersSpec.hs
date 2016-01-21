@@ -3,16 +3,19 @@
 module GitHub.UsersSpec where
 
 import Data.Aeson.Compat  (eitherDecodeStrict)
-import Data.Either.Compat (isRight, isLeft)
+import Data.Either.Compat (isLeft, isRight)
 import Data.FileEmbed     (embedFile)
+import Data.String        (fromString)
 import System.Environment (lookupEnv)
 import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe,
                            shouldSatisfy)
 
-import GitHub.Data             (Auth (..), User (..), Organization (..), fromOwner)
-import GitHub.Request          (executeRequest)
-import GitHub.Endpoints.Users            (userInfoCurrent', userInfoFor', ownerInfoForR)
-import GitHub.Endpoints.Users.Followers  (usersFollowedByR, usersFollowingR)
+import GitHub.Data                      (Auth (..), Organization (..),
+                                         User (..), fromOwner)
+import GitHub.Endpoints.Users           (ownerInfoForR, userInfoCurrent',
+                                         userInfoFor')
+import GitHub.Endpoints.Users.Followers (usersFollowedByR, usersFollowingR)
+import GitHub.Request                   (executeRequest)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -27,7 +30,7 @@ withAuth action = do
   mtoken <- lookupEnv "GITHUB_TOKEN"
   case mtoken of
     Nothing    -> pendingWith "no GITHUB_TOKEN"
-    Just token -> action (OAuth token)
+    Just token -> action (OAuth $ fromString token)
 
 spec :: Spec
 spec = do

@@ -2,16 +2,19 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module GitHub.CommitsSpec where
 
-import GitHub.Auth          (Auth (..))
-import GitHub.Endpoints.Repos.Commits (Commit, mkName, commitSha, commitsFor', commitsForR, diffR)
-import GitHub.Request       (executeRequest)
+import GitHub.Auth                    (Auth (..))
+import GitHub.Endpoints.Repos.Commits (Commit, commitSha, commitsFor',
+                                       commitsForR, diffR, mkName)
+import GitHub.Request                 (executeRequest)
 
 import Control.Monad      (forM_)
 import Data.Either.Compat (isRight)
-import Data.List          (sort, nub)
+import Data.List          (nub, sort)
 import Data.Proxy         (Proxy (..))
+import Data.String        (fromString)
 import System.Environment (lookupEnv)
-import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe, shouldSatisfy)
+import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe,
+                           shouldSatisfy)
 
 import qualified Data.Vector as V
 
@@ -24,7 +27,7 @@ withAuth action = do
   mtoken <- lookupEnv "GITHUB_TOKEN"
   case mtoken of
     Nothing    -> pendingWith "no GITHUB_TOKEN"
-    Just token -> action (OAuth token)
+    Just token -> action (OAuth $ fromString token)
 
 spec :: Spec
 spec = do
