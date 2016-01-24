@@ -14,6 +14,7 @@ import Prelude.Compat
 import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id)
 import GitHub.Data.Name        (Name)
+import GitHub.Data.Repos       (Language)
 
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
@@ -62,7 +63,7 @@ data GistFile = GistFile {
    gistFileType     :: !Text
   ,gistFileRawUrl   :: !Text
   ,gistFileSize     :: !Int
-  ,gistFileLanguage :: !(Maybe Text)
+  ,gistFileLanguage :: !(Maybe Language)
   ,gistFileFilename :: !Text
   ,gistFileContent  :: !(Maybe Text)
 } deriving (Show, Data, Typeable, Eq, Generic)
