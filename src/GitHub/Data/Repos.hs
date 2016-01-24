@@ -3,6 +3,7 @@
 {-# LANGUAGE DeriveGeneric      #-}
 {-# LANGUAGE FlexibleInstances  #-}
 {-# LANGUAGE OverloadedStrings  #-}
+#define UNSAFE 1
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -35,9 +36,7 @@ import GHC.Generics             (Generic)
 
 import qualified Data.HashMap.Strict as HM
 
-#if MIN_VERSION_base(4,8,0)
-import Data.Type.Coercion (Coercion (..), coerceWith)
-#else
+#if UNSAFE
 import Unsafe.Coerce (unsafeCoerce)
 #endif
 
@@ -255,11 +254,10 @@ instance FromJSON a => FromJSON (HM.HashMap Language a) where
     parseJSON = fmap mapKeyLanguage . parseJSON
       where
         mapKeyLanguage :: HM.HashMap Text a -> HM.HashMap Language a
-#if MIN_VERSION_base(4,8,0)
-        mapKeyLanguage = coerceWith Coercion
-#else
+#ifdef UNSAFE
         mapKeyLanguage = unsafeCoerce
+#else
+        mapKeyLanguage = mapKey Language
+        mapKey :: (Eq k2, Hashable k2) => (k1 -> k2) -> HM.HashMap k1 a -> HM.HashMap k2 a
+        mapKey f = HM.fromList . map (first f) . HM.toList
 #endif
---      mapKeyLanguage = mapKey Language
---      mapKey :: (Eq k2, Hashable k2) => (k1 -> k2) -> HM.HashMap k1 a -> HM.HashMap k2 a
---      mapKey f = HM.fromList . map (first f) . HM.toList
