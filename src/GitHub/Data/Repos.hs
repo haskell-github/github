@@ -1,11 +1,17 @@
+{-# LANGUAGE CPP                #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric      #-}
+{-# LANGUAGE FlexibleInstances  #-}
 {-# LANGUAGE OverloadedStrings  #-}
+#define UNSAFE 1
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
+-- This module also exports
+-- @'FromJSON' a => 'FromJSON' ('HM.HashMap' 'Language' a)@
+-- orphan-ish instance.
 module GitHub.Data.Repos where
 
 import Prelude        ()
@@ -15,19 +21,24 @@ import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id)
 import GitHub.Data.Name        (Name)
 
+--import Control.Arrow            (first) -- Data.Bifunctor would be better
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
 import Data.Aeson.Compat        (FromJSON (..), ToJSON (..), object, withObject,
-                                 (.:), (.:?), (.=))
+                                 withText, (.:), (.:?), (.=))
 import Data.Binary              (Binary)
 import Data.Data                (Data, Typeable)
+import Data.Hashable            (Hashable (..))
+import Data.String              (IsString (..))
 import Data.Text                (Text)
 import Data.Time                (UTCTime)
-import Data.Vector              (Vector)
 import GHC.Generics             (Generic)
 
 import qualified Data.HashMap.Strict as HM
-import qualified Data.Vector         as V
+
+#if UNSAFE
+import Unsafe.Coerce (unsafeCoerce)
+#endif
 
 data Repo = Repo {
    repoSshUrl          :: !(Maybe Text)
@@ -46,7 +57,7 @@ data Repo = Repo {
   ,repoWatchers        :: !(Maybe Int)
   ,repoOwner           :: !SimpleOwner
   ,repoName            :: !(Name Repo)
-  ,repoLanguage        :: !(Maybe Text)
+  ,repoLanguage        :: !(Maybe Language)
   ,repoMasterBranch    :: !(Maybe Text)
   ,repoPushedAt        :: !(Maybe UTCTime)   -- ^ this is Nothing for new repositories
   ,repoId              :: !(Id Repo)
@@ -111,20 +122,22 @@ data RepoPublicity
     | RepoPublicityMember  -- ^ Only repos to which the user is a member but not an owner.
     deriving (Show, Eq, Ord, Typeable, Data, Generic)
 
--- | This is only used for the FromJSON instance.
-data Languages = Languages { getLanguages :: Vector Language }
-  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+-- | The value is the number of bytes of code written in that language.
+type Languages = HM.HashMap Language Int
 
-instance NFData Languages where rnf = genericRnf
-instance Binary Languages
+-- | A programming language.
+newtype Language = Language Text
+   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
--- | A programming language with the name and number of characters written in
--- it.
-data Language = Language !Text !Int
- deriving (Show, Data, Typeable, Eq, Ord, Generic)
+getLanguage :: Language -> Text
+getLanguage (Language l) = l
 
 instance NFData Language where rnf = genericRnf
 instance Binary Language
+instance Hashable Language where
+    hashWithSalt salt (Language l) = hashWithSalt salt l
+instance IsString Language where
+    fromString = Language . fromString
 
 data Contributor
   -- | An existing Github user, with their number of contributions, avatar
@@ -234,8 +247,17 @@ instance FromJSON Contributor where
                     <*> o .: "id"
                     <*> o .: "gravatar_id"
 
-instance FromJSON Languages where
-  parseJSON = withObject "Languages" $ \o ->
-    Languages . V.fromList <$>
-      traverse (\name -> Language name <$> o .: name)
-           (HM.keys o)
+instance FromJSON Language where
+    parseJSON = withText "Language" (pure . Language)
+
+instance FromJSON a => FromJSON (HM.HashMap Language a) where
+    parseJSON = fmap mapKeyLanguage . parseJSON
+      where
+        mapKeyLanguage :: HM.HashMap Text a -> HM.HashMap Language a
+#ifdef UNSAFE
+        mapKeyLanguage = unsafeCoerce
+#else
+        mapKeyLanguage = mapKey Language
+        mapKey :: (Eq k2, Hashable k2) => (k1 -> k2) -> HM.HashMap k1 a -> HM.HashMap k2 a
+        mapKey f = HM.fromList . map (first f) . HM.toList
+#endif

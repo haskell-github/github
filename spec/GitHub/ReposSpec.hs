@@ -3,12 +3,15 @@
 module GitHub.ReposSpec where
 
 import GitHub.Auth            (Auth (..))
-import GitHub.Endpoints.Repos (RepoPublicity (..), currentUserRepos, userRepos')
+import GitHub.Endpoints.Repos (RepoPublicity (..), currentUserRepos,
+                               languagesFor', userRepos')
 
 import Data.Either.Compat (isRight)
 import Data.String        (fromString)
 import System.Environment (lookupEnv)
 import Test.Hspec         (Spec, describe, it, pendingWith, shouldSatisfy)
+
+import qualified Data.HashMap.Strict as HM
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -32,3 +35,9 @@ spec = do
     it "works" $ withAuth $ \auth -> do
       cs <-  userRepos' (Just auth) "phadej" RepoPublicityAll
       cs `shouldSatisfy` isRight
+
+  describe "languagesFor'" $ do
+    it "works" $ withAuth $ \auth -> do
+      ls <- languagesFor' (Just auth) "phadej" "github"
+      ls `shouldSatisfy` isRight
+      fromRightS ls `shouldSatisfy` HM.member "Haskell"
