@@ -250,6 +250,9 @@ instance FromJSON Contributor where
 instance FromJSON Language where
     parseJSON = withText "Language" (pure . Language)
 
+instance ToJSON Language where
+    toJSON = toJSON . getLanguage
+
 instance FromJSON a => FromJSON (HM.HashMap Language a) where
     parseJSON = fmap mapKeyLanguage . parseJSON
       where
