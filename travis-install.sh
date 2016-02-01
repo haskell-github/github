@@ -12,7 +12,9 @@ case $BUILD in
     stack --no-terminal test --only-dependencies
     ;;
   cabal)
-    if [ -n "$STACKAGESNAPSHOT" ]; then wget https://www.stackage.org/$STACKAGESNAPSHOT/cabal.config; fi
+    if [ -n "$STACKAGESNAPSHOT" ]; then
+		curl -s https://www.stackage.org/$STACKAGESNAPSHOT/cabal.config | grep -v 'github ==' > cabal.config
+	fi
     cabal --version
     echo "$(ghc --version) [$(ghc --print-project-git-commit-id 2> /dev/null || echo '?')]"
     if [ -f $HOME/.cabal/packages/hackage.haskell.org/00-index.tar.gz ]; then
