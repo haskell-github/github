@@ -30,7 +30,7 @@ import GitHub.Data.Repos (Repo)
 data Privacy =
     PrivacyClosed
   | PrivacySecret
-  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+  deriving (Show, Data, Enum, Bounded, Typeable, Eq, Ord, Generic)
 
 instance NFData Privacy where rnf = genericRnf
 instance Binary Privacy
@@ -39,7 +39,7 @@ data Permission =
     PermissionPull
   | PermissionPush
   | PermissionAdmin
-  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+  deriving (Show, Data, Enum, Bounded, Typeable, Eq, Ord, Generic)
 
 instance NFData Permission where rnf = genericRnf
 instance Binary Permission
@@ -47,7 +47,7 @@ instance Binary Permission
 data SimpleTeam = SimpleTeam {
    simpleTeamId              :: !(Id Team)
   ,simpleTeamUrl             :: !Text
-  ,simpleTeamName            :: !Text
+  ,simpleTeamName            :: !Text  -- TODO (0.15.0): unify this and 'simpleTeamSlug' as in 'Team'.
   ,simpleTeamSlug            :: !(Name Team)
   ,simpleTeamDescription     :: !(Maybe Text)
   ,simpleTeamPrivacy         :: !(Maybe Privacy)
@@ -243,3 +243,10 @@ instance FromJSON ReqState where
 instance ToJSON ReqState where
   toJSON StateActive  = String "active"
   toJSON StatePending = String "pending"
+
+-- | Filters members returned by their role in the team.
+data TeamMemberRole
+    = TeamMemberRoleAll         -- ^ all members of the team.
+    | TeamMemberRoleMaintainer  -- ^ team maintainers
+    | TeamMemberRoleMember      -- ^ normal members of the team.
+    deriving (Show, Eq, Ord, Enum, Bounded, Typeable, Data, Generic)

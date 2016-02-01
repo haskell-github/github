@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -9,6 +10,7 @@ module GitHub.Endpoints.Organizations.Members (
     membersOf,
     membersOf',
     membersOfR,
+    membersOfWithR,
     module GitHub.Data,
     ) where
 
@@ -37,3 +39,17 @@ membersOf = membersOf' Nothing
 -- See <https://developer.github.com/v3/orgs/members/#members-list>
 membersOfR :: Name Organization -> Maybe Count -> Request k (Vector SimpleUser)
 membersOfR organization = PagedQuery ["orgs", toPathPart organization, "members"] []
+
+-- | 'membersOfR' with filters.
+--
+-- See <https://developer.github.com/v3/orgs/members/#members-list>
+membersOfWithR :: Name Organization -> OrgMemberFilter -> OrgMemberRole -> Maybe Count -> Request k (Vector SimpleUser)
+membersOfWithR org f r = PagedQuery ["orgs", toPathPart org, "members"] [("filter", Just f'), ("role", Just r')]
+  where
+    f' = case f of
+        OrgMemberFilter2faDisabled -> "2fa_disabled"
+        OrgMemberFilterAll         -> "all"
+    r' = case r of
+        OrgMemberRoleAll    -> "all"
+        OrgMemberRoleAdmin  -> "admin"
+        OrgMemberRoleMember -> "member"
