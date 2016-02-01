@@ -229,3 +229,16 @@ instance FromJSON Owner where
         case t of
             OwnerUser         -> Owner . Left <$> parseUser obj
             OwnerOrganization -> Owner . Right <$> parseOrganization obj
+
+-- | Filter members returned in the list.
+data OrgMemberFilter
+    = OrgMemberFilter2faDisabled  -- ^ Members without two-factor authentication enabled. Available for organization owners.
+    | OrgMemberFilterAll          -- ^ All members the authenticated user can see.
+    deriving (Show, Eq, Ord, Enum, Bounded, Typeable, Data, Generic)
+
+-- | Filter members returned by their role.
+data OrgMemberRole
+    = OrgMemberRoleAll     -- ^ All members of the organization, regardless of role.
+    | OrgMemberRoleAdmin   -- ^ Organization owners.
+    | OrgMemberRoleMember  -- ^ Non-owner organization members.
+    deriving (Show, Eq, Ord, Enum, Bounded, Typeable, Data, Generic)

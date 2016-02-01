@@ -1,4 +1,5 @@
-{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE OverloadedStrings #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -19,6 +20,7 @@ module GitHub.Endpoints.Organizations.Teams (
     editTeamR,
     deleteTeam',
     deleteTeamR,
+    listTeamMembersR,
     teamMembershipInfoFor,
     teamMembershipInfoFor',
     teamMembershipInfoForR,
@@ -120,10 +122,22 @@ deleteTeam' auth tid =
     executeRequest auth $ deleteTeamR tid
 
 -- | Delete team.
+--
 -- See <https://developer.github.com/v3/orgs/teams/#delete-team>
 deleteTeamR :: Id Team -> Request 'True ()
 deleteTeamR tid =
     Command Delete ["teams", toPathPart tid] mempty
+
+-- List team members.
+--
+-- See <https://developer.github.com/v3/orgs/teams/#list-team-members>
+listTeamMembersR :: Id Team -> TeamMemberRole -> Maybe Count -> Request 'True (Vector SimpleUser)
+listTeamMembersR tid r = PagedQuery ["teams", toPathPart tid, "members"] [("role", Just r')]
+  where
+    r' = case r of
+        TeamMemberRoleAll         -> "all"
+        TeamMemberRoleMaintainer  -> "maintainer"
+        TeamMemberRoleMember      -> "member"
 
 -- | Retrieve team mebership information for a user.
 -- | With authentication

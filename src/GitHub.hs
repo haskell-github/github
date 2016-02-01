@@ -158,6 +158,7 @@ module GitHub (
     --
     -- Missing endpoints: All except /Members List/
     membersOfR,
+    membersOfWithR,
 
     -- ** Teams
     -- | See <https://developer.github.com/v3/orgs/teams/>
@@ -177,6 +178,7 @@ module GitHub (
     createTeamForR,
     editTeamR,
     deleteTeamR,
+    listTeamMembersR,
     teamMembershipInfoForR,
     addTeamMembershipForR,
     deleteTeamMembershipForR,

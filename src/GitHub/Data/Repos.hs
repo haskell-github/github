@@ -120,7 +120,7 @@ data RepoPublicity
     | RepoPublicityPublic  -- ^ Only public repos.
     | RepoPublicityPrivate -- ^ Only private repos.
     | RepoPublicityMember  -- ^ Only repos to which the user is a member but not an owner.
-    deriving (Show, Eq, Ord, Typeable, Data, Generic)
+    deriving (Show, Eq, Ord, Enum, Bounded, Typeable, Data, Generic)
 
 -- | The value is the number of bytes of code written in that language.
 type Languages = HM.HashMap Language Int
