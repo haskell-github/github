@@ -1,6 +1,11 @@
 Github
 ------
 
+[![Build Status](https://travis-ci.org/phadej/github.svg?branch=master)](https://travis-ci.org/phadej/github)
+[![Hackage](https://img.shields.io/hackage/v/github.svg)](http://hackage.haskell.org/package/github)
+[![Stackage LTS 5](http://stackage.org/package/github/badge/lts-5)](http://stackage.org/lts-5/package/github)
+[![Stackage Nightly](http://stackage.org/package/github/badge/nightly)](http://stackage.org/nightly/package/github)
+
 The Github API v3 for Haskell.
 
 Some functions are missing; these are functions where the Github API did
