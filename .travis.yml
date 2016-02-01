@@ -33,6 +33,9 @@ matrix:
     - env: BUILD=cabal CABALVER=1.22 GHCVER=7.10.3 STACKAGESNAPSHOT=lts-4.2
       compiler: ": #GHC 7.10.3 lts-4.2"
       addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3], sources: [hvr-ghc]}}
+    - env: BUILD=cabal CABALVER=1.22 GHCVER=7.10.3 STACKAGESNAPSHOT=lts-5.1
+      compiler: ": #GHC 7.10.3 lts-5.1"
+      addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3], sources: [hvr-ghc]}}
     - env: BUILD=stack STACK_YAML=stack-lts-2.yaml GHCVER=7.8.4
       compiler: ": #STACK LTS2"
       addons: {apt: {packages: [ghc-7.8.4], sources: [hvr-ghc]}}
@@ -41,6 +44,9 @@ matrix:
       addons: {apt: {packages: [ghc-7.10.2], sources: [hvr-ghc]}}
     - env: BUILD=stack STACK_YAML=stack-lts-4.yaml  GHCVER=7.10.3
       compiler: ": #STACK LTS4"
+      addons: {apt: {packages: [ghc-7.10.3], sources: [hvr-ghc]}}
+    - env: BUILD=stack STACK_YAML=stack-lts-5.yaml  GHCVER=7.10.3
+      compiler: ": #STACK LTS5"
       addons: {apt: {packages: [ghc-7.10.3], sources: [hvr-ghc]}}
     - env: BUILD=stack STACK_YAML=stack-nightly.yaml GHCVER=7.10.3
       compiler: ": #STACK nightly"
