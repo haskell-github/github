@@ -1,3 +1,11 @@
+Changes for 0.14.1
+
+- Add `membersOfWithR`, `listTeamMembersR`
+- Add related enums: `OrgMemberFilter`, `OrgMemberRole`, `TeamMemberRole`
+- Add `Enum` and `Bounded` instances to `Privacy`, `Permission`,
+  `RepoPublicity`
+- Don't require network access for search tests
+
 Changes for 0.14.0
 
 Large API changes:
