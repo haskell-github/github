@@ -165,7 +165,6 @@ module GitHub (
     --
     -- Missing endpoints:
     --
-    -- * List team members
     -- * Query team member (deprecated)
     -- * Add team member (deprecated)
     -- * Remove team member (deprecated)
