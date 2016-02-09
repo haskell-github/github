@@ -99,7 +99,7 @@ Library
 
   -- Packages needed in order to build this package.
   build-depends: base                  >= 4.7      && <4.9,
-                 aeson                 >=0.7.0.6   && <0.11,
+                 aeson                 >=0.7.0.6   && <0.12,
                  attoparsec            >=0.11.3.4  && <0.14,
                  base-compat           >=0.6.0     && <0.10,
                  base16-bytestring     >=0.1.1.6   && <0.2,
