@@ -14,6 +14,7 @@ module GitHub.Data (
     mkName,
     untagName,
     mkOwnerName,
+    mkUserName,
     mkTeamName,
     mkOrganizationName,
     mkRepoName,
@@ -24,9 +25,12 @@ module GitHub.Data (
     mkId,
     untagId,
     mkOwnerId,
+    mkUserId,
     mkTeamId,
     mkOrganizationId,
     mkRepoId,
+    fromUserId,
+    fromOrganizationId,
     -- * Module re-exports
     module GitHub.Auth,
     module GitHub.Data.Comments,
@@ -70,6 +74,12 @@ mkOwnerId = Id
 mkOwnerName :: Text -> Name Owner
 mkOwnerName = N
 
+mkUserId :: Int -> Id User
+mkUserId = Id
+
+mkUserName :: Text -> Name User
+mkUserName = N
+
 mkTeamId :: Int -> Id Team
 mkTeamId = Id
 
@@ -93,3 +103,9 @@ fromOrganizationName = N . untagName
 
 fromUserName :: Name User -> Name Owner
 fromUserName = N . untagName
+
+fromOrganizationId :: Id Organization -> Id Owner
+fromOrganizationId = Id . untagId
+
+fromUserId :: Id User -> Id Owner
+fromUserId = Id . untagId
