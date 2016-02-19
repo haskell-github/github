@@ -1,3 +1,7 @@
+Changes for 0.14.2
+
+- Add `mkUserId`, `mkUserName`, `fromUserId`, `fromOrganizationId`
+
 Changes for 0.14.1
 
 - Add `membersOfWithR`, `listTeamMembersR`
