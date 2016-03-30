@@ -25,9 +25,13 @@ main = do
 
 formatIssue :: GitHub.Issue -> String
 formatIssue issue =
-  -- (T.unpack $ GitHub.simpleOwnerLogin $ GitHub.issueUser issue) ++
+  formatUser issue ++
     " opened this issue " ++
     (show $ GitHub.issueCreatedAt issue) ++ "\n" ++
     (T.unpack $ GitHub.issueState issue) ++ " with " ++
     (show $ GitHub.issueComments issue) ++ " comments" ++ "\n\n" ++
     (T.unpack $ GitHub.issueTitle issue)
+
+formatUser :: GitHub.Issue -> String
+formatUser issue =
+  (T.unpack . GitHub.untagName . GitHub.simpleUserLogin $ GitHub.issueUser issue)
