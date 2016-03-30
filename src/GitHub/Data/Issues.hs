@@ -242,6 +242,15 @@ instance FromJSON Issue where
           <*> o .:? "milestone"
 
 instance ToJSON NewIssue where
+  toJSON (NewIssue t b a m Nothing) =
+    object
+    [ "title"     .= t
+    , "body"      .= b
+    , "assignee"  .= a
+    , "milestone" .= m
+    -- If there are no labels, than the output should be an empty array.
+    , "labels"    .= () ]
+
   toJSON (NewIssue t b a m ls) =
     object
     [ "title"     .= t
