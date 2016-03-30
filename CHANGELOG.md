@@ -1,3 +1,7 @@
+Changes for 0.14.3
+
+- Add `Hashable Auth` instance
+
 Changes for 0.14.2
 
 - Add `mkUserId`, `mkUserName`, `fromUserId`, `fromOrganizationId`

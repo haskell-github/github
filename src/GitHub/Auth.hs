@@ -11,6 +11,7 @@ import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
 import Data.Binary              (Binary)
 import Data.Data                (Data, Typeable)
+import Data.Hashable            (Hashable)
 import GHC.Generics             (Generic)
 
 import qualified Data.ByteString as BS
@@ -28,3 +29,4 @@ data Auth
 
 instance NFData Auth where rnf = genericRnf
 instance Binary Auth
+instance Hashable Auth
