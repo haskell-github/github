@@ -4,7 +4,6 @@ module CreateIssue where
 
 import qualified Data.Text               as T (unpack)
 import qualified Data.Vector             as Vector (fromList)
-
 import qualified GitHub.Auth             as GitHub
 import qualified GitHub.Data.Issues      as GitHub
 import qualified GitHub.Endpoints.Issues as GitHub
