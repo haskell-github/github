@@ -44,6 +44,7 @@ module GitHub.Data (
     module GitHub.Data.Request,
     module GitHub.Data.Search,
     module GitHub.Data.Teams,
+    module GitHub.Data.Activities,
     module GitHub.Data.Webhooks,
     ) where
 
@@ -66,6 +67,7 @@ import GitHub.Data.Repos
 import GitHub.Data.Request
 import GitHub.Data.Search
 import GitHub.Data.Teams
+import GitHub.Data.Activities
 import GitHub.Data.Webhooks
 
 mkOwnerId :: Int -> Id Owner

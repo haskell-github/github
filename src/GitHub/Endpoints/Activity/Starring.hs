@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE OverloadedStrings   #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -13,6 +14,8 @@ module GitHub.Endpoints.Activity.Starring (
     reposStarredByR,
     myStarred,
     myStarredR,
+    myStarredAcceptStar,
+    myStarredAcceptStarR,
     module GitHub.Data,
     ) where
 
@@ -55,3 +58,13 @@ myStarred auth =
 -- | All the repos starred by the authenticated user.
 myStarredR :: Maybe Count -> Request 'True (Vector Repo)
 myStarredR = PagedQuery ["user", "starred"] []
+
+
+-- | All the repos starred by the authenticated user.
+myStarredAcceptStar :: Auth -> IO (Either Error (Vector RepoStarred))
+myStarredAcceptStar auth =
+    executeRequest auth $ myStarredAcceptStarR Nothing
+
+-- | All the repos starred by the authenticated user.
+myStarredAcceptStarR :: Maybe Count -> Request 'True (Vector RepoStarred)
+myStarredAcceptStarR mc = HeaderQuery [("Accept", "application/vnd.github.v3.star+json")] $ PagedQuery ["user", "starred"] [] mc

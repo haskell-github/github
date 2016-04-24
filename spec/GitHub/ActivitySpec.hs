@@ -4,6 +4,7 @@ module GitHub.ActivitySpec where
 
 import GitHub.Auth                        (Auth (..))
 import GitHub.Endpoints.Activity.Watching (watchersForR)
+import GitHub.Endpoints.Activity.Starring (myStarredAcceptStarR)
 import GitHub.Request                     (executeRequest)
 
 import Data.Either.Compat (isRight)
@@ -12,6 +13,8 @@ import System.Environment (lookupEnv)
 import Test.Hspec         (Spec, describe, it, pendingWith, shouldSatisfy)
 
 import qualified Data.Vector as V
+
+import GitHub.Data.Activities
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -31,3 +34,8 @@ spec = do
       cs <- executeRequest auth $ watchersForR "phadej" "github" Nothing
       cs `shouldSatisfy` isRight
       V.length (fromRightS cs) `shouldSatisfy` (> 10)
+  describe "myStarredR" $ do
+      it "works" $ withAuth $ \auth -> do
+          cs <- executeRequest auth $ myStarredAcceptStarR (Just 31)
+          cs `shouldSatisfy` isRight
+          fromRightS cs `shouldSatisfy` (\xs -> V.length xs > 30)

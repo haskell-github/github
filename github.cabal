@@ -66,6 +66,7 @@ Library
     GitHub.Data.Request
     GitHub.Data.Search
     GitHub.Data.Teams
+    GitHub.Data.Activities
     GitHub.Data.Webhooks
     GitHub.Data.Webhooks.Validate
     GitHub.Endpoints.Activity.Starring
