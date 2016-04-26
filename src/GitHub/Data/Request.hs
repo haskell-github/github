@@ -33,8 +33,8 @@ import GHC.Generics      (Generic)
 import qualified Data.ByteString           as BS
 import qualified Data.ByteString.Lazy      as LBS
 import qualified Data.Text                 as T
+import qualified Network.HTTP.Types        as Types
 import qualified Network.HTTP.Types.Method as Method
-import qualified Network.HTTP.Types as Types
 
 import GitHub.Data.Id   (Id, untagId)
 import GitHub.Data.Name (Name, untagName)

@@ -3,8 +3,8 @@
 module GitHub.ActivitySpec where
 
 import GitHub.Auth                        (Auth (..))
-import GitHub.Endpoints.Activity.Watching (watchersForR)
 import GitHub.Endpoints.Activity.Starring (myStarredAcceptStarR)
+import GitHub.Endpoints.Activity.Watching (watchersForR)
 import GitHub.Request                     (executeRequest)
 
 import Data.Either.Compat (isRight)

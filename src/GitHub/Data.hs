@@ -54,6 +54,7 @@ import Prelude.Compat
 import Data.Text (Text)
 
 import GitHub.Auth
+import GitHub.Data.Activities
 import GitHub.Data.Comments
 import GitHub.Data.Content
 import GitHub.Data.Definitions
@@ -67,7 +68,6 @@ import GitHub.Data.Repos
 import GitHub.Data.Request
 import GitHub.Data.Search
 import GitHub.Data.Teams
-import GitHub.Data.Activities
 import GitHub.Data.Webhooks
 
 mkOwnerId :: Int -> Id Owner

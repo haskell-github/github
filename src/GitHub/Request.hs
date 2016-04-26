@@ -155,7 +155,7 @@ executeRequestWithMgr' :: Manager
                        -> Request 'False a
                        -> IO (Either Error a)
 executeRequestWithMgr' mgr req = runExceptT $
-    execute req                                
+    execute req
   where
     execute :: Request k a -> ExceptT Error IO a
     execute req' = case req' of
