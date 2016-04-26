@@ -56,6 +56,7 @@ myStarred auth =
     executeRequest auth $ myStarredR Nothing
 
 -- | All the repos starred by the authenticated user.
+-- See <https://developer.github.com/v3/activity/starring/#list-repositories-being-starred>
 myStarredR :: Maybe Count -> Request 'True (Vector Repo)
 myStarredR = PagedQuery ["user", "starred"] []
 
@@ -66,5 +67,6 @@ myStarredAcceptStar auth =
     executeRequest auth $ myStarredAcceptStarR Nothing
 
 -- | All the repos starred by the authenticated user.
+-- See <https://developer.github.com/v3/activity/starring/#alternative-response-with-star-creation-timestamps-1>
 myStarredAcceptStarR :: Maybe Count -> Request 'True (Vector RepoStarred)
-myStarredAcceptStarR mc = HeaderQuery [("Accept", "application/vnd.github.v3.star+json")] $ PagedQuery ["user", "starred"] [] mc
+myStarredAcceptStarR = HeaderQuery [("Accept", "application/vnd.github.v3.star+json")] . PagedQuery ["user", "starred"] []

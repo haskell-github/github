@@ -14,8 +14,6 @@ import Test.Hspec         (Spec, describe, it, pendingWith, shouldSatisfy)
 
 import qualified Data.Vector as V
 
-import GitHub.Data.Activities
-
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
 fromRightS (Left a) = error $ "Expected a Right and got a Left" ++ show a

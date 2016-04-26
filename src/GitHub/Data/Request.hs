@@ -123,7 +123,7 @@ data Request (k :: Bool) a where
     PagedQuery   :: FromJSON (Vector a) => Paths -> QueryString -> Maybe Count -> Request k (Vector a)
     Command      :: FromJSON a => CommandMethod a -> Paths -> LBS.ByteString -> Request 'True a
     StatusQuery  :: StatusMap a -> Request k () -> Request k a
-    HeaderQuery  :: FromJSON a => Types.RequestHeaders -> Request k a -> Request k a
+    HeaderQuery  :: Types.RequestHeaders -> Request k a -> Request k a
     deriving (Typeable)
 
 deriving instance Eq (Request k a)

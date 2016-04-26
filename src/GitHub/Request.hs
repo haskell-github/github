@@ -114,6 +114,7 @@ executeRequestWithMgr :: Manager
 executeRequestWithMgr mgr auth req = runExceptT $
     execute req
   where
+    execute :: Request k a -> ExceptT Error IO a
     execute req' = case req' of
         Query {} -> do
             httpReq <- makeHttpRequest (Just auth) req
@@ -155,7 +156,8 @@ executeRequestWithMgr' :: Manager
                        -> IO (Either Error a)
 executeRequestWithMgr' mgr req = runExceptT $
     execute req                                
-  where 
+  where
+    execute :: Request k a -> ExceptT Error IO a
     execute req' = case req' of
         Query {} -> do
             httpReq <- makeHttpRequest Nothing req
@@ -233,7 +235,7 @@ makeHttpRequest auth r = case r of
                $ req
     HeaderQuery h req -> do
         req' <- makeHttpRequest auth req
-        return $ req' { requestHeaders = h <> requestHeaders req'}
+        return $ req' { requestHeaders = h <> requestHeaders req' }
   where
     url :: Paths -> String
     url paths = baseUrl ++ '/' : intercalate "/" paths
