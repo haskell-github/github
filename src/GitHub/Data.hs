@@ -33,6 +33,7 @@ module GitHub.Data (
     fromOrganizationId,
     -- * Module re-exports
     module GitHub.Auth,
+    module GitHub.Data.Activities,
     module GitHub.Data.Comments,
     module GitHub.Data.Content,
     module GitHub.Data.Definitions,
@@ -44,7 +45,6 @@ module GitHub.Data (
     module GitHub.Data.Request,
     module GitHub.Data.Search,
     module GitHub.Data.Teams,
-    module GitHub.Data.Activities,
     module GitHub.Data.Webhooks,
     ) where
 
