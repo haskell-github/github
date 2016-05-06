@@ -112,7 +112,10 @@ executeRequestWithMgr :: Manager
                       -> Request k a
                       -> IO (Either Error a)
 executeRequestWithMgr mgr auth req = runExceptT $
-    case req of
+    execute req
+  where
+    execute :: Request k a -> ExceptT Error IO a
+    execute req' = case req' of
         Query {} -> do
             httpReq <- makeHttpRequest (Just auth) req
             res <- httpLbs' httpReq
@@ -132,7 +135,8 @@ executeRequestWithMgr mgr auth req = runExceptT $
             httpReq <- makeHttpRequest (Just auth) req
             res <- httpLbs' httpReq
             parseStatus sm . responseStatus $ res
-  where
+        HeaderQuery _ r -> do
+            execute r
     httpLbs' :: HTTP.Request -> ExceptT Error IO (Response LBS.ByteString)
     httpLbs' req' = lift (httpLbs req' mgr) `catch` onHttpException
 
@@ -151,7 +155,10 @@ executeRequestWithMgr' :: Manager
                        -> Request 'False a
                        -> IO (Either Error a)
 executeRequestWithMgr' mgr req = runExceptT $
-    case req of
+    execute req
+  where
+    execute :: Request k a -> ExceptT Error IO a
+    execute req' = case req' of
         Query {} -> do
             httpReq <- makeHttpRequest Nothing req
             res <- httpLbs' httpReq
@@ -165,7 +172,8 @@ executeRequestWithMgr' mgr req = runExceptT $
             httpReq <- makeHttpRequest Nothing req
             res <- httpLbs' httpReq
             parseStatus sm  . responseStatus $ res
-  where
+        HeaderQuery _ r -> do
+            execute r
     httpLbs' :: HTTP.Request -> ExceptT Error IO (Response LBS.ByteString)
     httpLbs' req' = lift (httpLbs req' mgr) `catch` onHttpException
 
@@ -225,6 +233,9 @@ makeHttpRequest auth r = case r of
                . setBody body
                . setMethod (toMethod m)
                $ req
+    HeaderQuery h req -> do
+        req' <- makeHttpRequest auth req
+        return $ req' { requestHeaders = h <> requestHeaders req' }
   where
     url :: Paths -> String
     url paths = baseUrl ++ '/' : intercalate "/" paths

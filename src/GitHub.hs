@@ -26,6 +26,7 @@ module GitHub (
     stargazersForR,
     reposStarredByR,
     myStarredR,
+    myStarredAcceptStarR,
 
     -- ** Watching
     -- | See <https://developer.github.com/v3/activity/>

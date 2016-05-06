@@ -44,6 +44,7 @@ module GitHub.Data (
     module GitHub.Data.Request,
     module GitHub.Data.Search,
     module GitHub.Data.Teams,
+    module GitHub.Data.Activities,
     module GitHub.Data.Webhooks,
     ) where
 
@@ -53,6 +54,7 @@ import Prelude.Compat
 import Data.Text (Text)
 
 import GitHub.Auth
+import GitHub.Data.Activities
 import GitHub.Data.Comments
 import GitHub.Data.Content
 import GitHub.Data.Definitions

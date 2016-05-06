@@ -3,6 +3,7 @@
 module GitHub.ActivitySpec where
 
 import GitHub.Auth                        (Auth (..))
+import GitHub.Endpoints.Activity.Starring (myStarredAcceptStarR)
 import GitHub.Endpoints.Activity.Watching (watchersForR)
 import GitHub.Request                     (executeRequest)
 
@@ -31,3 +32,8 @@ spec = do
       cs <- executeRequest auth $ watchersForR "phadej" "github" Nothing
       cs `shouldSatisfy` isRight
       V.length (fromRightS cs) `shouldSatisfy` (> 10)
+  describe "myStarredR" $ do
+      it "works" $ withAuth $ \auth -> do
+          cs <- executeRequest auth $ myStarredAcceptStarR (Just 31)
+          cs `shouldSatisfy` isRight
+          fromRightS cs `shouldSatisfy` (\xs -> V.length xs > 30)
