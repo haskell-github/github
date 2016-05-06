@@ -2,7 +2,7 @@ Github
 ------
 
 [![Build Status](https://travis-ci.org/phadej/github.svg?branch=master)](https://travis-ci.org/phadej/github)
-[![Hackage](https://img.shields.io/hackage/v/github.svg)](http://hackage.haskell.org/package/github)
+[![Hackage](https://img.shields.io/hackage/v/github.svg)][hackage]
 [![Stackage LTS 5](http://stackage.org/package/github/badge/lts-5)](http://stackage.org/lts-5/package/github)
 [![Stackage Nightly](http://stackage.org/package/github/badge/nightly)](http://stackage.org/nightly/package/github)
 
@@ -37,7 +37,7 @@ See the samples in the
 Documentation
 =============
 
-For details see the reference documentation on Hackage.
+For details see the reference [documentation on Hackage][hackage].
 
 Each module lines up with the hierarchy of
 [documentation from the Github API](http://developer.github.com/v3/).
@@ -54,15 +54,23 @@ Many function have samples under
 [`samples/`](https://github.com/phadej/github/tree/master/samples) directory.
 
 ```hs
-import qualified GitHub.Endpoints.Users.Followers as Github
 
+{-# LANGUAGE OverloadedStrings #-}
+
+import qualified GitHub.Endpoints.Users.Followers as GitHub
+import Data.Text as T
+import Data.Text.IO as TIO
+import Data.Monoid ((<>))
+
+main :: IO ()
 main = do
-    possibleUsers <- GitHub.usersFollowing "mike-burns"
-    T.putStrLn $ either (("Error: " <>) . T.pack . show)
-                        (foldMap (formatUser . (<> "\n")))
+  possibleUsers <- GitHub.usersFollowing "mike-burns"
+  TIO.putStrLn $ either (("Error: " <>) . T.pack . show)
+                        (foldMap ((<> "\n") . formatUser))
                         possibleUsers
 
-formatUser = GitHub.untagName . GitHub.githubOwnerLogin
+formatUser :: GitHub.SimpleUser -> Text
+formatUser = GitHub.untagName . GitHub.simpleUserLogin
 ```
 
 Test setup
@@ -90,3 +98,5 @@ Copyright 2013-2015 John Wiegley.
 Copyright 2016 Oleg Grenrus.
 
 Available under the BSD 3-clause license.
+
+[hackage]: http://hackage.haskell.org/package/github "Hackage"
