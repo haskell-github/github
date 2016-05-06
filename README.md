@@ -54,18 +54,18 @@ Many function have samples under
 [`samples/`](https://github.com/phadej/github/tree/master/samples) directory.
 
 ```hs
-
 {-# LANGUAGE OverloadedStrings #-}
 
+import Data.Text         (Text, pack)
+import Data.Text.IO as T (putStrLn)
+import Data.Monoid       ((<>))
+
 import qualified GitHub.Endpoints.Users.Followers as GitHub
-import Data.Text as T
-import Data.Text.IO as TIO
-import Data.Monoid ((<>))
 
 main :: IO ()
 main = do
-  possibleUsers <- GitHub.usersFollowing "mike-burns"
-  TIO.putStrLn $ either (("Error: " <>) . T.pack . show)
+    possibleUsers <- GitHub.usersFollowing "mike-burns"
+    T.putStrLn $ either (("Error: " <>) . pack . show)
                         (foldMap ((<> "\n") . formatUser))
                         possibleUsers
 
