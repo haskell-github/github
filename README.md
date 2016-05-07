@@ -54,7 +54,10 @@ Many function have samples under
 [`samples/`](https://github.com/phadej/github/tree/master/samples) directory.
 
 ```hs
+{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+
+import Prelude.Compat
 
 import Data.Text         (Text, pack)
 import Data.Text.IO as T (putStrLn)
