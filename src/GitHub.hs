@@ -169,7 +169,6 @@ module GitHub (
     -- * Query team member (deprecated)
     -- * Add team member (deprecated)
     -- * Remove team member (deprecated)
-    -- * List team repos
     -- * Check if a team manages a repository
     -- * Add team repository
     -- * Remove team repository
@@ -179,6 +178,7 @@ module GitHub (
     editTeamR,
     deleteTeamR,
     listTeamMembersR,
+    listTeamReposR,
     teamMembershipInfoForR,
     addTeamMembershipForR,
     deleteTeamMembershipForR,

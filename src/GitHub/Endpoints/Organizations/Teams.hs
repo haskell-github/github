@@ -21,6 +21,9 @@ module GitHub.Endpoints.Organizations.Teams (
     deleteTeam',
     deleteTeamR,
     listTeamMembersR,
+    listTeamRepos,
+    listTeamRepos',
+    listTeamReposR,
     teamMembershipInfoFor,
     teamMembershipInfoFor',
     teamMembershipInfoForR,
@@ -63,7 +66,7 @@ teamsOfR :: Name Organization -> Maybe Count -> Request k (Vector SimpleTeam)
 teamsOfR org = PagedQuery ["orgs", toPathPart org, "teams"] []
 
 -- | The information for a single team, by team id.
--- | With authentication
+-- With authentication
 --
 -- > teamInfoFor' (Just $ OAuth "token") 1010101
 teamInfoFor' :: Maybe Auth -> Id Team -> IO (Either Error Team)
@@ -128,7 +131,7 @@ deleteTeamR :: Id Team -> Request 'True ()
 deleteTeamR tid =
     Command Delete ["teams", toPathPart tid] mempty
 
--- List team members.
+-- | List team members.
 --
 -- See <https://developer.github.com/v3/orgs/teams/#list-team-members>
 listTeamMembersR :: Id Team -> TeamMemberRole -> Maybe Count -> Request 'True (Vector SimpleUser)
@@ -139,8 +142,26 @@ listTeamMembersR tid r = PagedQuery ["teams", toPathPart tid, "members"] [("role
         TeamMemberRoleMaintainer  -> "maintainer"
         TeamMemberRoleMember      -> "member"
 
+-- | The repositories of a single team, by team id.
+-- With authentication
+--
+-- > listTeamRepos' (Just $ GitHub.OAuth token) (GitHub.mkTeamId team_id)
+listTeamRepos' :: Maybe Auth -> Id Team -> IO (Either Error (Vector Repo))
+listTeamRepos' auth tid = executeRequestMaybe auth $ listTeamReposR tid Nothing
+
+-- | Query team repositories.
+-- See <https://developer.github.com/v3/orgs/teams/#list-team-repos>
+listTeamReposR :: Id Team -> Maybe Count -> Request k (Vector Repo)
+listTeamReposR tid  = PagedQuery ["teams", toPathPart tid, "repos"] []
+
+-- | Retrieve repositories for a team.
+--
+-- > listTeamRepos (GitHub.mkTeamId team_id)
+listTeamRepos :: Id Team -> IO (Either Error (Vector Repo))
+listTeamRepos = listTeamRepos' Nothing
+
 -- | Retrieve team mebership information for a user.
--- | With authentication
+-- With authentication
 --
 -- > teamMembershipInfoFor' (Just $ OAuth "token") 1010101 "mburns"
 teamMembershipInfoFor' :: Maybe Auth -> Id Team -> Name Owner -> IO (Either Error TeamMembership)

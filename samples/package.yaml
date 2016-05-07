@@ -50,6 +50,11 @@ executables:
     source-dirs: Teams
     dependencies:
       - github-samples
+  github-list-team-repos:
+    main: ListRepos.hs
+    source-dirs: Teams
+    dependencies:
+      - github-samples
   github-teaminfo-for:
     main: TeamInfoFor.hs
     source-dirs: Teams

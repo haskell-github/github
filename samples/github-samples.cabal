@@ -49,6 +49,7 @@ executable github-delete-team
     , github-samples
   other-modules:
       EditTeam
+      ListRepos
       ListTeamsCurrent
       Memberships.AddTeamMembershipFor
       Memberships.DeleteTeamMembershipFor
@@ -85,6 +86,7 @@ executable github-edit-team
     , github-samples
   other-modules:
       DeleteTeam
+      ListRepos
       ListTeamsCurrent
       Memberships.AddTeamMembershipFor
       Memberships.DeleteTeamMembershipFor
@@ -153,6 +155,28 @@ executable github-list-team-current
   other-modules:
       DeleteTeam
       EditTeam
+      ListRepos
+      Memberships.AddTeamMembershipFor
+      Memberships.DeleteTeamMembershipFor
+      Memberships.TeamMembershipInfoFor
+      TeamInfoFor
+  default-language: Haskell2010
+
+executable github-list-team-repos
+  main-is: ListRepos.hs
+  hs-source-dirs:
+      Teams
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      DeleteTeam
+      EditTeam
+      ListTeamsCurrent
       Memberships.AddTeamMembershipFor
       Memberships.DeleteTeamMembershipFor
       Memberships.TeamMembershipInfoFor
@@ -243,6 +267,7 @@ executable github-teaminfo-for
   other-modules:
       DeleteTeam
       EditTeam
+      ListRepos
       ListTeamsCurrent
       Memberships.AddTeamMembershipFor
       Memberships.DeleteTeamMembershipFor
