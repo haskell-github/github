@@ -6,7 +6,7 @@ case $BUILD in
     stack --no-terminal build github-samples
 
     # TODO: get executables from info
-    for testbin in show-user list-followers list-following operational; do
+    for testbin in show-user list-followers list-followers-example list-following operational; do
         echo "Running " $testbin
         stack exec github-$testbin
     done
