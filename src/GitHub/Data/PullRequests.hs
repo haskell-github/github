@@ -17,7 +17,7 @@ import GitHub.Data.Repos       (Repo)
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
 import Data.Aeson.Compat        (FromJSON (..), ToJSON (..), Value (..), object,
-                                 withObject, (.:), (.:?), (.=))
+                                 withObject, (.!=), (.:), (.:?), (.=))
 import Data.Aeson.Types         (Object, Parser)
 import Data.Binary.Orphans      (Binary)
 import Data.Data                (Data, Typeable)
@@ -184,7 +184,7 @@ instance FromJSON SimplePullRequest where
         <*> o .: "number"
         <*> o .: "html_url"
         <*> o .: "updated_at"
-        <*> o .: "body"
+        <*> o .:? "body" .!= "" -- TODO: no body is treated as empty
         <*> o .: "issue_url"
         <*> o .: "diff_url"
         <*> o .: "url"

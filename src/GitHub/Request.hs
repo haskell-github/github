@@ -157,7 +157,7 @@ executeRequestWithMgr' :: Manager
 executeRequestWithMgr' mgr req = runExceptT $
     execute req
   where
-    execute :: Request k a -> ExceptT Error IO a
+    execute :: Request 'False a -> ExceptT Error IO a
     execute req' = case req' of
         Query {} -> do
             httpReq <- makeHttpRequest Nothing req
