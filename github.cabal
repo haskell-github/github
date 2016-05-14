@@ -128,7 +128,9 @@ Library
                  transformers-compat   >=0.4.0.3   && <0.6,
                  unordered-containers  >=0.2       && <0.3,
                  vector                >=0.10.12.3 && <0.12,
-                 vector-instances      >=3.3.0.1   && <3.4
+                 vector-instances      >=3.3.0.1   && <3.4,
+
+                 tls                   >=1.3.5
 
   if flag(aeson-compat)
     build-depends: aeson-compat >=0.3.0.0 && <0.4

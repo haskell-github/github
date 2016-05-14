@@ -13,7 +13,8 @@ case $BUILD in
     ;;
   cabal)
     if [ -n "$STACKAGESNAPSHOT" ]; then
-		curl -s https://www.stackage.org/$STACKAGESNAPSHOT/cabal.config | grep -v 'github ==' > cabal.config
+		curl -sL https://www.stackage.org/$STACKAGESNAPSHOT/cabal.config | sed 's/constraints:/preferences:/' | grep -v installed > cabal.config
+        head cabal.config
 	fi
     cabal --version
     echo "$(ghc --version) [$(ghc --print-project-git-commit-id 2> /dev/null || echo '?')]"

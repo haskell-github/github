@@ -2,8 +2,11 @@ packages:
 - '.'
 - 'samples/'
 extra-deps:
+- cryptonite-0.15
 - http-link-header-1.0.1
 - iso8601-time-0.1.4
+- memory-0.12
+- tls-1.3.8
 resolver: lts-3.22
 flags:
   github:
