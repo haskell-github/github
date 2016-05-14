@@ -143,6 +143,8 @@ test-suite github-test
     GitHub.ActivitySpec
     GitHub.CommitsSpec
     GitHub.OrganizationsSpec
+    GitHub.IssuesSpec
+    GitHub.PullRequestsSpec
     GitHub.ReposSpec
     GitHub.SearchSpec
     GitHub.UsersSpec
