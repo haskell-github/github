@@ -8,8 +8,6 @@
 -- The pull requests API as documented at
 -- <http://developer.github.com/v3/pulls/>.
 module GitHub.Endpoints.PullRequests (
-    pullRequestsFor'',
-    pullRequestsFor',
     pullRequestsFor,
     pullRequestsForR,
     pullRequest',
@@ -38,46 +36,26 @@ import GitHub.Request
 import Data.Aeson.Compat (Value, encode, object, (.=))
 import Data.Vector       (Vector)
 
-import qualified Data.ByteString.Char8 as BS8
-
--- | All pull requests for the repo, by owner, repo name, and pull request state.
--- | With authentification
---
--- > pullRequestsFor' (Just ("github-username", "github-password"))  (Just "open") "rails" "rails"
---
--- State can be one of @all@, @open@, or @closed@. Default is @open@.
---
-pullRequestsFor'' :: Maybe Auth -> Maybe String -> Name Owner -> Name Repo -> IO (Either Error (Vector SimplePullRequest))
-pullRequestsFor'' auth state user repo =
-    executeRequestMaybe auth $ pullRequestsForR user repo state Nothing
-
--- | All pull requests for the repo, by owner and repo name.
--- | With authentification
---
--- > pullRequestsFor' (Just ("github-username", "github-password")) "rails" "rails"
-pullRequestsFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector SimplePullRequest))
-pullRequestsFor' auth = pullRequestsFor'' auth Nothing
-
--- | All pull requests for the repo, by owner and repo name.
+-- | All open pull requests for the repo, by owner and repo name.
 --
 -- > pullRequestsFor "rails" "rails"
 pullRequestsFor :: Name Owner -> Name Repo -> IO (Either Error (Vector SimplePullRequest))
-pullRequestsFor = pullRequestsFor'' Nothing Nothing
+pullRequestsFor user repo =
+    executeRequest' $ pullRequestsForR user repo defaultPullRequestOptions Nothing
 
 -- | List pull requests.
 -- See <https://developer.github.com/v3/pulls/#list-pull-requests>
 pullRequestsForR :: Name Owner -> Name Repo
-                 -> Maybe String  -- ^ State
+                 -> PullRequestOptions -- ^ State
                  -> Maybe Count
                  -> Request k (Vector SimplePullRequest)
-pullRequestsForR user repo state =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "pulls"] qs
-  where
-    qs = maybe [] (\s -> [("state", Just . BS8.pack $ s)]) state
+pullRequestsForR user repo opts = PagedQuery
+    ["repos", toPathPart user, toPathPart repo, "pulls"]
+    (pullRequestOptionsToQueryString opts)
 
 -- | A detailed pull request, which has much more information. This takes the
 -- repo owner and name along with the number assigned to the pull request.
--- | With authentification
+-- With authentification.
 --
 -- > pullRequest' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 562
 pullRequest' :: Maybe Auth -> Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error PullRequest)
@@ -131,7 +109,7 @@ updatePullRequestR user repo prid epr =
 
 -- | All the commits on a pull request, given the repo owner, repo name, and
 -- the number of the pull request.
--- | With authentification
+-- With authentification.
 --
 -- > pullRequestCommits' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 688
 pullRequestCommits' :: Maybe Auth -> Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector Commit))
@@ -153,7 +131,7 @@ pullRequestCommitsR user repo prid =
 
 -- | The individual files that a pull request patches. Takes the repo owner and
 -- name, plus the number assigned to the pull request.
--- | With authentification
+-- With authentification.
 --
 -- > pullRequestFiles' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 688
 pullRequestFiles' :: Maybe Auth -> Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector File))

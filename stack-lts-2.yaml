@@ -5,6 +5,7 @@ extra-deps:
 - aeson-extra-0.2.3.0
 - asn1-parse-0.9.4
 - asn1-types-0.3.2
+- base-compat-0.9.1
 - binary-orphans-0.1.3.0
 - connection-0.2.5
 - cryptonite-0.15
