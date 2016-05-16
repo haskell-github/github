@@ -30,22 +30,20 @@ import Data.Typeable     (Typeable)
 import Data.Vector       (Vector)
 import GHC.Generics      (Generic)
 
-import qualified Data.ByteString           as BS
 import qualified Data.ByteString.Lazy      as LBS
 import qualified Data.Text                 as T
 import qualified Network.HTTP.Types        as Types
 import qualified Network.HTTP.Types.Method as Method
 
-import GitHub.Data.Id   (Id, untagId)
-import GitHub.Data.Name (Name, untagName)
+import GitHub.Data.Definitions (Count, QueryString)
+import GitHub.Data.Id          (Id, untagId)
+import GitHub.Data.Name        (Name, untagName)
 
 ------------------------------------------------------------------------------
 -- Auxillary types
 ------------------------------------------------------------------------------
 
 type Paths = [String]
-type QueryString = [(BS.ByteString, Maybe BS.ByteString)]
-type Count = Int
 
 class IsPathPart a where
     toPathPart :: a -> String

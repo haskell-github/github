@@ -26,6 +26,7 @@ import Network.HTTP.Client      (HttpException)
 
 import qualified Control.Exception as E
 import qualified Data.Text         as T
+import qualified Data.ByteString   as BS
 
 import GitHub.Data.Id
 import GitHub.Data.Name
@@ -242,3 +243,9 @@ data OrgMemberRole
     | OrgMemberRoleAdmin   -- ^ Organization owners.
     | OrgMemberRoleMember  -- ^ Non-owner organization members.
     deriving (Show, Eq, Ord, Enum, Bounded, Typeable, Data, Generic)
+
+-- | Request query string
+type QueryString = [(BS.ByteString, Maybe BS.ByteString)]
+
+-- | Count of elements
+type Count = Int

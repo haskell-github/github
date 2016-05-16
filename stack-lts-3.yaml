@@ -2,6 +2,7 @@ packages:
 - '.'
 - 'samples/'
 extra-deps:
+- base-compat-0.9.1
 - cryptonite-0.15
 - http-link-header-1.0.1
 - iso8601-time-0.1.4

@@ -3,11 +3,12 @@ module GitHub.PullRequestsSpec where
 
 import qualified GitHub
 
-import Data.Either.Compat (isRight)
-import Data.Foldable      (for_)
-import Data.String        (fromString)
-import System.Environment (lookupEnv)
-import Test.Hspec         (Spec, describe, it, pendingWith, shouldSatisfy)
+import Data.Either.Compat   (isRight)
+import Data.Foldable        (for_)
+import Data.Function.Compat ((&))
+import Data.String          (fromString)
+import System.Environment   (lookupEnv)
+import Test.Hspec           (Spec, describe, it, pendingWith, shouldSatisfy)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -25,7 +26,7 @@ spec = do
     describe "pullRequestsForR" $ do
         it "works" $ withAuth $ \auth -> for_ repos $ \(owner, repo) -> do
             cs <- GitHub.executeRequest auth $
-                GitHub.pullRequestsForR owner repo (Just "closed") Nothing
+                GitHub.pullRequestsForR owner repo opts Nothing
             cs `shouldSatisfy` isRight
   where
     repos =
@@ -33,3 +34,5 @@ spec = do
       , ("phadej", "github")
       , ("haskell", "cabal")
       ]
+    opts = GitHub.defaultPullRequestOptions
+        & GitHub.setPullRequestOptionsState GitHub.PullRequestStateClosed
