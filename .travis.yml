@@ -21,15 +21,18 @@ matrix:
     - env: BUILD=cabal CABALVER=1.18 GHCVER=7.8.4
       compiler: ": #GHC 7.8.4"
       addons: {apt: {packages: [cabal-install-1.18,ghc-7.8.4], sources: [hvr-ghc]}}
+    - env: BUILD=cabal CABALVER=1.22 GHCVER=7.10.3
+      compiler: ": #GHC 7.10.3"
+      addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3], sources: [hvr-ghc]}}
+    - env: BUILD=cabal CABALVER=1.24 GHCVER=8.0.1
+      compiler: ": #GHC 8.0.1"
+      addons: {apt: {packages: [cabal-install-1.24,ghc-8.0.1], sources: [hvr-ghc]}}
     - env: BUILD=cabal CABALVER=1.18 GHCVER=7.8.4 STACKAGESNAPSHOT=lts-2.22
       compiler: ": #GHC 7.8.4 lts-2.22"
       addons: {apt: {packages: [cabal-install-1.18,ghc-7.8.4], sources: [hvr-ghc]}}
     - env: BUILD=cabal CABALVER=1.22 GHCVER=7.10.2 STACKAGESNAPSHOT=lts-3.22
       compiler: ": #GHC 7.10.2 lts-3.22"
       addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.2], sources: [hvr-ghc]}}
-    - env: BUILD=cabal CABALVER=1.22 GHCVER=7.10.3
-      compiler: ": #GHC 7.10.3"
-      addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3], sources: [hvr-ghc]}}
     - env: BUILD=cabal CABALVER=1.22 GHCVER=7.10.3 STACKAGESNAPSHOT=lts-4.2
       compiler: ": #GHC 7.10.3 lts-4.2"
       addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3], sources: [hvr-ghc]}}
