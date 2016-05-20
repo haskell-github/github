@@ -58,7 +58,7 @@ data Repo = Repo {
   ,repoOwner           :: !SimpleOwner
   ,repoName            :: !(Name Repo)
   ,repoLanguage        :: !(Maybe Language)
-  ,repoMasterBranch    :: !(Maybe Text)
+  ,repoDefaultBranch   :: !(Maybe Text)
   ,repoPushedAt        :: !(Maybe UTCTime)   -- ^ this is Nothing for new repositories
   ,repoId              :: !(Id Repo)
   ,repoUrl             :: !Text
@@ -176,7 +176,7 @@ instance FromJSON Repo where
          <*> o .: "owner"
          <*> o .: "name"
          <*> o .:? "language"
-         <*> o .:? "master_branch"
+         <*> o .:? "default_branch"
          <*> o .:? "pushed_at"
          <*> o .: "id"
          <*> o .: "url"
