@@ -13,7 +13,7 @@ case $BUILD in
     ;;
   cabal)
     if [ -f configure.ac ]; then autoreconf -i; fi
-    cabal configure --enable-tests --enable-benchmarks -v2  # -v2 provides useful information for debugging
+    cabal configure --constraint="integer-simple installed" --enable-tests --enable-benchmarks -v2  # -v2 provides useful information for debugging
     cabal build   # this builds all libraries and executables (including tests/benchmarks)
     cabal test --show-details=always
 
