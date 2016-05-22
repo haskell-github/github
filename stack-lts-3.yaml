@@ -1,6 +1,7 @@
+resolver: lts-3.22
 packages:
 - '.'
-- 'samples/'
+- samples/
 extra-deps:
 - base-compat-0.9.1
 - cryptonite-0.15
@@ -8,7 +9,6 @@ extra-deps:
 - iso8601-time-0.1.4
 - memory-0.12
 - tls-1.3.8
-resolver: lts-3.22
 flags:
   github:
-     aeson-compat: false
+    aeson-compat: false
