@@ -1,14 +1,24 @@
-set -e
+set -ex
+
+SAMPLE_EXES="show-user list-followers list-following operational"
 
 case $BUILD in
   stack)
     stack --no-terminal test github
     stack --no-terminal build github-samples
 
-    # TODO: get executables from info
-    for testbin in show-user list-followers list-following operational; do
-        echo "Running " $testbin
-        stack exec github-$testbin
+    for testbin in $SAMPLE_EXES; do
+      echo "Running " $testbin
+      stack exec github-$testbin
+    done
+    ;;
+  stack-space-leak)
+    stack --no-terminal test --fast --library-profiling --ghc-options=-rtsopts --test-arguments='+RTS -K1K' github
+    stack --no-terminal build --fast --library-profiling --ghc-options=-rtsopts --executable-profiling --test-arguments='+RTS -K1K' github-samples
+
+    for testbin in $SAMPLE_EXES; do
+      echo "Running " $testbin
+      stack exec github-$testbin
     done
     ;;
   cabal)
