@@ -13,6 +13,7 @@ import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id)
 import GitHub.Data.Name        (Name)
 import GitHub.Data.Repos       (Repo)
+import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 
 data Privacy =
@@ -34,14 +35,14 @@ instance Binary Permission
 
 data SimpleTeam = SimpleTeam {
    simpleTeamId              :: !(Id Team)
-  ,simpleTeamUrl             :: !Text
+  ,simpleTeamUrl             :: !URL
   ,simpleTeamName            :: !Text  -- TODO (0.15.0): unify this and 'simpleTeamSlug' as in 'Team'.
   ,simpleTeamSlug            :: !(Name Team)
   ,simpleTeamDescription     :: !(Maybe Text)
   ,simpleTeamPrivacy         :: !(Maybe Privacy)
   ,simpleTeamPermission      :: !Permission
-  ,simpleTeamMembersUrl      :: !Text
-  ,simpleTeamRepositoriesUrl :: !Text
+  ,simpleTeamMembersUrl      :: !URL
+  ,simpleTeamRepositoriesUrl :: !URL
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData SimpleTeam where rnf = genericRnf
@@ -49,14 +50,14 @@ instance Binary SimpleTeam
 
 data Team = Team {
    teamId              :: !(Id Team)
-  ,teamUrl             :: !Text
+  ,teamUrl             :: !URL
   ,teamName            :: !(Name Team)
   ,teamSlug            :: !Text
   ,teamDescription     :: !(Maybe Text)
   ,teamPrivacy         :: !(Maybe Privacy)
   ,teamPermission      :: !Permission
-  ,teamMembersUrl      :: !Text
-  ,teamRepositoriesUrl :: !Text
+  ,teamMembersUrl      :: !URL
+  ,teamRepositoriesUrl :: !URL
   ,teamMembersCount    :: !Int
   ,teamReposCount      :: !Int
   ,teamOrganization    :: !SimpleOrganization
@@ -103,7 +104,7 @@ instance NFData ReqState where rnf = genericRnf
 instance Binary ReqState
 
 data TeamMembership = TeamMembership {
-  teamMembershipUrl      :: !Text,
+  teamMembershipUrl      :: !URL,
   teamMembershipRole     :: !Role,
   teamMembershipReqState :: !ReqState
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)

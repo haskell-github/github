@@ -5,7 +5,8 @@
 --
 module GitHub.Data.Search where
 
-import GitHub.Data.Repos (Repo)
+import GitHub.Data.Repos       (Repo)
+import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 
 import qualified Data.Vector as V
@@ -27,9 +28,9 @@ data Code = Code {
    codeName    :: !Text
   ,codePath    :: !Text
   ,codeSha     :: !Text
-  ,codeUrl     :: !Text
-  ,codeGitUrl  :: !Text
-  ,codeHtmlUrl :: !Text
+  ,codeUrl     :: !URL
+  ,codeGitUrl  :: !URL
+  ,codeHtmlUrl :: !URL
   ,codeRepo    :: !Repo
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 

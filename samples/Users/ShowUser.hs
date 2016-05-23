@@ -20,7 +20,7 @@ formatUser user =
   (formatName userName login) <> "\t" <> (fromMaybe "" company) <> "\t" <>
     (fromMaybe "" location) <> "\n" <>
     (fromMaybe "" blog) <> "\t" <> "<" <> (fromMaybe "" email) <> ">" <> "\n" <>
-    htmlUrl <> "\t" <> tshow createdAt <> "\n" <>
+    GitHub.getUrl htmlUrl <> "\t" <> tshow createdAt <> "\n" <>
     "hireable: " <> formatHireable (fromMaybe False isHireable) <> "\n\n" <>
     (fromMaybe "" bio)
   where

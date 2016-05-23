@@ -7,6 +7,7 @@ module GitHub.Data.GitData where
 
 import GitHub.Data.Definitions
 import GitHub.Data.Name        (Name)
+import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 
 import qualified Data.Vector as V
@@ -31,7 +32,7 @@ instance Binary Stats
 data Commit = Commit {
    commitSha       :: !(Name Commit)
   ,commitParents   :: !(Vector Tree)
-  ,commitUrl       :: !Text
+  ,commitUrl       :: !URL
   ,commitGitCommit :: !GitCommit
   ,commitCommitter :: !(Maybe SimpleUser)
   ,commitAuthor    :: !(Maybe SimpleUser)
@@ -44,7 +45,7 @@ instance Binary Commit
 
 data Tree = Tree {
    treeSha      :: !(Name Tree)
-  ,treeUrl      :: !Text
+  ,treeUrl      :: !URL
   ,treeGitTrees :: !(Vector GitTree)
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -55,7 +56,7 @@ data GitTree = GitTree {
   gitTreeType  :: !Text
   ,gitTreeSha  :: !(Name GitTree)
   -- Can be empty for submodule
-  ,gitTreeUrl  :: !(Maybe Text)
+  ,gitTreeUrl  :: !(Maybe URL)
   ,gitTreeSize :: !(Maybe Int)
   ,gitTreePath :: !Text
   ,gitTreeMode :: !Text
@@ -66,7 +67,7 @@ instance Binary GitTree
 
 data GitCommit = GitCommit {
    gitCommitMessage   :: !Text
-  ,gitCommitUrl       :: !Text
+  ,gitCommitUrl       :: !URL
   ,gitCommitCommitter :: !GitUser
   ,gitCommitAuthor    :: !GitUser
   ,gitCommitTree      :: !Tree
@@ -78,7 +79,7 @@ instance NFData GitCommit where rnf = genericRnf
 instance Binary GitCommit
 
 data Blob = Blob {
-   blobUrl      :: !Text
+   blobUrl      :: !URL
   ,blobEncoding :: !Text
   ,blobContent  :: !Text
   ,blobSha      :: !(Name Blob)
@@ -90,8 +91,8 @@ instance Binary Blob
 
 data Tag = Tag {
    tagName       :: !Text
-  ,tagZipballUrl :: !Text
-  ,tagTarballUrl :: !Text
+  ,tagZipballUrl :: !URL
+  ,tagTarballUrl :: !URL
   ,tagCommit     :: !BranchCommit
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -107,7 +108,7 @@ instance NFData Branch where rnf = genericRnf
 
 data BranchCommit = BranchCommit {
    branchCommitSha :: !Text
-  ,branchCommitUrl :: !Text
+  ,branchCommitUrl :: !URL
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData BranchCommit where rnf = genericRnf
@@ -116,16 +117,16 @@ instance Binary BranchCommit
 data Diff = Diff {
    diffStatus       :: !Text
   ,diffBehindBy     :: !Int
-  ,diffPatchUrl     :: !Text
-  ,diffUrl          :: !Text
+  ,diffPatchUrl     :: !URL
+  ,diffUrl          :: !URL
   ,diffBaseCommit   :: !Commit
   ,diffCommits      :: !(Vector Commit)
   ,diffTotalCommits :: !Int
-  ,diffHtmlUrl      :: !Text
+  ,diffHtmlUrl      :: !URL
   ,diffFiles        :: !(Vector File)
   ,diffAheadBy      :: !Int
-  ,diffDiffUrl      :: !Text
-  ,diffPermalinkUrl :: !Text
+  ,diffDiffUrl      :: !URL
+  ,diffPermalinkUrl :: !URL
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Diff where rnf = genericRnf
@@ -141,7 +142,7 @@ instance Binary NewGitReference
 
 data GitReference = GitReference {
    gitReferenceObject :: !GitObject
-  ,gitReferenceUrl    :: !Text
+  ,gitReferenceUrl    :: !URL
   ,gitReferenceRef    :: !Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -151,7 +152,7 @@ instance Binary GitReference
 data GitObject = GitObject {
    gitObjectType :: !Text
   ,gitObjectSha  :: !Text
-  ,gitObjectUrl  :: !Text
+  ,gitObjectUrl  :: !URL
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData GitObject where rnf = genericRnf
@@ -167,9 +168,9 @@ instance NFData GitUser where rnf = genericRnf
 instance Binary GitUser
 
 data File = File {
-   fileBlobUrl   :: !Text
+   fileBlobUrl   :: !URL
   ,fileStatus    :: !Text
-  ,fileRawUrl    :: !Text
+  ,fileRawUrl    :: !URL
   ,fileAdditions :: !Int
   ,fileSha       :: !Text
   ,fileChanges   :: !Int

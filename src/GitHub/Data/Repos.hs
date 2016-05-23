@@ -14,6 +14,7 @@ module GitHub.Data.Repos where
 import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id)
 import GitHub.Data.Name        (Name)
+import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 
 import qualified Data.HashMap.Strict as HM
@@ -23,17 +24,17 @@ import Unsafe.Coerce (unsafeCoerce)
 #endif
 
 data Repo = Repo {
-   repoSshUrl          :: !(Maybe Text)
+   repoSshUrl          :: !(Maybe URL)
   ,repoDescription     :: !(Maybe Text)
   ,repoCreatedAt       :: !(Maybe UTCTime)
-  ,repoHtmlUrl         :: !Text
-  ,repoSvnUrl          :: !(Maybe Text)
+  ,repoHtmlUrl         :: !URL
+  ,repoSvnUrl          :: !(Maybe URL)
   ,repoForks           :: !(Maybe Int)
   ,repoHomepage        :: !(Maybe Text)
   ,repoFork            :: !(Maybe Bool)
-  ,repoGitUrl          :: !(Maybe Text)
+  ,repoGitUrl          :: !(Maybe URL)
   ,repoPrivate         :: !Bool
-  ,repoCloneUrl        :: !(Maybe Text)
+  ,repoCloneUrl        :: !(Maybe URL)
   ,repoSize            :: !(Maybe Int)
   ,repoUpdatedAt       :: !(Maybe UTCTime)
   ,repoWatchers        :: !(Maybe Int)
@@ -43,14 +44,14 @@ data Repo = Repo {
   ,repoDefaultBranch   :: !(Maybe Text)
   ,repoPushedAt        :: !(Maybe UTCTime)   -- ^ this is Nothing for new repositories
   ,repoId              :: !(Id Repo)
-  ,repoUrl             :: !Text
+  ,repoUrl             :: !URL
   ,repoOpenIssues      :: !(Maybe Int)
   ,repoHasWiki         :: !(Maybe Bool)
   ,repoHasIssues       :: !(Maybe Bool)
   ,repoHasDownloads    :: !(Maybe Bool)
   ,repoParent          :: !(Maybe RepoRef)
   ,repoSource          :: !(Maybe RepoRef)
-  ,repoHooksUrl        :: !Text
+  ,repoHooksUrl        :: !URL
   ,repoStargazersCount :: !Int
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -124,7 +125,7 @@ instance IsString Language where
 data Contributor
   -- | An existing Github user, with their number of contributions, avatar
   -- URL, login, URL, ID, and Gravatar ID.
-  = KnownContributor !Int !Text !(Name User) !Text !(Id User) !Text
+  = KnownContributor !Int !URL !(Name User) !URL !(Id User) !Text
   -- | An unknown Github user with their number of contributions and recorded name.
   | AnonymousContributor !Int !Text
  deriving (Show, Data, Typeable, Eq, Ord, Generic)

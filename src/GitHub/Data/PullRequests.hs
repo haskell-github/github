@@ -46,7 +46,7 @@ data SimplePullRequest = SimplePullRequest
     , simplePullRequestHtmlUrl   :: !URL
     , simplePullRequestUpdatedAt :: !UTCTime
     , simplePullRequestBody      :: !Text
-    , simplePullRequestIssueUrl  :: !Text
+    , simplePullRequestIssueUrl  :: !URL
     , simplePullRequestDiffUrl   :: !URL
     , simplePullRequestUrl       :: !URL
     , simplePullRequestLinks     :: !PullRequestLinks
@@ -68,7 +68,7 @@ data PullRequest = PullRequest
     , pullRequestHtmlUrl        :: !URL
     , pullRequestUpdatedAt      :: !UTCTime
     , pullRequestBody           :: !Text
-    , pullRequestIssueUrl       :: !Text
+    , pullRequestIssueUrl       :: !URL
     , pullRequestDiffUrl        :: !URL
     , pullRequestUrl            :: !URL
     , pullRequestLinks          :: !PullRequestLinks
@@ -165,9 +165,9 @@ instance NFData PullRequestEventType where rnf = genericRnf
 instance Binary PullRequestEventType
 
 data PullRequestReference = PullRequestReference
-    { pullRequestReferenceHtmlUrl  :: !(Maybe Text)
-    , pullRequestReferencePatchUrl :: !(Maybe Text)
-    , pullRequestReferenceDiffUrl  :: !(Maybe Text)
+    { pullRequestReferenceHtmlUrl  :: !(Maybe URL)
+    , pullRequestReferencePatchUrl :: !(Maybe URL)
+    , pullRequestReferenceDiffUrl  :: !(Maybe URL)
     }
     deriving (Eq, Ord, Show, Generic, Typeable, Data)
 

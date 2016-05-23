@@ -21,7 +21,7 @@ module GitHub.Internal.Prelude (
     NFData(..), genericRnf,
     Semigroup(..),
     -- * Aeson
-    FromJSON(..), ToJSON(..), Value(..),
+    FromJSON(..), ToJSON(..), Value(..), Object,
     encode,
     withText, withObject, (.:), (.:?), (.!=), (.=), object, typeMismatch,
     -- * Control.Applicative
@@ -37,9 +37,9 @@ module GitHub.Internal.Prelude (
 import Control.Applicative      ((<|>))
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
-import Data.Aeson.Compat        (FromJSON (..), ToJSON (..), Value (..), encode,
-                                 object, withObject, withText, (.!=), (.:),
-                                 (.:?), (.=))
+import Data.Aeson.Compat        (FromJSON (..), Object, ToJSON (..), Value (..),
+                                 encode, object, withObject, withText, (.!=),
+                                 (.:), (.:?), (.=))
 import Data.Aeson.Types         (typeMismatch)
 import Data.Binary              (Binary)
 import Data.Binary.Orphans      ()
