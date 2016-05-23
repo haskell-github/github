@@ -1,6 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
-{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -8,20 +5,7 @@
 --
 module GitHub.Data.Content where
 
-import Prelude        ()
-import Prelude.Compat
-
-import Control.DeepSeq          (NFData (..))
-import Control.DeepSeq.Generics (genericRnf)
-import Data.Aeson.Compat        (FromJSON (..), Value (..), withObject,
-                                 withText, (.:))
-import Data.Binary.Orphans      (Binary)
-import Data.Data                (Data, Typeable)
-import Data.Text                (Text)
-import Data.Vector              (Vector)
-import GHC.Generics             (Generic)
-
-import qualified Data.Text as T
+import GitHub.Internal.Prelude
 
 data Content
   = ContentFile !ContentFileData
@@ -91,7 +75,7 @@ instance FromJSON ContentItemType where
       case t of
           "file" -> return ItemFile
           "dir"  -> return ItemDir
-          _      -> fail $ "Invalid ContentItemType: " ++ T.unpack t
+          _      -> fail $ "Invalid ContentItemType: " ++ unpack t
 
 instance FromJSON ContentInfo where
   parseJSON = withObject "ContentInfo" $ \o ->

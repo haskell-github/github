@@ -14,9 +14,9 @@ module GitHub.Endpoints.Gists (
     module GitHub.Data,
     ) where
 
-import Data.Vector    (Vector)
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | The list of all gists created by the user
 --

@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -10,16 +8,7 @@ module GitHub.Data.URL (
     getUrl,
     ) where
 
-import Prelude        ()
-import Prelude.Compat
-
-import Control.DeepSeq          (NFData (..))
-import Control.DeepSeq.Generics (genericRnf)
-import Data.Aeson.Compat        (FromJSON (..), ToJSON (..), withText)
-import Data.Binary.Orphans      (Binary)
-import Data.Data                (Data, Typeable)
-import Data.Text                (Text)
-import GHC.Generics             (Generic)
+import GitHub.Internal.Prelude
 
 -- | Data representing URLs in responses.
 --

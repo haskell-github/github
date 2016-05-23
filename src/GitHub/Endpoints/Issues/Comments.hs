@@ -1,4 +1,3 @@
-{-# LANGUAGE DataKinds #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -19,10 +18,7 @@ module GitHub.Endpoints.Issues.Comments (
     module GitHub.Data,
     ) where
 
-import Data.Aeson.Compat (encode)
-import Data.Text         (Text)
-import Data.Vector       (Vector)
-
+import GitHub.Internal.Prelude
 import GitHub.Data
 import GitHub.Request
 

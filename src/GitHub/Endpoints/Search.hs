@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -19,12 +18,11 @@ module GitHub.Endpoints.Search(
     module GitHub.Data,
     ) where
 
-import Data.Text (Text)
-
-import qualified Data.Text.Encoding as TE
-
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
+
+import qualified Data.Text.Encoding as TE
 
 -- | Perform a repository search.
 -- With authentication.

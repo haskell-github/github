@@ -1,6 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
-{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause

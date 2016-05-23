@@ -1,7 +1,3 @@
-{-# LANGUAGE DataKinds          #-}
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
-{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -59,16 +55,9 @@ module GitHub.Endpoints.Repos (
     module GitHub.Data,
     ) where
 
-import Prelude        ()
-import Prelude.Compat
-
-import Control.Applicative ((<|>))
-import Data.Aeson.Compat   (encode)
-import Data.Text           (Text)
-import Data.Vector         (Vector)
-
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 import qualified Data.Text          as T
 import qualified Data.Text.Encoding as TE

@@ -1,25 +1,18 @@
+{-# LANGUAGE NoImplicitPrelude  #-}
 module Common (
     -- * Common stuff
     getAuth,
     tshow,
     -- * Re-exports
-    (<>),
-    fromString,
-    Text,
     putStrLn,
     getArgs,
     Proxy(..),
-    module Prelude.Compat,
+    module GitHub.Internal.Prelude,
     ) where
 
-import Prelude        ()
-import Prelude.Compat hiding (putStrLn)
+import GitHub.Internal.Prelude hiding (putStrLn)
 
-import Data.Monoid        ((<>))
 import Data.Proxy         (Proxy (..))
-import Data.String        (fromString)
-import Data.String        (fromString)
-import Data.Text          (Text)
 import Data.Text.IO       (putStrLn)
 import System.Environment (lookupEnv)
 import System.Environment (getArgs)

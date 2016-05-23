@@ -1,5 +1,3 @@
-{-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE OverloadedStrings #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -32,9 +30,7 @@ module GitHub.Endpoints.PullRequests (
 
 import GitHub.Data
 import GitHub.Request
-
-import Data.Aeson.Compat (Value, encode, object, (.=))
-import Data.Vector       (Vector)
+import GitHub.Internal.Prelude
 
 -- | All open pull requests for the repo, by owner and repo name.
 --

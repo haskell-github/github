@@ -1,5 +1,4 @@
 {-# LANGUAGE CPP               #-}
-{-# LANGUAGE OverloadedStrings #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -24,15 +23,13 @@ module GitHub.Endpoints.Repos.Commits (
     module GitHub.Data,
     ) where
 
-import Data.Time.ISO8601 (formatISO8601)
-import Data.Vector       (Vector)
+import GitHub.Internal.Prelude
+import GitHub.Data
+import GitHub.Request
 
 import qualified Data.ByteString    as BS
 import qualified Data.Text          as T
 import qualified Data.Text.Encoding as TE
-
-import GitHub.Data
-import GitHub.Request
 
 renderCommitQueryOption :: CommitQueryOption -> (BS.ByteString, Maybe BS.ByteString)
 renderCommitQueryOption (CommitQuerySha sha)      = ("sha", Just $ TE.encodeUtf8 sha)

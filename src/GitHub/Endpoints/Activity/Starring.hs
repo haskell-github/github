@@ -1,5 +1,3 @@
-{-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE OverloadedStrings #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -19,10 +17,10 @@ module GitHub.Endpoints.Activity.Starring (
     module GitHub.Data,
     ) where
 
-import Data.Vector    (Vector)
 import GitHub.Auth
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | The list of users that have starred the specified Github repo.
 --

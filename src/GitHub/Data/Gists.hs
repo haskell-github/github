@@ -1,6 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
-{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -8,23 +5,11 @@
 --
 module GitHub.Data.Gists where
 
-import Prelude        ()
-import Prelude.Compat
-
 import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id)
 import GitHub.Data.Name        (Name)
 import GitHub.Data.Repos       (Language)
-
-import Control.DeepSeq          (NFData (..))
-import Control.DeepSeq.Generics (genericRnf)
-import Data.Aeson.Compat        (FromJSON (..), withObject, (.:), (.:?))
-import Data.Binary              (Binary)
-import Data.Data                (Data, Typeable)
-import Data.HashMap.Strict      (HashMap)
-import Data.Text                (Text)
-import Data.Time                (UTCTime)
-import GHC.Generics             (Generic)
+import GitHub.Internal.Prelude
 
 data Gist = Gist {
    gistUser        :: !SimpleUser

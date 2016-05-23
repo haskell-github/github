@@ -1,6 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
-{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -8,21 +5,8 @@
 --
 module GitHub.Data.Webhooks where
 
-import Prelude        ()
-import Prelude.Compat
-
-import GitHub.Data.Id (Id)
-
-import Control.DeepSeq          (NFData (..))
-import Control.DeepSeq.Generics (genericRnf)
-import Data.Aeson.Compat        (FromJSON (..), ToJSON (..), Value (..), object,
-                                 withObject, (.:), (.=))
-import Data.Binary.Orphans      (Binary)
-import Data.Data                (Data, Typeable)
-import Data.Text                (Text)
-import Data.Time                (UTCTime)
-import Data.Vector              (Vector)
-import GHC.Generics             (Generic)
+import GitHub.Data.Id          (Id)
+import GitHub.Internal.Prelude
 
 import qualified Data.Map as M
 

@@ -14,6 +14,7 @@ module GitHub.Endpoints.GitData.Blobs (
 
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | Query a blob by SHA1.
 --

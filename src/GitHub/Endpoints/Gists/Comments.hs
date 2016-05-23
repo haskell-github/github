@@ -13,10 +13,9 @@ module GitHub.Endpoints.Gists.Comments (
     module GitHub.Data,
     ) where
 
-import Data.Vector (Vector)
-
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | All the comments on a Gist, given the Gist ID.
 --

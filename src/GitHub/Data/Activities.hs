@@ -1,6 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
-{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -8,18 +5,8 @@
 --
 module GitHub.Data.Activities where
 
-import Prelude        ()
-import Prelude.Compat
-
-import Control.DeepSeq          (NFData (..))
-import Control.DeepSeq.Generics (genericRnf)
-import Data.Aeson.Compat        (FromJSON (..), withObject, (.:))
-import Data.Binary              (Binary)
-import Data.Data                (Data, Typeable)
-import Data.Time                (UTCTime)
-import GHC.Generics             (Generic)
-
-import GitHub.Data.Repos (Repo)
+import GitHub.Data.Repos       (Repo)
+import GitHub.Internal.Prelude
 
 data RepoStarred = RepoStarred {
    repoStarredStarredAt :: !UTCTime

@@ -1,11 +1,7 @@
 {-# LANGUAGE CPP                #-}
-{-# LANGUAGE DataKinds          #-}
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
 {-# LANGUAGE FlexibleContexts   #-}
 {-# LANGUAGE GADTs              #-}
 {-# LANGUAGE KindSignatures     #-}
-{-# LANGUAGE OverloadedStrings  #-}
 {-# LANGUAGE StandaloneDeriving #-}
 -----------------------------------------------------------------------------
 -- |
@@ -25,21 +21,15 @@ module GitHub.Data.Request (
     Count,
     ) where
 
-import Data.Aeson.Compat (FromJSON)
-import Data.Hashable     (Hashable (..))
-import Data.Typeable     (Typeable)
-import Data.Vector       (Vector)
-import GHC.Generics      (Generic)
+import GitHub.Internal.Prelude
+import GitHub.Data.Definitions (Count, QueryString)
+import GitHub.Data.Id          (Id, untagId)
+import GitHub.Data.Name        (Name, untagName)
 
 import qualified Data.ByteString.Lazy      as LBS
 import qualified Data.Text                 as T
 import qualified Network.HTTP.Types        as Types
 import qualified Network.HTTP.Types.Method as Method
-
-import GitHub.Data.Definitions (Count, QueryString)
-import GitHub.Data.Id          (Id, untagId)
-import GitHub.Data.Name        (Name, untagName)
-
 ------------------------------------------------------------------------------
 -- Auxillary types
 ------------------------------------------------------------------------------

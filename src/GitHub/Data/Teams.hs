@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric      #-}
+{-# LANGUAGE NoImplicitPrelude  #-}
 {-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
@@ -8,24 +9,11 @@
 --
 module GitHub.Data.Teams where
 
-import Prelude        ()
-import Prelude.Compat
-
 import GitHub.Data.Definitions
-
-import Control.DeepSeq          (NFData (..))
-import Control.DeepSeq.Generics (genericRnf)
-import Data.Aeson.Compat        (FromJSON (..), ToJSON (..), Value (..), object,
-                                 withObject, (.!=), (.:), (.:?), (.=))
-import Data.Binary              (Binary)
-import Data.Data                (Data, Typeable)
-import Data.Text                (Text)
-import Data.Vector              (Vector)
-import GHC.Generics             (Generic)
-
-import GitHub.Data.Id    (Id)
-import GitHub.Data.Name  (Name)
-import GitHub.Data.Repos (Repo)
+import GitHub.Data.Id          (Id)
+import GitHub.Data.Name        (Name)
+import GitHub.Data.Repos       (Repo)
+import GitHub.Internal.Prelude
 
 data Privacy =
     PrivacyClosed

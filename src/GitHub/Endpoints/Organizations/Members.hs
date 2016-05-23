@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -14,10 +13,9 @@ module GitHub.Endpoints.Organizations.Members (
     module GitHub.Data,
     ) where
 
-import Data.Vector (Vector)
-
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | All the users who are members of the specified organization,
 -- | with or without authentication.

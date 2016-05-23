@@ -1,5 +1,3 @@
-{-# LANGUAGE CPP               #-}
-{-# LANGUAGE OverloadedStrings #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -11,14 +9,11 @@ module GitHub.Data.Webhooks.Validate (
   isValidPayload
 ) where
 
-import Prelude        ()
-import Prelude.Compat
+import GitHub.Internal.Prelude
 
 import Crypto.Hash     (HMAC, SHA1, hmac, hmacGetDigest)
 import Data.Byteable   (constEqBytes, toBytes)
 import Data.ByteString (ByteString)
-import Data.Monoid     ((<>))
-import Data.Text       (Text)
 
 import qualified Data.ByteString.Base16 as Hex
 import qualified Data.Text.Encoding     as TE

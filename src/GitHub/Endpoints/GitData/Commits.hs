@@ -13,6 +13,7 @@ module GitHub.Endpoints.GitData.Commits (
 
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | A single commit, by SHA1.
 --

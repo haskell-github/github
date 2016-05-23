@@ -14,9 +14,9 @@ module GitHub.Endpoints.Organizations (
     module GitHub.Data,
     ) where
 
-import Data.Vector    (Vector)
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | The public organizations for a user, given the user's login, with authorization
 --

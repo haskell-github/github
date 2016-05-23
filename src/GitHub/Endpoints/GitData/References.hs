@@ -1,4 +1,3 @@
-{-# LANGUAGE DataKinds #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -20,11 +19,9 @@ module GitHub.Endpoints.GitData.References (
     module GitHub.Data,
     ) where
 
-import Data.Aeson.Compat (encode)
-import Data.Vector       (Vector)
-
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | A single reference by the ref name.
 --

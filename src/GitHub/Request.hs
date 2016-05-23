@@ -1,12 +1,7 @@
-{-# LANGUAGE CPP                 #-}
-{-# LANGUAGE DataKinds           #-}
-{-# LANGUAGE DeriveDataTypeable  #-}
-{-# LANGUAGE DeriveGeneric       #-}
+{-# LANGUAGE CPP                #-}
 {-# LANGUAGE FlexibleContexts    #-}
 {-# LANGUAGE GADTs               #-}
 {-# LANGUAGE KindSignatures      #-}
-{-# LANGUAGE OverloadedStrings   #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneDeriving  #-}
 -----------------------------------------------------------------------------
 -- |
@@ -54,8 +49,7 @@ module GitHub.Request (
     performPagedRequest,
     ) where
 
-import Prelude        ()
-import Prelude.Compat
+import GitHub.Internal.Prelude
 
 #if MIN_VERSION_mtl(2,2,0)
 import Control.Monad.Except (MonadError (..))
@@ -66,11 +60,8 @@ import Control.Monad.Error (MonadError (..))
 import Control.Monad.Catch        (MonadCatch (..), MonadThrow)
 import Control.Monad.Trans.Class  (lift)
 import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
-import Data.Aeson.Compat          (FromJSON, eitherDecode)
-import Data.List                  (find, intercalate)
-import Data.Semigroup             (Semigroup (..))
-import Data.Text                  (Text)
-import Data.Vector.Instances      ()
+import Data.Aeson.Compat          (eitherDecode)
+import Data.List                  (find)
 
 import Network.HTTP.Client          (CookieJar, HttpException (..), Manager,
                                      RequestBody (..), Response (..),

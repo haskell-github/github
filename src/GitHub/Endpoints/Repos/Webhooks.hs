@@ -1,4 +1,3 @@
-{-# LANGUAGE DataKinds #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -33,14 +32,9 @@ module GitHub.Endpoints.Repos.Webhooks (
     deleteRepoWebhookR,
 ) where
 
-import Prelude        ()
-import Prelude.Compat
-
-import Data.Aeson.Compat (encode)
-import Data.Vector       (Vector)
-
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 webhooksFor' :: Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector RepoWebhook))
 webhooksFor' auth user repo =

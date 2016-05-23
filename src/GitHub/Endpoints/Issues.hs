@@ -1,6 +1,4 @@
-{-# LANGUAGE CPP               #-}
-{-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE CPP #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -25,13 +23,8 @@ module GitHub.Endpoints.Issues (
     ) where
 
 import GitHub.Data
+import GitHub.Internal.Prelude
 import GitHub.Request
-
-import Data.Aeson.Compat (encode)
-import Data.List         (intercalate)
-import Data.Text         (Text)
-import Data.Time.ISO8601 (formatISO8601)
-import Data.Vector       (Vector)
 
 import qualified Data.Text          as T
 import qualified Data.Text.Encoding as TE

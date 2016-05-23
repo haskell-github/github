@@ -1,5 +1,3 @@
-{-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE OverloadedStrings #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -36,14 +34,9 @@ module GitHub.Endpoints.Organizations.Teams (
     module GitHub.Data,
     ) where
 
-import Prelude        ()
-import Prelude.Compat
-
-import Data.Aeson.Compat (encode)
-import Data.Vector       (Vector)
-
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | List teams.  List the teams of an Owner.
 -- When authenticated, lists private teams visible to the authenticated user.

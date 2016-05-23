@@ -12,9 +12,9 @@ module GitHub.Endpoints.Repos.Forks (
     module GitHub.Data,
     ) where
 
-import Data.Vector    (Vector)
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | All the repos that are forked off the given repo.
 --
