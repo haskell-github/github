@@ -1,9 +1,12 @@
-Changes for 0.14.3
+Changes for 0.15.0
 
+- Reworked `PullRequest` (notably `pullRequestsFor`)
+- GHC-8.0.1 support
+- Change `repoMasterBranch` to `repoDefaultBranch` in `Repo`
+- Add `listTeamReposR`
+- Add `myStarredAcceptStarR`
+- Add `HeaderQuery` to `Request`
 - Add `Hashable Auth` instance
-
-Changes for 0.14.2
-
 - Add `mkUserId`, `mkUserName`, `fromUserId`, `fromOrganizationId`
 
 Changes for 0.14.1
