@@ -57,6 +57,9 @@ matrix:
     - env: BUILD=stack STACK_YAML=stack-lts-4.yaml
       compiler: ": #stack LTS4 OSX"
       os: osx
+    - env: BUILD=stack-space-leak
+      compiler: ": #STACK - space leak"
+      addons: {apt: {packages: [ghc-7.10.3], sources: [hvr-ghc]}}
 
 before_install:
   - unset CC

@@ -1,4 +1,4 @@
-resolver: lts-5.16
+resolver: lts-5.17
 packages:
 - '.'
 - samples/

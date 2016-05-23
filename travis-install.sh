@@ -1,21 +1,27 @@
 set -ex
 
 case $BUILD in
-  stack)
+  stack*)
     mkdir -p ~/.local/bin;
     if [ `uname` = "Darwin" ]; then
       curl -kL https://www.stackage.org/stack/osx-x86_64 | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin;
     else
       curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack';
     fi
+
     stack --no-terminal setup
-    stack --no-terminal test --only-dependencies
+
+    if [ $BUILD == "stack-space-leak" ]; then
+      stack build --test --fast --library-profiling --ghc-options=-rtsopts --only-dependencies
+    else
+      stack --no-terminal test --only-dependencies
+    fi
     ;;
   cabal)
     if [ -n "$STACKAGESNAPSHOT" ]; then
-		curl -sL https://www.stackage.org/$STACKAGESNAPSHOT/cabal.config | sed 's/constraints:/preferences:/' | grep -v installed > cabal.config
-        head cabal.config
-	fi
+      curl -sL https://www.stackage.org/$STACKAGESNAPSHOT/cabal.config | sed 's/constraints:/preferences:/' | grep -v installed > cabal.config
+      head cabal.config
+    fi
     cabal --version
     echo "$(ghc --version) [$(ghc --print-project-git-commit-id 2> /dev/null || echo '?')]"
     if [ -f $HOME/.cabal/packages/hackage.haskell.org/00-index.tar.gz ]; then
