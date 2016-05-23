@@ -14,28 +14,30 @@ module GitHub.Data.Webhooks.Validate (
 import Prelude        ()
 import Prelude.Compat
 
-import           Crypto.Hash
-import           Data.Byteable          (constEqBytes, toBytes)
-import qualified Data.ByteString.Base16 as Hex
-import qualified Data.ByteString.Char8  as BS
-import           Data.Monoid
+import Crypto.Hash     (HMAC, SHA1, hmac, hmacGetDigest)
+import Data.Byteable   (constEqBytes, toBytes)
+import Data.ByteString (ByteString)
+import Data.Monoid     ((<>))
+import Data.Text       (Text)
 
+import qualified Data.ByteString.Base16 as Hex
+import qualified Data.Text.Encoding     as TE
 
 -- | Validates a given payload against a given HMAC hexdigest using a given
 -- secret.
 -- Returns 'True' iff the given hash is non-empty and it's a valid signature of
 -- the payload.
 isValidPayload
-  :: String             -- ^ the secret
-  -> Maybe String       -- ^ the hash provided by the remote party
-                        -- in @X-Hub-Signature@ (if any),
-                        -- including the 'sha1=...' prefix
-  -> BS.ByteString      -- ^ the body
+  :: Text           -- ^ the secret
+  -> Maybe Text     -- ^ the hash provided by the remote party
+                    -- in @X-Hub-Signature@ (if any),
+                    -- including the 'sha1=...' prefix
+  -> ByteString     -- ^ the body
   -> Bool
 isValidPayload secret shaOpt payload = maybe False (constEqBytes sign) shaOptBS
   where
-    shaOptBS = BS.pack <$> shaOpt
+    shaOptBS = TE.encodeUtf8 <$> shaOpt
     hexDigest = Hex.encode . toBytes . hmacGetDigest
 
-    hm = hmac (BS.pack secret) payload :: HMAC SHA1
+    hm = hmac (TE.encodeUtf8 secret) payload :: HMAC SHA1
     sign = "sha1=" <> hexDigest hm

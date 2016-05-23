@@ -64,12 +64,14 @@ import Prelude.Compat
 
 import Control.Applicative ((<|>))
 import Data.Aeson.Compat   (encode)
+import Data.Text           (Text)
 import Data.Vector         (Vector)
 
 import GitHub.Data
 import GitHub.Request
 
-import qualified Data.ByteString.Char8 as BS8
+import qualified Data.Text          as T
+import qualified Data.Text.Encoding as TE
 
 repoPublicityQueryString :: RepoPublicity -> QueryString
 repoPublicityQueryString RepoPublicityAll     = [("type", Just "all")]
@@ -313,26 +315,26 @@ branchesForR user repo =
 -- | The contents of a file or directory in a repo, given the repo owner, name, and path to the file
 --
 -- > contentsFor "thoughtbot" "paperclip" "README.md"
-contentsFor :: Name Owner -> Name Repo -> String -> Maybe String -> IO (Either Error Content)
+contentsFor :: Name Owner -> Name Repo -> Text -> Maybe Text -> IO (Either Error Content)
 contentsFor = contentsFor' Nothing
 
 -- | The contents of a file or directory in a repo, given the repo owner, name, and path to the file
 -- With Authentication
 --
 -- > contentsFor' (Just (BasicAuth (user, password))) "thoughtbot" "paperclip" "README.md" Nothing
-contentsFor' :: Maybe Auth ->  Name Owner -> Name Repo -> String -> Maybe String -> IO (Either Error Content)
+contentsFor' :: Maybe Auth ->  Name Owner -> Name Repo -> Text -> Maybe Text -> IO (Either Error Content)
 contentsFor' auth user repo path ref =
     executeRequestMaybe auth $ contentsForR user repo path ref
 
 contentsForR :: Name Owner
              -> Name Repo
-             -> String            -- ^ file or directory
-             -> Maybe String      -- ^ Git commit
+             -> Text            -- ^ file or directory
+             -> Maybe Text      -- ^ Git commit
              -> Request k Content
 contentsForR user repo path ref =
-    Query ["repos", toPathPart user, toPathPart repo, "contents", path] qs
+    Query ["repos", toPathPart user, toPathPart repo, "contents", T.unpack path] qs
   where
-    qs =  maybe [] (\r -> [("ref", Just . BS8.pack $ r)]) ref
+    qs =  maybe [] (\r -> [("ref", Just . TE.encodeUtf8 $ r)]) ref
 
 -- | The contents of a README file in a repo, given the repo owner and name
 --
