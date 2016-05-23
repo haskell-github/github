@@ -27,9 +27,9 @@ module GitHub.Endpoints.Repos.Commits (
 import Data.Time.ISO8601 (formatISO8601)
 import Data.Vector       (Vector)
 
-import qualified Data.ByteString       as BS
-import qualified Data.ByteString.Char8 as BS8
-import qualified Data.Text.Encoding    as TE
+import qualified Data.ByteString    as BS
+import qualified Data.Text          as T
+import qualified Data.Text.Encoding as TE
 
 import GitHub.Data
 import GitHub.Request
@@ -38,8 +38,8 @@ renderCommitQueryOption :: CommitQueryOption -> (BS.ByteString, Maybe BS.ByteStr
 renderCommitQueryOption (CommitQuerySha sha)      = ("sha", Just $ TE.encodeUtf8 sha)
 renderCommitQueryOption (CommitQueryPath path)     = ("path", Just $ TE.encodeUtf8 path)
 renderCommitQueryOption (CommitQueryAuthor author) = ("author", Just $ TE.encodeUtf8 author)
-renderCommitQueryOption (CommitQuerySince date)    = ("since", Just $ BS8.pack $ formatISO8601 date)
-renderCommitQueryOption (CommitQueryUntil date)    = ("until", Just $ BS8.pack $ formatISO8601 date)
+renderCommitQueryOption (CommitQuerySince date)    = ("since", Just $ TE.encodeUtf8 . T.pack $ formatISO8601 date)
+renderCommitQueryOption (CommitQueryUntil date)    = ("until", Just $ TE.encodeUtf8 . T.pack $ formatISO8601 date)
 
 -- | The commit history for a repo.
 --

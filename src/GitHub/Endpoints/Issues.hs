@@ -33,7 +33,8 @@ import Data.Text         (Text)
 import Data.Time.ISO8601 (formatISO8601)
 import Data.Vector       (Vector)
 
-import qualified Data.ByteString.Char8 as BS8
+import qualified Data.Text          as T
+import qualified Data.Text.Encoding as TE
 
 -- | Details on a specific issue, given the repo owner and name, and the issue
 -- number.'
@@ -81,18 +82,18 @@ issuesForRepoR user reqRepoName issueLimitations =
 
     convert AnyMilestone     = ("milestone", Just "*")
     convert NoMilestone      = ("milestone", Just "none")
-    convert (MilestoneId n)  = ("milestone", Just . BS8.pack $ show n)
+    convert (MilestoneId n)  = ("milestone", Just . TE.encodeUtf8 . T.pack $ show n)
     convert Open             = ("state", Just "open")
     convert OnlyClosed       = ("state", Just "closed")
     convert Unassigned       = ("assignee", Just "none")
     convert AnyAssignment    = ("assignee", Just "")
-    convert (AssignedTo u)   = ("assignee", Just $ BS8.pack u)
-    convert (Mentions u)     = ("mentioned", Just $ BS8.pack u)
-    convert (Labels l)       = ("labels", Just . BS8.pack $ intercalate "," l)
+    convert (AssignedTo u)   = ("assignee", Just . TE.encodeUtf8 . T.pack $ u)
+    convert (Mentions u)     = ("mentioned", Just . TE.encodeUtf8 . T.pack $ u)
+    convert (Labels l)       = ("labels", Just . TE.encodeUtf8 . T.pack $ intercalate "," l)
     convert Ascending        = ("direction", Just "asc")
     convert Descending       = ("direction", Just "desc")
-    convert (PerPage n)      = ("per_page", Just . BS8.pack $ show n)
-    convert (Since t)        = ("since", Just . BS8.pack $ formatISO8601 t)
+    convert (PerPage n)      = ("per_page", Just . TE.encodeUtf8 . T.pack $ show n)
+    convert (Since t)        = ("since", Just . TE.encodeUtf8 . T.pack $ formatISO8601 t)
 
 -- Creating new issues.
 
