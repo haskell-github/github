@@ -30,11 +30,11 @@ milestones = milestones' Nothing
 -- > milestones' (User (user, passwordG) "thoughtbot" "paperclip"
 milestones' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Milestone))
 milestones' auth user repo =
-    executeRequestMaybe auth $ milestonesR user repo Nothing
+    executeRequestMaybe auth $ milestonesR user repo FetchAll
 
 -- | List milestones for a repository.
 -- See <https://developer.github.com/v3/issues/milestones/#list-milestones-for-a-repository>
-milestonesR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector Milestone)
+milestonesR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Milestone)
 milestonesR user repo = PagedQuery ["repos", toPathPart user, toPathPart repo, "milestones"] []
 
 -- | Details on a specific milestone, given it's milestone number.

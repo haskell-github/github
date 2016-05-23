@@ -57,7 +57,7 @@ commitsFor' auth user repo =
 
 -- | List commits on a repository.
 -- See <https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository>
-commitsForR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector Commit)
+commitsForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Commit)
 commitsForR user repo limit = commitsWithOptionsForR user repo limit []
 
 commitsWithOptionsFor :: Name Owner -> Name Repo -> [CommitQueryOption] -> IO (Either Error (Vector Commit))
@@ -70,11 +70,11 @@ commitsWithOptionsFor = commitsWithOptionsFor' Nothing
 -- > commitsWithOptionsFor' (Just (BasicAuth (user, password))) "mike-burns" "github" [CommitQueryAuthor "djeik"]
 commitsWithOptionsFor' :: Maybe Auth -> Name Owner -> Name Repo -> [CommitQueryOption] -> IO (Either Error (Vector Commit))
 commitsWithOptionsFor' auth user repo opts =
-    executeRequestMaybe auth $ commitsWithOptionsForR user repo Nothing opts
+    executeRequestMaybe auth $ commitsWithOptionsForR user repo FetchAll opts
 
 -- | List commits on a repository.
 -- See <https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository>
-commitsWithOptionsForR :: Name Owner -> Name Repo -> Maybe Count -> [CommitQueryOption] -> Request k (Vector Commit)
+commitsWithOptionsForR :: Name Owner -> Name Repo -> FetchCount -> [CommitQueryOption] -> Request k (Vector Commit)
 commitsWithOptionsForR user repo limit opts =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "commits"] qs limit
   where

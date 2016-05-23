@@ -10,6 +10,8 @@ import System.Environment (lookupEnv)
 import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe,
                            shouldSatisfy)
 
+import qualified GitHub
+
 import GitHub.Data                      (Auth (..), Organization (..),
                                          User (..), fromOwner)
 import GitHub.Endpoints.Users           (ownerInfoForR, userInfoCurrent',
@@ -67,10 +69,10 @@ spec = do
 
   describe "usersFollowing" $ do
     it "works" $ withAuth $ \auth -> do
-      us <- executeRequest auth $ usersFollowingR "phadej" (Just 10)
+      us <- executeRequest auth $ usersFollowingR "phadej" (GitHub.FetchAtLeast 10)
       us `shouldSatisfy` isRight
 
   describe "usersFollowedBy" $ do
     it "works" $ withAuth $ \auth -> do
-      us <- executeRequest auth $ usersFollowedByR "phadej" (Just 10)
+      us <- executeRequest auth $ usersFollowedByR "phadej" (GitHub.FetchAtLeast 10)
       us `shouldSatisfy` isRight

@@ -50,7 +50,7 @@ referenceR user repo ref =
 -- > references "mike-burns" "github"
 references' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector GitReference))
 references' auth user repo =
-    executeRequestMaybe auth $ referencesR user repo Nothing
+    executeRequestMaybe auth $ referencesR user repo FetchAll
 
 -- | The history of references for a repo.
 --
@@ -60,7 +60,7 @@ references = references' Nothing
 
 -- | Query all References.
 -- See <https://developer.github.com/v3/git/refs/#get-all-references>
-referencesR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector GitReference)
+referencesR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector GitReference)
 referencesR user repo =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "git", "refs"] []
 

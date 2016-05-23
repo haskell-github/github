@@ -34,11 +34,11 @@ eventsForIssue = eventsForIssue' Nothing
 -- > eventsForIssue' (User (user, password)) "thoughtbot" "paperclip" 49
 eventsForIssue' :: Maybe Auth -> Name Owner -> Name Repo -> Id Issue -> IO (Either Error (Vector Event))
 eventsForIssue' auth user repo iid =
-    executeRequestMaybe auth $ eventsForIssueR user repo iid Nothing
+    executeRequestMaybe auth $ eventsForIssueR user repo iid FetchAll
 
 -- | List events for an issue.
 -- See <https://developer.github.com/v3/issues/events/#list-events-for-an-issue>
-eventsForIssueR :: Name Owner -> Name Repo -> Id Issue -> Maybe Count -> Request k (Vector Event)
+eventsForIssueR :: Name Owner -> Name Repo -> Id Issue -> FetchCount -> Request k (Vector Event)
 eventsForIssueR user repo iid =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "events"] []
 
@@ -53,11 +53,11 @@ eventsForRepo = eventsForRepo' Nothing
 -- > eventsForRepo' (User (user, password)) "thoughtbot" "paperclip"
 eventsForRepo' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Event))
 eventsForRepo' auth user repo =
-    executeRequestMaybe auth $ eventsForRepoR user repo Nothing
+    executeRequestMaybe auth $ eventsForRepoR user repo FetchAll
 
 -- | List events for a repository.
 -- See <https://developer.github.com/v3/issues/events/#list-events-for-a-repository>
-eventsForRepoR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector Event)
+eventsForRepoR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Event)
 eventsForRepoR user repo =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "issues", "events"] []
 

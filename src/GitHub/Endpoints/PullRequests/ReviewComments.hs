@@ -22,11 +22,11 @@ import GitHub.Request
 -- > pullRequestReviewComments "thoughtbot" "factory_girl" (Id 256)
 pullRequestReviewCommentsIO :: Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector Comment))
 pullRequestReviewCommentsIO user repo prid =
-    executeRequest' $ pullRequestReviewCommentsR user repo prid Nothing
+    executeRequest' $ pullRequestReviewCommentsR user repo prid FetchAll
 
 -- | List comments on a pull request.
 -- See <https://developer.github.com/v3/pulls/comments/#list-comments-on-a-pull-request>
-pullRequestReviewCommentsR :: Name Owner -> Name Repo -> Id PullRequest -> Maybe Count -> Request k (Vector Comment)
+pullRequestReviewCommentsR :: Name Owner -> Name Repo -> Id PullRequest -> FetchCount -> Request k (Vector Comment)
 pullRequestReviewCommentsR user repo prid =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "comments"] []
 

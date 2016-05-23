@@ -23,7 +23,7 @@ import GitHub.Request
 -- > publicOrganizationsFor' (Just ("github-username", "github-password")) "mike-burns"
 publicOrganizationsFor' :: Maybe Auth -> Name User -> IO (Either Error (Vector SimpleOrganization))
 publicOrganizationsFor' auth org =
-    executeRequestMaybe auth $ publicOrganizationsForR org Nothing
+    executeRequestMaybe auth $ publicOrganizationsForR org FetchAll
 
 -- | List user organizations. The public organizations for a user, given the user's login.
 --
@@ -33,7 +33,7 @@ publicOrganizationsFor = publicOrganizationsFor' Nothing
 
 -- | List user organizations.
 -- See <https://developer.github.com/v3/orgs/#list-user-organizations>
-publicOrganizationsForR :: Name User -> Maybe Count -> Request k (Vector SimpleOrganization)
+publicOrganizationsForR :: Name User -> FetchCount -> Request k (Vector SimpleOrganization)
 publicOrganizationsForR user = PagedQuery ["users", toPathPart user, "orgs"] []
 
 -- | Details on a public organization. Takes the organization's login.

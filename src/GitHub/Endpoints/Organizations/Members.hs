@@ -25,7 +25,7 @@ import GitHub.Request
 -- > membersOf' (Just $ OAuth "token") "thoughtbot"
 membersOf' :: Maybe Auth -> Name Organization -> IO (Either Error (Vector SimpleUser))
 membersOf' auth org =
-    executeRequestMaybe auth $ membersOfR org Nothing
+    executeRequestMaybe auth $ membersOfR org FetchAll
 
 -- | All the users who are members of the specified organization,
 -- | without authentication.
@@ -37,13 +37,13 @@ membersOf = membersOf' Nothing
 -- | All the users who are members of the specified organization.
 --
 -- See <https://developer.github.com/v3/orgs/members/#members-list>
-membersOfR :: Name Organization -> Maybe Count -> Request k (Vector SimpleUser)
+membersOfR :: Name Organization -> FetchCount -> Request k (Vector SimpleUser)
 membersOfR organization = PagedQuery ["orgs", toPathPart organization, "members"] []
 
 -- | 'membersOfR' with filters.
 --
 -- See <https://developer.github.com/v3/orgs/members/#members-list>
-membersOfWithR :: Name Organization -> OrgMemberFilter -> OrgMemberRole -> Maybe Count -> Request k (Vector SimpleUser)
+membersOfWithR :: Name Organization -> OrgMemberFilter -> OrgMemberRole -> FetchCount -> Request k (Vector SimpleUser)
 membersOfWithR org f r = PagedQuery ["orgs", toPathPart org, "members"] [("filter", Just f'), ("role", Just r')]
   where
     f' = case f of

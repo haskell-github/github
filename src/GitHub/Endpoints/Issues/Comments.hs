@@ -50,11 +50,11 @@ comments = comments' Nothing
 -- > comments' (User (user, password)) "thoughtbot" "paperclip" 635
 comments' :: Maybe Auth -> Name Owner -> Name Repo -> Id Issue -> IO (Either Error (Vector IssueComment))
 comments' auth user repo iid =
-    executeRequestMaybe auth $ commentsR user repo iid Nothing
+    executeRequestMaybe auth $ commentsR user repo iid FetchAll
 
 -- | List comments on an issue.
 -- See <https://developer.github.com/v3/issues/comments/#list-comments-on-an-issue>
-commentsR :: Name Owner -> Name Repo -> Id Issue -> Maybe Count -> Request k (Vector IssueComment)
+commentsR :: Name Owner -> Name Repo -> Id Issue -> FetchCount -> Request k (Vector IssueComment)
 commentsR user repo iid =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "comments"] []
 

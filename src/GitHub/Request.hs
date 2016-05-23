@@ -106,6 +106,10 @@ executeRequest auth req = do
 #endif
     pure x
 
+lessFetchCount :: Int -> FetchCount -> Bool
+lessFetchCount _ FetchAll         = True
+lessFetchCount i (FetchAtLeast j) = i < fromIntegral j 
+
 -- | Like 'executeRequest' but with provided 'Manager'.
 executeRequestWithMgr :: Manager
                       -> Auth
@@ -124,7 +128,7 @@ executeRequestWithMgr mgr auth req = runExceptT $
             httpReq <- makeHttpRequest (Just auth) req
             performPagedRequest httpLbs' predicate httpReq
           where
-            predicate = maybe (const True) (\l' -> (< l') . V.length ) l
+            predicate v = lessFetchCount (V.length v) l
         Command m _ _ -> do
             httpReq <- makeHttpRequest (Just auth) req
             res <- httpLbs' httpReq
@@ -167,7 +171,7 @@ executeRequestWithMgr' mgr req = runExceptT $
             httpReq <- makeHttpRequest Nothing req
             performPagedRequest httpLbs' predicate httpReq
           where
-            predicate = maybe (const True) (\l' -> (< l') . V.length) l
+            predicate v = lessFetchCount (V.length v) l
         StatusQuery sm _ -> do
             httpReq <- makeHttpRequest Nothing req
             res <- httpLbs' httpReq

@@ -41,13 +41,13 @@ import Data.Vector       (Vector)
 -- > pullRequestsFor "rails" "rails"
 pullRequestsFor :: Name Owner -> Name Repo -> IO (Either Error (Vector SimplePullRequest))
 pullRequestsFor user repo =
-    executeRequest' $ pullRequestsForR user repo defaultPullRequestOptions Nothing
+    executeRequest' $ pullRequestsForR user repo defaultPullRequestOptions FetchAll
 
 -- | List pull requests.
 -- See <https://developer.github.com/v3/pulls/#list-pull-requests>
 pullRequestsForR :: Name Owner -> Name Repo
                  -> PullRequestOptions -- ^ State
-                 -> Maybe Count
+                 -> FetchCount
                  -> Request k (Vector SimplePullRequest)
 pullRequestsForR user repo opts = PagedQuery
     ["repos", toPathPart user, toPathPart repo, "pulls"]
@@ -114,7 +114,7 @@ updatePullRequestR user repo prid epr =
 -- > pullRequestCommits' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 688
 pullRequestCommits' :: Maybe Auth -> Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector Commit))
 pullRequestCommits' auth user repo prid =
-    executeRequestMaybe auth $ pullRequestCommitsR user repo prid Nothing
+    executeRequestMaybe auth $ pullRequestCommitsR user repo prid FetchAll
 
 -- | All the commits on a pull request, given the repo owner, repo name, and
 -- the number of the pull request.
@@ -125,7 +125,7 @@ pullRequestCommitsIO = pullRequestCommits' Nothing
 
 -- | List commits on a pull request.
 -- See <https://developer.github.com/v3/pulls/#list-commits-on-a-pull-request>
-pullRequestCommitsR :: Name Owner -> Name Repo -> Id PullRequest -> Maybe Count -> Request k (Vector Commit)
+pullRequestCommitsR :: Name Owner -> Name Repo -> Id PullRequest -> FetchCount -> Request k (Vector Commit)
 pullRequestCommitsR user repo prid =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "commits"] []
 
@@ -136,7 +136,7 @@ pullRequestCommitsR user repo prid =
 -- > pullRequestFiles' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 688
 pullRequestFiles' :: Maybe Auth -> Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector File))
 pullRequestFiles' auth user repo prid =
-    executeRequestMaybe auth $ pullRequestFilesR user repo prid Nothing
+    executeRequestMaybe auth $ pullRequestFilesR user repo prid FetchAll
 
 -- | The individual files that a pull request patches. Takes the repo owner and
 -- name, plus the number assigned to the pull request.
@@ -147,7 +147,7 @@ pullRequestFiles = pullRequestFiles' Nothing
 
 -- | List pull requests files.
 -- See <https://developer.github.com/v3/pulls/#list-pull-requests-files>
-pullRequestFilesR :: Name Owner -> Name Repo -> Id PullRequest -> Maybe Count -> Request k (Vector File)
+pullRequestFilesR :: Name Owner -> Name Repo -> Id PullRequest -> FetchCount -> Request k (Vector File)
 pullRequestFilesR user repo prid =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "files"] []
 
