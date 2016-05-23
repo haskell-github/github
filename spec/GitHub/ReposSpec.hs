@@ -2,14 +2,15 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module GitHub.ReposSpec where
 
-import GitHub.Auth            (Auth (..))
-import GitHub.Endpoints.Repos (RepoPublicity (..), currentUserRepos,
-                               languagesFor', userRepos')
+import GitHub                 (Auth (..), Repo (..), RepoPublicity (..),
+                               executeRequest, repositoryR)
+import GitHub.Endpoints.Repos (currentUserRepos, languagesFor', userRepos')
 
 import Data.Either.Compat (isRight)
 import Data.String        (fromString)
 import System.Environment (lookupEnv)
-import Test.Hspec         (Spec, describe, it, pendingWith, shouldSatisfy)
+import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe,
+                           shouldSatisfy)
 
 import qualified Data.HashMap.Strict as HM
 
@@ -26,14 +27,22 @@ withAuth action = do
 
 spec :: Spec
 spec = do
+  describe "repositoryR" $ do
+    it "works" $ withAuth $ \auth -> do
+      er <- executeRequest auth $ repositoryR "phadej" "github"
+      er `shouldSatisfy` isRight
+      let Right r = er
+      -- https://github.com/phadej/github/pull/219
+      repoDefaultBranch r `shouldBe` Just "master"
+
   describe "currentUserRepos" $ do
     it "works" $ withAuth $ \auth -> do
-      cs <-  currentUserRepos auth RepoPublicityAll
+      cs <- currentUserRepos auth RepoPublicityAll
       cs `shouldSatisfy` isRight
 
   describe "userRepos" $ do
     it "works" $ withAuth $ \auth -> do
-      cs <-  userRepos' (Just auth) "phadej" RepoPublicityAll
+      cs <- userRepos' (Just auth) "phadej" RepoPublicityAll
       cs `shouldSatisfy` isRight
 
   describe "languagesFor'" $ do
