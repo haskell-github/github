@@ -99,7 +99,7 @@ executeRequest auth req = do
 
 lessFetchCount :: Int -> FetchCount -> Bool
 lessFetchCount _ FetchAll         = True
-lessFetchCount i (FetchAtLeast j) = i < fromIntegral j 
+lessFetchCount i (FetchAtLeast j) = i < fromIntegral j
 
 -- | Like 'executeRequest' but with provided 'Manager'.
 executeRequestWithMgr :: Manager
@@ -207,21 +207,21 @@ makeHttpRequest auth r = case r of
         req' <- makeHttpRequest auth req
         return $ setCheckStatus (Just sm) req'
     Query paths qs -> do
-        req <- parseUrl $ url paths
+        req <- parseUrl' $ url paths
         return $ setReqHeaders
                . setCheckStatus Nothing
                . setAuthRequest auth
                . setQueryString qs
                $ req
     PagedQuery paths qs _ -> do
-        req <- parseUrl $ url paths
+        req <- parseUrl' $ url paths
         return $ setReqHeaders
                . setCheckStatus Nothing
                . setAuthRequest auth
                . setQueryString qs
                $ req
     Command m paths body -> do
-        req <- parseUrl $ url paths
+        req <- parseUrl' $ url paths
         return $ setReqHeaders
                . setCheckStatus Nothing
                . setAuthRequest auth
@@ -232,10 +232,13 @@ makeHttpRequest auth r = case r of
         req' <- makeHttpRequest auth req
         return $ req' { requestHeaders = h <> requestHeaders req' }
   where
-    url :: Paths -> String
-    url paths = baseUrl ++ '/' : intercalate "/" paths
+    parseUrl' :: MonadThrow m => Text -> m HTTP.Request
+    parseUrl' = parseUrl . T.unpack
 
-    baseUrl :: String
+    url :: Paths -> Text
+    url paths = baseUrl <> "/" <> T.intercalate "/" paths
+
+    baseUrl :: Text
     baseUrl = case auth of
         Just (EnterpriseOAuth endpoint _)  -> endpoint
         _                                  -> "https://api.github.com"

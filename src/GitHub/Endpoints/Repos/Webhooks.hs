@@ -106,10 +106,10 @@ deleteRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> Request 'True
 deleteRepoWebhookR user repo hookId =
     Command Delete (createWebhookOpPath user repo hookId Nothing) mempty
 
-createBaseWebhookPath :: Name Owner -> Name Repo -> Id RepoWebhook -> [String]
+createBaseWebhookPath :: Name Owner -> Name Repo -> Id RepoWebhook -> Paths
 createBaseWebhookPath user repo hookId =
     ["repos", toPathPart user, toPathPart repo, "hooks", toPathPart hookId]
 
-createWebhookOpPath :: Name Owner -> Name Repo -> Id RepoWebhook -> Maybe String -> [String]
+createWebhookOpPath :: Name Owner -> Name Repo -> Id RepoWebhook -> Maybe Text -> Paths
 createWebhookOpPath owner reqName webhookId Nothing = createBaseWebhookPath owner reqName webhookId
 createWebhookOpPath owner reqName webhookId (Just operation) = createBaseWebhookPath owner reqName webhookId ++ [operation]

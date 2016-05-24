@@ -15,7 +15,7 @@ type Token = BS.ByteString
 data Auth
     = BasicAuth BS.ByteString BS.ByteString
     | OAuth Token -- ^ token
-    | EnterpriseOAuth String  -- custom API endpoint without
+    | EnterpriseOAuth Text    -- custom API endpoint without
                               -- trailing slash
                       Token   -- token
     deriving (Show, Data, Typeable, Eq, Ord, Generic)

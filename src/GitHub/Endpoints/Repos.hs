@@ -59,7 +59,6 @@ import GitHub.Data
 import GitHub.Request
 import GitHub.Internal.Prelude
 
-import qualified Data.Text          as T
 import qualified Data.Text.Encoding as TE
 
 repoPublicityQueryString :: RepoPublicity -> QueryString
@@ -321,7 +320,7 @@ contentsForR :: Name Owner
              -> Maybe Text      -- ^ Git commit
              -> Request k Content
 contentsForR user repo path ref =
-    Query ["repos", toPathPart user, toPathPart repo, "contents", T.unpack path] qs
+    Query ["repos", toPathPart user, toPathPart repo, "contents", path] qs
   where
     qs =  maybe [] (\r -> [("ref", Just . TE.encodeUtf8 $ r)]) ref
 

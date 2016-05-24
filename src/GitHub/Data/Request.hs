@@ -34,16 +34,16 @@ import qualified Network.HTTP.Types.Method as Method
 -- Auxillary types
 ------------------------------------------------------------------------------
 
-type Paths = [String]
+type Paths = [Text]
 
 class IsPathPart a where
-    toPathPart :: a -> String
+    toPathPart :: a -> Text
 
 instance IsPathPart (Name a) where
-    toPathPart = T.unpack . untagName
+    toPathPart = untagName
 
 instance IsPathPart (Id a) where
-    toPathPart = show . untagId
+    toPathPart = T.pack . show . untagId
 
 -- | Http method of requests with body.
 data CommandMethod a where

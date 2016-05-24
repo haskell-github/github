@@ -77,4 +77,4 @@ event' auth user repo eid =
 -- See <https://developer.github.com/v3/issues/events/#get-a-single-event>
 eventR :: Name Owner -> Name Repo -> Id Event -> Request k Event
 eventR user repo eid =
-    Query ["repos", toPathPart user, toPathPart repo, "issues", "events", show eid] []
+    Query ["repos", toPathPart user, toPathPart repo, "issues", "events", toPathPart eid] []
