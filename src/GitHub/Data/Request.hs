@@ -1,11 +1,7 @@
 {-# LANGUAGE CPP                #-}
-{-# LANGUAGE DataKinds          #-}
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
 {-# LANGUAGE FlexibleContexts   #-}
 {-# LANGUAGE GADTs              #-}
 {-# LANGUAGE KindSignatures     #-}
-{-# LANGUAGE OverloadedStrings  #-}
 {-# LANGUAGE StandaloneDeriving #-}
 -----------------------------------------------------------------------------
 -- |
@@ -18,27 +14,22 @@ module GitHub.Data.Request (
     toMethod,
     StatusMap(..),
     MergeResult(..),
+    FetchCount(..),
     Paths,
     IsPathPart(..),
     QueryString,
     Count,
     ) where
 
-import Data.Aeson.Compat (FromJSON)
-import Data.Hashable     (Hashable (..))
-import Data.Typeable     (Typeable)
-import Data.Vector       (Vector)
-import GHC.Generics      (Generic)
+import GitHub.Internal.Prelude
+import GitHub.Data.Definitions (Count, QueryString)
+import GitHub.Data.Id          (Id, untagId)
+import GitHub.Data.Name        (Name, untagName)
 
 import qualified Data.ByteString.Lazy      as LBS
 import qualified Data.Text                 as T
 import qualified Network.HTTP.Types        as Types
 import qualified Network.HTTP.Types.Method as Method
-
-import GitHub.Data.Definitions (Count, QueryString)
-import GitHub.Data.Id          (Id, untagId)
-import GitHub.Data.Name        (Name, untagName)
-
 ------------------------------------------------------------------------------
 -- Auxillary types
 ------------------------------------------------------------------------------
@@ -106,6 +97,27 @@ instance Hashable (StatusMap a) where
     hashWithSalt salt StatusOnlyOk = hashWithSalt salt (0 :: Int)
     hashWithSalt salt StatusMerge  = hashWithSalt salt (1 :: Int)
 
+-- | 'PagedQuery' returns just some results, using this data we can specify how
+-- many pages we want to fetch.
+data FetchCount = FetchAtLeast !Word | FetchAll
+    deriving (Eq, Ord, Read, Show, Generic, Typeable)
+
+-- | This instance is there mostly for 'fromInteger'.
+instance Num FetchCount where
+    fromInteger = FetchAtLeast . fromInteger
+
+    FetchAtLeast a + FetchAtLeast b = FetchAtLeast (a * b)
+    _ + _                           = FetchAll
+
+    FetchAtLeast a * FetchAtLeast b = FetchAtLeast (a * b)
+    _ * _                           = FetchAll
+
+    abs    = error "abs @FetchCount: not implemented"
+    signum = error "signum @FetchCount: not implemented"
+    negate = error "negate @FetchCount: not implemented"
+
+instance Hashable FetchCount
+
 ------------------------------------------------------------------------------
 -- Github request
 ------------------------------------------------------------------------------
@@ -118,7 +130,7 @@ instance Hashable (StatusMap a) where
 -- /Note:/ 'Request' is not 'Functor' on purpose.
 data Request (k :: Bool) a where
     Query        :: FromJSON a => Paths -> QueryString -> Request k a
-    PagedQuery   :: FromJSON (Vector a) => Paths -> QueryString -> Maybe Count -> Request k (Vector a)
+    PagedQuery   :: FromJSON (Vector a) => Paths -> QueryString -> FetchCount -> Request k (Vector a)
     Command      :: FromJSON a => CommandMethod a -> Paths -> LBS.ByteString -> Request 'True a
     StatusQuery  :: StatusMap a -> Request k () -> Request k a
     HeaderQuery  :: Types.RequestHeaders -> Request k a -> Request k a

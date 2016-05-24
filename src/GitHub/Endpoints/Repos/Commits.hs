@@ -1,5 +1,4 @@
 {-# LANGUAGE CPP               #-}
-{-# LANGUAGE OverloadedStrings #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -24,15 +23,13 @@ module GitHub.Endpoints.Repos.Commits (
     module GitHub.Data,
     ) where
 
-import Data.Time.ISO8601 (formatISO8601)
-import Data.Vector       (Vector)
+import GitHub.Internal.Prelude
+import GitHub.Data
+import GitHub.Request
 
 import qualified Data.ByteString    as BS
 import qualified Data.Text          as T
 import qualified Data.Text.Encoding as TE
-
-import GitHub.Data
-import GitHub.Request
 
 renderCommitQueryOption :: CommitQueryOption -> (BS.ByteString, Maybe BS.ByteString)
 renderCommitQueryOption (CommitQuerySha sha)      = ("sha", Just $ TE.encodeUtf8 sha)
@@ -57,7 +54,7 @@ commitsFor' auth user repo =
 
 -- | List commits on a repository.
 -- See <https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository>
-commitsForR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector Commit)
+commitsForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Commit)
 commitsForR user repo limit = commitsWithOptionsForR user repo limit []
 
 commitsWithOptionsFor :: Name Owner -> Name Repo -> [CommitQueryOption] -> IO (Either Error (Vector Commit))
@@ -70,11 +67,11 @@ commitsWithOptionsFor = commitsWithOptionsFor' Nothing
 -- > commitsWithOptionsFor' (Just (BasicAuth (user, password))) "mike-burns" "github" [CommitQueryAuthor "djeik"]
 commitsWithOptionsFor' :: Maybe Auth -> Name Owner -> Name Repo -> [CommitQueryOption] -> IO (Either Error (Vector Commit))
 commitsWithOptionsFor' auth user repo opts =
-    executeRequestMaybe auth $ commitsWithOptionsForR user repo Nothing opts
+    executeRequestMaybe auth $ commitsWithOptionsForR user repo FetchAll opts
 
 -- | List commits on a repository.
 -- See <https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository>
-commitsWithOptionsForR :: Name Owner -> Name Repo -> Maybe Count -> [CommitQueryOption] -> Request k (Vector Commit)
+commitsWithOptionsForR :: Name Owner -> Name Repo -> FetchCount -> [CommitQueryOption] -> Request k (Vector Commit)
 commitsWithOptionsForR user repo limit opts =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "commits"] qs limit
   where

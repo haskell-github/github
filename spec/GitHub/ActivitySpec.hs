@@ -2,6 +2,8 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module GitHub.ActivitySpec where
 
+import qualified GitHub
+
 import GitHub.Auth                        (Auth (..))
 import GitHub.Endpoints.Activity.Starring (myStarredAcceptStarR)
 import GitHub.Endpoints.Activity.Watching (watchersForR)
@@ -29,11 +31,11 @@ spec :: Spec
 spec = do
   describe "watchersForR" $ do
     it "works" $ withAuth $ \auth -> do
-      cs <- executeRequest auth $ watchersForR "phadej" "github" Nothing
+      cs <- executeRequest auth $ watchersForR "phadej" "github" GitHub.FetchAll 
       cs `shouldSatisfy` isRight
       V.length (fromRightS cs) `shouldSatisfy` (> 10)
   describe "myStarredR" $ do
       it "works" $ withAuth $ \auth -> do
-          cs <- executeRequest auth $ myStarredAcceptStarR (Just 31)
+          cs <- executeRequest auth $ myStarredAcceptStarR (GitHub.FetchAtLeast 31)
           cs `shouldSatisfy` isRight
           fromRightS cs `shouldSatisfy` (\xs -> V.length xs > 30)

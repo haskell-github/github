@@ -1,8 +1,5 @@
 {-# LANGUAGE CPP                #-}
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
 {-# LANGUAGE FlexibleInstances  #-}
-{-# LANGUAGE OverloadedStrings  #-}
 #define UNSAFE 1
 -----------------------------------------------------------------------------
 -- |
@@ -14,25 +11,10 @@
 -- orphan-ish instance.
 module GitHub.Data.Repos where
 
-import Prelude        ()
-import Prelude.Compat
-
 import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id)
 import GitHub.Data.Name        (Name)
-
---import Control.Arrow            (first) -- Data.Bifunctor would be better
-import Control.DeepSeq          (NFData (..))
-import Control.DeepSeq.Generics (genericRnf)
-import Data.Aeson.Compat        (FromJSON (..), ToJSON (..), object, withObject,
-                                 withText, (.:), (.:?), (.=))
-import Data.Binary              (Binary)
-import Data.Data                (Data, Typeable)
-import Data.Hashable            (Hashable (..))
-import Data.String              (IsString (..))
-import Data.Text                (Text)
-import Data.Time                (UTCTime)
-import GHC.Generics             (Generic)
+import GitHub.Internal.Prelude
 
 import qualified Data.HashMap.Strict as HM
 

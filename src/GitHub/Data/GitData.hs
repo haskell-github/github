@@ -1,6 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
-{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -8,22 +5,9 @@
 --
 module GitHub.Data.GitData where
 
-import Prelude        ()
-import Prelude.Compat
-
 import GitHub.Data.Definitions
 import GitHub.Data.Name        (Name)
-
-import Control.DeepSeq          (NFData (..))
-import Control.DeepSeq.Generics (genericRnf)
-import Data.Aeson.Compat        (FromJSON (..), ToJSON (..), object, withObject,
-                                 (.!=), (.:), (.:?), (.=))
-import Data.Binary              (Binary)
-import Data.Data                (Data, Typeable)
-import Data.Text                (Text)
-import Data.Time                (UTCTime)
-import Data.Vector              (Vector)
-import GHC.Generics             (Generic)
+import GitHub.Internal.Prelude
 
 import qualified Data.Vector as V
 

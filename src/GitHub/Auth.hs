@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -7,12 +5,7 @@
 --
 module GitHub.Auth where
 
-import Control.DeepSeq          (NFData (..))
-import Control.DeepSeq.Generics (genericRnf)
-import Data.Binary              (Binary)
-import Data.Data                (Data, Typeable)
-import Data.Hashable            (Hashable)
-import GHC.Generics             (Generic)
+import GitHub.Internal.Prelude
 
 import qualified Data.ByteString as BS
 

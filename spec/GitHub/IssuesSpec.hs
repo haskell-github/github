@@ -25,7 +25,7 @@ spec = do
     describe "issuesForRepoR" $ do
         it "works" $ withAuth $ \auth -> for_ repos $ \(owner, repo) -> do
             cs <- GitHub.executeRequest auth $
-                GitHub.issuesForRepoR owner repo [] Nothing
+                GitHub.issuesForRepoR owner repo [] GitHub.FetchAll 
             cs `shouldSatisfy` isRight
   where
     repos =

@@ -1,6 +1,4 @@
 {-# LANGUAGE CPP                #-}
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -49,10 +47,7 @@ module GitHub.Data (
     module GitHub.Data.Webhooks,
     ) where
 
-import Prelude        ()
-import Prelude.Compat
-
-import Data.Text (Text)
+import GitHub.Internal.Prelude
 
 import GitHub.Auth
 import GitHub.Data.Activities

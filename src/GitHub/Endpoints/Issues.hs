@@ -1,6 +1,4 @@
-{-# LANGUAGE CPP               #-}
-{-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE CPP #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -25,13 +23,8 @@ module GitHub.Endpoints.Issues (
     ) where
 
 import GitHub.Data
+import GitHub.Internal.Prelude
 import GitHub.Request
-
-import Data.Aeson.Compat (encode)
-import Data.List         (intercalate)
-import Data.Text         (Text)
-import Data.Time.ISO8601 (formatISO8601)
-import Data.Vector       (Vector)
 
 import qualified Data.Text          as T
 import qualified Data.Text.Encoding as TE
@@ -63,7 +56,7 @@ issueR user reqRepoName reqIssueNumber =
 -- > issuesForRepo' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
 issuesForRepo' :: Maybe Auth -> Name Owner -> Name Repo -> [IssueLimitation] -> IO (Either Error (Vector Issue))
 issuesForRepo' auth user reqRepoName issueLimitations =
-    executeRequestMaybe auth $ issuesForRepoR user reqRepoName issueLimitations Nothing
+    executeRequestMaybe auth $ issuesForRepoR user reqRepoName issueLimitations FetchAll
 
 -- | All issues for a repo (given the repo owner and name), with optional
 -- restrictions as described in the @IssueLimitation@ data type.
@@ -74,7 +67,7 @@ issuesForRepo = issuesForRepo' Nothing
 
 -- | List issues for a repository.
 -- See <https://developer.github.com/v3/issues/#list-issues-for-a-repository>
-issuesForRepoR :: Name Owner -> Name Repo -> [IssueLimitation] -> Maybe Count -> Request k (Vector Issue)
+issuesForRepoR :: Name Owner -> Name Repo -> [IssueLimitation] -> FetchCount -> Request k (Vector Issue)
 issuesForRepoR user reqRepoName issueLimitations =
     PagedQuery ["repos", toPathPart user, toPathPart reqRepoName, "issues"] qs
   where

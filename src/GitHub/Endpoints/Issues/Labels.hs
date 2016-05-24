@@ -1,5 +1,3 @@
-{-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE OverloadedStrings #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -58,11 +56,11 @@ labelsOnRepo = labelsOnRepo' Nothing
 -- > labelsOnRepo' (Just (User (user password))) "thoughtbot" "paperclip"
 labelsOnRepo' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector IssueLabel))
 labelsOnRepo' auth user repo =
-    executeRequestMaybe auth $ labelsOnRepoR user repo Nothing
+    executeRequestMaybe auth $ labelsOnRepoR user repo FetchAll
 
 -- | List all labels for this repository.
 -- See <https://developer.github.com/v3/issues/labels/#list-all-labels-for-this-repository>
-labelsOnRepoR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector IssueLabel)
+labelsOnRepoR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector IssueLabel)
 labelsOnRepoR user repo =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "labels"] []
 
@@ -152,11 +150,11 @@ labelsOnIssue = labelsOnIssue' Nothing
 -- > labelsOnIssue' (Just (User (user password))) "thoughtbot" "paperclip" (Id 585)
 labelsOnIssue' :: Maybe Auth -> Name Owner -> Name Repo -> Id Issue -> IO (Either Error (Vector IssueLabel))
 labelsOnIssue' auth user repo iid =
-    executeRequestMaybe auth $ labelsOnIssueR user repo iid Nothing
+    executeRequestMaybe auth $ labelsOnIssueR user repo iid FetchAll
 
 -- | List labels on an issue.
 -- See <https://developer.github.com/v3/issues/labels/#list-labels-on-an-issue>
-labelsOnIssueR :: Name Owner -> Name Repo -> Id Issue -> Maybe Count -> Request k (Vector IssueLabel)
+labelsOnIssueR :: Name Owner -> Name Repo -> Id Issue -> FetchCount -> Request k (Vector IssueLabel)
 labelsOnIssueR user repo iid =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"] []
 
@@ -251,10 +249,10 @@ labelsOnMilestone = labelsOnMilestone' Nothing
 -- > labelsOnMilestone' (Just (User (user password))) "thoughtbot" "paperclip" (Id 2)
 labelsOnMilestone' :: Maybe Auth -> Name Owner -> Name Repo -> Id Milestone -> IO (Either Error (Vector IssueLabel))
 labelsOnMilestone' auth user repo mid =
-    executeRequestMaybe auth $ labelsOnMilestoneR user repo mid Nothing
+    executeRequestMaybe auth $ labelsOnMilestoneR user repo mid FetchAll
 
 -- | Query labels for every issue in a milestone.
 -- See <https://developer.github.com/v3/issues/labels/#get-labels-for-every-issue-in-a-milestone>
-labelsOnMilestoneR :: Name Owner -> Name Repo -> Id Milestone -> Maybe Count -> Request k (Vector IssueLabel)
+labelsOnMilestoneR :: Name Owner -> Name Repo -> Id Milestone -> FetchCount -> Request k (Vector IssueLabel)
 labelsOnMilestoneR user repo mid =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "milestones", toPathPart mid, "labels"] []

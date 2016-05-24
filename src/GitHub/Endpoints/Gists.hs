@@ -14,16 +14,16 @@ module GitHub.Endpoints.Gists (
     module GitHub.Data,
     ) where
 
-import Data.Vector    (Vector)
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | The list of all gists created by the user
 --
 -- > gists' (Just ("github-username", "github-password")) "mike-burns"
 gists' :: Maybe Auth -> Name Owner -> IO (Either Error (Vector Gist))
 gists' auth user =
-    executeRequestMaybe auth $ gistsR user Nothing
+    executeRequestMaybe auth $ gistsR user FetchAll
 
 -- | The list of all public gists created by the user.
 --
@@ -33,7 +33,7 @@ gists = gists' Nothing
 
 -- | List gists.
 -- See <https://developer.github.com/v3/gists/#list-gists>
-gistsR :: Name Owner -> Maybe Count -> Request k (Vector Gist)
+gistsR :: Name Owner -> FetchCount -> Request k (Vector Gist)
 gistsR user = PagedQuery ["users", toPathPart user, "gists"] []
 
 -- | A specific gist, given its id, with authentication credentials

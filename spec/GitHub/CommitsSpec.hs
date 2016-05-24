@@ -2,6 +2,8 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module GitHub.CommitsSpec where
 
+import qualified GitHub
+
 import GitHub.Auth                    (Auth (..))
 import GitHub.Endpoints.Repos.Commits (Commit, commitSha, commitsFor',
                                        commitsForR, diffR, mkName)
@@ -39,7 +41,7 @@ spec = do
 
     -- Page size is 30, so we get 60 commits
     it "limits the response" $ withAuth $ \auth -> do
-      cs <- executeRequest auth $ commitsForR "phadej" "github" (Just 40)
+      cs <- executeRequest auth $ commitsForR "phadej" "github" (GitHub.FetchAtLeast 40)
       cs `shouldSatisfy` isRight
       let cs' = fromRightS cs
       V.length cs' `shouldSatisfy` (< 70)
@@ -48,7 +50,7 @@ spec = do
 
   describe "diff" $ do
     it "works" $ withAuth $ \auth -> do
-      cs <- executeRequest auth $ commitsForR "phadej" "github" (Just 30)
+      cs <- executeRequest auth $ commitsForR "phadej" "github" (GitHub.FetchAtLeast 30)
       cs `shouldSatisfy` isRight
       let commits = take 10 . V.toList . fromRightS $ cs
       let pairs = zip commits $ drop 1 commits

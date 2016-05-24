@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -18,6 +17,7 @@ module GitHub.Endpoints.GitData.Trees (
 
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | A tree for a SHA1.
 --

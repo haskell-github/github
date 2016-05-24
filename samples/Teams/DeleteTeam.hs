@@ -1,10 +1,8 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Main (main) where
 
 import Common
-import Prelude ()
-
-import Data.String (fromString)
 
 import qualified GitHub
 import qualified GitHub.Endpoints.Organizations.Teams as GitHub

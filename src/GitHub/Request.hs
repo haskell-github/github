@@ -1,12 +1,7 @@
-{-# LANGUAGE CPP                 #-}
-{-# LANGUAGE DataKinds           #-}
-{-# LANGUAGE DeriveDataTypeable  #-}
-{-# LANGUAGE DeriveGeneric       #-}
+{-# LANGUAGE CPP                #-}
 {-# LANGUAGE FlexibleContexts    #-}
 {-# LANGUAGE GADTs               #-}
 {-# LANGUAGE KindSignatures      #-}
-{-# LANGUAGE OverloadedStrings   #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneDeriving  #-}
 -----------------------------------------------------------------------------
 -- |
@@ -54,8 +49,7 @@ module GitHub.Request (
     performPagedRequest,
     ) where
 
-import Prelude        ()
-import Prelude.Compat
+import GitHub.Internal.Prelude
 
 #if MIN_VERSION_mtl(2,2,0)
 import Control.Monad.Except (MonadError (..))
@@ -66,11 +60,8 @@ import Control.Monad.Error (MonadError (..))
 import Control.Monad.Catch        (MonadCatch (..), MonadThrow)
 import Control.Monad.Trans.Class  (lift)
 import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
-import Data.Aeson.Compat          (FromJSON, eitherDecode)
-import Data.List                  (find, intercalate)
-import Data.Semigroup             (Semigroup (..))
-import Data.Text                  (Text)
-import Data.Vector.Instances      ()
+import Data.Aeson.Compat          (eitherDecode)
+import Data.List                  (find)
 
 import Network.HTTP.Client          (CookieJar, HttpException (..), Manager,
                                      RequestBody (..), Response (..),
@@ -106,6 +97,10 @@ executeRequest auth req = do
 #endif
     pure x
 
+lessFetchCount :: Int -> FetchCount -> Bool
+lessFetchCount _ FetchAll         = True
+lessFetchCount i (FetchAtLeast j) = i < fromIntegral j 
+
 -- | Like 'executeRequest' but with provided 'Manager'.
 executeRequestWithMgr :: Manager
                       -> Auth
@@ -124,7 +119,7 @@ executeRequestWithMgr mgr auth req = runExceptT $
             httpReq <- makeHttpRequest (Just auth) req
             performPagedRequest httpLbs' predicate httpReq
           where
-            predicate = maybe (const True) (\l' -> (< l') . V.length ) l
+            predicate v = lessFetchCount (V.length v) l
         Command m _ _ -> do
             httpReq <- makeHttpRequest (Just auth) req
             res <- httpLbs' httpReq
@@ -167,7 +162,7 @@ executeRequestWithMgr' mgr req = runExceptT $
             httpReq <- makeHttpRequest Nothing req
             performPagedRequest httpLbs' predicate httpReq
           where
-            predicate = maybe (const True) (\l' -> (< l') . V.length) l
+            predicate v = lessFetchCount (V.length v) l
         StatusQuery sm _ -> do
             httpReq <- makeHttpRequest Nothing req
             res <- httpLbs' httpReq

@@ -14,9 +14,9 @@ module GitHub.Endpoints.Repos.Collaborators (
     module GitHub.Data,
     ) where
 
-import Data.Vector    (Vector)
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | All the users who have collaborated on a repo.
 --
@@ -28,11 +28,11 @@ collaboratorsOn = collaboratorsOn' Nothing
 -- With authentication.
 collaboratorsOn' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector SimpleUser))
 collaboratorsOn' auth user repo =
-    executeRequestMaybe auth $ collaboratorsOnR user repo Nothing
+    executeRequestMaybe auth $ collaboratorsOnR user repo FetchAll
 
 -- | List collaborators.
 -- See <https://developer.github.com/v3/repos/collaborators/#list-collaborators>
-collaboratorsOnR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector SimpleUser)
+collaboratorsOnR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector SimpleUser)
 collaboratorsOnR user repo =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "collaborators"] []
 

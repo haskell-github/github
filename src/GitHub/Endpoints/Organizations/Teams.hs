@@ -1,5 +1,3 @@
-{-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE OverloadedStrings #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -36,14 +34,9 @@ module GitHub.Endpoints.Organizations.Teams (
     module GitHub.Data,
     ) where
 
-import Prelude        ()
-import Prelude.Compat
-
-import Data.Aeson.Compat (encode)
-import Data.Vector       (Vector)
-
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | List teams.  List the teams of an Owner.
 -- When authenticated, lists private teams visible to the authenticated user.
@@ -52,7 +45,7 @@ import GitHub.Request
 -- > teamsOf' (Just $ OAuth "token") "thoughtbot"
 teamsOf' :: Maybe Auth -> Name Organization -> IO (Either Error (Vector SimpleTeam))
 teamsOf' auth org =
-    executeRequestMaybe auth $ teamsOfR org Nothing
+    executeRequestMaybe auth $ teamsOfR org FetchAll
 
 -- | List the public teams of an Owner.
 --
@@ -62,7 +55,7 @@ teamsOf = teamsOf' Nothing
 
 -- | List teams.
 -- See <https://developer.github.com/v3/orgs/teams/#list-teams>
-teamsOfR :: Name Organization -> Maybe Count -> Request k (Vector SimpleTeam)
+teamsOfR :: Name Organization -> FetchCount -> Request k (Vector SimpleTeam)
 teamsOfR org = PagedQuery ["orgs", toPathPart org, "teams"] []
 
 -- | The information for a single team, by team id.
@@ -134,7 +127,7 @@ deleteTeamR tid =
 -- | List team members.
 --
 -- See <https://developer.github.com/v3/orgs/teams/#list-team-members>
-listTeamMembersR :: Id Team -> TeamMemberRole -> Maybe Count -> Request 'True (Vector SimpleUser)
+listTeamMembersR :: Id Team -> TeamMemberRole -> FetchCount -> Request 'True (Vector SimpleUser)
 listTeamMembersR tid r = PagedQuery ["teams", toPathPart tid, "members"] [("role", Just r')]
   where
     r' = case r of
@@ -147,11 +140,11 @@ listTeamMembersR tid r = PagedQuery ["teams", toPathPart tid, "members"] [("role
 --
 -- > listTeamRepos' (Just $ GitHub.OAuth token) (GitHub.mkTeamId team_id)
 listTeamRepos' :: Maybe Auth -> Id Team -> IO (Either Error (Vector Repo))
-listTeamRepos' auth tid = executeRequestMaybe auth $ listTeamReposR tid Nothing
+listTeamRepos' auth tid = executeRequestMaybe auth $ listTeamReposR tid FetchAll
 
 -- | Query team repositories.
 -- See <https://developer.github.com/v3/orgs/teams/#list-team-repos>
-listTeamReposR :: Id Team -> Maybe Count -> Request k (Vector Repo)
+listTeamReposR :: Id Team -> FetchCount -> Request k (Vector Repo)
 listTeamReposR tid  = PagedQuery ["teams", toPathPart tid, "repos"] []
 
 -- | Retrieve repositories for a team.
@@ -210,9 +203,9 @@ deleteTeamMembershipForR tid user =
 --
 -- > listTeamsCurrent' (OAuth "token")
 listTeamsCurrent' :: Auth -> IO (Either Error (Vector Team))
-listTeamsCurrent' auth = executeRequest auth $ listTeamsCurrentR Nothing
+listTeamsCurrent' auth = executeRequest auth $ listTeamsCurrentR FetchAll
 
 -- | List user teams.
 -- See <https://developer.github.com/v3/orgs/teams/#list-user-teams>
-listTeamsCurrentR :: Maybe Count -> Request 'True (Vector Team)
+listTeamsCurrentR :: FetchCount -> Request 'True (Vector Team)
 listTeamsCurrentR = PagedQuery ["user", "teams"] []

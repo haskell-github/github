@@ -9,7 +9,7 @@ import qualified GitHub
 main :: IO ()
 main = do
     auth <- getAuth
-    possibleUsers <- GitHub.executeRequestMaybe auth $ GitHub.usersFollowedByR "mike-burns" Nothing
+    possibleUsers <- GitHub.executeRequestMaybe auth $ GitHub.usersFollowedByR "mike-burns" GitHub.FetchAll 
     putStrLn $ either (("Error: " <>) . tshow)
                       (foldMap ((<> "\n") . formatUser))
                       possibleUsers

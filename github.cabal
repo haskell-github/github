@@ -49,8 +49,23 @@ Library
   default-language: Haskell2010
   ghc-options: -Wall
   hs-source-dirs: src
+  default-extensions:
+    NoImplicitPrelude
+    DataKinds
+    DeriveDataTypeable
+    DeriveGeneric
+    OverloadedStrings
+    ScopedTypeVariables
+  other-extensions:
+    CPP
+    FlexibleContexts
+    FlexibleInstances
+    GADTs
+    KindSignatures
+    StandaloneDeriving
   exposed-modules:
     GitHub
+    GitHub.Internal.Prelude
     GitHub.Auth
     GitHub.Data
     GitHub.Data.Comments
@@ -142,6 +157,8 @@ test-suite github-test
   default-language: Haskell2010
   type: exitcode-stdio-1.0
   hs-source-dirs: spec
+  other-extensions:
+    TemplateHaskell
   other-modules:
     GitHub.ActivitySpec
     GitHub.CommitsSpec

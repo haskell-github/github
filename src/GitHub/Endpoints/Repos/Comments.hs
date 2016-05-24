@@ -19,9 +19,9 @@ module GitHub.Endpoints.Repos.Comments (
     module GitHub.Data,
     ) where
 
-import Data.Vector    (Vector)
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | All the comments on a Github repo.
 --
@@ -35,11 +35,11 @@ commentsFor = commentsFor' Nothing
 -- > commentsFor "thoughtbot" "paperclip"
 commentsFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Comment))
 commentsFor' auth user repo =
-    executeRequestMaybe auth $ commentsForR user repo Nothing
+    executeRequestMaybe auth $ commentsForR user repo FetchAll
 
 -- | List commit comments for a repository.
 -- See <https://developer.github.com/v3/repos/comments/#list-commit-comments-for-a-repository>
-commentsForR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector Comment)
+commentsForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Comment)
 commentsForR user repo =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "comments"] []
 
@@ -55,11 +55,11 @@ commitCommentsFor = commitCommentsFor' Nothing
 -- > commitCommentsFor "thoughtbot" "paperclip" "41f685f6e01396936bb8cd98e7cca517e2c7d96b"
 commitCommentsFor' :: Maybe Auth -> Name Owner -> Name Repo -> Name Commit -> IO (Either Error (Vector Comment))
 commitCommentsFor' auth user repo sha =
-    executeRequestMaybe auth $ commitCommentsForR user repo sha Nothing
+    executeRequestMaybe auth $ commitCommentsForR user repo sha FetchAll
 
 -- | List comments for a single commit.
 -- See <https://developer.github.com/v3/repos/comments/#list-comments-for-a-single-commit>
-commitCommentsForR :: Name Owner -> Name Repo -> Name Commit -> Maybe Count -> Request k (Vector Comment)
+commitCommentsForR :: Name Owner -> Name Repo -> Name Commit -> FetchCount -> Request k (Vector Comment)
 commitCommentsForR user repo sha =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "commits", toPathPart sha, "comments"] []
 

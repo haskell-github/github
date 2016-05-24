@@ -12,9 +12,9 @@ module GitHub.Endpoints.Repos.Forks (
     module GitHub.Data,
     ) where
 
-import Data.Vector    (Vector)
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | All the repos that are forked off the given repo.
 --
@@ -28,10 +28,10 @@ forksFor = forksFor' Nothing
 -- > forksFor' (Just (User (user, password))) "thoughtbot" "paperclip"
 forksFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error  (Vector Repo))
 forksFor' auth user repo =
-    executeRequestMaybe auth $ forksForR user repo Nothing
+    executeRequestMaybe auth $ forksForR user repo FetchAll
 
 -- | List forks.
 -- See <https://developer.github.com/v3/repos/forks/#list-forks>
-forksForR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector Repo)
+forksForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Repo)
 forksForR user repo =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "forks"] []

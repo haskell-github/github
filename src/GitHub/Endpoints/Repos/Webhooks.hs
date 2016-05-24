@@ -1,4 +1,3 @@
-{-# LANGUAGE DataKinds #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -33,22 +32,17 @@ module GitHub.Endpoints.Repos.Webhooks (
     deleteRepoWebhookR,
 ) where
 
-import Prelude        ()
-import Prelude.Compat
-
-import Data.Aeson.Compat (encode)
-import Data.Vector       (Vector)
-
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 webhooksFor' :: Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector RepoWebhook))
 webhooksFor' auth user repo =
-    executeRequest auth $ webhooksForR user repo Nothing
+    executeRequest auth $ webhooksForR user repo FetchAll
 
 -- | List hooks.
 -- See <https://developer.github.com/v3/repos/hooks/#list-hooks>
-webhooksForR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector RepoWebhook)
+webhooksForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector RepoWebhook)
 webhooksForR user repo =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "hooks"] []
 

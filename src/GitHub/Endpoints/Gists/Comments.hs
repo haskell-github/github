@@ -13,21 +13,20 @@ module GitHub.Endpoints.Gists.Comments (
     module GitHub.Data,
     ) where
 
-import Data.Vector (Vector)
-
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | All the comments on a Gist, given the Gist ID.
 --
 -- > commentsOn "1174060"
 commentsOn :: Name Gist -> IO (Either Error (Vector GistComment))
 commentsOn gid =
-    executeRequest' $ commentsOnR gid Nothing
+    executeRequest' $ commentsOnR gid FetchAll
 
 -- | List comments on a gist.
 -- See <https://developer.github.com/v3/gists/comments/#list-comments-on-a-gist>
-commentsOnR :: Name Gist -> Maybe Count -> Request k (Vector GistComment)
+commentsOnR :: Name Gist -> FetchCount -> Request k (Vector GistComment)
 commentsOnR gid =
     PagedQuery ["gists", toPathPart gid, "comments"] []
 

@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -11,12 +9,7 @@ module GitHub.Data.Id (
     untagId,
     ) where
 
-import Control.DeepSeq   (NFData (..))
-import Data.Aeson.Compat (FromJSON (..), ToJSON (..))
-import Data.Binary       (Binary)
-import Data.Data         (Data, Typeable)
-import Data.Hashable     (Hashable)
-import GHC.Generics      (Generic)
+import GitHub.Internal.Prelude
 
 -- | Numeric identifier.
 newtype Id entity = Id Int

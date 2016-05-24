@@ -1,4 +1,3 @@
-{-# LANGUAGE DataKinds #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -18,6 +17,7 @@ module GitHub.Endpoints.Users (
 
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 -- | The information for a single user, by login name.
 -- With authentification

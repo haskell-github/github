@@ -15,7 +15,7 @@ module GitHub.Endpoints.Activity.Watching (
     module GitHub.Data,
 ) where
 
-import Data.Vector    (Vector)
+import GitHub.Internal.Prelude
 import GitHub.Auth
 import GitHub.Data
 import GitHub.Request
@@ -32,11 +32,11 @@ watchersFor = watchersFor' Nothing
 -- > watchersFor' (Just (User (user, password))) "thoughtbot" "paperclip"
 watchersFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector SimpleUser))
 watchersFor' auth user repo =
-    executeRequestMaybe auth $ watchersForR user repo Nothing
+    executeRequestMaybe auth $ watchersForR user repo FetchAll
 
 -- | List watchers.
 -- See <https://developer.github.com/v3/activity/watching/#list-watchers>
-watchersForR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector SimpleUser)
+watchersForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector SimpleUser)
 watchersForR user repo limit =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "watchers"] [] limit
 
@@ -52,10 +52,10 @@ reposWatchedBy = reposWatchedBy' Nothing
 -- > reposWatchedBy' (Just (User (user, password))) "croaky"
 reposWatchedBy' :: Maybe Auth -> Name Owner -> IO (Either Error (Vector Repo))
 reposWatchedBy' auth user =
-    executeRequestMaybe auth $ reposWatchedByR user Nothing
+    executeRequestMaybe auth $ reposWatchedByR user FetchAll
 
 -- | List repositories being watched.
 -- See <https://developer.github.com/v3/activity/watching/#list-repositories-being-watched>
-reposWatchedByR :: Name Owner -> Maybe Count -> Request k (Vector Repo)
+reposWatchedByR :: Name Owner -> FetchCount -> Request k (Vector Repo)
 reposWatchedByR user =
     PagedQuery ["users", toPathPart user, "subscriptions"] []

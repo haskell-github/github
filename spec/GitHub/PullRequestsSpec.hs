@@ -26,7 +26,7 @@ spec = do
     describe "pullRequestsForR" $ do
         it "works" $ withAuth $ \auth -> for_ repos $ \(owner, repo) -> do
             cs <- GitHub.executeRequest auth $
-                GitHub.pullRequestsForR owner repo opts Nothing
+                GitHub.pullRequestsForR owner repo opts GitHub.FetchAll 
             cs `shouldSatisfy` isRight
   where
     repos =

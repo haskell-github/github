@@ -1,6 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
-{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -8,21 +5,9 @@
 --
 module GitHub.Data.Comments where
 
-import Prelude        ()
-import Prelude.Compat
-
-import Control.DeepSeq          (NFData (..))
-import Control.DeepSeq.Generics (genericRnf)
-import Data.Aeson.Compat        (FromJSON (..), ToJSON (..), object, withObject,
-                                 (.:), (.:?), (.=))
-import Data.Binary.Orphans      (Binary)
-import Data.Data                (Data, Typeable)
-import Data.Text                (Text)
-import Data.Time                (UTCTime)
-import GHC.Generics             (Generic)
-
 import GitHub.Data.Definitions
 import GitHub.Data.Id
+import GitHub.Internal.Prelude
 
 data Comment = Comment {
    commentPosition  :: !(Maybe Int)

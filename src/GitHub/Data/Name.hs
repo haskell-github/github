@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -11,14 +9,7 @@ module GitHub.Data.Name (
     untagName,
     ) where
 
-import Control.DeepSeq     (NFData (..))
-import Data.Aeson.Compat   (FromJSON (..), ToJSON (..))
-import Data.Binary.Orphans (Binary)
-import Data.Data           (Data, Typeable)
-import Data.Hashable       (Hashable)
-import Data.String         (IsString (..))
-import Data.Text           (Text)
-import GHC.Generics        (Generic)
+import GitHub.Internal.Prelude
 
 newtype Name entity = N Text
     deriving (Eq, Ord, Show, Generic, Typeable, Data)

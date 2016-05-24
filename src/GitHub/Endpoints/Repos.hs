@@ -1,7 +1,3 @@
-{-# LANGUAGE DataKinds          #-}
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE DeriveGeneric      #-}
-{-# LANGUAGE OverloadedStrings  #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -59,16 +55,9 @@ module GitHub.Endpoints.Repos (
     module GitHub.Data,
     ) where
 
-import Prelude        ()
-import Prelude.Compat
-
-import Control.Applicative ((<|>))
-import Data.Aeson.Compat   (encode)
-import Data.Text           (Text)
-import Data.Vector         (Vector)
-
 import GitHub.Data
 import GitHub.Request
+import GitHub.Internal.Prelude
 
 import qualified Data.Text          as T
 import qualified Data.Text.Encoding as TE
@@ -83,11 +72,11 @@ repoPublicityQueryString RepoPublicityPrivate = [("type", Just "private")]
 -- | List your repositories.
 currentUserRepos :: Auth -> RepoPublicity -> IO (Either Error (Vector Repo))
 currentUserRepos auth publicity =
-    executeRequest auth $ currentUserReposR publicity Nothing
+    executeRequest auth $ currentUserReposR publicity FetchAll
 
 -- | List your repositories.
 -- See <https://developer.github.com/v3/repos/#list-your-repositories>
-currentUserReposR :: RepoPublicity -> Maybe Count -> Request k(Vector Repo)
+currentUserReposR :: RepoPublicity -> FetchCount -> Request k(Vector Repo)
 currentUserReposR publicity =
     PagedQuery  ["user", "repos"] qs
   where
@@ -106,11 +95,11 @@ userRepos = userRepos' Nothing
 -- > userRepos' (Just (BasicAuth (user, password))) "mike-burns" All
 userRepos' :: Maybe Auth -> Name Owner -> RepoPublicity -> IO (Either Error (Vector Repo))
 userRepos' auth user publicity =
-    executeRequestMaybe auth $ userReposR user publicity Nothing
+    executeRequestMaybe auth $ userReposR user publicity FetchAll
 
 -- | List user repositories.
 -- See <https://developer.github.com/v3/repos/#list-user-repositories>
-userReposR :: Name Owner -> RepoPublicity -> Maybe Count -> Request k(Vector Repo)
+userReposR :: Name Owner -> RepoPublicity -> FetchCount -> Request k(Vector Repo)
 userReposR user publicity =
     PagedQuery  ["users", toPathPart user, "repos"] qs
   where
@@ -128,11 +117,11 @@ organizationRepos org = organizationRepos' Nothing org RepoPublicityAll
 -- > organizationRepos (Just (BasicAuth (user, password))) "thoughtbot" All
 organizationRepos' :: Maybe Auth -> Name Organization -> RepoPublicity -> IO (Either Error (Vector Repo))
 organizationRepos' auth org publicity =
-    executeRequestMaybe auth $ organizationReposR org publicity Nothing
+    executeRequestMaybe auth $ organizationReposR org publicity FetchAll
 
 -- | List organization repositories.
 -- See <https://developer.github.com/v3/repos/#list-organization-repositories>
-organizationReposR :: Name Organization -> RepoPublicity -> Maybe Count -> Request k (Vector Repo)
+organizationReposR :: Name Organization -> RepoPublicity -> FetchCount -> Request k (Vector Repo)
 organizationReposR org publicity =
     PagedQuery ["orgs", toPathPart org, "repos"] qs
   where
@@ -217,14 +206,14 @@ contributors = contributors' Nothing
 -- > contributors' (Just (BasicAuth (user, password))) "thoughtbot" "paperclip"
 contributors' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Contributor))
 contributors' auth user repo =
-    executeRequestMaybe auth $ contributorsR user repo False Nothing
+    executeRequestMaybe auth $ contributorsR user repo False FetchAll
 
 -- | List contributors.
 -- See <https://developer.github.com/v3/repos/#list-contributors>
 contributorsR :: Name Owner
               -> Name Repo
               -> Bool              -- ^ Include anonymous
-              -> Maybe Count
+              -> FetchCount
               -> Request k (Vector Contributor)
 contributorsR user repo anon =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "contributors"] qs
@@ -248,7 +237,7 @@ contributorsWithAnonymous = contributorsWithAnonymous' Nothing
 -- > contributorsWithAnonymous' (Just (BasicAuth (user, password))) "thoughtbot" "paperclip"
 contributorsWithAnonymous' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Contributor))
 contributorsWithAnonymous' auth user repo =
-    executeRequestMaybe auth $ contributorsR user repo True Nothing
+    executeRequestMaybe auth $ contributorsR user repo True FetchAll
 
 -- | The programming languages used in a repo along with the number of
 -- characters written in that language. Takes the repo owner and name.
@@ -284,11 +273,11 @@ tagsFor = tagsFor' Nothing
 -- > tagsFor' (Just (BasicAuth (user, password))) "thoughtbot" "paperclip"
 tagsFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Tag))
 tagsFor' auth user repo =
-    executeRequestMaybe auth $ tagsForR user repo Nothing
+    executeRequestMaybe auth $ tagsForR user repo FetchAll
 
 -- | List tags.
 -- See <https://developer.github.com/v3/repos/#list-tags>
-tagsForR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector Tag)
+tagsForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Tag)
 tagsForR user repo =
     PagedQuery  ["repos", toPathPart user, toPathPart repo, "tags"] []
 
@@ -304,11 +293,11 @@ branchesFor = branchesFor' Nothing
 -- > branchesFor' (Just (BasicAuth (user, password))) "thoughtbot" "paperclip"
 branchesFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Branch))
 branchesFor' auth user repo =
-    executeRequestMaybe auth $ branchesForR user repo Nothing
+    executeRequestMaybe auth $ branchesForR user repo FetchAll
 
 -- | List branches.
 -- See <https://developer.github.com/v3/repos/#list-branches>
-branchesForR :: Name Owner -> Name Repo -> Maybe Count -> Request k (Vector Branch)
+branchesForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Branch)
 branchesForR user repo =
     PagedQuery  ["repos", toPathPart user, toPathPart repo, "branches"] []
 
