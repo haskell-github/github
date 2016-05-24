@@ -5,28 +5,19 @@
 --
 module GitHub.Data.Definitions where
 
-import Prelude        ()
-import Prelude.Compat
+import GitHub.Internal.Prelude
 
-import Control.DeepSeq          (NFData (..))
-import Control.DeepSeq.Generics (genericRnf)
-import Control.Monad            (mfilter)
-import Data.Aeson.Compat        (FromJSON (..), Object, withObject, withText,
-                                 (.:), (.:?))
-import Data.Aeson.Types         (Parser)
-import Data.Binary.Orphans      (Binary)
-import Data.Data                (Data, Typeable)
-import Data.Text                (Text)
-import Data.Time                (UTCTime)
-import GHC.Generics             (Generic)
-import Network.HTTP.Client      (HttpException)
+import Control.Monad       (mfilter)
+import Data.Aeson.Types    (Parser)
+import Network.HTTP.Client (HttpException)
 
 import qualified Control.Exception as E
-import qualified Data.Text         as T
 import qualified Data.ByteString   as BS
+import qualified Data.Text         as T
 
-import GitHub.Data.Id
-import GitHub.Data.Name
+import GitHub.Data.Id   (Id)
+import GitHub.Data.Name (Name)
+import GitHub.Data.URL  (URL)
 
 -- | Errors have been tagged according to their source, so you can more easily
 -- dispatch and handle them.
@@ -49,8 +40,8 @@ instance Binary OwnerType
 data SimpleUser = SimpleUser
     { simpleUserId        :: !(Id User)
     , simpleUserLogin     :: !(Name User)
-    , simpleUserAvatarUrl :: !Text
-    , simpleUserUrl       :: !Text
+    , simpleUserAvatarUrl :: !URL
+    , simpleUserUrl       :: !URL
     , simpleUserType      :: !OwnerType  -- ^ Should always be 'OwnerUser'
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -61,8 +52,8 @@ instance Binary SimpleUser
 data SimpleOrganization = SimpleOrganization
     { simpleOrganizationId        :: !(Id Organization)
     , simpleOrganizationLogin     :: !(Name Organization)
-    , simpleOrganizationUrl       :: !Text
-    , simpleOrganizationAvatarUrl :: !Text
+    , simpleOrganizationUrl       :: !URL
+    , simpleOrganizationAvatarUrl :: !URL
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -73,8 +64,8 @@ instance Binary SimpleOrganization
 data SimpleOwner = SimpleOwner
     { simpleOwnerId        :: !(Id Owner)
     , simpleOwnerLogin     :: !(Name Owner)
-    , simpleOwnerUrl       :: !Text
-    , simpleOwnerAvatarUrl :: !Text
+    , simpleOwnerUrl       :: !URL
+    , simpleOwnerAvatarUrl :: !URL
     , simpleOwnerType      :: !OwnerType
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -89,7 +80,7 @@ data User = User
     , userType        :: !OwnerType  -- ^ Should always be 'OwnerUser'
     , userCreatedAt   :: !UTCTime
     , userPublicGists :: !Int
-    , userAvatarUrl   :: !Text
+    , userAvatarUrl   :: !URL
     , userFollowers   :: !Int
     , userFollowing   :: !Int
     , userHireable    :: !(Maybe Bool)
@@ -99,8 +90,8 @@ data User = User
     , userLocation    :: !(Maybe Text)
     , userCompany     :: !(Maybe Text)
     , userEmail       :: !(Maybe Text)
-    , userUrl         :: !Text
-    , userHtmlUrl     :: !Text
+    , userUrl         :: !URL
+    , userHtmlUrl     :: !URL
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -116,13 +107,13 @@ data Organization = Organization
     , organizationLocation    :: !(Maybe Text)
     , organizationFollowers   :: !Int
     , organizationCompany     :: !(Maybe Text)
-    , organizationAvatarUrl   :: !Text
+    , organizationAvatarUrl   :: !URL
     , organizationPublicGists :: !Int
-    , organizationHtmlUrl     :: !Text
+    , organizationHtmlUrl     :: !URL
     , organizationEmail       :: !(Maybe Text)
     , organizationFollowing   :: !Int
     , organizationPublicRepos :: !Int
-    , organizationUrl         :: !Text
+    , organizationUrl         :: !URL
     , organizationCreatedAt   :: !UTCTime
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)

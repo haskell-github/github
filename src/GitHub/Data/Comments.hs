@@ -6,7 +6,8 @@
 module GitHub.Data.Comments where
 
 import GitHub.Data.Definitions
-import GitHub.Data.Id
+import GitHub.Data.Id          (Id)
+import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 
 data Comment = Comment {
@@ -15,8 +16,8 @@ data Comment = Comment {
   ,commentBody      :: !Text
   ,commentCommitId  :: !(Maybe Text)
   ,commentUpdatedAt :: !UTCTime
-  ,commentHtmlUrl   :: !(Maybe Text)
-  ,commentUrl       :: !Text
+  ,commentHtmlUrl   :: !(Maybe URL)
+  ,commentUrl       :: !URL
   ,commentCreatedAt :: !(Maybe UTCTime)
   ,commentPath      :: !(Maybe Text)
   ,commentUser      :: !SimpleUser

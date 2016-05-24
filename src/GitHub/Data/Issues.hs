@@ -8,13 +8,14 @@ module GitHub.Data.Issues where
 import GitHub.Data.Definitions
 import GitHub.Data.Id           (Id)
 import GitHub.Data.PullRequests
+import GitHub.Data.URL          (URL)
 import GitHub.Internal.Prelude
 
 data Issue = Issue {
    issueClosedAt    :: Maybe UTCTime
   ,issueUpdatedAt   :: UTCTime
-  ,issueEventsUrl   :: Text
-  ,issueHtmlUrl     :: Maybe Text
+  ,issueEventsUrl   :: URL
+  ,issueHtmlUrl     :: Maybe URL
   ,issueClosedBy    :: Maybe SimpleUser
   ,issueLabels      :: (Vector IssueLabel)
   ,issueNumber      :: Int
@@ -22,7 +23,7 @@ data Issue = Issue {
   ,issueUser        :: SimpleUser
   ,issueTitle       :: Text
   ,issuePullRequest :: Maybe PullRequestReference
-  ,issueUrl         :: Text
+  ,issueUrl         :: URL
   ,issueCreatedAt   :: UTCTime
   ,issueBody        :: Maybe Text
   ,issueState       :: Text
@@ -65,7 +66,7 @@ data Milestone = Milestone {
   ,milestoneClosedIssues :: Int
   ,milestoneDescription  :: Maybe Text
   ,milestoneTitle        :: Text
-  ,milestoneUrl          :: Text
+  ,milestoneUrl          :: URL
   ,milestoneCreatedAt    :: UTCTime
   ,milestoneState        :: Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -75,7 +76,7 @@ instance Binary Milestone
 
 data IssueLabel = IssueLabel {
    labelColor :: Text
-  ,labelUrl   :: Text
+  ,labelUrl   :: URL
   ,labelName  :: Text
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -85,8 +86,8 @@ instance Binary IssueLabel
 data IssueComment = IssueComment {
    issueCommentUpdatedAt :: UTCTime
   ,issueCommentUser      :: SimpleUser
-  ,issueCommentUrl       :: Text
-  ,issueCommentHtmlUrl   :: Text
+  ,issueCommentUrl       :: URL
+  ,issueCommentHtmlUrl   :: URL
   ,issueCommentCreatedAt :: UTCTime
   ,issueCommentBody      :: Text
   ,issueCommentId        :: Int
@@ -124,7 +125,7 @@ data Event = Event {
    eventActor     :: !SimpleUser
   ,eventType      :: !EventType
   ,eventCommitId  :: !(Maybe Text)
-  ,eventUrl       :: !Text
+  ,eventUrl       :: !URL
   ,eventCreatedAt :: !UTCTime
   ,eventId        :: !Int
   ,eventIssue     :: !(Maybe Issue)

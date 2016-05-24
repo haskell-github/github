@@ -5,6 +5,7 @@
 --
 module GitHub.Data.Content where
 
+import GitHub.Data.URL
 import GitHub.Internal.Prelude
 
 data Content
@@ -45,9 +46,9 @@ data ContentInfo = ContentInfo {
    contentName    :: !Text
   ,contentPath    :: !Text
   ,contentSha     :: !Text
-  ,contentUrl     :: !Text
-  ,contentGitUrl  :: !Text
-  ,contentHtmlUrl :: !Text
+  ,contentUrl     :: !URL
+  ,contentGitUrl  :: !URL
+  ,contentHtmlUrl :: !URL
 } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData ContentInfo where rnf = genericRnf

@@ -21,10 +21,10 @@ module GitHub.Data.Request (
     Count,
     ) where
 
-import GitHub.Internal.Prelude
 import GitHub.Data.Definitions (Count, QueryString)
 import GitHub.Data.Id          (Id, untagId)
 import GitHub.Data.Name        (Name, untagName)
+import GitHub.Internal.Prelude
 
 import qualified Data.ByteString.Lazy      as LBS
 import qualified Data.Text                 as T

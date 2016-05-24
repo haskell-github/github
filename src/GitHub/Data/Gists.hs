@@ -9,21 +9,22 @@ import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id)
 import GitHub.Data.Name        (Name)
 import GitHub.Data.Repos       (Language)
+import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 
 data Gist = Gist {
    gistUser        :: !SimpleUser
-  ,gistGitPushUrl  :: !Text
-  ,gistUrl         :: !Text
+  ,gistGitPushUrl  :: !URL
+  ,gistUrl         :: !URL
   ,gistDescription :: !(Maybe Text)
   ,gistCreatedAt   :: !UTCTime
   ,gistPublic      :: !Bool
   ,gistComments    :: !Int
   ,gistUpdatedAt   :: !UTCTime
-  ,gistHtmlUrl     :: !Text
+  ,gistHtmlUrl     :: !URL
   ,gistId          :: !(Name Gist)
   ,gistFiles       :: !(HashMap Text GistFile)
-  ,gistGitPullUrl  :: !Text
+  ,gistGitPullUrl  :: !URL
 } deriving (Show, Data, Typeable, Eq, Generic)
 
 instance NFData Gist where rnf = genericRnf
@@ -46,7 +47,7 @@ instance FromJSON Gist where
 
 data GistFile = GistFile {
    gistFileType     :: !Text
-  ,gistFileRawUrl   :: !Text
+  ,gistFileRawUrl   :: !URL
   ,gistFileSize     :: !Int
   ,gistFileLanguage :: !(Maybe Language)
   ,gistFileFilename :: !Text
@@ -67,7 +68,7 @@ instance FromJSON GistFile where
 
 data GistComment = GistComment {
    gistCommentUser      :: !SimpleUser
-  ,gistCommentUrl       :: !Text
+  ,gistCommentUrl       :: !URL
   ,gistCommentCreatedAt :: !UTCTime
   ,gistCommentBody      :: !Text
   ,gistCommentUpdatedAt :: !UTCTime

@@ -6,13 +6,14 @@
 module GitHub.Data.Webhooks where
 
 import GitHub.Data.Id          (Id)
+import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 
 import qualified Data.Map as M
 
 data RepoWebhook = RepoWebhook {
-   repoWebhookUrl          :: !Text
-  ,repoWebhookTestUrl      :: !Text
+   repoWebhookUrl          :: !URL
+  ,repoWebhookTestUrl      :: !URL
   ,repoWebhookId           :: !(Id RepoWebhook)
   ,repoWebhookName         :: !Text
   ,repoWebhookActive       :: !Bool
