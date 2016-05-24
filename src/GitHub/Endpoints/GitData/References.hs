@@ -75,12 +75,12 @@ createReferenceR user repo newRef =
 -- | Limited references by a namespace.
 --
 -- > namespacedReferences "thoughtbot" "paperclip" "tags"
-namespacedReferences :: Name Owner -> Name Repo -> String -> IO (Either Error [GitReference])
+namespacedReferences :: Name Owner -> Name Repo -> Text -> IO (Either Error [GitReference])
 namespacedReferences user repo namespace =
     executeRequest' $ namespacedReferencesR user repo namespace
 
 -- | Query namespaced references.
 -- See <https://developer.github.com/v3/git/refs/#get-all-references>
-namespacedReferencesR :: Name Owner -> Name Repo -> String -> Request k [GitReference]
+namespacedReferencesR :: Name Owner -> Name Repo -> Text -> Request k [GitReference]
 namespacedReferencesR user repo namespace =
     Query ["repos", toPathPart user, toPathPart repo, "git", "refs", namespace] []

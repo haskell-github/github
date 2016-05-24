@@ -115,4 +115,4 @@ diff' auth user repo base headref =
 -- See <https://developer.github.com/v3/repos/commits/#compare-two-commits>
 diffR :: Name Owner -> Name Repo -> Name Commit -> Name Commit -> Request k Diff
 diffR user repo base headref =
-    Query ["repos", toPathPart user, toPathPart repo, "compare", toPathPart base ++ "..." ++ toPathPart headref] []
+    Query ["repos", toPathPart user, toPathPart repo, "compare", toPathPart base <> "..." <> toPathPart headref] []
