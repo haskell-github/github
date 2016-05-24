@@ -159,19 +159,19 @@ isPullRequestMergedR user repo prid = StatusQuery StatusOnlyOk $
     Query ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "merge"] []
 
 -- | Merge a pull request.
-mergePullRequest :: Auth -> Name Owner -> Name Repo -> Id PullRequest -> Maybe String -> IO (Either Error MergeResult)
+mergePullRequest :: Auth -> Name Owner -> Name Repo -> Id PullRequest -> Maybe Text -> IO (Either Error MergeResult)
 mergePullRequest auth user repo prid commitMessage =
     executeRequest auth $ mergePullRequestR user repo prid commitMessage
 
 -- | Merge a pull request (Merge Button).
 -- https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button
-mergePullRequestR :: Name Owner -> Name Repo -> Id PullRequest -> Maybe String -> Request 'True MergeResult
+mergePullRequestR :: Name Owner -> Name Repo -> Id PullRequest -> Maybe Text -> Request 'True MergeResult
 mergePullRequestR user repo prid commitMessage = StatusQuery StatusMerge $
     Command Put paths (encode $ buildCommitMessageMap commitMessage)
   where
     paths = ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "merge"]
 
-    buildCommitMessageMap :: Maybe String -> Value
+    buildCommitMessageMap :: Maybe Text -> Value
     buildCommitMessageMap (Just msg) = object ["commit_message" .= msg ]
     buildCommitMessageMap Nothing    = object []
 
