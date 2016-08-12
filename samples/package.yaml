@@ -85,3 +85,24 @@ executables:
       - operational
       - transformers
       - transformers-compat
+  github-list-deploy-keys-for:
+    main: ListDeployKeys.hs
+    source-dirs: Repos/DeployKeys
+    dependencies:
+      - github-samples
+      - vector
+  github-show-deploy-key:
+    main: ShowDeployKey.hs
+    source-dirs: Repos/DeployKeys
+    dependencies:
+      - github-samples
+  github-create-deploy-key:
+    main: CreateDeployKey.hs
+    source-dirs: Repos/DeployKeys
+    dependencies:
+      - github-samples
+  github-delete-deploy-key:
+    main: DeleteDeployKey.hs
+    source-dirs: Repos/DeployKeys
+    dependencies:
+      - github-samples

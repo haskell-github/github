@@ -80,6 +80,40 @@ executable github-operational
     , transformers-compat
   default-language: Haskell2010
 
+executable github-show-deploy-key
+  main-is: ShowDeployKey.hs
+  hs-source-dirs:
+      Repos/DeployKeys
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      CreateDeployKey
+      DeleteDeployKey
+      ListDeployKeys
+  default-language: Haskell2010
+
+executable github-delete-deploy-key
+  main-is: DeleteDeployKey.hs
+  hs-source-dirs:
+      Repos/DeployKeys
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      CreateDeployKey
+      ListDeployKeys
+      ShowDeployKey
+  default-language: Haskell2010
+
 executable github-list-team-repos
   main-is: ListRepos.hs
   hs-source-dirs:
@@ -120,6 +154,24 @@ executable github-delete-team
       Memberships.DeleteTeamMembershipFor
       Memberships.TeamMembershipInfoFor
       TeamInfoFor
+  default-language: Haskell2010
+
+executable github-list-deploy-keys-for
+  main-is: ListDeployKeys.hs
+  hs-source-dirs:
+      Repos/DeployKeys
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+    , vector
+  other-modules:
+      CreateDeployKey
+      DeleteDeployKey
+      ShowDeployKey
   default-language: Haskell2010
 
 executable github-delete-team-membership-for
@@ -203,6 +255,23 @@ executable github-list-followers-example
   other-modules:
       ListFollowers
       ListFollowing
+  default-language: Haskell2010
+
+executable github-create-deploy-key
+  main-is: CreateDeployKey.hs
+  hs-source-dirs:
+      Repos/DeployKeys
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      DeleteDeployKey
+      ListDeployKeys
+      ShowDeployKey
   default-language: Haskell2010
 
 executable github-add-team-membership-for
