@@ -28,3 +28,23 @@ instance FromJSON RepoDeployKey where
                   <*> o .: "verified"
                   <*> o .: "created_at"
                   <*> o .: "read_only"
+
+data NewRepoDeployKey = NewRepoDeployKey {
+   newRepoDeployKeyKey          :: !Text
+  ,newRepoDeployKeyTitle        :: !Text
+  ,newRepoDeployKeyReadOnly     :: !Bool
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance ToJSON NewRepoDeployKey where
+  toJSON (NewRepoDeployKey key title readOnly) =
+    object [
+      "key" .= key
+    , "title" .= title
+    , "read_only" .= readOnly
+    ]
+
+instance FromJSON NewRepoDeployKey where
+  parseJSON = withObject "RepoDeployKey" $ \o ->
+    NewRepoDeployKey <$> o .: "key"
+                     <*> o .: "title"
+                     <*> o .: "read_only"
