@@ -1,4 +1,4 @@
--- This file has been generated from package.yaml by hpack version 0.13.0.
+-- This file has been generated from package.yaml by hpack version 0.9.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -18,59 +18,6 @@ library
     , text
   exposed-modules:
       Common
-  default-language: Haskell2010
-
-executable github-add-team-membership-for
-  main-is: AddTeamMembershipFor.hs
-  hs-source-dirs:
-      Teams/Memberships
-  ghc-options: -Wall
-  build-depends:
-      base
-    , base-compat
-    , github
-    , text
-    , github-samples
-  other-modules:
-      DeleteTeamMembershipFor
-      TeamMembershipInfoFor
-  default-language: Haskell2010
-
-executable github-delete-team
-  main-is: DeleteTeam.hs
-  hs-source-dirs:
-      Teams
-  ghc-options: -Wall
-  build-depends:
-      base
-    , base-compat
-    , github
-    , text
-    , github-samples
-  other-modules:
-      EditTeam
-      ListRepos
-      ListTeamsCurrent
-      Memberships.AddTeamMembershipFor
-      Memberships.DeleteTeamMembershipFor
-      Memberships.TeamMembershipInfoFor
-      TeamInfoFor
-  default-language: Haskell2010
-
-executable github-delete-team-membership-for
-  main-is: DeleteTeamMembershipFor.hs
-  hs-source-dirs:
-      Teams/Memberships
-  ghc-options: -Wall
-  build-depends:
-      base
-    , base-compat
-    , github
-    , text
-    , github-samples
-  other-modules:
-      AddTeamMembershipFor
-      TeamMembershipInfoFor
   default-language: Haskell2010
 
 executable github-edit-team
@@ -94,53 +41,6 @@ executable github-edit-team
       TeamInfoFor
   default-language: Haskell2010
 
-executable github-list-followers
-  main-is: ListFollowers.hs
-  hs-source-dirs:
-      Users/Followers
-  ghc-options: -Wall
-  build-depends:
-      base
-    , base-compat
-    , github
-    , text
-    , github-samples
-  other-modules:
-      Example
-      ListFollowing
-  default-language: Haskell2010
-
-executable github-list-followers-example
-  main-is: Example.hs
-  hs-source-dirs:
-      Users/Followers
-  ghc-options: -Wall
-  build-depends:
-      base
-    , base-compat
-    , github
-    , text
-  other-modules:
-      ListFollowers
-      ListFollowing
-  default-language: Haskell2010
-
-executable github-list-following
-  main-is: ListFollowing.hs
-  hs-source-dirs:
-      Users/Followers
-  ghc-options: -Wall
-  build-depends:
-      base
-    , base-compat
-    , github
-    , text
-    , github-samples
-  other-modules:
-      Example
-      ListFollowers
-  default-language: Haskell2010
-
 executable github-list-team-current
   main-is: ListTeamsCurrent.hs
   hs-source-dirs:
@@ -156,27 +56,6 @@ executable github-list-team-current
       DeleteTeam
       EditTeam
       ListRepos
-      Memberships.AddTeamMembershipFor
-      Memberships.DeleteTeamMembershipFor
-      Memberships.TeamMembershipInfoFor
-      TeamInfoFor
-  default-language: Haskell2010
-
-executable github-list-team-repos
-  main-is: ListRepos.hs
-  hs-source-dirs:
-      Teams
-  ghc-options: -Wall
-  build-depends:
-      base
-    , base-compat
-    , github
-    , text
-    , github-samples
-  other-modules:
-      DeleteTeam
-      EditTeam
-      ListTeamsCurrent
       Memberships.AddTeamMembershipFor
       Memberships.DeleteTeamMembershipFor
       Memberships.TeamMembershipInfoFor
@@ -201,10 +80,10 @@ executable github-operational
     , transformers-compat
   default-language: Haskell2010
 
-executable github-show-user
-  main-is: ShowUser.hs
+executable github-show-deploy-key
+  main-is: ShowDeployKey.hs
   hs-source-dirs:
-      Users
+      Repos/DeployKeys
   ghc-options: -Wall
   build-depends:
       base
@@ -213,10 +92,102 @@ executable github-show-user
     , text
     , github-samples
   other-modules:
-      Followers.Example
-      Followers.ListFollowers
-      Followers.ListFollowing
-      ShowUser2
+      CreateDeployKey
+      DeleteDeployKey
+      ListDeployKeys
+  default-language: Haskell2010
+
+executable github-delete-deploy-key
+  main-is: DeleteDeployKey.hs
+  hs-source-dirs:
+      Repos/DeployKeys
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      CreateDeployKey
+      ListDeployKeys
+      ShowDeployKey
+  default-language: Haskell2010
+
+executable github-list-team-repos
+  main-is: ListRepos.hs
+  hs-source-dirs:
+      Teams
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      DeleteTeam
+      EditTeam
+      ListTeamsCurrent
+      Memberships.AddTeamMembershipFor
+      Memberships.DeleteTeamMembershipFor
+      Memberships.TeamMembershipInfoFor
+      TeamInfoFor
+  default-language: Haskell2010
+
+executable github-delete-team
+  main-is: DeleteTeam.hs
+  hs-source-dirs:
+      Teams
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      EditTeam
+      ListRepos
+      ListTeamsCurrent
+      Memberships.AddTeamMembershipFor
+      Memberships.DeleteTeamMembershipFor
+      Memberships.TeamMembershipInfoFor
+      TeamInfoFor
+  default-language: Haskell2010
+
+executable github-list-deploy-keys-for
+  main-is: ListDeployKeys.hs
+  hs-source-dirs:
+      Repos/DeployKeys
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+    , vector
+  other-modules:
+      CreateDeployKey
+      DeleteDeployKey
+      ShowDeployKey
+  default-language: Haskell2010
+
+executable github-delete-team-membership-for
+  main-is: DeleteTeamMembershipFor.hs
+  hs-source-dirs:
+      Teams/Memberships
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      AddTeamMembershipFor
+      TeamMembershipInfoFor
   default-language: Haskell2010
 
 executable github-show-user-2
@@ -237,6 +208,88 @@ executable github-show-user-2
       ShowUser
   default-language: Haskell2010
 
+executable github-show-user
+  main-is: ShowUser.hs
+  hs-source-dirs:
+      Users
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      Followers.Example
+      Followers.ListFollowers
+      Followers.ListFollowing
+      ShowUser2
+  default-language: Haskell2010
+
+executable github-list-following
+  main-is: ListFollowing.hs
+  hs-source-dirs:
+      Users/Followers
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      Example
+      ListFollowers
+  default-language: Haskell2010
+
+executable github-list-followers-example
+  main-is: Example.hs
+  hs-source-dirs:
+      Users/Followers
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+  other-modules:
+      ListFollowers
+      ListFollowing
+  default-language: Haskell2010
+
+executable github-create-deploy-key
+  main-is: CreateDeployKey.hs
+  hs-source-dirs:
+      Repos/DeployKeys
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      DeleteDeployKey
+      ListDeployKeys
+      ShowDeployKey
+  default-language: Haskell2010
+
+executable github-add-team-membership-for
+  main-is: AddTeamMembershipFor.hs
+  hs-source-dirs:
+      Teams/Memberships
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      DeleteTeamMembershipFor
+      TeamMembershipInfoFor
+  default-language: Haskell2010
+
 executable github-team-membership-info-for
   main-is: TeamMembershipInfoFor.hs
   hs-source-dirs:
@@ -251,6 +304,22 @@ executable github-team-membership-info-for
   other-modules:
       AddTeamMembershipFor
       DeleteTeamMembershipFor
+  default-language: Haskell2010
+
+executable github-list-followers
+  main-is: ListFollowers.hs
+  hs-source-dirs:
+      Users/Followers
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  other-modules:
+      Example
+      ListFollowing
   default-language: Haskell2010
 
 executable github-teaminfo-for

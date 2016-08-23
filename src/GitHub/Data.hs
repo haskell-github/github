@@ -35,6 +35,7 @@ module GitHub.Data (
     module GitHub.Data.Comments,
     module GitHub.Data.Content,
     module GitHub.Data.Definitions,
+    module GitHub.Data.DeployKeys,
     module GitHub.Data.Gists,
     module GitHub.Data.GitData,
     module GitHub.Data.Issues,
@@ -44,7 +45,7 @@ module GitHub.Data (
     module GitHub.Data.Search,
     module GitHub.Data.Teams,
     module GitHub.Data.URL,
-    module GitHub.Data.Webhooks,
+    module GitHub.Data.Webhooks
     ) where
 
 import GitHub.Internal.Prelude
@@ -54,6 +55,7 @@ import GitHub.Data.Activities
 import GitHub.Data.Comments
 import GitHub.Data.Content
 import GitHub.Data.Definitions
+import GitHub.Data.DeployKeys
 import GitHub.Data.Gists
 import GitHub.Data.GitData
 import GitHub.Data.Id
