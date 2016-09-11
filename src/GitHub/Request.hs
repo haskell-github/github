@@ -66,8 +66,13 @@ import Data.List                  (find)
 import Network.HTTP.Client          (CookieJar, HttpException (..), Manager,
                                      RequestBody (..), Response (..),
                                      applyBasicAuth, checkStatus, httpLbs,
-                                     method, newManager, parseUrl, requestBody,
+                                     method, newManager, requestBody,
                                      requestHeaders, setQueryString)
+#if MIN_VERSION_http_client(0,4,30)
+import Network.HTTP.Client          (parseUrlThrow)
+#else
+import Network.HTTP.Client          (parseUrl)
+#endif
 import Network.HTTP.Client.Internal (setUri)
 import Network.HTTP.Client.TLS      (tlsManagerSettings)
 import Network.HTTP.Link.Parser     (parseLinkHeaderBS)
@@ -233,7 +238,11 @@ makeHttpRequest auth r = case r of
         return $ req' { requestHeaders = h <> requestHeaders req' }
   where
     parseUrl' :: MonadThrow m => Text -> m HTTP.Request
+#if MIN_VERSION_http_client(0,4,30)
+    parseUrl' = parseUrlThrow . T.unpack
+#else
     parseUrl' = parseUrl . T.unpack
+#endif
 
     url :: Paths -> Text
     url paths = baseUrl <> "/" <> T.intercalate "/" paths
