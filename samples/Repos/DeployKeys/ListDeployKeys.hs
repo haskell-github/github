@@ -4,7 +4,7 @@ module Main (main) where
 import qualified GitHub.Data.DeployKeys as DK
 import qualified GitHub.Endpoints.Repos.DeployKeys as DK
 import qualified GitHub.Auth as Auth
-import Data.List
+import Data.List (intercalate)
 import Data.Vector (toList)
 
 main :: IO ()

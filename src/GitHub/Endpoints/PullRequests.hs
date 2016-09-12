@@ -29,8 +29,9 @@ module GitHub.Endpoints.PullRequests (
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | All open pull requests for the repo, by owner and repo name.
 --

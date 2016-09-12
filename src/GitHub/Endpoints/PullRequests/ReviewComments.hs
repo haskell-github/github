@@ -14,8 +14,9 @@ module GitHub.Endpoints.PullRequests.ReviewComments (
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | All the comments on a pull request with the given ID.
 --

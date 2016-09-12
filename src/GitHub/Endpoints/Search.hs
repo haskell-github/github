@@ -19,8 +19,9 @@ module GitHub.Endpoints.Search(
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 import qualified Data.Text.Encoding as TE
 

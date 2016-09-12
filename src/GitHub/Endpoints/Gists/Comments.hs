@@ -14,8 +14,9 @@ module GitHub.Endpoints.Gists.Comments (
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | All the comments on a Gist, given the Gist ID.
 --

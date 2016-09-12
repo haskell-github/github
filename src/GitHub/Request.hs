@@ -1,8 +1,8 @@
 {-# LANGUAGE CPP                #-}
-{-# LANGUAGE FlexibleContexts    #-}
-{-# LANGUAGE GADTs               #-}
-{-# LANGUAGE KindSignatures      #-}
-{-# LANGUAGE StandaloneDeriving  #-}
+{-# LANGUAGE FlexibleContexts   #-}
+{-# LANGUAGE GADTs              #-}
+{-# LANGUAGE KindSignatures     #-}
+{-# LANGUAGE StandaloneDeriving #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -50,6 +50,7 @@ module GitHub.Request (
     ) where
 
 import GitHub.Internal.Prelude
+import Prelude ()
 
 #if MIN_VERSION_mtl(2,2,0)
 import Control.Monad.Except (MonadError (..))
@@ -63,23 +64,22 @@ import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
 import Data.Aeson.Compat          (eitherDecode)
 import Data.List                  (find)
 
-import Network.HTTP.Client          (CookieJar, HttpException (..), Manager,
-                                     RequestBody (..), Response (..),
-                                     applyBasicAuth, checkStatus, httpLbs,
-                                     method, newManager, requestBody,
-                                     requestHeaders, setQueryString)
+import Network.HTTP.Client
+       (CookieJar, HttpException (..), Manager, RequestBody (..),
+       Response (..), applyBasicAuth, checkStatus, httpLbs, method, newManager,
+       requestBody, requestHeaders, setQueryString)
 #if MIN_VERSION_http_client(0,4,30)
-import Network.HTTP.Client          (parseUrlThrow)
+import Network.HTTP.Client (parseUrlThrow)
 #else
-import Network.HTTP.Client          (parseUrl)
+import Network.HTTP.Client (parseUrl)
 #endif
 import Network.HTTP.Client.Internal (setUri)
 import Network.HTTP.Client.TLS      (tlsManagerSettings)
 import Network.HTTP.Link.Parser     (parseLinkHeaderBS)
-import Network.HTTP.Link.Types      (Link (..), LinkParam (..), href,
-                                     linkParams)
-import Network.HTTP.Types           (Method, RequestHeaders, ResponseHeaders,
-                                     Status (..))
+import Network.HTTP.Link.Types
+       (Link (..), LinkParam (..), href, linkParams)
+import Network.HTTP.Types
+       (Method, RequestHeaders, ResponseHeaders, Status (..))
 import Network.URI                  (URI)
 
 import qualified Control.Exception    as E

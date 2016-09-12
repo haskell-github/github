@@ -6,6 +6,7 @@
 module GitHub.Auth where
 
 import GitHub.Internal.Prelude
+import Prelude ()
 
 import qualified Data.ByteString as BS
 

@@ -8,6 +8,7 @@ module GitHub.Data.Search where
 import GitHub.Data.Repos       (Repo)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
+import Prelude ()
 
 import qualified Data.Vector as V
 

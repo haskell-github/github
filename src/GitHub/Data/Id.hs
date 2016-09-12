@@ -10,6 +10,7 @@ module GitHub.Data.Id (
     ) where
 
 import GitHub.Internal.Prelude
+import Prelude ()
 
 -- | Numeric identifier.
 newtype Id entity = Id Int

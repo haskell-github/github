@@ -11,6 +11,7 @@ import GitHub.Data.Name        (Name)
 import GitHub.Data.Repos       (Language)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
+import Prelude ()
 
 data Gist = Gist {
    gistUser        :: !SimpleUser

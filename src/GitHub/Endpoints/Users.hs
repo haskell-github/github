@@ -16,8 +16,9 @@ module GitHub.Endpoints.Users (
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | The information for a single user, by login name.
 -- With authentification

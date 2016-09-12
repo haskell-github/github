@@ -33,6 +33,7 @@ import GitHub.Data.Id          (Id)
 import GitHub.Data.Repos       (Repo)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
+import Prelude ()
 
 import qualified Data.Text.Encoding as TE
 

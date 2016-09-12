@@ -14,8 +14,9 @@ module GitHub.Endpoints.Organizations.Members (
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | All the users who are members of the specified organization,
 -- | with or without authentication.

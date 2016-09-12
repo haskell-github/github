@@ -13,8 +13,9 @@ module GitHub.Endpoints.Repos.Forks (
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | All the repos that are forked off the given repo.
 --

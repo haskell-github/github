@@ -16,8 +16,9 @@ module GitHub.Endpoints.GitData.Trees (
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | A tree for a SHA1.
 --

@@ -15,6 +15,7 @@ import GitHub.Data.Name        (Name)
 import GitHub.Data.Repos       (Repo)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
+import Prelude ()
 
 data Privacy =
     PrivacyClosed

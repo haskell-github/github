@@ -10,6 +10,7 @@ module GitHub.Data.Webhooks.Validate (
 ) where
 
 import GitHub.Internal.Prelude
+import Prelude ()
 
 import Crypto.Hash     (HMAC, SHA1, hmac, hmacGetDigest)
 import Data.Byteable   (constEqBytes, toBytes)

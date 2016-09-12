@@ -15,8 +15,9 @@ module GitHub.Endpoints.Organizations (
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | The public organizations for a user, given the user's login, with authorization
 --

@@ -35,15 +35,10 @@ module GitHub.Endpoints.Issues.Labels (
     module GitHub.Data,
     ) where
 
-import Prelude        ()
-import Prelude.Compat
-
-import Data.Aeson.Compat (encode, object, (.=))
-import Data.Foldable     (toList)
-import Data.Vector       (Vector)
-
 import GitHub.Data
+import GitHub.Internal.Prelude
 import GitHub.Request
+import Prelude ()
 
 -- | All the labels available to use on any issue in the repo.
 --

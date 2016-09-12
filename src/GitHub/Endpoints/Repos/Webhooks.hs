@@ -33,8 +33,9 @@ module GitHub.Endpoints.Repos.Webhooks (
 ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 webhooksFor' :: Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector RepoWebhook))
 webhooksFor' auth user repo =

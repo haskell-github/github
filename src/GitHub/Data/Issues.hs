@@ -10,6 +10,7 @@ import GitHub.Data.Id           (Id)
 import GitHub.Data.PullRequests
 import GitHub.Data.URL          (URL)
 import GitHub.Internal.Prelude
+import Prelude ()
 
 data Issue = Issue {
    issueClosedAt    :: Maybe UTCTime

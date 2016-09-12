@@ -10,6 +10,7 @@ module GitHub.Data.Name (
     ) where
 
 import GitHub.Internal.Prelude
+import Prelude ()
 
 newtype Name entity = N Text
     deriving (Eq, Ord, Show, Generic, Typeable, Data)

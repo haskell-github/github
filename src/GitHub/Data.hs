@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP                #-}
+{-# LANGUAGE CPP #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -49,6 +49,7 @@ module GitHub.Data (
     ) where
 
 import GitHub.Internal.Prelude
+import Prelude ()
 
 import GitHub.Auth
 import GitHub.Data.Activities
