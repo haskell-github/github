@@ -19,8 +19,9 @@ module GitHub.Endpoints.Issues.Events (
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | All events that have happened on an issue.
 --

@@ -15,8 +15,9 @@ module GitHub.Endpoints.Repos.Collaborators (
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | All the users who have collaborated on a repo.
 --

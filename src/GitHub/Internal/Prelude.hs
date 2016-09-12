@@ -29,7 +29,7 @@ module GitHub.Internal.Prelude (
     -- * Data.Maybe
     catMaybes,
     -- * Data.List
-    intercalate,
+    intercalate, toList,
     -- * Data.Time.ISO8601
     formatISO8601,
     ) where
@@ -37,13 +37,14 @@ module GitHub.Internal.Prelude (
 import Control.Applicative      ((<|>))
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
-import Data.Aeson.Compat        (FromJSON (..), Object, ToJSON (..), Value (..),
-                                 encode, object, withObject, withText, (.!=),
-                                 (.:), (.:?), (.=))
+import Data.Aeson.Compat
+       (FromJSON (..), Object, ToJSON (..), Value (..), encode, object,
+       withObject, withText, (.!=), (.:), (.:?), (.=))
 import Data.Aeson.Types         (typeMismatch)
 import Data.Binary              (Binary)
-import Data.Binary.Orphans      ()
+import Data.Binary.Orphans ()
 import Data.Data                (Data, Typeable)
+import Data.Foldable            (toList)
 import Data.Hashable            (Hashable (..))
 import Data.HashMap.Strict      (HashMap)
 import Data.List                (intercalate)
@@ -54,6 +55,6 @@ import Data.Text                (Text, pack, unpack)
 import Data.Time                (UTCTime)
 import Data.Time.ISO8601        (formatISO8601)
 import Data.Vector              (Vector)
-import Data.Vector.Instances    ()
+import Data.Vector.Instances ()
 import GHC.Generics             (Generic)
 import Prelude.Compat

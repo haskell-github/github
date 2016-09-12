@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP               #-}
+{-# LANGUAGE CPP #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -23,9 +23,10 @@ module GitHub.Endpoints.Repos.Commits (
     module GitHub.Data,
     ) where
 
-import GitHub.Internal.Prelude
 import GitHub.Data
+import GitHub.Internal.Prelude
 import GitHub.Request
+import Prelude ()
 
 import qualified Data.ByteString    as BS
 import qualified Data.Text          as T

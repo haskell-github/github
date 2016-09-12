@@ -20,8 +20,9 @@ module GitHub.Endpoints.Repos.Comments (
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | All the comments on a Github repo.
 --

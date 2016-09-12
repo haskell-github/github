@@ -25,6 +25,7 @@ module GitHub.Endpoints.Issues (
 import GitHub.Data
 import GitHub.Internal.Prelude
 import GitHub.Request
+import Prelude ()
 
 import qualified Data.Text          as T
 import qualified Data.Text.Encoding as TE

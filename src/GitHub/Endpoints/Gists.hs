@@ -15,8 +15,9 @@ module GitHub.Endpoints.Gists (
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | The list of all gists created by the user
 --

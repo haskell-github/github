@@ -8,6 +8,7 @@ module GitHub.Data.DeployKeys where
 import GitHub.Data.Id          (Id)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
+import Prelude ()
 
 data RepoDeployKey = RepoDeployKey {
    repoDeployKeyId           :: !(Id RepoDeployKey)

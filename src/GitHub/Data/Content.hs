@@ -7,6 +7,7 @@ module GitHub.Data.Content where
 
 import GitHub.Data.URL
 import GitHub.Internal.Prelude
+import Prelude ()
 
 data Content
   = ContentFile !ContentFileData

@@ -15,10 +15,11 @@ module GitHub.Endpoints.Activity.Watching (
     module GitHub.Data,
 ) where
 
-import GitHub.Internal.Prelude
 import GitHub.Auth
 import GitHub.Data
+import GitHub.Internal.Prelude
 import GitHub.Request
+import Prelude ()
 
 -- | The list of users that are watching the specified Github repo.
 --

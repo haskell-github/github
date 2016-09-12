@@ -22,8 +22,9 @@ module GitHub.Endpoints.Repos.DeployKeys (
 ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | Querying deploy keys
 deployKeysFor' :: Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector RepoDeployKey))

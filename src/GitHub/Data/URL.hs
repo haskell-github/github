@@ -9,6 +9,7 @@ module GitHub.Data.URL (
     ) where
 
 import GitHub.Internal.Prelude
+import Prelude ()
 
 -- | Data representing URLs in responses.
 --

@@ -15,8 +15,9 @@ module GitHub.Endpoints.Issues.Milestones (
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | All milestones in the repo.
 --

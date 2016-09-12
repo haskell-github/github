@@ -18,9 +18,10 @@ module GitHub.Endpoints.Issues.Comments (
     module GitHub.Data,
     ) where
 
-import GitHub.Internal.Prelude
 import GitHub.Data
+import GitHub.Internal.Prelude
 import GitHub.Request
+import Prelude ()
 
 -- | A specific comment, by ID.
 --

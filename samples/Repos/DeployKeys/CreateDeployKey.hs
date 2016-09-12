@@ -1,11 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main (main) where
 
-import GitHub.Data.Id (Id (..))
 import qualified GitHub.Data.DeployKeys as DK
 import qualified GitHub.Endpoints.Repos.DeployKeys as DK
 import qualified GitHub.Auth as Auth
-import Data.List
 import Data.Text (Text)
 
 main :: IO ()

@@ -50,7 +50,6 @@ Library
   ghc-options: -Wall
   hs-source-dirs: src
   default-extensions:
-    NoImplicitPrelude
     DataKinds
     DeriveDataTypeable
     DeriveGeneric

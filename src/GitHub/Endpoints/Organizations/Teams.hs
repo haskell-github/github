@@ -35,8 +35,9 @@ module GitHub.Endpoints.Organizations.Teams (
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | List teams.  List the teams of an Owner.
 -- When authenticated, lists private teams visible to the authenticated user.

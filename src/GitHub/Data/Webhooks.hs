@@ -5,6 +5,8 @@
 --
 module GitHub.Data.Webhooks where
 
+import Prelude ()
+
 import GitHub.Data.Id          (Id)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude

@@ -20,8 +20,9 @@ module GitHub.Endpoints.GitData.References (
     ) where
 
 import GitHub.Data
-import GitHub.Request
 import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | A single reference by the ref name.
 --

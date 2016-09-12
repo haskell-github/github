@@ -7,6 +7,7 @@ module GitHub.Data.Activities where
 
 import GitHub.Data.Repos       (Repo)
 import GitHub.Internal.Prelude
+import Prelude ()
 
 data RepoStarred = RepoStarred {
    repoStarredStarredAt :: !UTCTime

@@ -102,6 +102,7 @@ instance Hashable (StatusMap a) where
 data FetchCount = FetchAtLeast !Word | FetchAll
     deriving (Eq, Ord, Read, Show, Generic, Typeable)
 
+
 -- | This instance is there mostly for 'fromInteger'.
 instance Num FetchCount where
     fromInteger = FetchAtLeast . fromInteger
@@ -117,6 +118,8 @@ instance Num FetchCount where
     negate = error "negate @FetchCount: not implemented"
 
 instance Hashable FetchCount
+instance Binary FetchCount
+instance NFData FetchCount where rnf = genericRnf
 
 ------------------------------------------------------------------------------
 -- Github request

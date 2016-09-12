@@ -9,6 +9,7 @@ import GitHub.Data.Definitions
 import GitHub.Data.Name        (Name)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
+import Prelude ()
 
 import qualified Data.Vector as V
 

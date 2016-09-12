@@ -1,5 +1,5 @@
-{-# LANGUAGE CPP                #-}
-{-# LANGUAGE FlexibleInstances  #-}
+{-# LANGUAGE CPP               #-}
+{-# LANGUAGE FlexibleInstances #-}
 #define UNSAFE 1
 -----------------------------------------------------------------------------
 -- |
@@ -16,6 +16,7 @@ import GitHub.Data.Id          (Id)
 import GitHub.Data.Name        (Name)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
+import Prelude ()
 
 import qualified Data.HashMap.Strict as HM
 

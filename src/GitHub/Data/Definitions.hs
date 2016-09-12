@@ -6,6 +6,7 @@
 module GitHub.Data.Definitions where
 
 import GitHub.Internal.Prelude
+import Prelude ()
 
 import Control.Monad       (mfilter)
 import Data.Aeson.Types    (Parser)
