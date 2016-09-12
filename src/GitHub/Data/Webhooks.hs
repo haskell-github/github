@@ -40,6 +40,7 @@ data RepoWebhookEvent =
  | WebhookIssuesEvent
  | WebhookMemberEvent
  | WebhookPageBuildEvent
+ | WebhookPingEvent
  | WebhookPublicEvent
  | WebhookPullRequestReviewCommentEvent
  | WebhookPullRequestEvent
@@ -107,6 +108,7 @@ instance FromJSON RepoWebhookEvent where
   parseJSON (String "issues") = pure WebhookIssuesEvent
   parseJSON (String "member") = pure WebhookMemberEvent
   parseJSON (String "page_build") = pure WebhookPageBuildEvent
+  parseJSON (String "ping") = pure WebhookPingEvent
   parseJSON (String "public") = pure WebhookPublicEvent
   parseJSON (String "pull_request_review_comment") = pure WebhookPullRequestReviewCommentEvent
   parseJSON (String "pull_request") = pure WebhookPullRequestEvent
@@ -130,6 +132,7 @@ instance ToJSON RepoWebhookEvent where
   toJSON (WebhookIssuesEvent) = String "issues"
   toJSON (WebhookMemberEvent) = String "member"
   toJSON (WebhookPageBuildEvent) = String "page_build"
+  toJSON (WebhookPingEvent) = String "ping"
   toJSON (WebhookPublicEvent) = String "public"
   toJSON (WebhookPullRequestReviewCommentEvent) = String "pull_request_review_comment"
   toJSON (WebhookPullRequestEvent) = String "pull_request"
