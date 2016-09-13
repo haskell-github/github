@@ -14,7 +14,7 @@ import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe)
 
 import qualified Data.Vector as V
 
-import GitHub.Data             (Auth (..), Issue (..), mkId)
+import GitHub.Data             (Auth (..), Issue (..), mkId, IssueState (..))
 import GitHub.Endpoints.Search (SearchResult (..), searchIssues')
 
 fromRightS :: Show a => Either a b -> b
@@ -42,13 +42,13 @@ spec = do
       issueId issue1 `shouldBe` mkId (Proxy :: Proxy Issue) 123898390
       issueNumber issue1 `shouldBe` 130
       issueTitle issue1 `shouldBe` "Make test runner more robust"
-      issueState issue1 `shouldBe` "closed"
+      issueState issue1 `shouldBe` StateClosed
 
       let issue2 = issues V.! 1
       issueId issue2 `shouldBe` mkId (Proxy :: Proxy Issue) 119694665
       issueNumber issue2 `shouldBe` 127
       issueTitle issue2 `shouldBe` "Decouple request creation from execution"
-      issueState issue2 `shouldBe` "open"
+      issueState issue2 `shouldBe` StateOpen
 
     it "performs an issue search via the API" $ withAuth $ \auth -> do
       let query = "Decouple in:title repo:phadej/github created:<=2015-12-01"

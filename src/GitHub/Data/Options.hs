@@ -4,6 +4,7 @@
 -- License     :  BSD-3-Clause
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
+-- Module with modifiers for pull requests' and issues' listings.
 module GitHub.Data.Options (
     -- * Common modifiers
     stateOpen,
@@ -28,6 +29,7 @@ module GitHub.Data.Options (
     sortByComments,
     optionsLabels,
     optionsSince,
+    optionsSinceAll,
     optionsAssignedIssues,
     optionsCreatedIssues,
     optionsMentionedIssues,
@@ -42,6 +44,13 @@ module GitHub.Data.Options (
     optionsNoAssignee,
     -- * Data
     IssueState (..),
+    -- * Internal
+    HasState,
+    HasDirection,
+    HasCreatedUpdated,
+    HasComments,
+    HasLabels,
+    HasSince,
     ) where
 
 import GitHub.Data.Definitions
@@ -58,7 +67,7 @@ import qualified Data.Text.Encoding as TE
 -- Data
 -------------------------------------------------------------------------------
 
--- | Issue or PullRewuest state
+-- | 'GitHub.Data.Issues.Issue' or 'GitHub.Data.PullRequests.PullRequest' state
 data IssueState
     = StateOpen
     | StateClosed
@@ -153,6 +162,10 @@ instance HasState IssueMod where
     state s = IssueMod $ \opts ->
         opts { issueOptionsState = s }
 
+instance HasState IssueRepoMod where
+    state s = IssueRepoMod $ \opts ->
+        opts { issueRepoOptionsState = s }
+
 
 class HasDirection mod where
     sortDir :: SortDirection -> mod
@@ -171,6 +184,10 @@ instance HasDirection IssueMod where
     sortDir x = IssueMod $ \opts ->
         opts { issueOptionsDirection = x }
 
+instance HasDirection IssueRepoMod where
+    sortDir x = IssueRepoMod $ \opts ->
+        opts { issueRepoOptionsDirection = x }
+
 
 class HasCreatedUpdated mod where
     sortByCreated :: mod
@@ -187,6 +204,12 @@ instance HasCreatedUpdated IssueMod where
         opts { issueOptionsSort = SortIssueCreated }
     sortByUpdated = IssueMod $ \opts ->
         opts { issueOptionsSort = SortIssueUpdated }
+
+instance HasCreatedUpdated IssueRepoMod where
+    sortByCreated = IssueRepoMod $ \opts ->
+        opts { issueRepoOptionsSort = SortIssueCreated }
+    sortByUpdated = IssueRepoMod $ \opts ->
+        opts { issueRepoOptionsSort = SortIssueUpdated }
 
 -------------------------------------------------------------------------------
 -- Pull Request
@@ -290,7 +313,7 @@ sortByLongRunning = PRMod $ \opts ->
 data IssueOptions = IssueOptions
     { issueOptionsFilter    :: !IssueFilter
     , issueOptionsState     :: !(Maybe IssueState)
-    , issueOptionsLabels    :: ![Text] -- TODO: change to newtype
+    , issueOptionsLabels    :: ![Name IssueLabel] -- TODO: change to newtype
     , issueOptionsSort      :: !SortIssue
     , issueOptionsDirection :: !SortDirection
     , issueOptionsSince     :: !(Maybe UTCTime)
@@ -355,7 +378,7 @@ issueOptionsToQueryString (IssueOptions filt st labels sort dir since) =
        SortAscending  -> "asc"
 
     since' = fmap (TE.encodeUtf8 . T.pack . show) since
-    labels' = TE.encodeUtf8 . T.intercalate "," <$> nullToNothing labels
+    labels' = TE.encodeUtf8 . T.intercalate "," . fmap untagName <$> nullToNothing labels
 
 nullToNothing :: Foldable f => f a -> Maybe (f a)
 nullToNothing xs
@@ -379,15 +402,15 @@ instance HasComments IssueRepoMod where
 
 
 class HasLabels mod where
-    optionsLabels :: [Text] -> mod
+    optionsLabels :: Foldable f => f (Name IssueLabel) -> mod
 
 instance HasLabels IssueMod where
     optionsLabels lbls = IssueMod $ \opts ->
-        opts { issueOptionsLabels = lbls }
+        opts { issueOptionsLabels = toList lbls }
 
 instance HasLabels IssueRepoMod where
     optionsLabels lbls = IssueRepoMod $ \opts ->
-        opts { issueRepoOptionsLabels = lbls }
+        opts { issueRepoOptionsLabels = toList lbls }
 
 
 class HasSince mod where
@@ -432,7 +455,7 @@ data IssueRepoOptions = IssueRepoOptions
     , issueRepoOptionsAssignee  :: !(FilterBy (Name User))
     , issueRepoOptionsCreator   :: !(Maybe (Name User))
     , issueRepoOptionsMentioned :: !(Maybe (Name User))
-    , issueRepoOptionsLabels    :: ![Text]
+    , issueRepoOptionsLabels    :: ![Name IssueLabel]
     , issueRepoOptionsSort      :: !SortIssue
     , issueRepoOptionsDirection :: !SortDirection
     , issueRepoOptionsSince     :: !(Maybe UTCTime)
@@ -505,7 +528,7 @@ issueRepoOptionsToQueryString IssueRepoOptions {..} =
        SortAscending  -> "asc"
 
     since'     = TE.encodeUtf8 . T.pack . show <$> issueRepoOptionsSince
-    labels'    = TE.encodeUtf8 . T.intercalate "," <$> nullToNothing issueRepoOptionsLabels
+    labels'    = TE.encodeUtf8 . T.intercalate "," . fmap untagName <$> nullToNothing issueRepoOptionsLabels
     creator'   = TE.encodeUtf8 . untagName <$> issueRepoOptionsCreator
     mentioned' = TE.encodeUtf8 . untagName <$> issueRepoOptionsMentioned
 

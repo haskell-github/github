@@ -12,38 +12,40 @@ import Prelude ()
 
 import qualified Data.Vector as V
 
-data SearchResult entity = SearchResult {
-   searchResultTotalCount :: !Int
-  ,searchResultResults    :: !(Vector entity)
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data SearchResult entity = SearchResult
+    { searchResultTotalCount :: !Int
+    , searchResultResults    :: !(Vector entity)
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData entity => NFData (SearchResult entity) where rnf = genericRnf
 instance Binary entity => Binary (SearchResult entity)
 
 instance FromJSON entity => FromJSON (SearchResult entity) where
-  parseJSON = withObject "SearchResult" $ \o ->
-    SearchResult <$> o .: "total_count"
-                 <*> o .:? "items" .!= V.empty
+    parseJSON = withObject "SearchResult" $ \o -> SearchResult
+        <$> o .: "total_count"
+        <*> o .:? "items" .!= V.empty
 
-data Code = Code {
-   codeName    :: !Text
-  ,codePath    :: !Text
-  ,codeSha     :: !Text
-  ,codeUrl     :: !URL
-  ,codeGitUrl  :: !URL
-  ,codeHtmlUrl :: !URL
-  ,codeRepo    :: !Repo
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data Code = Code
+    { codeName    :: !Text
+    , codePath    :: !Text
+    , codeSha     :: !Text
+    , codeUrl     :: !URL
+    , codeGitUrl  :: !URL
+    , codeHtmlUrl :: !URL
+    , codeRepo    :: !Repo
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Code where rnf = genericRnf
 instance Binary Code
 
 instance FromJSON Code where
-  parseJSON = withObject "Code" $ \o ->
-    Code <$> o .: "name"
-         <*> o .: "path"
-         <*> o .: "sha"
-         <*> o .: "url"
-         <*> o .: "git_url"
-         <*> o .: "html_url"
-         <*> o .: "repository"
+    parseJSON = withObject "Code" $ \o -> Code
+        <$> o .: "name"
+        <*> o .: "path"
+        <*> o .: "sha"
+        <*> o .: "url"
+        <*> o .: "git_url"
+        <*> o .: "html_url"
+        <*> o .: "repository"
