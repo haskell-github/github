@@ -65,28 +65,27 @@ import Data.Aeson.Compat          (eitherDecode)
 import Data.List                  (find)
 
 import Network.HTTP.Client
-       (CookieJar, HttpException (..), Manager, RequestBody (..),
-       Response (..), applyBasicAuth, checkStatus, httpLbs, method, newManager,
-       requestBody, requestHeaders, setQueryString)
-#if MIN_VERSION_http_client(0,4,30)
-import Network.HTTP.Client (parseUrlThrow)
-#else
-import Network.HTTP.Client (parseUrl)
-#endif
+       (HttpException (..), Manager, RequestBody (..), Response (..),
+       applyBasicAuth, httpLbs, method, newManager, requestBody,
+       requestHeaders, setQueryString)
 import Network.HTTP.Client.Internal (setUri)
 import Network.HTTP.Client.TLS      (tlsManagerSettings)
 import Network.HTTP.Link.Parser     (parseLinkHeaderBS)
 import Network.HTTP.Link.Types
        (Link (..), LinkParam (..), href, linkParams)
-import Network.HTTP.Types
-       (Method, RequestHeaders, ResponseHeaders, Status (..))
+import Network.HTTP.Types           (Method, RequestHeaders, Status (..))
 import Network.URI                  (URI)
 
-import qualified Control.Exception    as E
-import qualified Data.ByteString.Lazy as LBS
-import qualified Data.Text            as T
-import qualified Data.Vector          as V
-import qualified Network.HTTP.Client  as HTTP
+#if !MIN_VERSION_http_client(0,5,0)
+import qualified Control.Exception  as E
+import           Network.HTTP.Types (ResponseHeaders)
+#endif
+
+import qualified Data.ByteString.Lazy         as LBS
+import qualified Data.Text                    as T
+import qualified Data.Vector                  as V
+import qualified Network.HTTP.Client          as HTTP
+import qualified Network.HTTP.Client.Internal as HTTP
 
 import GitHub.Auth         (Auth (..))
 import GitHub.Data         (Error (..))
@@ -239,9 +238,9 @@ makeHttpRequest auth r = case r of
   where
     parseUrl' :: MonadThrow m => Text -> m HTTP.Request
 #if MIN_VERSION_http_client(0,4,30)
-    parseUrl' = parseUrlThrow . T.unpack
+    parseUrl' = HTTP.parseRequest . T.unpack
 #else
-    parseUrl' = parseUrl . T.unpack
+    parseUrl' = HTTP.parseUrl . T.unpack
 #endif
 
     url :: Paths -> Text
@@ -256,7 +255,11 @@ makeHttpRequest auth r = case r of
     setReqHeaders req = req { requestHeaders = reqHeaders <> requestHeaders req }
 
     setCheckStatus :: Maybe (StatusMap a) -> HTTP.Request -> HTTP.Request
-    setCheckStatus sm req = req { checkStatus = successOrMissing sm }
+#if MIN_VERSION_http_client(0,5,0)
+    setCheckStatus sm req = req { HTTP.checkResponse = successOrMissing sm }
+#else
+    setCheckStatus sm req = req { HTTP.checkStatus = successOrMissing sm }
+#endif
 
     setMethod :: Method -> HTTP.Request -> HTTP.Request
     setMethod m req = req { method = m }
@@ -278,15 +281,7 @@ makeHttpRequest auth r = case r of
     getOAuthHeader (EnterpriseOAuth _ token) = [("Authorization", "token " <> token)]
     getOAuthHeader _                         = []
 
-    successOrMissing :: Maybe (StatusMap a) -> Status -> ResponseHeaders -> CookieJar -> Maybe E.SomeException
-    successOrMissing sm s@(Status sci _) hs cookiejar
-      | check     = Nothing
-      | otherwise = Just $ E.toException $ StatusCodeException s hs cookiejar
-      where
-        check = case sm of
-          Nothing            -> 200 <= sci && sci < 300
-          Just StatusOnlyOk  -> sci == 204 || sci == 404
-          Just StatusMerge   -> sci `elem` [204, 405, 409]
+
 
 -- | Query @Link@ header with @rel=next@ from the request headers.
 getNextUrl :: Response a -> Maybe URI
@@ -356,6 +351,32 @@ performPagedRequest httpLbs' predicate initReq = do
                 m <- parseResponse res'
                 go (acc <> m) res' req'
             (_, _)           -> return acc
+
+-------------------------------------------------------------------------------
+-- Internal
+-------------------------------------------------------------------------------
+
+#if MIN_VERSION_http_client(0,5,0)
+successOrMissing :: Maybe (StatusMap a) -> HTTP.Request -> HTTP.Response HTTP.BodyReader -> IO ()
+successOrMissing sm _req res
+    | check     = pure ()
+    | otherwise = do
+        chunk <- HTTP.brReadSome (HTTP.responseBody res) 1024
+        let res' = fmap (const ()) res
+        HTTP.throwHttp $ HTTP.StatusCodeException res' (LBS.toStrict chunk)
+  where
+    Status sci _ = HTTP.responseStatus res
+#else
+successOrMissing :: Maybe (StatusMap a) -> Status -> ResponseHeaders -> HTTP.CookieJar -> Maybe E.SomeException
+successOrMissing sm s@(Status sci _) hs cookiejar
+    | check     = Nothing
+    | otherwise = Just $ E.toException $ StatusCodeException s hs cookiejar
+  where
+#endif
+    check = case sm of
+      Nothing            -> 200 <= sci && sci < 300
+      Just StatusOnlyOk  -> sci == 204 || sci == 404
+      Just StatusMerge   -> sci `elem` [204, 405, 409]
 
 onHttpException :: MonadError Error m => HttpException -> m a
 onHttpException = throwError . HTTPError

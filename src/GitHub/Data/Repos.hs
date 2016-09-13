@@ -8,7 +8,7 @@
 --
 -- This module also exports
 -- @'FromJSON' a => 'FromJSON' ('HM.HashMap' 'Language' a)@
--- orphan-ish instance.
+-- orphan-ish instance for @aeson < 1@
 module GitHub.Data.Repos where
 
 import GitHub.Data.Definitions
@@ -19,9 +19,12 @@ import GitHub.Internal.Prelude
 import Prelude ()
 
 import qualified Data.HashMap.Strict as HM
-
-#if UNSAFE
+#if MIN_VERSION_aeson(1,0,0)
+import Data.Aeson.Types (FromJSONKey (..), fromJSONKeyCoerce)
+#else
+#ifdef UNSAFE
 import Unsafe.Coerce (unsafeCoerce)
+#endif
 #endif
 
 data Repo = Repo {
@@ -237,6 +240,10 @@ instance FromJSON Language where
 instance ToJSON Language where
     toJSON = toJSON . getLanguage
 
+#if MIN_VERSION_aeson(1,0,0)
+instance FromJSONKey Language where
+    fromJSONKey = fromJSONKeyCoerce
+#else
 instance FromJSON a => FromJSON (HM.HashMap Language a) where
     parseJSON = fmap mapKeyLanguage . parseJSON
       where
@@ -247,4 +254,5 @@ instance FromJSON a => FromJSON (HM.HashMap Language a) where
         mapKeyLanguage = mapKey Language
         mapKey :: (Eq k2, Hashable k2) => (k1 -> k2) -> HM.HashMap k1 a -> HM.HashMap k2 a
         mapKey f = HM.fromList . map (first f) . HM.toList
+#endif
 #endif

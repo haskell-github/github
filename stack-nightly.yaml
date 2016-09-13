@@ -1,8 +1,11 @@
-resolver: nightly-2016-05-13
+resolver: nightly-2016-09-12
 packages:
 - '.'
 - 'samples/'
-extra-deps: []
+extra-deps:
+- aeson-1.0.0.0
+- http-client-0.5.3.1
+- http-client-tls-0.3.1
 flags:
   github:
      aeson-compat: true
