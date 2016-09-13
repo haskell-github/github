@@ -238,3 +238,23 @@ type QueryString = [(BS.ByteString, Maybe BS.ByteString)]
 
 -- | Count of elements
 type Count = Int
+
+-------------------------------------------------------------------------------
+-- IssueLabel
+-------------------------------------------------------------------------------
+
+data IssueLabel = IssueLabel
+    { labelColor :: !Text
+    , labelUrl   :: !URL
+    , labelName  :: !(Name IssueLabel)
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData IssueLabel where rnf = genericRnf
+instance Binary IssueLabel
+
+instance FromJSON IssueLabel where
+    parseJSON = withObject "IssueLabel" $ \o -> IssueLabel
+        <$> o .: "color"
+        <*> o .: "url"
+        <*> o .: "name"

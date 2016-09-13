@@ -290,7 +290,7 @@ sortByLongRunning = PRMod $ \opts ->
 data IssueOptions = IssueOptions
     { issueOptionsFilter    :: !IssueFilter
     , issueOptionsState     :: !(Maybe IssueState)
-    , issueOptionsLabels    :: ![Text] -- TODO: change to newtype
+    , issueOptionsLabels    :: ![Name IssueLabel] -- TODO: change to newtype
     , issueOptionsSort      :: !SortIssue
     , issueOptionsDirection :: !SortDirection
     , issueOptionsSince     :: !(Maybe UTCTime)
@@ -355,7 +355,7 @@ issueOptionsToQueryString (IssueOptions filt st labels sort dir since) =
        SortAscending  -> "asc"
 
     since' = fmap (TE.encodeUtf8 . T.pack . show) since
-    labels' = TE.encodeUtf8 . T.intercalate "," <$> nullToNothing labels
+    labels' = TE.encodeUtf8 . T.intercalate "," . fmap untagName <$> nullToNothing labels
 
 nullToNothing :: Foldable f => f a -> Maybe (f a)
 nullToNothing xs
@@ -379,15 +379,15 @@ instance HasComments IssueRepoMod where
 
 
 class HasLabels mod where
-    optionsLabels :: [Text] -> mod
+    optionsLabels :: Foldable f => f (Name IssueLabel) -> mod
 
 instance HasLabels IssueMod where
     optionsLabels lbls = IssueMod $ \opts ->
-        opts { issueOptionsLabels = lbls }
+        opts { issueOptionsLabels = toList lbls }
 
 instance HasLabels IssueRepoMod where
     optionsLabels lbls = IssueRepoMod $ \opts ->
-        opts { issueRepoOptionsLabels = lbls }
+        opts { issueRepoOptionsLabels = toList lbls }
 
 
 class HasSince mod where
@@ -432,7 +432,7 @@ data IssueRepoOptions = IssueRepoOptions
     , issueRepoOptionsAssignee  :: !(FilterBy (Name User))
     , issueRepoOptionsCreator   :: !(Maybe (Name User))
     , issueRepoOptionsMentioned :: !(Maybe (Name User))
-    , issueRepoOptionsLabels    :: ![Text]
+    , issueRepoOptionsLabels    :: ![Name IssueLabel]
     , issueRepoOptionsSort      :: !SortIssue
     , issueRepoOptionsDirection :: !SortDirection
     , issueRepoOptionsSince     :: !(Maybe UTCTime)
@@ -505,7 +505,7 @@ issueRepoOptionsToQueryString IssueRepoOptions {..} =
        SortAscending  -> "asc"
 
     since'     = TE.encodeUtf8 . T.pack . show <$> issueRepoOptionsSince
-    labels'    = TE.encodeUtf8 . T.intercalate "," <$> nullToNothing issueRepoOptionsLabels
+    labels'    = TE.encodeUtf8 . T.intercalate "," . fmap untagName <$> nullToNothing issueRepoOptionsLabels
     creator'   = TE.encodeUtf8 . untagName <$> issueRepoOptionsCreator
     mentioned' = TE.encodeUtf8 . untagName <$> issueRepoOptionsMentioned
 

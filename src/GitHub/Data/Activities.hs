@@ -9,10 +9,11 @@ import GitHub.Data.Repos       (Repo)
 import GitHub.Internal.Prelude
 import Prelude ()
 
-data RepoStarred = RepoStarred {
-   repoStarredStarredAt :: !UTCTime
-  ,repoStarredRepo      :: !Repo
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data RepoStarred = RepoStarred
+    { repoStarredStarredAt :: !UTCTime
+    , repoStarredRepo      :: !Repo
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData RepoStarred where rnf = genericRnf
 instance Binary RepoStarred
