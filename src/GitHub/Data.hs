@@ -39,6 +39,8 @@ module GitHub.Data (
     module GitHub.Data.Gists,
     module GitHub.Data.GitData,
     module GitHub.Data.Issues,
+    module GitHub.Data.Milestone,
+    module GitHub.Data.Options,
     module GitHub.Data.PullRequests,
     module GitHub.Data.Repos,
     module GitHub.Data.Request,
@@ -62,9 +64,11 @@ import GitHub.Data.GitData
 import GitHub.Data.Id
 import GitHub.Data.Issues
 import GitHub.Data.Name
+import GitHub.Data.Milestone
 import GitHub.Data.PullRequests
 import GitHub.Data.Repos
 import GitHub.Data.Request
+import GitHub.Data.Options
 import GitHub.Data.Search
 import GitHub.Data.Teams
 import GitHub.Data.URL

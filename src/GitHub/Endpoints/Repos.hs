@@ -76,7 +76,7 @@ currentUserRepos auth publicity =
 
 -- | List your repositories.
 -- See <https://developer.github.com/v3/repos/#list-your-repositories>
-currentUserReposR :: RepoPublicity -> FetchCount -> Request k(Vector Repo)
+currentUserReposR :: RepoPublicity -> FetchCount -> Request k (Vector Repo)
 currentUserReposR publicity =
     PagedQuery  ["user", "repos"] qs
   where
@@ -93,7 +93,11 @@ userRepos = userRepos' Nothing
 -- With authentication.
 --
 -- > userRepos' (Just (BasicAuth (user, password))) "mike-burns" All
-userRepos' :: Maybe Auth -> Name Owner -> RepoPublicity -> IO (Either Error (Vector Repo))
+userRepos'
+    :: Maybe Auth
+    -> Name Owner
+    -> RepoPublicity
+    -> IO (Either Error (Vector Repo))
 userRepos' auth user publicity =
     executeRequestMaybe auth $ userReposR user publicity FetchAll
 
@@ -115,13 +119,21 @@ organizationRepos org = organizationRepos' Nothing org RepoPublicityAll
 -- With authentication.
 --
 -- > organizationRepos (Just (BasicAuth (user, password))) "thoughtbot" All
-organizationRepos' :: Maybe Auth -> Name Organization -> RepoPublicity -> IO (Either Error (Vector Repo))
+organizationRepos'
+    :: Maybe Auth
+    -> Name Organization
+    -> RepoPublicity
+    -> IO (Either Error (Vector Repo))
 organizationRepos' auth org publicity =
     executeRequestMaybe auth $ organizationReposR org publicity FetchAll
 
 -- | List organization repositories.
 -- See <https://developer.github.com/v3/repos/#list-organization-repositories>
-organizationReposR :: Name Organization -> RepoPublicity -> FetchCount -> Request k (Vector Repo)
+organizationReposR
+    :: Name Organization
+    -> RepoPublicity
+    -> FetchCount
+    -> Request k (Vector Repo)
 organizationReposR org publicity =
     PagedQuery ["orgs", toPathPart org, "repos"] qs
   where
@@ -176,11 +188,12 @@ createOrganizationRepoR org nrepo =
 -- | Edit an existing repository.
 --
 -- > editRepo (BasicAuth (user, password)) "some_user" "some_repo" def {editDescription = Just "some description"}
-editRepo :: Auth
-         -> Name Owner      -- ^ owner
-         -> Name Repo             -- ^ repository name
-         -> EditRepo
-         -> IO (Either Error Repo)
+editRepo
+    :: Auth
+    -> Name Owner      -- ^ owner
+    -> Name Repo             -- ^ repository name
+    -> EditRepo
+    -> IO (Either Error Repo)
 editRepo auth user repo body =
     executeRequest auth $ editRepoR user repo body
 
@@ -210,11 +223,12 @@ contributors' auth user repo =
 
 -- | List contributors.
 -- See <https://developer.github.com/v3/repos/#list-contributors>
-contributorsR :: Name Owner
-              -> Name Repo
-              -> Bool              -- ^ Include anonymous
-              -> FetchCount
-              -> Request k (Vector Contributor)
+contributorsR
+    :: Name Owner
+    -> Name Repo
+    -> Bool              -- ^ Include anonymous
+    -> FetchCount
+    -> Request k (Vector Contributor)
 contributorsR user repo anon =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "contributors"] qs
   where
@@ -315,11 +329,12 @@ contentsFor' :: Maybe Auth ->  Name Owner -> Name Repo -> Text -> Maybe Text -> 
 contentsFor' auth user repo path ref =
     executeRequestMaybe auth $ contentsForR user repo path ref
 
-contentsForR :: Name Owner
-             -> Name Repo
-             -> Text            -- ^ file or directory
-             -> Maybe Text      -- ^ Git commit
-             -> Request k Content
+contentsForR
+    :: Name Owner
+    -> Name Repo
+    -> Text            -- ^ file or directory
+    -> Maybe Text      -- ^ Git commit
+    -> Request k Content
 contentsForR user repo path ref =
     Query ["repos", toPathPart user, toPathPart repo, "contents", path] qs
   where

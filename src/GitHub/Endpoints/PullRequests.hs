@@ -38,17 +38,19 @@ import Prelude ()
 -- > pullRequestsFor "rails" "rails"
 pullRequestsFor :: Name Owner -> Name Repo -> IO (Either Error (Vector SimplePullRequest))
 pullRequestsFor user repo =
-    executeRequest' $ pullRequestsForR user repo defaultPullRequestOptions FetchAll
+    executeRequest' $ pullRequestsForR user repo mempty FetchAll
 
 -- | List pull requests.
 -- See <https://developer.github.com/v3/pulls/#list-pull-requests>
-pullRequestsForR :: Name Owner -> Name Repo
-                 -> PullRequestOptions -- ^ State
-                 -> FetchCount
-                 -> Request k (Vector SimplePullRequest)
+pullRequestsForR
+    :: Name Owner
+    -> Name Repo
+    -> PullRequestMod
+    -> FetchCount
+    -> Request k (Vector SimplePullRequest)
 pullRequestsForR user repo opts = PagedQuery
     ["repos", toPathPart user, toPathPart repo, "pulls"]
-    (pullRequestOptionsToQueryString opts)
+    (prModToQueryString opts)
 
 -- | A detailed pull request, which has much more information. This takes the
 -- repo owner and name along with the number assigned to the pull request.

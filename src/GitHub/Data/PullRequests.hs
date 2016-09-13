@@ -13,36 +13,22 @@ module GitHub.Data.PullRequests (
     PullRequestEvent(..),
     PullRequestEventType(..),
     PullRequestReference(..),
-    PullRequestState(..),
-    PullRequestSort(..),
-    PullRequestSortDirection(..),
-    -- * Pull Request listing options
-    PullRequestOptions,
-    defaultPullRequestOptions,
-    pullRequestOptionsToQueryString,
-    setPullRequestOptionsState,
-    setPullRequestOptionsStateAll,
-    setPullRequestOptionsSort,
-    setPullRequestOptionsDirection,
-    setPullRequestOptionsHead,
-    setPullRequestOptionsBase,
     ) where
 
 import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id)
+import GitHub.Data.Options     (IssueState (..))
 import GitHub.Data.Repos       (Repo)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
-
-import qualified Data.Text.Encoding as TE
 
 data SimplePullRequest = SimplePullRequest
     { simplePullRequestClosedAt  :: !(Maybe UTCTime)
     , simplePullRequestCreatedAt :: !UTCTime
     , simplePullRequestUser      :: !SimpleUser
     , simplePullRequestPatchUrl  :: !URL
-    , simplePullRequestState     :: !PullRequestState
+    , simpleIssueState     :: !IssueState
     , simplePullRequestNumber    :: !Int
     , simplePullRequestHtmlUrl   :: !URL
     , simplePullRequestUpdatedAt :: !UTCTime
@@ -64,7 +50,7 @@ data PullRequest = PullRequest
     , pullRequestCreatedAt      :: !UTCTime
     , pullRequestUser           :: !SimpleUser
     , pullRequestPatchUrl       :: !URL
-    , pullRequestState          :: !PullRequestState
+    , pullRequestState          :: !IssueState
     , pullRequestNumber         :: !Int
     , pullRequestHtmlUrl        :: !URL
     , pullRequestUpdatedAt      :: !UTCTime
@@ -95,7 +81,7 @@ instance Binary PullRequest
 data EditPullRequest = EditPullRequest
     { editPullRequestTitle :: !(Maybe Text)
     , editPullRequestBody  :: !(Maybe Text)
-    , editPullRequestState :: !(Maybe PullRequestState)
+    , editPullRequestState :: !(Maybe IssueState)
     } deriving (Show, Generic)
 
 instance NFData EditPullRequest where rnf = genericRnf
@@ -175,98 +161,6 @@ data PullRequestReference = PullRequestReference
 instance NFData PullRequestReference where rnf = genericRnf
 instance Binary PullRequestReference
 
-data PullRequestState
-    = PullRequestStateOpen
-    | PullRequestStateClosed
-    deriving (Eq, Ord, Show, Generic, Typeable, Data)
-
-instance NFData PullRequestState where rnf = genericRnf
-instance Binary PullRequestState
-
-data PullRequestSort
-    = PullRequestSortCreated
-    | PulLRequestSortUpdated
-    | PullRequestSortPopularity
-    | PullRequestSortLongRunning
-    deriving (Eq, Ord, Show, Generic, Typeable, Data)
-
-instance NFData PullRequestSort where rnf = genericRnf
-instance Binary PullRequestSort
-
-data PullRequestSortDirection
-    = PullRequestSortDesc
-    | PullRequestSortAsc
-    deriving (Eq, Ord, Show, Generic, Typeable, Data)
-
-instance NFData PullRequestSortDirection where rnf = genericRnf
-instance Binary PullRequestSortDirection
-
--- | See <https://developer.github.com/v3/pulls/#parameters>.
-data PullRequestOptions = PullRequestOptions
-    { pullRequestOptionsState     :: !(Maybe PullRequestState)
-    , pullRequestOptionsHead      :: !(Maybe Text)
-    , pullRequestOptionsBase      :: !(Maybe Text)
-    , pullRequestOptionsSort      :: !PullRequestSort
-    , pullRequestOptionsDirection :: !PullRequestSortDirection
-    }
-
-defaultPullRequestOptions :: PullRequestOptions
-defaultPullRequestOptions = PullRequestOptions
-    (Just PullRequestStateOpen)
-    Nothing
-    Nothing
-    PullRequestSortCreated
-    PullRequestSortDesc
-
-setPullRequestOptionsState :: PullRequestState -> PullRequestOptions -> PullRequestOptions
-setPullRequestOptionsState x opts = opts
-    { pullRequestOptionsState = Just x }
-
-setPullRequestOptionsStateAll :: PullRequestOptions -> PullRequestOptions
-setPullRequestOptionsStateAll opts = opts
-    { pullRequestOptionsState = Nothing }
-
-setPullRequestOptionsSort :: PullRequestSort -> PullRequestOptions -> PullRequestOptions
-setPullRequestOptionsSort x opts = opts
-    { pullRequestOptionsSort = x }
-
-setPullRequestOptionsDirection :: PullRequestSortDirection -> PullRequestOptions -> PullRequestOptions
-setPullRequestOptionsDirection x opts = opts
-    { pullRequestOptionsDirection = x }
-
-setPullRequestOptionsHead :: Text -> PullRequestOptions -> PullRequestOptions
-setPullRequestOptionsHead x opts = opts
-    { pullRequestOptionsHead = Just x }
-
-setPullRequestOptionsBase :: Text -> PullRequestOptions -> PullRequestOptions
-setPullRequestOptionsBase x opts = opts
-    { pullRequestOptionsBase = Just x }
-
-pullRequestOptionsToQueryString :: PullRequestOptions -> QueryString
-pullRequestOptionsToQueryString (PullRequestOptions state head_ base sort dir) =
-    [ mk "state"     state'
-    , mk "sort"      sort'
-    , mk "direction" direction'
-    ] ++ catMaybes
-    [ mk "head" <$> head'
-    , mk "base" <$> base'
-    ]
-  where
-    mk k v = (k, Just v)
-    state' = case state of
-        Nothing                     -> "all"
-        Just PullRequestStateOpen   -> "open"
-        Just PullRequestStateClosed -> "closed"
-    sort' = case sort of
-        PullRequestSortCreated     -> "created"
-        PulLRequestSortUpdated     -> "updated"
-        PullRequestSortPopularity  -> "popularity"
-        PullRequestSortLongRunning -> "long-running"
-    direction' = case dir of
-       PullRequestSortDesc -> "desc"
-       PullRequestSortAsc  -> "asc"
-    head' = fmap TE.encodeUtf8 head_
-    base' = fmap TE.encodeUtf8 base
 
 -------------------------------------------------------------------------------
 -- JSON instances
@@ -291,15 +185,6 @@ instance FromJSON SimplePullRequest where
         <*> o .:? "merged_at"
         <*> o .: "title"
         <*> o .: "id"
-
-instance ToJSON PullRequestState where
-    toJSON PullRequestStateOpen = String "open"
-    toJSON PullRequestStateClosed = String "closed"
-
-instance FromJSON PullRequestState where
-    parseJSON (String "open")   = pure PullRequestStateOpen
-    parseJSON (String "closed") = pure PullRequestStateClosed
-    parseJSON v                 = typeMismatch "PulLRequestState" v
 
 instance ToJSON EditPullRequest where
     toJSON (EditPullRequest t b s) =

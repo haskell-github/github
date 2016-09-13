@@ -92,9 +92,8 @@ module GitHub (
     -- * Issues
     -- | See <https://developer.github.com/v3/issues/>
     --
-    -- Missing endpoints:
-    --
-    -- * List issues
+    currentUserIssuesR,
+    organizationIssuesR,
     issueR,
     issuesForRepoR,
     createIssueR,

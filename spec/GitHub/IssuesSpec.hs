@@ -3,6 +3,9 @@ module GitHub.IssuesSpec where
 
 import qualified GitHub
 
+import Prelude ()
+import Prelude.Compat
+
 import Data.Either.Compat (isRight)
 import Data.Foldable      (for_)
 import Data.String        (fromString)
@@ -25,7 +28,7 @@ spec = do
     describe "issuesForRepoR" $ do
         it "works" $ withAuth $ \auth -> for_ repos $ \(owner, repo) -> do
             cs <- GitHub.executeRequest auth $
-                GitHub.issuesForRepoR owner repo [] GitHub.FetchAll 
+                GitHub.issuesForRepoR owner repo mempty GitHub.FetchAll 
             cs `shouldSatisfy` isRight
   where
     repos =

@@ -10,39 +10,42 @@ import GitHub.Data.Id           (Id)
 import GitHub.Data.PullRequests
 import GitHub.Data.URL          (URL)
 import GitHub.Internal.Prelude
+import GitHub.Data.Milestone (Milestone)
 import Prelude ()
 
-data Issue = Issue {
-   issueClosedAt    :: Maybe UTCTime
-  ,issueUpdatedAt   :: UTCTime
-  ,issueEventsUrl   :: URL
-  ,issueHtmlUrl     :: Maybe URL
-  ,issueClosedBy    :: Maybe SimpleUser
-  ,issueLabels      :: (Vector IssueLabel)
-  ,issueNumber      :: Int
-  ,issueAssignee    :: Maybe SimpleUser
-  ,issueUser        :: SimpleUser
-  ,issueTitle       :: Text
-  ,issuePullRequest :: Maybe PullRequestReference
-  ,issueUrl         :: URL
-  ,issueCreatedAt   :: UTCTime
-  ,issueBody        :: Maybe Text
-  ,issueState       :: Text
-  ,issueId          :: Id Issue
-  ,issueComments    :: Int
-  ,issueMilestone   :: Maybe Milestone
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data Issue = Issue
+    { issueClosedAt    :: Maybe UTCTime
+    , issueUpdatedAt   :: UTCTime
+    , issueEventsUrl   :: URL
+    , issueHtmlUrl     :: Maybe URL
+    , issueClosedBy    :: Maybe SimpleUser
+    , issueLabels      :: (Vector IssueLabel)
+    , issueNumber      :: Int
+    , issueAssignee    :: Maybe SimpleUser
+    , issueUser        :: SimpleUser
+    , issueTitle       :: Text
+    , issuePullRequest :: Maybe PullRequestReference
+    , issueUrl         :: URL
+    , issueCreatedAt   :: UTCTime
+    , issueBody        :: Maybe Text
+    , issueState       :: Text
+    , issueId          :: Id Issue
+    , issueComments    :: Int
+    , issueMilestone   :: Maybe Milestone
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Issue where rnf = genericRnf
 instance Binary Issue
 
-data NewIssue = NewIssue {
-  newIssueTitle     :: Text
-, newIssueBody      :: Maybe Text
-, newIssueAssignee  :: Maybe Text
-, newIssueMilestone :: Maybe Int
-, newIssueLabels    :: Maybe (Vector Text)
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data NewIssue = NewIssue
+    { newIssueTitle     :: Text
+    , newIssueBody      :: Maybe Text
+    , newIssueAssignee  :: Maybe Text
+    , newIssueMilestone :: Maybe (Id Milestone)
+    , newIssueLabels    :: Maybe (Vector Text)
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData NewIssue where rnf = genericRnf
 instance Binary NewIssue
@@ -52,28 +55,12 @@ data EditIssue = EditIssue {
 , editIssueBody      :: Maybe Text
 , editIssueAssignee  :: Maybe Text
 , editIssueState     :: Maybe Text
-, editIssueMilestone :: Maybe Int
+, editIssueMilestone :: Maybe (Id Milestone)
 , editIssueLabels    :: Maybe (Vector Text)
 } deriving  (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData EditIssue where rnf = genericRnf
 instance Binary EditIssue
-
-data Milestone = Milestone {
-   milestoneCreator      :: SimpleUser
-  ,milestoneDueOn        :: Maybe UTCTime
-  ,milestoneOpenIssues   :: Int
-  ,milestoneNumber       :: Int
-  ,milestoneClosedIssues :: Int
-  ,milestoneDescription  :: Maybe Text
-  ,milestoneTitle        :: Text
-  ,milestoneUrl          :: URL
-  ,milestoneCreatedAt    :: UTCTime
-  ,milestoneState        :: Text
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance NFData Milestone where rnf = genericRnf
-instance Binary Milestone
 
 data IssueLabel = IssueLabel {
    labelColor :: Text
@@ -135,76 +122,52 @@ data Event = Event {
 instance NFData Event where rnf = genericRnf
 instance Binary Event
 
--- | A data structure for describing how to filter issues. This is used by
--- @issuesForRepo@.
-data IssueLimitation =
-      AnyMilestone -- ^ Issues appearing in any milestone. [default]
-    | NoMilestone -- ^ Issues without a milestone.
-    | MilestoneId Int -- ^ Only issues that are in the milestone with the given id.
-    | Open -- ^ Only open issues. [default]
-    | OnlyClosed -- ^ Only closed issues.
-    | Unassigned -- ^ Issues to which no one has been assigned ownership.
-    | AnyAssignment -- ^ All issues regardless of assignment. [default]
-    | AssignedTo String -- ^ Only issues assigned to the user with the given login.
-    | Mentions String -- ^ Issues which mention the given string, taken to be a user's login.
-    | Labels [String] -- ^ A list of labels to filter by.
-    | Ascending -- ^ Sort ascending.
-    | Descending -- ^ Sort descending. [default]
-    | Since UTCTime -- ^ Only issues created since the specified date and time.
-    | PerPage Int -- ^ Download this many issues per query
-  deriving (Eq, Ord, Show, Typeable, Data, Generic)
-
-instance NFData IssueLimitation where rnf = genericRnf
-instance Binary IssueLimitation
-
--- JSON instances
-
 instance FromJSON Event where
-  parseJSON = withObject "Event" $ \o ->
-    Event <$> o .: "actor"
-          <*> o .: "event"
-          <*> o .:? "commit_id"
-          <*> o .: "url"
-          <*> o .: "created_at"
-          <*> o .: "id"
-          <*> o .:? "issue"
+    parseJSON = withObject "Event" $ \o -> Event
+        <$> o .: "actor"
+        <*> o .: "event"
+        <*> o .:? "commit_id"
+        <*> o .: "url"
+        <*> o .: "created_at"
+        <*> o .: "id"
+        <*> o .:? "issue"
 
 instance FromJSON EventType where
-  parseJSON (String "closed") = pure Closed
-  parseJSON (String "reopened") = pure Reopened
-  parseJSON (String "subscribed") = pure Subscribed
-  parseJSON (String "merged") = pure Merged
-  parseJSON (String "referenced") = pure Referenced
-  parseJSON (String "mentioned") = pure Mentioned
-  parseJSON (String "assigned") = pure Assigned
-  parseJSON (String "unsubscribed") = pure Unsubscribed
-  parseJSON (String "unassigned") = pure ActorUnassigned
-  parseJSON (String "labeled") = pure Labeled
-  parseJSON (String "unlabeled") = pure Unlabeled
-  parseJSON (String "milestoned") = pure Milestoned
-  parseJSON (String "demilestoned") = pure Demilestoned
-  parseJSON (String "renamed") = pure Renamed
-  parseJSON (String "locked") = pure Locked
-  parseJSON (String "unlocked") = pure Unlocked
-  parseJSON (String "head_ref_deleted") = pure HeadRefDeleted
-  parseJSON (String "head_ref_restored") = pure HeadRefRestored
-  parseJSON _ = fail "Could not build an EventType"
+    parseJSON (String "closed") = pure Closed
+    parseJSON (String "reopened") = pure Reopened
+    parseJSON (String "subscribed") = pure Subscribed
+    parseJSON (String "merged") = pure Merged
+    parseJSON (String "referenced") = pure Referenced
+    parseJSON (String "mentioned") = pure Mentioned
+    parseJSON (String "assigned") = pure Assigned
+    parseJSON (String "unsubscribed") = pure Unsubscribed
+    parseJSON (String "unassigned") = pure ActorUnassigned
+    parseJSON (String "labeled") = pure Labeled
+    parseJSON (String "unlabeled") = pure Unlabeled
+    parseJSON (String "milestoned") = pure Milestoned
+    parseJSON (String "demilestoned") = pure Demilestoned
+    parseJSON (String "renamed") = pure Renamed
+    parseJSON (String "locked") = pure Locked
+    parseJSON (String "unlocked") = pure Unlocked
+    parseJSON (String "head_ref_deleted") = pure HeadRefDeleted
+    parseJSON (String "head_ref_restored") = pure HeadRefRestored
+    parseJSON _ = fail "Could not build an EventType"
 
 instance FromJSON IssueLabel where
-  parseJSON = withObject "IssueLabel" $ \o ->
-    IssueLabel <$> o .: "color"
-               <*> o .: "url"
-               <*> o .: "name"
+    parseJSON = withObject "IssueLabel" $ \o -> IssueLabel
+        <$> o .: "color"
+        <*> o .: "url"
+        <*> o .: "name"
 
 instance FromJSON IssueComment where
-  parseJSON = withObject "IssueComment" $ \o ->
-    IssueComment <$> o .: "updated_at"
-                 <*> o .: "user"
-                 <*> o .: "url"
-                 <*> o .: "html_url"
-                 <*> o .: "created_at"
-                 <*> o .: "body"
-                 <*> o .: "id"
+    parseJSON = withObject "IssueComment" $ \o -> IssueComment
+        <$> o .: "updated_at"
+        <*> o .: "user"
+        <*> o .: "url"
+        <*> o .: "html_url"
+        <*> o .: "created_at"
+        <*> o .: "body"
+        <*> o .: "id"
 
 instance FromJSON Issue where
   parseJSON = withObject "Issue" $ \o ->
@@ -246,16 +209,3 @@ instance ToJSON EditIssue where
                               , "labels" .= ls ]
     where notNull (_, Null) = False
           notNull (_, _)    = True
-
-instance FromJSON Milestone where
-  parseJSON = withObject "Milestone" $ \o ->
-    Milestone <$> o .: "creator"
-              <*> o .: "due_on"
-              <*> o .: "open_issues"
-              <*> o .: "number"
-              <*> o .: "closed_issues"
-              <*> o .: "description"
-              <*> o .: "title"
-              <*> o .: "url"
-              <*> o .: "created_at"
-              <*> o .: "state"

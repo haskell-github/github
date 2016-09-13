@@ -68,7 +68,6 @@ import Network.HTTP.Client
        (HttpException (..), Manager, RequestBody (..), Response (..),
        applyBasicAuth, httpLbs, method, newManager, requestBody,
        requestHeaders, setQueryString)
-import Network.HTTP.Client.Internal (setUri)
 import Network.HTTP.Client.TLS      (tlsManagerSettings)
 import Network.HTTP.Link.Parser     (parseLinkHeaderBS)
 import Network.HTTP.Link.Types
@@ -346,7 +345,7 @@ performPagedRequest httpLbs' predicate initReq = do
     go acc res req =
         case (predicate acc, getNextUrl res) of
             (True, Just uri) -> do
-                req' <- setUri req uri
+                req' <- HTTP.setUri req uri
                 res' <- httpLbs' req'
                 m <- parseResponse res'
                 go (acc <> m) res' req'
