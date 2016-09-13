@@ -35,7 +35,7 @@ gists = gists' Nothing
 -- | List gists.
 -- See <https://developer.github.com/v3/gists/#list-gists>
 gistsR :: Name Owner -> FetchCount -> Request k (Vector Gist)
-gistsR user = PagedQuery ["users", toPathPart user, "gists"] []
+gistsR user = pagedQuery ["users", toPathPart user, "gists"] []
 
 -- | A specific gist, given its id, with authentication credentials
 --
@@ -52,6 +52,6 @@ gist = gist' Nothing
 
 -- | Query a single gist.
 -- See <https://developer.github.com/v3/gists/#get-a-single-gist>
-gistR :: Name Gist ->Request k Gist
+gistR :: Name Gist -> Request k Gist
 gistR gid =
-    Query ["gists", toPathPart gid] []
+    query ["gists", toPathPart gid] []

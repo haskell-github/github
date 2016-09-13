@@ -35,7 +35,7 @@ publicOrganizationsFor = publicOrganizationsFor' Nothing
 -- | List user organizations.
 -- See <https://developer.github.com/v3/orgs/#list-user-organizations>
 publicOrganizationsForR :: Name User -> FetchCount -> Request k (Vector SimpleOrganization)
-publicOrganizationsForR user = PagedQuery ["users", toPathPart user, "orgs"] []
+publicOrganizationsForR user = pagedQuery ["users", toPathPart user, "orgs"] []
 
 -- | Details on a public organization. Takes the organization's login.
 --
@@ -52,4 +52,4 @@ publicOrganization = publicOrganization' Nothing
 -- | Query an organization.
 -- See <https://developer.github.com/v3/orgs/#get-an-organization>
 publicOrganizationR :: Name Organization -> Request k Organization
-publicOrganizationR reqOrganizationName = Query ["orgs", toPathPart reqOrganizationName] []
+publicOrganizationR reqOrganizationName = query ["orgs", toPathPart reqOrganizationName] []

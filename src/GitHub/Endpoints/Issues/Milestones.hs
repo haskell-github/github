@@ -35,7 +35,8 @@ milestones' auth user repo =
 -- | List milestones for a repository.
 -- See <https://developer.github.com/v3/issues/milestones/#list-milestones-for-a-repository>
 milestonesR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Milestone)
-milestonesR user repo = PagedQuery ["repos", toPathPart user, toPathPart repo, "milestones"] []
+milestonesR user repo =
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "milestones"] []
 
 -- | Details on a specific milestone, given it's milestone number.
 --
@@ -48,4 +49,4 @@ milestone user repo mid =
 -- See <https://developer.github.com/v3/issues/milestones/#get-a-single-milestone>
 milestoneR :: Name Owner -> Name Repo -> Id Milestone -> Request k Milestone
 milestoneR user repo mid =
-    Query ["repos", toPathPart user, toPathPart repo, "milestones", toPathPart mid] []
+    query ["repos", toPathPart user, toPathPart repo, "milestones", toPathPart mid] []

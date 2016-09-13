@@ -42,7 +42,8 @@ searchRepos = searchRepos' Nothing
 -- | Search repositories.
 -- See <https://developer.github.com/v3/search/#search-repositories>
 searchReposR :: Text -> Request k (SearchResult Repo)
-searchReposR searchString = Query ["search", "repositories"] [("q", Just $ TE.encodeUtf8 searchString)]
+searchReposR searchString =
+    query ["search", "repositories"] [("q", Just $ TE.encodeUtf8 searchString)]
 
 -- | Perform a code search.
 -- With authentication.
@@ -61,7 +62,8 @@ searchCode = searchCode' Nothing
 -- | Search code.
 -- See <https://developer.github.com/v3/search/#search-code>
 searchCodeR :: Text -> Request k (SearchResult Code)
-searchCodeR searchString = Query ["search", "code"] [("q", Just $ TE.encodeUtf8 searchString)]
+searchCodeR searchString =
+    query ["search", "code"] [("q", Just $ TE.encodeUtf8 searchString)]
 
 -- | Perform an issue search.
 -- With authentication.
@@ -80,4 +82,5 @@ searchIssues = searchIssues' Nothing
 -- | Search issues.
 -- See <https://developer.github.com/v3/search/#search-issues>
 searchIssuesR :: Text -> Request k (SearchResult Issue)
-searchIssuesR searchString = Query ["search", "issues"] [("q", Just $ TE.encodeUtf8 searchString)]
+searchIssuesR searchString =
+    query ["search", "issues"] [("q", Just $ TE.encodeUtf8 searchString)]

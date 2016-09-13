@@ -57,7 +57,8 @@ teamsOf = teamsOf' Nothing
 -- | List teams.
 -- See <https://developer.github.com/v3/orgs/teams/#list-teams>
 teamsOfR :: Name Organization -> FetchCount -> Request k (Vector SimpleTeam)
-teamsOfR org = PagedQuery ["orgs", toPathPart org, "teams"] []
+teamsOfR org =
+    pagedQuery ["orgs", toPathPart org, "teams"] []
 
 -- | The information for a single team, by team id.
 -- With authentication
@@ -77,7 +78,7 @@ teamInfoFor = teamInfoFor' Nothing
 -- See <https://developer.github.com/v3/orgs/teams/#get-team>
 teamInfoForR  :: Id Team -> Request k Team
 teamInfoForR tid =
-    Query ["teams", toPathPart tid] []
+    query ["teams", toPathPart tid] []
 
 -- | Create a team under an Owner
 --
@@ -93,7 +94,7 @@ createTeamFor' auth org cteam =
 -- See <https://developer.github.com/v3/orgs/teams/#create-team>
 createTeamForR :: Name Organization -> CreateTeam -> Request 'RW Team
 createTeamForR org cteam =
-    Command Post ["orgs", toPathPart org, "teams"] (encode cteam)
+    command Post ["orgs", toPathPart org, "teams"] (encode cteam)
 
 -- | Edit a team, by id.
 --
@@ -109,7 +110,7 @@ editTeam' auth tid eteam =
 -- See <https://developer.github.com/v3/orgs/teams/#edit-team>
 editTeamR :: Id Team -> EditTeam -> Request 'RW Team
 editTeamR tid eteam =
-    Command Patch ["teams", toPathPart tid] (encode eteam)
+    command Patch ["teams", toPathPart tid] (encode eteam)
 
 -- | Delete a team, by id.
 --
@@ -123,13 +124,14 @@ deleteTeam' auth tid =
 -- See <https://developer.github.com/v3/orgs/teams/#delete-team>
 deleteTeamR :: Id Team -> Request 'RW ()
 deleteTeamR tid =
-    Command Delete ["teams", toPathPart tid] mempty
+    command Delete ["teams", toPathPart tid] mempty
 
 -- | List team members.
 --
 -- See <https://developer.github.com/v3/orgs/teams/#list-team-members>
 listTeamMembersR :: Id Team -> TeamMemberRole -> FetchCount -> Request 'RA (Vector SimpleUser)
-listTeamMembersR tid r = PagedQuery ["teams", toPathPart tid, "members"] [("role", Just r')]
+listTeamMembersR tid r =
+    pagedQuery ["teams", toPathPart tid, "members"] [("role", Just r')]
   where
     r' = case r of
         TeamMemberRoleAll         -> "all"
@@ -146,7 +148,8 @@ listTeamRepos' auth tid = executeRequestMaybe auth $ listTeamReposR tid FetchAll
 -- | Query team repositories.
 -- See <https://developer.github.com/v3/orgs/teams/#list-team-repos>
 listTeamReposR :: Id Team -> FetchCount -> Request k (Vector Repo)
-listTeamReposR tid  = PagedQuery ["teams", toPathPart tid, "repos"] []
+listTeamReposR tid  =
+    pagedQuery ["teams", toPathPart tid, "repos"] []
 
 -- | Retrieve repositories for a team.
 --
@@ -166,7 +169,7 @@ teamMembershipInfoFor' auth tid user =
 -- See <https://developer.github.com/v3/orgs/teams/#get-team-membership
 teamMembershipInfoForR :: Id Team -> Name Owner -> Request k TeamMembership
 teamMembershipInfoForR tid user =
-    Query ["teams", toPathPart tid, "memberships", toPathPart user] []
+    query ["teams", toPathPart tid, "memberships", toPathPart user] []
 
 -- | Retrieve team mebership information for a user.
 --
@@ -185,7 +188,7 @@ addTeamMembershipFor' auth tid user role =
 -- See <https://developer.github.com/v3/orgs/teams/#add-team-membership>
 addTeamMembershipForR :: Id Team -> Name Owner -> Role -> Request 'RW TeamMembership
 addTeamMembershipForR tid user role =
-    Command Put ["teams", toPathPart tid, "memberships", toPathPart user] (encode $ CreateTeamMembership role)
+    command Put ["teams", toPathPart tid, "memberships", toPathPart user] (encode $ CreateTeamMembership role)
 
 -- | Delete a member of a team.
 --
@@ -198,7 +201,7 @@ deleteTeamMembershipFor' auth tid user =
 -- See <https://developer.github.com/v3/orgs/teams/#remove-team-membership>
 deleteTeamMembershipForR :: Id Team -> Name Owner -> Request 'RW ()
 deleteTeamMembershipForR tid user =
-    Command Delete ["teams", toPathPart tid, "memberships", toPathPart user] mempty
+    command Delete ["teams", toPathPart tid, "memberships", toPathPart user] mempty
 
 -- | List teams for current authenticated user
 --
@@ -208,5 +211,6 @@ listTeamsCurrent' auth = executeRequest auth $ listTeamsCurrentR FetchAll
 
 -- | List user teams.
 -- See <https://developer.github.com/v3/orgs/teams/#list-user-teams>
-listTeamsCurrentR :: FetchCount -> Request 'RW (Vector Team)
-listTeamsCurrentR = PagedQuery ["user", "teams"] []
+listTeamsCurrentR :: FetchCount -> Request 'RA (Vector Team)
+listTeamsCurrentR =
+    pagedQuery ["user", "teams"] []

@@ -35,7 +35,7 @@ deployKeysFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/keys/#list-deploy-keys>
 deployKeysForR :: Name Owner -> Name Repo -> FetchCount -> Request 'RA (Vector RepoDeployKey)
 deployKeysForR user repo =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "keys"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "keys"] []
 
 -- | Querying a deploy key
 deployKeyFor' :: Auth -> Name Owner -> Name Repo -> Id RepoDeployKey -> IO (Either Error RepoDeployKey)
@@ -46,7 +46,7 @@ deployKeyFor' auth user repo keyId =
 -- See <https://developer.github.com/v3/repos/keys/#get-a-deploy-key>
 deployKeyForR :: Name Owner -> Name Repo -> Id RepoDeployKey -> Request 'RA RepoDeployKey
 deployKeyForR user repo keyId =
-    Query ["repos", toPathPart user, toPathPart repo, "keys", toPathPart keyId] []
+    query ["repos", toPathPart user, toPathPart repo, "keys", toPathPart keyId] []
 
 -- | Create a deploy key
 createRepoDeployKey' :: Auth -> Name Owner -> Name Repo -> NewRepoDeployKey -> IO (Either Error RepoDeployKey)
@@ -57,7 +57,7 @@ createRepoDeployKey' auth user repo key =
 -- See <https://developer.github.com/v3/repos/keys/#add-a-new-deploy-key>.
 createRepoDeployKeyR :: Name Owner -> Name Repo -> NewRepoDeployKey -> Request 'RW RepoDeployKey
 createRepoDeployKeyR user repo key =
-    Command Post ["repos", toPathPart user, toPathPart repo, "keys"] (encode key)
+    command Post ["repos", toPathPart user, toPathPart repo, "keys"] (encode key)
 
 deleteRepoDeployKey' :: Auth -> Name Owner -> Name Repo -> Id RepoDeployKey -> IO (Either Error ())
 deleteRepoDeployKey' auth user repo keyId =
@@ -67,4 +67,4 @@ deleteRepoDeployKey' auth user repo keyId =
 -- See <https://developer.github.com/v3/repos/keys/#remove-a-deploy-key>
 deleteRepoDeployKeyR :: Name Owner -> Name Repo -> Id RepoDeployKey -> Request 'RW ()
 deleteRepoDeployKeyR user repo keyId =
-    Command Delete ["repos", toPathPart user, toPathPart repo, "keys", toPathPart keyId] mempty
+    command Delete ["repos", toPathPart user, toPathPart repo, "keys", toPathPart keyId] mempty

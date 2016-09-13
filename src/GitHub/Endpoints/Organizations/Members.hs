@@ -37,13 +37,15 @@ membersOf = membersOf' Nothing
 --
 -- See <https://developer.github.com/v3/orgs/members/#members-list>
 membersOfR :: Name Organization -> FetchCount -> Request k (Vector SimpleUser)
-membersOfR organization = PagedQuery ["orgs", toPathPart organization, "members"] []
+membersOfR organization =
+    pagedQuery ["orgs", toPathPart organization, "members"] []
 
 -- | 'membersOfR' with filters.
 --
 -- See <https://developer.github.com/v3/orgs/members/#members-list>
 membersOfWithR :: Name Organization -> OrgMemberFilter -> OrgMemberRole -> FetchCount -> Request k (Vector SimpleUser)
-membersOfWithR org f r = PagedQuery ["orgs", toPathPart org, "members"] [("filter", Just f'), ("role", Just r')]
+membersOfWithR org f r =
+    pagedQuery ["orgs", toPathPart org, "members"] [("filter", Just f'), ("role", Just r')]
   where
     f' = case f of
         OrgMemberFilter2faDisabled -> "2fa_disabled"

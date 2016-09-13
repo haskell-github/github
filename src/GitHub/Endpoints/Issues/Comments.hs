@@ -34,7 +34,7 @@ comment user repo cid =
 -- See <https://developer.github.com/v3/issues/comments/#get-a-single-comment>
 commentR :: Name Owner -> Name Repo -> Id Comment -> Request k IssueComment
 commentR user repo cid =
-    Query ["repos", toPathPart user, toPathPart repo, "issues", "comments", toPathPart cid] []
+    query ["repos", toPathPart user, toPathPart repo, "issues", "comments", toPathPart cid] []
 
 -- | All comments on an issue, by the issue's number.
 --
@@ -53,7 +53,7 @@ comments' auth user repo iid =
 -- See <https://developer.github.com/v3/issues/comments/#list-comments-on-an-issue>
 commentsR :: Name Owner -> Name Repo -> Id Issue -> FetchCount -> Request k (Vector IssueComment)
 commentsR user repo iid =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "comments"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "comments"] []
 
 -- | Create a new comment.
 --
@@ -68,7 +68,7 @@ createComment auth user repo iss body =
 -- See <https://developer.github.com/v3/issues/comments/#create-a-comment>
 createCommentR :: Name Owner -> Name Repo -> Id Issue -> Text -> Request 'RW Comment
 createCommentR user repo iss body =
-    Command Post parts (encode $ NewComment body)
+    command Post parts (encode $ NewComment body)
   where
     parts = ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iss, "comments"]
 
@@ -85,6 +85,6 @@ editComment auth user repo commid body =
 -- See <https://developer.github.com/v3/issues/comments/#edit-a-comment>
 editCommentR :: Name Owner -> Name Repo -> Id Comment -> Text -> Request 'RW Comment
 editCommentR user repo commid body =
-    Command Patch parts (encode $ EditComment body)
+    command Patch parts (encode $ EditComment body)
   where
     parts = ["repos", toPathPart user, toPathPart repo, "issues", "comments", toPathPart commid]

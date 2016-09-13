@@ -9,12 +9,17 @@
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
 module GitHub.Data.Request (
-    Request(..),
+    -- * Request
+    Request (..),
+    SimpleRequest (..),
+    -- * Smart constructors
+    query, pagedQuery, command,
+    -- * Auxiliary types
     RW(..),
+    StatusMap,
+    statusOnlyOk,
     CommandMethod(..),
     toMethod,
-    StatusMap(..),
-    MergeResult(..),
     FetchCount(..),
     Paths,
     IsPathPart(..),
@@ -74,30 +79,6 @@ toMethod Patch  = Method.methodPatch
 toMethod Put    = Method.methodPut
 toMethod Delete = Method.methodDelete
 
--- | Result of merge operation
-data MergeResult = MergeSuccessful
-                 | MergeCannotPerform
-                 | MergeConflict
-    deriving (Eq, Ord, Read, Show, Enum, Bounded, Generic, Typeable)
-
-instance Hashable MergeResult
-
--- | Status code transform
-data StatusMap a where
-    StatusOnlyOk :: StatusMap Bool
-    StatusMerge  :: StatusMap MergeResult
-    deriving (Typeable)
-
-deriving instance Eq (StatusMap a)
-
-instance Show (StatusMap a) where
-    showsPrec _ StatusOnlyOk  = showString "StatusOnlyOK"
-    showsPrec _ StatusMerge   = showString "StatusMerge"
-
-instance Hashable (StatusMap a) where
-    hashWithSalt salt StatusOnlyOk = hashWithSalt salt (0 :: Int)
-    hashWithSalt salt StatusMerge  = hashWithSalt salt (1 :: Int)
-
 -- | 'PagedQuery' returns just some results, using this data we can specify how
 -- many pages we want to fetch.
 data FetchCount = FetchAtLeast !Word | FetchAll
@@ -152,51 +133,87 @@ instance IReadOnly 'RA        where iro = ROA
 --
 -- /Note:/ 'Request' is not 'Functor' on purpose.
 data Request (k :: RW) a where
-    Query        :: FromJSON a => Paths -> QueryString -> Request k a
-    PagedQuery   :: FromJSON (Vector a) => Paths -> QueryString -> FetchCount -> Request k (Vector a)
-    Command      :: FromJSON a => CommandMethod a -> Paths -> LBS.ByteString -> Request 'RW a
-    StatusQuery  :: StatusMap a -> Request k () -> Request k a
-    HeaderQuery  :: Types.RequestHeaders -> Request k a -> Request k a
-    deriving (Typeable)
+    SimpleQuery   :: FromJSON a => SimpleRequest k a -> Request k a
+    StatusQuery   :: StatusMap a -> SimpleRequest k () -> Request k a
+    HeaderQuery   :: FromJSON a => Types.RequestHeaders -> SimpleRequest k a -> Request k a
+  deriving (Typeable)
 
-deriving instance Eq (Request k a)
+data SimpleRequest (k :: RW) a where
+    Query        :: Paths -> QueryString -> SimpleRequest k a
+    PagedQuery   :: Paths -> QueryString -> FetchCount -> SimpleRequest k (Vector a)
+    Command      :: CommandMethod a -> Paths -> LBS.ByteString -> SimpleRequest 'RW a
+  deriving (Typeable)
+
+-------------------------------------------------------------------------------
+-- Status Map
+-------------------------------------------------------------------------------
+
+-- TODO: Change to 'Map' ?
+type StatusMap a = [(Int, a)]
+
+statusOnlyOk :: StatusMap Bool
+statusOnlyOk =
+    [ (202, True)
+    , (404, False)
+    ]
+
+-------------------------------------------------------------------------------
+-- Smart constructors
+-------------------------------------------------------------------------------
+
+query :: FromJSON a => Paths -> QueryString -> Request k a
+query ps qs = SimpleQuery (Query ps qs)
+
+pagedQuery :: FromJSON a => Paths -> QueryString -> FetchCount -> Request k (Vector a)
+pagedQuery ps qs fc = SimpleQuery (PagedQuery ps qs fc)
+
+command :: FromJSON a => CommandMethod a -> Paths -> LBS.ByteString -> Request 'RW a
+command m ps body = SimpleQuery (Command m ps body)
+
+-------------------------------------------------------------------------------
+-- Instances
+-------------------------------------------------------------------------------
+
+deriving instance Eq a => Eq (Request k a)
+deriving instance Eq a => Eq (SimpleRequest k a)
+
+instance Show (SimpleRequest k a) where
+    showsPrec d r = showParen (d > appPrec) $ case r of
+        Query ps qs -> showString "Query "
+            . showsPrec (appPrec + 1) ps
+            . showString " "
+            . showsPrec (appPrec + 1) qs
+        PagedQuery ps qs l -> showString "PagedQuery "
+            . showsPrec (appPrec + 1) ps
+            . showString " "
+            . showsPrec (appPrec + 1) qs
+            . showString " "
+            . showsPrec (appPrec + 1) l
+        Command m ps body -> showString "Command "
+            . showsPrec (appPrec + 1) m
+            . showString " "
+            . showsPrec (appPrec + 1) ps
+            . showString " "
+            . showsPrec (appPrec + 1) body
+      where
+        appPrec = 10 :: Int
 
 instance Show (Request k a) where
-    showsPrec d r =
-        case r of
-            Query ps qs -> showParen (d > appPrec) $
-                showString "Query "
-                    . showsPrec (appPrec + 1) ps
-                    . showString " "
-                    . showsPrec (appPrec + 1) qs
-            PagedQuery ps qs l -> showParen (d > appPrec) $
-                showString "PagedQuery "
-                    . showsPrec (appPrec + 1) ps
-                    . showString " "
-                    . showsPrec (appPrec + 1) qs
-                    . showString " "
-                    . showsPrec (appPrec + 1) l
-            Command m ps body -> showParen (d > appPrec) $
-                showString "Command "
-                    . showsPrec (appPrec + 1) m
-                    . showString " "
-                    . showsPrec (appPrec + 1) ps
-                    . showString " "
-                    . showsPrec (appPrec + 1) body
-            StatusQuery m req -> showParen (d > appPrec) $
-                showString "Status "
-                    . showsPrec (appPrec + 1) m
-                    . showString " "
-                    . showsPrec (appPrec + 1) req
-            HeaderQuery m req -> showParen (d > appPrec) $
-                showString "Header "
-                    . showsPrec (appPrec + 1) m
-                    . showString " "
-                    . showsPrec (appPrec + 1) req
+    showsPrec d r = showParen (d > appPrec) $ case r of
+        SimpleQuery req -> showString "SimpleQuery "
+            . showsPrec (appPrec + 1) req
+        StatusQuery m req -> showString "Status "
+            . showsPrec (appPrec + 1) (map fst m) -- !!! printing only keys
+            . showString " "
+            . showsPrec (appPrec + 1) req
+        HeaderQuery m req -> showString "Header "
+            . showsPrec (appPrec + 1) m
+            . showString " "
+            . showsPrec (appPrec + 1) req
+      where
+        appPrec = 10 :: Int
 
-      where appPrec = 10 :: Int
-
-instance Hashable (Request k a) where
+instance Hashable (SimpleRequest k a) where
     hashWithSalt salt (Query ps qs) =
         salt `hashWithSalt` (0 :: Int)
              `hashWithSalt` ps
@@ -211,11 +228,16 @@ instance Hashable (Request k a) where
              `hashWithSalt` m
              `hashWithSalt` ps
              `hashWithSalt` body
+
+instance Hashable a => Hashable (Request k a) where
+    hashWithSalt salt (SimpleQuery req) =
+        salt `hashWithSalt` (0 :: Int)
+             `hashWithSalt` req
     hashWithSalt salt (StatusQuery sm req) =
-        salt `hashWithSalt` (3 :: Int)
+        salt `hashWithSalt` (1 :: Int)
              `hashWithSalt` sm
              `hashWithSalt` req
     hashWithSalt salt (HeaderQuery h req) =
-        salt `hashWithSalt` (4 :: Int)
+        salt `hashWithSalt` (2 :: Int)
              `hashWithSalt` h
              `hashWithSalt` req

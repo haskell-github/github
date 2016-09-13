@@ -34,7 +34,7 @@ stargazersFor auth user repo =
 -- See <https://developer.github.com/v3/activity/starring/#list-stargazers>
 stargazersForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector SimpleUser)
 stargazersForR user repo =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "stargazers"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "stargazers"] []
 
 -- | All the public repos starred by the specified user.
 --
@@ -47,7 +47,7 @@ reposStarredBy auth user =
 -- See <https://developer.github.com/v3/activity/starring/#list-repositories-being-starred>
 reposStarredByR :: Name Owner -> FetchCount -> Request k (Vector Repo)
 reposStarredByR user =
-    PagedQuery ["users", toPathPart user, "starred"] []
+    pagedQuery ["users", toPathPart user, "starred"] []
 
 -- | All the repos starred by the authenticated user.
 myStarred :: Auth -> IO (Either Error (Vector Repo))
@@ -57,7 +57,7 @@ myStarred auth =
 -- | All the repos starred by the authenticated user.
 -- See <https://developer.github.com/v3/activity/starring/#list-repositories-being-starred>
 myStarredR :: FetchCount -> Request 'RA (Vector Repo)
-myStarredR = PagedQuery ["user", "starred"] []
+myStarredR = pagedQuery ["user", "starred"] []
 
 
 -- | All the repos starred by the authenticated user.

@@ -39,7 +39,7 @@ watchersFor' auth user repo =
 -- See <https://developer.github.com/v3/activity/watching/#list-watchers>
 watchersForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector SimpleUser)
 watchersForR user repo limit =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "watchers"] [] limit
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "watchers"] [] limit
 
 -- | All the public repos watched by the specified user.
 --
@@ -59,4 +59,4 @@ reposWatchedBy' auth user =
 -- See <https://developer.github.com/v3/activity/watching/#list-repositories-being-watched>
 reposWatchedByR :: Name Owner -> FetchCount -> Request k (Vector Repo)
 reposWatchedByR user =
-    PagedQuery ["users", toPathPart user, "subscriptions"] []
+    pagedQuery ["users", toPathPart user, "subscriptions"] []

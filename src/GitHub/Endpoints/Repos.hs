@@ -78,7 +78,7 @@ currentUserRepos auth publicity =
 -- See <https://developer.github.com/v3/repos/#list-your-repositories>
 currentUserReposR :: RepoPublicity -> FetchCount -> Request k (Vector Repo)
 currentUserReposR publicity =
-    PagedQuery  ["user", "repos"] qs
+    pagedQuery  ["user", "repos"] qs
   where
     qs = repoPublicityQueryString publicity
 
@@ -105,7 +105,7 @@ userRepos' auth user publicity =
 -- See <https://developer.github.com/v3/repos/#list-user-repositories>
 userReposR :: Name Owner -> RepoPublicity -> FetchCount -> Request k(Vector Repo)
 userReposR user publicity =
-    PagedQuery  ["users", toPathPart user, "repos"] qs
+    pagedQuery  ["users", toPathPart user, "repos"] qs
   where
     qs = repoPublicityQueryString publicity
 
@@ -135,7 +135,7 @@ organizationReposR
     -> FetchCount
     -> Request k (Vector Repo)
 organizationReposR org publicity =
-    PagedQuery ["orgs", toPathPart org, "repos"] qs
+    pagedQuery ["orgs", toPathPart org, "repos"] qs
   where
     qs = repoPublicityQueryString publicity
 
@@ -157,7 +157,7 @@ repository' auth user repo =
 -- See <https://developer.github.com/v3/repos/#get>
 repositoryR :: Name Owner -> Name Repo -> Request k Repo
 repositoryR user repo =
-    Query ["repos", toPathPart user, toPathPart repo] []
+    query ["repos", toPathPart user, toPathPart repo] []
 
 -- | Create a new repository.
 --
@@ -170,7 +170,7 @@ createRepo' auth nrepo =
 -- See <https://developer.github.com/v3/repos/#create>
 createRepoR :: NewRepo -> Request 'RW Repo
 createRepoR nrepo =
-    Command Post ["user", "repos"] (encode nrepo)
+    command Post ["user", "repos"] (encode nrepo)
 
 -- | Create a new repository for an organization.
 --
@@ -183,7 +183,7 @@ createOrganizationRepo' auth org nrepo =
 -- See <https://developer.github.com/v3/repos/#create>
 createOrganizationRepoR :: Name Organization -> NewRepo -> Request 'RW Repo
 createOrganizationRepoR org nrepo =
-    Command Post ["orgs", toPathPart org, "repos"] (encode nrepo)
+    command Post ["orgs", toPathPart org, "repos"] (encode nrepo)
 
 -- | Edit an existing repository.
 --
@@ -202,7 +202,7 @@ editRepo auth user repo body =
 -- See <https://developer.github.com/v3/repos/#edit>
 editRepoR :: Name Owner -> Name Repo -> EditRepo -> Request 'RW Repo
 editRepoR user repo body =
-    Command Patch ["repos", toPathPart user, toPathPart repo] (encode b)
+    command Patch ["repos", toPathPart user, toPathPart repo] (encode b)
   where
     -- if no name is given, use curent name
     b = body {editName = editName body <|> Just repo}
@@ -230,7 +230,7 @@ contributorsR
     -> FetchCount
     -> Request k (Vector Contributor)
 contributorsR user repo anon =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "contributors"] qs
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "contributors"] qs
   where
     qs | anon      = [("anon", Just "true")]
        | otherwise = []
@@ -273,7 +273,7 @@ languagesFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/#list-languages>
 languagesForR :: Name Owner -> Name Repo -> Request k Languages
 languagesForR user repo =
-    Query  ["repos", toPathPart user, toPathPart repo, "languages"] []
+    query ["repos", toPathPart user, toPathPart repo, "languages"] []
 
 -- | The git tags on a repo, given the repo owner and name.
 --
@@ -293,7 +293,7 @@ tagsFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/#list-tags>
 tagsForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Tag)
 tagsForR user repo =
-    PagedQuery  ["repos", toPathPart user, toPathPart repo, "tags"] []
+    pagedQuery  ["repos", toPathPart user, toPathPart repo, "tags"] []
 
 -- | The git branches on a repo, given the repo owner and name.
 --
@@ -313,7 +313,7 @@ branchesFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/#list-branches>
 branchesForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Branch)
 branchesForR user repo =
-    PagedQuery  ["repos", toPathPart user, toPathPart repo, "branches"] []
+    pagedQuery  ["repos", toPathPart user, toPathPart repo, "branches"] []
 
 -- | The contents of a file or directory in a repo, given the repo owner, name, and path to the file
 --
@@ -336,7 +336,7 @@ contentsForR
     -> Maybe Text      -- ^ Git commit
     -> Request k Content
 contentsForR user repo path ref =
-    Query ["repos", toPathPart user, toPathPart repo, "contents", path] qs
+    query ["repos", toPathPart user, toPathPart repo, "contents", path] qs
   where
     qs =  maybe [] (\r -> [("ref", Just . TE.encodeUtf8 $ r)]) ref
 
@@ -356,7 +356,7 @@ readmeFor' auth user repo =
 
 readmeForR :: Name Owner -> Name Repo -> Request k Content
 readmeForR user repo =
-    Query ["repos", toPathPart user, toPathPart repo, "readme"] []
+    query ["repos", toPathPart user, toPathPart repo, "readme"] []
 
 -- | Delete an existing repository.
 --
@@ -367,4 +367,4 @@ deleteRepo auth user repo =
 
 deleteRepoR :: Name Owner -> Name Repo -> Request 'RW ()
 deleteRepoR user repo =
-    Command Delete ["repos", toPathPart user, toPathPart repo] mempty
+    command Delete ["repos", toPathPart user, toPathPart repo] mempty

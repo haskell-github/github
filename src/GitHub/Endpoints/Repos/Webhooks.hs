@@ -45,7 +45,7 @@ webhooksFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/hooks/#list-hooks>
 webhooksForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector RepoWebhook)
 webhooksForR user repo =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "hooks"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "hooks"] []
 
 webhookFor' :: Auth -> Name Owner -> Name Repo -> Id RepoWebhook -> IO (Either Error RepoWebhook)
 webhookFor' auth user repo hookId =
@@ -55,7 +55,7 @@ webhookFor' auth user repo hookId =
 -- See <https://developer.github.com/v3/repos/hooks/#get-single-hook>
 webhookForR :: Name Owner -> Name Repo -> Id RepoWebhook -> Request k RepoWebhook
 webhookForR user repo hookId =
-    Query ["repos", toPathPart user, toPathPart repo, "hooks", toPathPart hookId] []
+    query ["repos", toPathPart user, toPathPart repo, "hooks", toPathPart hookId] []
 
 createRepoWebhook' :: Auth -> Name Owner -> Name Repo -> NewRepoWebhook -> IO (Either Error RepoWebhook)
 createRepoWebhook' auth user repo hook =
@@ -65,7 +65,7 @@ createRepoWebhook' auth user repo hook =
 -- See <https://developer.github.com/v3/repos/hooks/#create-a-hook>
 createRepoWebhookR :: Name Owner -> Name Repo -> NewRepoWebhook -> Request 'RW RepoWebhook
 createRepoWebhookR user repo hook =
-    Command Post ["repos", toPathPart user, toPathPart repo, "hooks"] (encode hook)
+    command Post ["repos", toPathPart user, toPathPart repo, "hooks"] (encode hook)
 
 editRepoWebhook' :: Auth -> Name Owner -> Name Repo -> Id RepoWebhook -> EditRepoWebhook -> IO (Either Error RepoWebhook)
 editRepoWebhook' auth user repo hookId hookEdit =
@@ -75,7 +75,7 @@ editRepoWebhook' auth user repo hookId hookEdit =
 -- See <https://developer.github.com/v3/repos/hooks/#edit-a-hook>
 editRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> EditRepoWebhook -> Request 'RW RepoWebhook
 editRepoWebhookR user repo hookId hookEdit =
-    Command Patch ["repos", toPathPart user, toPathPart repo, "hooks", toPathPart hookId] (encode hookEdit)
+    command Patch ["repos", toPathPart user, toPathPart repo, "hooks", toPathPart hookId] (encode hookEdit)
 
 testPushRepoWebhook' :: Auth -> Name Owner -> Name Repo -> Id RepoWebhook -> IO (Either Error Bool)
 testPushRepoWebhook' auth user repo hookId =
@@ -84,7 +84,7 @@ testPushRepoWebhook' auth user repo hookId =
 -- | Test a push hook.
 -- See <https://developer.github.com/v3/repos/hooks/#test-a-push-hook>
 testPushRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> Request 'RW Bool
-testPushRepoWebhookR user repo hookId = StatusQuery StatusOnlyOk $
+testPushRepoWebhookR user repo hookId = StatusQuery statusOnlyOk $
     Command Post (createWebhookOpPath user repo hookId $ Just "tests") (encode ())
 
 pingRepoWebhook' :: Auth -> Name Owner -> Name Repo -> Id RepoWebhook -> IO (Either Error Bool)
@@ -94,7 +94,7 @@ pingRepoWebhook' auth user repo hookId =
 -- | Ping a hook.
 -- See <https://developer.github.com/v3/repos/hooks/#ping-a-hook>
 pingRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> Request 'RW Bool
-pingRepoWebhookR user repo hookId = StatusQuery StatusOnlyOk $
+pingRepoWebhookR user repo hookId = StatusQuery statusOnlyOk $
     Command Post (createWebhookOpPath user repo hookId $ Just "pings") (encode ())
 
 deleteRepoWebhook' :: Auth -> Name Owner -> Name Repo -> Id RepoWebhook -> IO (Either Error ())
@@ -105,7 +105,7 @@ deleteRepoWebhook' auth user repo hookId =
 -- See <https://developer.github.com/v3/repos/hooks/#delete-a-hook>
 deleteRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> Request 'RW ()
 deleteRepoWebhookR user repo hookId =
-    Command Delete (createWebhookOpPath user repo hookId Nothing) mempty
+    command Delete (createWebhookOpPath user repo hookId Nothing) mempty
 
 createBaseWebhookPath :: Name Owner -> Name Repo -> Id RepoWebhook -> Paths
 createBaseWebhookPath user repo hookId =

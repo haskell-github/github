@@ -6,8 +6,8 @@
 module GitHub.Data.Milestone where
 
 import GitHub.Data.Definitions
-import GitHub.Data.Id           (Id)
-import GitHub.Data.URL          (URL)
+import GitHub.Data.Id          (Id)
+import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
 

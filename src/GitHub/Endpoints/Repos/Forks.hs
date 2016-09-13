@@ -35,4 +35,4 @@ forksFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/forks/#list-forks>
 forksForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Repo)
 forksForR user repo =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "forks"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "forks"] []

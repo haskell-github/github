@@ -29,7 +29,7 @@ pullRequestReviewCommentsIO user repo prid =
 -- See <https://developer.github.com/v3/pulls/comments/#list-comments-on-a-pull-request>
 pullRequestReviewCommentsR :: Name Owner -> Name Repo -> Id PullRequest -> FetchCount -> Request k (Vector Comment)
 pullRequestReviewCommentsR user repo prid =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "comments"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "comments"] []
 
 -- | One comment on a pull request, by the comment's ID.
 --
@@ -42,4 +42,4 @@ pullRequestReviewComment user repo cid =
 -- See <https://developer.github.com/v3/pulls/comments/#get-a-single-comment>
 pullRequestReviewCommentR :: Name Owner -> Name Repo -> Id Comment -> Request k Comment
 pullRequestReviewCommentR user repo cid =
-    Query ["repos", toPathPart user, toPathPart repo, "pulls", "comments", toPathPart cid] []
+    query ["repos", toPathPart user, toPathPart repo, "pulls", "comments", toPathPart cid] []

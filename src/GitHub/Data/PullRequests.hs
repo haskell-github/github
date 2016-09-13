@@ -13,12 +13,15 @@ module GitHub.Data.PullRequests (
     PullRequestEvent(..),
     PullRequestEventType(..),
     PullRequestReference(..),
+    MergeResult(..),
+    statusMerge,
     ) where
 
 import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id)
 import GitHub.Data.Options     (IssueState (..))
 import GitHub.Data.Repos       (Repo)
+import GitHub.Data.Request     (StatusMap)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
@@ -40,7 +43,8 @@ data SimplePullRequest = SimplePullRequest
     , simplePullRequestMergedAt  :: !(Maybe UTCTime)
     , simplePullRequestTitle     :: !Text
     , simplePullRequestId        :: !(Id PullRequest)
-    } deriving (Show, Data, Typeable, Eq, Ord, Generic)
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData SimplePullRequest where rnf = genericRnf
 instance Binary SimplePullRequest
@@ -73,7 +77,8 @@ data PullRequest = PullRequest
     , pullRequestCommits        :: !Count
     , pullRequestMerged         :: !Bool
     , pullRequestMergeable      :: !(Maybe Bool)
-    } deriving (Show, Data, Typeable, Eq, Ord, Generic)
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData PullRequest where rnf = genericRnf
 instance Binary PullRequest
@@ -82,13 +87,14 @@ data EditPullRequest = EditPullRequest
     { editPullRequestTitle :: !(Maybe Text)
     , editPullRequestBody  :: !(Maybe Text)
     , editPullRequestState :: !(Maybe IssueState)
-    } deriving (Show, Generic)
+    }
+  deriving (Show, Generic)
 
 instance NFData EditPullRequest where rnf = genericRnf
 instance Binary EditPullRequest
 
-data CreatePullRequest =
-      CreatePullRequest
+data CreatePullRequest
+    = CreatePullRequest
       { createPullRequestTitle :: !Text
       , createPullRequestBody  :: !Text
       , createPullRequestHead  :: !Text
@@ -99,7 +105,7 @@ data CreatePullRequest =
       , createPullRequestHead     :: !Text
       , createPullRequestBase     :: !Text
       }
-    deriving (Show, Generic)
+  deriving (Show, Generic)
 
 instance NFData CreatePullRequest where rnf = genericRnf
 instance Binary CreatePullRequest
@@ -109,7 +115,8 @@ data PullRequestLinks = PullRequestLinks
     , pullRequestLinksComments       :: !URL
     , pullRequestLinksHtml           :: !URL
     , pullRequestLinksSelf           :: !URL
-    } deriving (Show, Data, Typeable, Eq, Ord, Generic)
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData PullRequestLinks where rnf = genericRnf
 instance Binary PullRequestLinks
@@ -120,7 +127,8 @@ data PullRequestCommit = PullRequestCommit
     , pullRequestCommitSha   :: !Text
     , pullRequestCommitUser  :: !SimpleUser
     , pullRequestCommitRepo  :: !Repo
-    } deriving (Show, Data, Typeable, Eq, Ord, Generic)
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData PullRequestCommit where rnf = genericRnf
 instance Binary PullRequestCommit
@@ -275,3 +283,17 @@ newtype Href a = Href { getHref :: a }
 instance FromJSON a => FromJSON (Href a) where
     parseJSON = withObject "href object" $
         \obj -> Href <$> obj .: "href"
+
+-- | Pull request merge results
+data MergeResult
+    = MergeSuccessful
+    | MergeCannotPerform
+    | MergeConflict
+  deriving (Eq, Ord, Read, Show, Enum, Bounded, Generic, Typeable)
+
+statusMerge :: StatusMap MergeResult
+statusMerge =
+    [ (204, MergeSuccessful)
+    , (405, MergeCannotPerform)
+    , (409, MergeConflict)
+    ]
