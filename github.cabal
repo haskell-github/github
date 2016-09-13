@@ -67,22 +67,24 @@ Library
     GitHub.Internal.Prelude
     GitHub.Auth
     GitHub.Data
+    GitHub.Data.Activities
     GitHub.Data.Comments
     GitHub.Data.Content
     GitHub.Data.Definitions
+    GitHub.Data.DeployKeys
     GitHub.Data.Gists
     GitHub.Data.GitData
     GitHub.Data.Id
     GitHub.Data.Issues
     GitHub.Data.Name
+    GitHub.Data.Milestone
+    GitHub.Data.Options
     GitHub.Data.PullRequests
     GitHub.Data.Repos
     GitHub.Data.Request
     GitHub.Data.Search
     GitHub.Data.Teams
-    GitHub.Data.Activities
     GitHub.Data.URL
-    GitHub.Data.DeployKeys
     GitHub.Data.Webhooks
     GitHub.Data.Webhooks.Validate
     GitHub.Endpoints.Activity.Starring

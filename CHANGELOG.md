@@ -1,6 +1,7 @@
 Changes for 0.15.0
 
 - Reworked `PullRequest` (notably `pullRequestsFor`)
+- Reworked PR and Issue filtering
 - GHC-8.0.1 support
 - Change `repoMasterBranch` to `repoDefaultBranch` in `Repo`
 - Add `listTeamReposR`
@@ -8,6 +9,8 @@ Changes for 0.15.0
 - Add `HeaderQuery` to `Request`
 - Add `Hashable Auth` instance
 - Add `mkUserId`, `mkUserName`, `fromUserId`, `fromOrganizationId`
+- Add 'userIssuesR'
+- Add 'organizationIssuesR'
 
 Changes for 0.14.1
 

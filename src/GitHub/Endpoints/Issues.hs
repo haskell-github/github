@@ -6,13 +6,14 @@
 --
 -- The issues API as described on <http://developer.github.com/v3/issues/>.
 module GitHub.Endpoints.Issues (
+    currentUserIssuesR,
+    organizationIssuesR,
     issue,
     issue',
     issueR,
     issuesForRepo,
     issuesForRepo',
     issuesForRepoR,
-    IssueLimitation(..),
     createIssue,
     createIssueR,
     newIssue,
@@ -27,8 +28,15 @@ import GitHub.Internal.Prelude
 import GitHub.Request
 import Prelude ()
 
-import qualified Data.Text          as T
-import qualified Data.Text.Encoding as TE
+-- | See <https://developer.github.com/v3/issues/#list-issues>.
+currentUserIssuesR :: IssueMod -> FetchCount -> Request k (Vector Issue)
+currentUserIssuesR opts =
+    PagedQuery ["user", "issues"] (issueModToQueryString opts)
+
+-- | See <https://developer.github.com/v3/issues/#list-issues>.
+organizationIssuesR :: Name Organization -> IssueMod -> FetchCount -> Request k (Vector Issue)
+organizationIssuesR org opts =
+    PagedQuery ["orgs", toPathPart org, "issues"] (issueModToQueryString opts)
 
 -- | Details on a specific issue, given the repo owner and name, and the issue
 -- number.'
@@ -52,42 +60,27 @@ issueR user reqRepoName reqIssueNumber =
     Query ["repos", toPathPart user, toPathPart reqRepoName, "issues", toPathPart reqIssueNumber] []
 
 -- | All issues for a repo (given the repo owner and name), with optional
--- restrictions as described in the @IssueLimitation@ data type.
+-- restrictions as described in the 'IssueRepoMod' data type.
 --
 -- > issuesForRepo' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
-issuesForRepo' :: Maybe Auth -> Name Owner -> Name Repo -> [IssueLimitation] -> IO (Either Error (Vector Issue))
-issuesForRepo' auth user reqRepoName issueLimitations =
-    executeRequestMaybe auth $ issuesForRepoR user reqRepoName issueLimitations FetchAll
+issuesForRepo' :: Maybe Auth -> Name Owner -> Name Repo -> IssueRepoMod -> IO (Either Error (Vector Issue))
+issuesForRepo' auth user reqRepoName opts =
+    executeRequestMaybe auth $ issuesForRepoR user reqRepoName opts FetchAll
 
 -- | All issues for a repo (given the repo owner and name), with optional
--- restrictions as described in the @IssueLimitation@ data type.
+-- restrictions as described in the 'IssueRepoMod' data type.
 --
 -- > issuesForRepo "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
-issuesForRepo :: Name Owner -> Name Repo -> [IssueLimitation] -> IO (Either Error (Vector Issue))
+issuesForRepo :: Name Owner -> Name Repo -> IssueRepoMod -> IO (Either Error (Vector Issue))
 issuesForRepo = issuesForRepo' Nothing
 
 -- | List issues for a repository.
 -- See <https://developer.github.com/v3/issues/#list-issues-for-a-repository>
-issuesForRepoR :: Name Owner -> Name Repo -> [IssueLimitation] -> FetchCount -> Request k (Vector Issue)
-issuesForRepoR user reqRepoName issueLimitations =
+issuesForRepoR :: Name Owner -> Name Repo -> IssueRepoMod -> FetchCount -> Request k (Vector Issue)
+issuesForRepoR user reqRepoName opts =
     PagedQuery ["repos", toPathPart user, toPathPart reqRepoName, "issues"] qs
   where
-    qs = map convert issueLimitations
-
-    convert AnyMilestone     = ("milestone", Just "*")
-    convert NoMilestone      = ("milestone", Just "none")
-    convert (MilestoneId n)  = ("milestone", Just . TE.encodeUtf8 . T.pack $ show n)
-    convert Open             = ("state", Just "open")
-    convert OnlyClosed       = ("state", Just "closed")
-    convert Unassigned       = ("assignee", Just "none")
-    convert AnyAssignment    = ("assignee", Just "")
-    convert (AssignedTo u)   = ("assignee", Just . TE.encodeUtf8 . T.pack $ u)
-    convert (Mentions u)     = ("mentioned", Just . TE.encodeUtf8 . T.pack $ u)
-    convert (Labels l)       = ("labels", Just . TE.encodeUtf8 . T.pack $ intercalate "," l)
-    convert Ascending        = ("direction", Just "asc")
-    convert Descending       = ("direction", Just "desc")
-    convert (PerPage n)      = ("per_page", Just . TE.encodeUtf8 . T.pack $ show n)
-    convert (Since t)        = ("since", Just . TE.encodeUtf8 . T.pack $ formatISO8601 t)
+    qs = issueRepoModToQueryString opts
 
 -- Creating new issues.
 

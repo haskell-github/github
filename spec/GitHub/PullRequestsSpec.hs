@@ -3,9 +3,11 @@ module GitHub.PullRequestsSpec where
 
 import qualified GitHub
 
+import Prelude ()
+import Prelude.Compat
+
 import Data.Either.Compat   (isRight)
 import Data.Foldable        (for_)
-import Data.Function.Compat ((&))
 import Data.String          (fromString)
 import System.Environment   (lookupEnv)
 import Test.Hspec           (Spec, describe, it, pendingWith, shouldSatisfy)
@@ -34,5 +36,4 @@ spec = do
       , ("phadej", "github")
       , ("haskell", "cabal")
       ]
-    opts = GitHub.defaultPullRequestOptions
-        & GitHub.setPullRequestOptionsState GitHub.PullRequestStateClosed
+    opts = GitHub.stateClosed
