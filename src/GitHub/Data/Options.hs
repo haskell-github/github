@@ -4,6 +4,7 @@
 -- License     :  BSD-3-Clause
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
+-- Module with modifiers for pull requests' and issues' listings.
 module GitHub.Data.Options (
     -- * Common modifiers
     stateOpen,
@@ -28,6 +29,7 @@ module GitHub.Data.Options (
     sortByComments,
     optionsLabels,
     optionsSince,
+    optionsSinceAll,
     optionsAssignedIssues,
     optionsCreatedIssues,
     optionsMentionedIssues,
@@ -42,6 +44,13 @@ module GitHub.Data.Options (
     optionsNoAssignee,
     -- * Data
     IssueState (..),
+    -- * Internal
+    HasState,
+    HasDirection,
+    HasCreatedUpdated,
+    HasComments,
+    HasLabels,
+    HasSince,
     ) where
 
 import GitHub.Data.Definitions
@@ -58,7 +67,7 @@ import qualified Data.Text.Encoding as TE
 -- Data
 -------------------------------------------------------------------------------
 
--- | Issue or PullRewuest state
+-- | 'GitHub.Data.Issues.Issue' or 'GitHub.Data.PullRequests.PullRequest' state
 data IssueState
     = StateOpen
     | StateClosed
@@ -153,6 +162,10 @@ instance HasState IssueMod where
     state s = IssueMod $ \opts ->
         opts { issueOptionsState = s }
 
+instance HasState IssueRepoMod where
+    state s = IssueRepoMod $ \opts ->
+        opts { issueRepoOptionsState = s }
+
 
 class HasDirection mod where
     sortDir :: SortDirection -> mod
@@ -171,6 +184,10 @@ instance HasDirection IssueMod where
     sortDir x = IssueMod $ \opts ->
         opts { issueOptionsDirection = x }
 
+instance HasDirection IssueRepoMod where
+    sortDir x = IssueRepoMod $ \opts ->
+        opts { issueRepoOptionsDirection = x }
+
 
 class HasCreatedUpdated mod where
     sortByCreated :: mod
@@ -187,6 +204,12 @@ instance HasCreatedUpdated IssueMod where
         opts { issueOptionsSort = SortIssueCreated }
     sortByUpdated = IssueMod $ \opts ->
         opts { issueOptionsSort = SortIssueUpdated }
+
+instance HasCreatedUpdated IssueRepoMod where
+    sortByCreated = IssueRepoMod $ \opts ->
+        opts { issueRepoOptionsSort = SortIssueCreated }
+    sortByUpdated = IssueRepoMod $ \opts ->
+        opts { issueRepoOptionsSort = SortIssueUpdated }
 
 -------------------------------------------------------------------------------
 -- Pull Request

@@ -167,8 +167,7 @@ instance Binary PullRequestReference
 -------------------------------------------------------------------------------
 
 instance FromJSON SimplePullRequest where
-  parseJSON = withObject "SimplePullRequest" $ \o ->
-      SimplePullRequest
+    parseJSON = withObject "SimplePullRequest" $ \o -> SimplePullRequest
         <$> o .:? "closed_at"
         <*> o .: "created_at"
         <*> o .: "user"
@@ -200,8 +199,7 @@ instance ToJSON CreatePullRequest where
         object [ "issue" .= issueNum, "head" .= headPR, "base" .= basePR]
 
 instance FromJSON PullRequest where
-  parseJSON = withObject "PullRequest" $ \o ->
-      PullRequest
+    parseJSON = withObject "PullRequest" $ \o -> PullRequest
         <$> o .:? "closed_at"
         <*> o .: "created_at"
         <*> o .: "user"
@@ -231,11 +229,11 @@ instance FromJSON PullRequest where
         <*> o .:? "mergeable"
 
 instance FromJSON PullRequestLinks where
-  parseJSON = withObject "PullRequestLinks" $ \o -> PullRequestLinks
-      <$> fmap getHref (o .: "review_comments")
-      <*> fmap getHref (o .: "comments")
-      <*> fmap getHref (o .: "html")
-      <*> fmap getHref (o .: "self")
+    parseJSON = withObject "PullRequestLinks" $ \o -> PullRequestLinks
+        <$> fmap getHref (o .: "review_comments")
+        <*> fmap getHref (o .: "comments")
+        <*> fmap getHref (o .: "html")
+        <*> fmap getHref (o .: "self")
 
 instance FromJSON PullRequestCommit where
     parseJSON = withObject "PullRequestCommit" $ \o -> PullRequestCommit

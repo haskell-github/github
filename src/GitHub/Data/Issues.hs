@@ -9,6 +9,7 @@ import GitHub.Data.Definitions
 import GitHub.Data.Id           (Id)
 import GitHub.Data.Milestone    (Milestone)
 import GitHub.Data.Name         (Name)
+import GitHub.Data.Options      (IssueState)
 import GitHub.Data.PullRequests
 import GitHub.Data.URL          (URL)
 import GitHub.Internal.Prelude
@@ -20,7 +21,7 @@ data Issue = Issue
     , issueEventsUrl   :: !URL
     , issueHtmlUrl     :: !(Maybe URL)
     , issueClosedBy    :: !(Maybe SimpleUser)
-    , issueLabels      :: (Vector (Name IssueLabel))
+    , issueLabels      :: (Vector IssueLabel)
     , issueNumber      :: !Int
     , issueAssignee    :: !(Maybe SimpleUser)
     , issueUser        :: !SimpleUser
@@ -29,7 +30,7 @@ data Issue = Issue
     , issueUrl         :: !URL
     , issueCreatedAt   :: !UTCTime
     , issueBody        :: !(Maybe Text)
-    , issueState       :: !Text
+    , issueState       :: !IssueState
     , issueId          :: !(Id Issue)
     , issueComments    :: !Int
     , issueMilestone   :: !(Maybe Milestone)
@@ -54,8 +55,8 @@ instance Binary NewIssue
 data EditIssue = EditIssue
     { editIssueTitle     :: !(Maybe Text)
     , editIssueBody      :: !(Maybe Text)
-    , editIssueAssignee  :: !(Maybe Text)
-    , editIssueState     :: !(Maybe Text)
+    , editIssueAssignee  :: !(Maybe (Name User))
+    , editIssueState     :: !(Maybe IssueState)
     , editIssueMilestone :: !(Maybe (Id Milestone))
     , editIssueLabels    :: !(Maybe (Vector (Name IssueLabel)))
     }
