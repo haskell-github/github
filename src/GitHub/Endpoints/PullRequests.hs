@@ -87,7 +87,7 @@ createPullRequest auth user repo cpr =
 createPullRequestR :: Name Owner
                    -> Name Repo
                    -> CreatePullRequest
-                   -> Request 'True PullRequest
+                   -> Request 'RW PullRequest
 createPullRequestR user repo cpr =
     Command Post ["repos", toPathPart user, toPathPart repo, "pulls"] (encode cpr)
 
@@ -102,7 +102,7 @@ updatePullRequestR :: Name Owner
                    -> Name Repo
                    -> Id PullRequest
                    -> EditPullRequest
-                   -> Request 'True PullRequest
+                   -> Request 'RW PullRequest
 updatePullRequestR user repo prid epr =
     Command Patch ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] (encode epr)
 
@@ -168,7 +168,7 @@ mergePullRequest auth user repo prid commitMessage =
 
 -- | Merge a pull request (Merge Button).
 -- https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button
-mergePullRequestR :: Name Owner -> Name Repo -> Id PullRequest -> Maybe Text -> Request 'True MergeResult
+mergePullRequestR :: Name Owner -> Name Repo -> Id PullRequest -> Maybe Text -> Request 'RW MergeResult
 mergePullRequestR user repo prid commitMessage = StatusQuery StatusMerge $
     Command Put paths (encode $ buildCommitMessageMap commitMessage)
   where

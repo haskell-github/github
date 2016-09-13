@@ -168,7 +168,7 @@ createRepo' auth nrepo =
 
 -- | Create a new repository.
 -- See <https://developer.github.com/v3/repos/#create>
-createRepoR :: NewRepo -> Request 'True Repo
+createRepoR :: NewRepo -> Request 'RW Repo
 createRepoR nrepo =
     Command Post ["user", "repos"] (encode nrepo)
 
@@ -181,7 +181,7 @@ createOrganizationRepo' auth org nrepo =
 
 -- | Create a new repository for an organization.
 -- See <https://developer.github.com/v3/repos/#create>
-createOrganizationRepoR :: Name Organization -> NewRepo -> Request 'True Repo
+createOrganizationRepoR :: Name Organization -> NewRepo -> Request 'RW Repo
 createOrganizationRepoR org nrepo =
     Command Post ["orgs", toPathPart org, "repos"] (encode nrepo)
 
@@ -200,7 +200,7 @@ editRepo auth user repo body =
 
 -- | Edit an existing repository.
 -- See <https://developer.github.com/v3/repos/#edit>
-editRepoR :: Name Owner -> Name Repo -> EditRepo -> Request 'True Repo
+editRepoR :: Name Owner -> Name Repo -> EditRepo -> Request 'RW Repo
 editRepoR user repo body =
     Command Patch ["repos", toPathPart user, toPathPart repo] (encode b)
   where
@@ -365,6 +365,6 @@ deleteRepo :: Auth -> Name Owner -> Name Repo -> IO (Either Error ())
 deleteRepo auth user repo =
     executeRequest auth $ deleteRepoR user repo
 
-deleteRepoR :: Name Owner -> Name Repo -> Request 'True ()
+deleteRepoR :: Name Owner -> Name Repo -> Request 'RW ()
 deleteRepoR user repo =
     Command Delete ["repos", toPathPart user, toPathPart repo] mempty

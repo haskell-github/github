@@ -139,7 +139,7 @@ executeRequestWithMgr mgr auth req = runExceptT $
     httpLbs' req' = lift (httpLbs req' mgr) `catch` onHttpException
 
 -- | Like 'executeRequest' but without authentication.
-executeRequest' :: Request 'False a -> IO (Either Error a)
+executeRequest' :: Request 'RO a -> IO (Either Error a)
 executeRequest' req = do
     manager <- newManager tlsManagerSettings
     x <- executeRequestWithMgr' manager req
@@ -149,13 +149,14 @@ executeRequest' req = do
     pure x
 
 -- | Like 'executeRequestWithMgr' but without authentication.
-executeRequestWithMgr' :: Manager
-                       -> Request 'False a
-                       -> IO (Either Error a)
+executeRequestWithMgr'
+    :: Manager
+    -> Request 'RO a
+    -> IO (Either Error a)
 executeRequestWithMgr' mgr req = runExceptT $
     execute req
   where
-    execute :: Request 'False a -> ExceptT Error IO a
+    execute :: Request 'RO b -> ExceptT Error IO b
     execute req' = case req' of
         Query {} -> do
             httpReq <- makeHttpRequest Nothing req
@@ -178,12 +179,12 @@ executeRequestWithMgr' mgr req = runExceptT $
 -- | Helper for picking between 'executeRequest' and 'executeRequest''.
 --
 -- The use is discouraged.
-executeRequestMaybe :: Maybe Auth -> Request 'False a
+executeRequestMaybe :: Maybe Auth -> Request 'RO a
                     -> IO (Either Error a)
 executeRequestMaybe = maybe executeRequest' executeRequest
 
 -- | Partial function to drop authentication need.
-unsafeDropAuthRequirements :: Request 'True a -> Request k a
+unsafeDropAuthRequirements :: Request k' a -> Request k a
 unsafeDropAuthRequirements (Query ps qs) = Query ps qs
 unsafeDropAuthRequirements r                 =
     error $ "Trying to drop authenatication from" ++ show r

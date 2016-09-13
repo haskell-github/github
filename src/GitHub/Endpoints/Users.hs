@@ -52,5 +52,5 @@ userInfoCurrent' auth =
 
 -- | Query the authenticated user.
 -- See <https://developer.github.com/v3/users/#get-the-authenticated-user>
-userInfoCurrentR :: Request 'True User
+userInfoCurrentR :: Request 'RA User
 userInfoCurrentR = Query ["user"] []

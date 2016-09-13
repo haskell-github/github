@@ -87,7 +87,7 @@ createLabel auth user repo lbl color =
 
 -- | Create a label.
 -- See <https://developer.github.com/v3/issues/labels/#create-a-label>
-createLabelR :: Name Owner -> Name Repo -> Name IssueLabel -> String -> Request 'True IssueLabel
+createLabelR :: Name Owner -> Name Repo -> Name IssueLabel -> String -> Request 'RW IssueLabel
 createLabelR user repo lbl color =
     Command Post paths $ encode body
   where
@@ -114,7 +114,7 @@ updateLabelR :: Name Owner
              -> Name IssueLabel   -- ^ old label name
              -> Name IssueLabel   -- ^ new label name
              -> String            -- ^ new color
-             -> Request 'True IssueLabel
+             -> Request 'RW IssueLabel
 updateLabelR user repo oldLbl newLbl color =
     Command Patch paths (encode body)
   where
@@ -130,7 +130,7 @@ deleteLabel auth user repo lbl =
 
 -- | Delete a label.
 -- See <https://developer.github.com/v3/issues/labels/#delete-a-label>
-deleteLabelR :: Name Owner -> Name Repo -> Name IssueLabel -> Request 'True ()
+deleteLabelR :: Name Owner -> Name Repo -> Name IssueLabel -> Request 'RW ()
 deleteLabelR user repo lbl =
     Command Delete ["repos", toPathPart user, toPathPart repo, "labels", toPathPart lbl] mempty
 
@@ -173,7 +173,7 @@ addLabelsToIssueR :: Foldable f
                   -> Name Repo
                   -> Id Issue
                   -> f (Name IssueLabel)
-                  -> Request 'True (Vector IssueLabel)
+                  -> Request 'RW (Vector IssueLabel)
 addLabelsToIssueR user repo iid lbls =
     Command Post paths (encode $ toList lbls)
   where
@@ -188,7 +188,7 @@ removeLabelFromIssue auth user repo iid lbl =
 
 -- | Remove a label from an issue.
 -- See <https://developer.github.com/v3/issues/labels/#remove-a-label-from-an-issue>
-removeLabelFromIssueR :: Name Owner -> Name Repo -> Id Issue -> Name IssueLabel -> Request 'True ()
+removeLabelFromIssueR :: Name Owner -> Name Repo -> Id Issue -> Name IssueLabel -> Request 'RW ()
 removeLabelFromIssueR user repo iid lbl =
     Command Delete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels", toPathPart lbl] mempty
 
@@ -214,7 +214,7 @@ replaceAllLabelsForIssueR :: Foldable f
                           -> Name Repo
                           -> Id Issue
                           -> f (Name IssueLabel)
-                          -> Request 'True (Vector IssueLabel)
+                          -> Request 'RW (Vector IssueLabel)
 replaceAllLabelsForIssueR user repo iid lbls =
     Command Put paths (encode $ toList lbls)
   where
@@ -229,7 +229,7 @@ removeAllLabelsFromIssue auth user repo iid =
 
 -- | Remove all labels from an issue.
 -- See <https://developer.github.com/v3/issues/labels/#remove-all-labels-from-an-issue>
-removeAllLabelsFromIssueR :: Name Owner -> Name Repo -> Id Issue -> Request 'True ()
+removeAllLabelsFromIssueR :: Name Owner -> Name Repo -> Id Issue -> Request 'RW ()
 removeAllLabelsFromIssueR user repo iid =
     Command Delete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"] mempty
 

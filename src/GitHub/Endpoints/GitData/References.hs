@@ -69,7 +69,7 @@ createReference auth user repo newRef =
 
 -- | Create a reference.
 -- See <https://developer.github.com/v3/git/refs/#create-a-reference>
-createReferenceR :: Name Owner -> Name Repo -> NewGitReference -> Request 'True GitReference
+createReferenceR :: Name Owner -> Name Repo -> NewGitReference -> Request 'RW GitReference
 createReferenceR user repo newRef =
      Command Post  ["repos", toPathPart user, toPathPart repo , "git", "refs"] (encode newRef)
 

@@ -26,12 +26,14 @@ import GitHub.Internal.Prelude
 import GitHub.Request
 import Prelude ()
 
--- | Querying deploy keys
+-- | Querying deploy keys.
 deployKeysFor' :: Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector RepoDeployKey))
 deployKeysFor' auth user repo =
     executeRequest auth $ deployKeysForR user repo FetchAll
 
-deployKeysForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector RepoDeployKey)
+-- | Querying deploy keys.
+-- See <https://developer.github.com/v3/repos/keys/#list-deploy-keys>
+deployKeysForR :: Name Owner -> Name Repo -> FetchCount -> Request 'RA (Vector RepoDeployKey)
 deployKeysForR user repo =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "keys"] []
 
@@ -40,7 +42,9 @@ deployKeyFor' :: Auth -> Name Owner -> Name Repo -> Id RepoDeployKey -> IO (Eith
 deployKeyFor' auth user repo keyId =
     executeRequest auth $ deployKeyForR user repo keyId
 
-deployKeyForR :: Name Owner -> Name Repo -> Id RepoDeployKey -> Request k RepoDeployKey
+-- | Querying a deploy key.
+-- See <https://developer.github.com/v3/repos/keys/#get-a-deploy-key>
+deployKeyForR :: Name Owner -> Name Repo -> Id RepoDeployKey -> Request 'RA RepoDeployKey
 deployKeyForR user repo keyId =
     Query ["repos", toPathPart user, toPathPart repo, "keys", toPathPart keyId] []
 
@@ -50,7 +54,8 @@ createRepoDeployKey' auth user repo key =
     executeRequest auth $ createRepoDeployKeyR user repo key
 
 -- | Create a deploy key.
-createRepoDeployKeyR :: Name Owner -> Name Repo -> NewRepoDeployKey -> Request 'True RepoDeployKey
+-- See <https://developer.github.com/v3/repos/keys/#add-a-new-deploy-key>.
+createRepoDeployKeyR :: Name Owner -> Name Repo -> NewRepoDeployKey -> Request 'RW RepoDeployKey
 createRepoDeployKeyR user repo key =
     Command Post ["repos", toPathPart user, toPathPart repo, "keys"] (encode key)
 
@@ -60,6 +65,6 @@ deleteRepoDeployKey' auth user repo keyId =
 
 -- | Delete a deploy key.
 -- See <https://developer.github.com/v3/repos/keys/#remove-a-deploy-key>
-deleteRepoDeployKeyR :: Name Owner -> Name Repo -> Id RepoDeployKey -> Request 'True ()
+deleteRepoDeployKeyR :: Name Owner -> Name Repo -> Id RepoDeployKey -> Request 'RW ()
 deleteRepoDeployKeyR user repo keyId =
     Command Delete ["repos", toPathPart user, toPathPart repo, "keys", toPathPart keyId] mempty

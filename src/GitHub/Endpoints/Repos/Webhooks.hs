@@ -63,7 +63,7 @@ createRepoWebhook' auth user repo hook =
 
 -- | Create a hook.
 -- See <https://developer.github.com/v3/repos/hooks/#create-a-hook>
-createRepoWebhookR :: Name Owner -> Name Repo -> NewRepoWebhook -> Request 'True RepoWebhook
+createRepoWebhookR :: Name Owner -> Name Repo -> NewRepoWebhook -> Request 'RW RepoWebhook
 createRepoWebhookR user repo hook =
     Command Post ["repos", toPathPart user, toPathPart repo, "hooks"] (encode hook)
 
@@ -73,7 +73,7 @@ editRepoWebhook' auth user repo hookId hookEdit =
 
 -- | Edit a hook.
 -- See <https://developer.github.com/v3/repos/hooks/#edit-a-hook>
-editRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> EditRepoWebhook -> Request 'True RepoWebhook
+editRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> EditRepoWebhook -> Request 'RW RepoWebhook
 editRepoWebhookR user repo hookId hookEdit =
     Command Patch ["repos", toPathPart user, toPathPart repo, "hooks", toPathPart hookId] (encode hookEdit)
 
@@ -83,7 +83,7 @@ testPushRepoWebhook' auth user repo hookId =
 
 -- | Test a push hook.
 -- See <https://developer.github.com/v3/repos/hooks/#test-a-push-hook>
-testPushRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> Request 'True Bool
+testPushRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> Request 'RW Bool
 testPushRepoWebhookR user repo hookId = StatusQuery StatusOnlyOk $
     Command Post (createWebhookOpPath user repo hookId $ Just "tests") (encode ())
 
@@ -93,7 +93,7 @@ pingRepoWebhook' auth user repo hookId =
 
 -- | Ping a hook.
 -- See <https://developer.github.com/v3/repos/hooks/#ping-a-hook>
-pingRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> Request 'True Bool
+pingRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> Request 'RW Bool
 pingRepoWebhookR user repo hookId = StatusQuery StatusOnlyOk $
     Command Post (createWebhookOpPath user repo hookId $ Just "pings") (encode ())
 
@@ -103,7 +103,7 @@ deleteRepoWebhook' auth user repo hookId =
 
 -- | Delete a hook.
 -- See <https://developer.github.com/v3/repos/hooks/#delete-a-hook>
-deleteRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> Request 'True ()
+deleteRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> Request 'RW ()
 deleteRepoWebhookR user repo hookId =
     Command Delete (createWebhookOpPath user repo hookId Nothing) mempty
 

@@ -29,7 +29,7 @@ import GitHub.Request
 import Prelude ()
 
 -- | See <https://developer.github.com/v3/issues/#list-issues>.
-currentUserIssuesR :: IssueMod -> FetchCount -> Request k (Vector Issue)
+currentUserIssuesR :: IssueMod -> FetchCount -> Request 'RA (Vector Issue)
 currentUserIssuesR opts =
     PagedQuery ["user", "issues"] (issueModToQueryString opts)
 
@@ -99,7 +99,7 @@ createIssue auth user repo ni =
 
 -- | Create an issue.
 -- See <https://developer.github.com/v3/issues/#create-an-issue>
-createIssueR :: Name Owner -> Name Repo -> NewIssue -> Request 'True Issue
+createIssueR :: Name Owner -> Name Repo -> NewIssue -> Request 'RW Issue
 createIssueR user repo =
     Command Post ["repos", toPathPart user, toPathPart repo, "issues"] . encode
 
@@ -119,6 +119,6 @@ editIssue auth user repo iss edit =
 
 -- | Edit an issue.
 -- See <https://developer.github.com/v3/issues/#edit-an-issue>
-editIssueR :: Name Owner -> Name Repo -> Id Issue -> EditIssue -> Request 'True Issue
+editIssueR :: Name Owner -> Name Repo -> Id Issue -> EditIssue -> Request 'RW Issue
 editIssueR user repo iss =
     Command Patch ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iss] . encode

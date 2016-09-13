@@ -91,7 +91,7 @@ createTeamFor' auth org cteam =
 
 -- | Create team.
 -- See <https://developer.github.com/v3/orgs/teams/#create-team>
-createTeamForR :: Name Organization -> CreateTeam -> Request 'True Team
+createTeamForR :: Name Organization -> CreateTeam -> Request 'RW Team
 createTeamForR org cteam =
     Command Post ["orgs", toPathPart org, "teams"] (encode cteam)
 
@@ -107,7 +107,7 @@ editTeam' auth tid eteam =
 
 -- | Edit team.
 -- See <https://developer.github.com/v3/orgs/teams/#edit-team>
-editTeamR :: Id Team -> EditTeam -> Request 'True Team
+editTeamR :: Id Team -> EditTeam -> Request 'RW Team
 editTeamR tid eteam =
     Command Patch ["teams", toPathPart tid] (encode eteam)
 
@@ -121,14 +121,14 @@ deleteTeam' auth tid =
 -- | Delete team.
 --
 -- See <https://developer.github.com/v3/orgs/teams/#delete-team>
-deleteTeamR :: Id Team -> Request 'True ()
+deleteTeamR :: Id Team -> Request 'RW ()
 deleteTeamR tid =
     Command Delete ["teams", toPathPart tid] mempty
 
 -- | List team members.
 --
 -- See <https://developer.github.com/v3/orgs/teams/#list-team-members>
-listTeamMembersR :: Id Team -> TeamMemberRole -> FetchCount -> Request 'True (Vector SimpleUser)
+listTeamMembersR :: Id Team -> TeamMemberRole -> FetchCount -> Request 'RA (Vector SimpleUser)
 listTeamMembersR tid r = PagedQuery ["teams", toPathPart tid, "members"] [("role", Just r')]
   where
     r' = case r of
@@ -177,13 +177,13 @@ teamMembershipInfoFor = teamMembershipInfoFor' Nothing
 -- | Add (or invite) a member to a team.
 --
 -- > addTeamMembershipFor' (OAuth "token") 1010101 "mburns" RoleMember
-addTeamMembershipFor' :: Auth -> Id Team -> Name Owner -> Role-> IO (Either Error TeamMembership)
+addTeamMembershipFor' :: Auth -> Id Team -> Name Owner -> Role -> IO (Either Error TeamMembership)
 addTeamMembershipFor' auth tid user role =
     executeRequest auth $ addTeamMembershipForR tid user role
 
 -- | Add team membership.
 -- See <https://developer.github.com/v3/orgs/teams/#add-team-membership>
-addTeamMembershipForR :: Id Team -> Name Owner -> Role -> Request 'True TeamMembership
+addTeamMembershipForR :: Id Team -> Name Owner -> Role -> Request 'RW TeamMembership
 addTeamMembershipForR tid user role =
     Command Put ["teams", toPathPart tid, "memberships", toPathPart user] (encode $ CreateTeamMembership role)
 
@@ -196,7 +196,7 @@ deleteTeamMembershipFor' auth tid user =
 
 -- | Remove team membership.
 -- See <https://developer.github.com/v3/orgs/teams/#remove-team-membership>
-deleteTeamMembershipForR :: Id Team -> Name Owner -> Request 'True ()
+deleteTeamMembershipForR :: Id Team -> Name Owner -> Request 'RW ()
 deleteTeamMembershipForR tid user =
     Command Delete ["teams", toPathPart tid, "memberships", toPathPart user] mempty
 
@@ -208,5 +208,5 @@ listTeamsCurrent' auth = executeRequest auth $ listTeamsCurrentR FetchAll
 
 -- | List user teams.
 -- See <https://developer.github.com/v3/orgs/teams/#list-user-teams>
-listTeamsCurrentR :: FetchCount -> Request 'True (Vector Team)
+listTeamsCurrentR :: FetchCount -> Request 'RW (Vector Team)
 listTeamsCurrentR = PagedQuery ["user", "teams"] []

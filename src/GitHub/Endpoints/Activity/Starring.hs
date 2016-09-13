@@ -56,7 +56,7 @@ myStarred auth =
 
 -- | All the repos starred by the authenticated user.
 -- See <https://developer.github.com/v3/activity/starring/#list-repositories-being-starred>
-myStarredR :: FetchCount -> Request 'True (Vector Repo)
+myStarredR :: FetchCount -> Request 'RA (Vector Repo)
 myStarredR = PagedQuery ["user", "starred"] []
 
 
@@ -67,5 +67,5 @@ myStarredAcceptStar auth =
 
 -- | All the repos starred by the authenticated user.
 -- See <https://developer.github.com/v3/activity/starring/#alternative-response-with-star-creation-timestamps-1>
-myStarredAcceptStarR :: FetchCount -> Request 'True (Vector RepoStarred)
+myStarredAcceptStarR :: FetchCount -> Request 'RA (Vector RepoStarred)
 myStarredAcceptStarR = HeaderQuery [("Accept", "application/vnd.github.v3.star+json")] . PagedQuery ["user", "starred"] []

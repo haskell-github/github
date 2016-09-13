@@ -10,6 +10,7 @@
 --
 module GitHub.Data.Request (
     Request(..),
+    RW(..),
     CommandMethod(..),
     toMethod,
     StatusMap(..),
@@ -125,16 +126,35 @@ instance NFData FetchCount where rnf = genericRnf
 -- Github request
 ------------------------------------------------------------------------------
 
+-- | Type used as with @DataKinds@ to tag whether requests need authentication
+-- or aren't read-only.
+data RW
+    = RO  -- ^ /Read-only/, doesn't necessarily requires authentication
+    | RA  -- ^ /Read autenticated/
+    | RW  -- ^ /Read-write/, requires authentication
+  deriving (Eq, Ord, Read, Show, Enum, Bounded, Typeable, Data, Generic)
+
+{-
+data SRO (rw :: RW) where
+    ROO :: SRO 'RO
+    ROA :: SRO 'RA
+
+-- | This class is used to describe read-only (but pontentially
+class    IReadOnly (rw :: RW) where iro :: SRO rw
+instance IReadOnly 'RO        where iro = ROO
+instance IReadOnly 'RA        where iro = ROA
+-}
+
 -- | Github request data type.
 --
 -- * @k@ describes whether authentication is required. It's required for non-@GET@ requests.
 -- * @a@ is the result type
 --
 -- /Note:/ 'Request' is not 'Functor' on purpose.
-data Request (k :: Bool) a where
+data Request (k :: RW) a where
     Query        :: FromJSON a => Paths -> QueryString -> Request k a
     PagedQuery   :: FromJSON (Vector a) => Paths -> QueryString -> FetchCount -> Request k (Vector a)
-    Command      :: FromJSON a => CommandMethod a -> Paths -> LBS.ByteString -> Request 'True a
+    Command      :: FromJSON a => CommandMethod a -> Paths -> LBS.ByteString -> Request 'RW a
     StatusQuery  :: StatusMap a -> Request k () -> Request k a
     HeaderQuery  :: Types.RequestHeaders -> Request k a -> Request k a
     deriving (Typeable)

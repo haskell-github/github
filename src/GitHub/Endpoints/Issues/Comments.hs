@@ -66,7 +66,7 @@ createComment auth user repo iss body =
 
 -- | Create a comment.
 -- See <https://developer.github.com/v3/issues/comments/#create-a-comment>
-createCommentR :: Name Owner -> Name Repo -> Id Issue -> Text -> Request 'True Comment
+createCommentR :: Name Owner -> Name Repo -> Id Issue -> Text -> Request 'RW Comment
 createCommentR user repo iss body =
     Command Post parts (encode $ NewComment body)
   where
@@ -83,7 +83,7 @@ editComment auth user repo commid body =
 
 -- | Edit a comment.
 -- See <https://developer.github.com/v3/issues/comments/#edit-a-comment>
-editCommentR :: Name Owner -> Name Repo -> Id Comment -> Text -> Request 'True Comment
+editCommentR :: Name Owner -> Name Repo -> Id Comment -> Text -> Request 'RW Comment
 editCommentR user repo commid body =
     Command Patch parts (encode $ EditComment body)
   where
