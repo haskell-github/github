@@ -11,6 +11,8 @@ Changes for 0.15.0
 - Add `mkUserId`, `mkUserName`, `fromUserId`, `fromOrganizationId`
 - Add 'userIssuesR'
 - Add 'organizationIssuesR'
+- Make `teamName :: Text` amnd `teamSlug :: Name Team` in both: `Team` and `SimpleTeam`
+- Refactor 'Request' structure
 
 Changes for 0.14.1
 

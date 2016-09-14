@@ -52,8 +52,8 @@ instance Binary SimpleTeam
 data Team = Team {
    teamId              :: !(Id Team)
   ,teamUrl             :: !URL
-  ,teamName            :: !(Name Team)
-  ,teamSlug            :: !Text
+  ,teamName            :: !Text
+  ,teamSlug            :: !(Name Team)
   ,teamDescription     :: !(Maybe Text)
   ,teamPrivacy         :: !(Maybe Privacy)
   ,teamPermission      :: !Permission
