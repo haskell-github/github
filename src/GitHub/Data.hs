@@ -63,12 +63,12 @@ import GitHub.Data.Gists
 import GitHub.Data.GitData
 import GitHub.Data.Id
 import GitHub.Data.Issues
-import GitHub.Data.Name
 import GitHub.Data.Milestone
+import GitHub.Data.Name
+import GitHub.Data.Options
 import GitHub.Data.PullRequests
 import GitHub.Data.Repos
 import GitHub.Data.Request
-import GitHub.Data.Options
 import GitHub.Data.Search
 import GitHub.Data.Teams
 import GitHub.Data.URL

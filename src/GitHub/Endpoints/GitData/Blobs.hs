@@ -34,4 +34,4 @@ blob = blob' Nothing
 -- See <https://developer.github.com/v3/git/blobs/#get-a-blob>
 blobR :: Name Owner -> Name Repo -> Name Blob -> Request k Blob
 blobR user repo sha =
-    Query ["repos", toPathPart user, toPathPart repo, "git", "blobs", toPathPart sha] []
+    query ["repos", toPathPart user, toPathPart repo, "git", "blobs", toPathPart sha] []

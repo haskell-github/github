@@ -12,7 +12,7 @@ import Network.HTTP.Client.TLS    (tlsManagerSettings)
 
 import qualified GitHub as GH
 
-type GithubMonad a = Program (GH.Request 'False) a
+type GithubMonad a = Program (GH.Request 'GH.RA) a
 
 runMonad :: Manager -> GH.Auth -> GithubMonad a -> ExceptT GH.Error IO a
 runMonad mgr auth m = case view m of
@@ -21,7 +21,7 @@ runMonad mgr auth m = case view m of
         b <- ExceptT $ GH.executeRequestWithMgr mgr auth req
         runMonad mgr auth (k b)
 
-githubRequest :: GH.Request 'False a -> GithubMonad a
+githubRequest :: GH.Request 'GH.RA a -> GithubMonad a
 githubRequest = singleton
 
 main :: IO ()

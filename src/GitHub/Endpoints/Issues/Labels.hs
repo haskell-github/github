@@ -57,7 +57,7 @@ labelsOnRepo' auth user repo =
 -- See <https://developer.github.com/v3/issues/labels/#list-all-labels-for-this-repository>
 labelsOnRepoR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector IssueLabel)
 labelsOnRepoR user repo =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "labels"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "labels"] []
 
 -- | A label by name.
 --
@@ -76,7 +76,7 @@ label' auth user repo lbl =
 -- See <https://developer.github.com/v3/issues/labels/#get-a-single-label>
 labelR :: Name Owner -> Name Repo -> Name IssueLabel -> Request k IssueLabel
 labelR user repo lbl =
-    Query ["repos", toPathPart user, toPathPart repo, "labels", toPathPart lbl] []
+    query ["repos", toPathPart user, toPathPart repo, "labels", toPathPart lbl] []
 
 -- | Create a label
 --
@@ -87,9 +87,9 @@ createLabel auth user repo lbl color =
 
 -- | Create a label.
 -- See <https://developer.github.com/v3/issues/labels/#create-a-label>
-createLabelR :: Name Owner -> Name Repo -> Name IssueLabel -> String -> Request 'True IssueLabel
+createLabelR :: Name Owner -> Name Repo -> Name IssueLabel -> String -> Request 'RW IssueLabel
 createLabelR user repo lbl color =
-    Command Post paths $ encode body
+    command Post paths $ encode body
   where
     paths = ["repos", toPathPart user, toPathPart repo, "labels"]
     body = object ["name" .= untagName lbl, "color" .= color]
@@ -114,9 +114,9 @@ updateLabelR :: Name Owner
              -> Name IssueLabel   -- ^ old label name
              -> Name IssueLabel   -- ^ new label name
              -> String            -- ^ new color
-             -> Request 'True IssueLabel
+             -> Request 'RW IssueLabel
 updateLabelR user repo oldLbl newLbl color =
-    Command Patch paths (encode body)
+    command Patch paths (encode body)
   where
     paths = ["repos", toPathPart user, toPathPart repo, "labels", toPathPart oldLbl]
     body = object ["name" .= untagName newLbl, "color" .= color]
@@ -130,9 +130,9 @@ deleteLabel auth user repo lbl =
 
 -- | Delete a label.
 -- See <https://developer.github.com/v3/issues/labels/#delete-a-label>
-deleteLabelR :: Name Owner -> Name Repo -> Name IssueLabel -> Request 'True ()
+deleteLabelR :: Name Owner -> Name Repo -> Name IssueLabel -> Request 'RW ()
 deleteLabelR user repo lbl =
-    Command Delete ["repos", toPathPart user, toPathPart repo, "labels", toPathPart lbl] mempty
+    command Delete ["repos", toPathPart user, toPathPart repo, "labels", toPathPart lbl] mempty
 
 -- | The labels on an issue in a repo.
 --
@@ -151,7 +151,7 @@ labelsOnIssue' auth user repo iid =
 -- See <https://developer.github.com/v3/issues/labels/#list-labels-on-an-issue>
 labelsOnIssueR :: Name Owner -> Name Repo -> Id Issue -> FetchCount -> Request k (Vector IssueLabel)
 labelsOnIssueR user repo iid =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"] []
 
 -- | Add labels to an issue.
 --
@@ -173,9 +173,9 @@ addLabelsToIssueR :: Foldable f
                   -> Name Repo
                   -> Id Issue
                   -> f (Name IssueLabel)
-                  -> Request 'True (Vector IssueLabel)
+                  -> Request 'RW (Vector IssueLabel)
 addLabelsToIssueR user repo iid lbls =
-    Command Post paths (encode $ toList lbls)
+    command Post paths (encode $ toList lbls)
   where
     paths = ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"]
 
@@ -188,9 +188,9 @@ removeLabelFromIssue auth user repo iid lbl =
 
 -- | Remove a label from an issue.
 -- See <https://developer.github.com/v3/issues/labels/#remove-a-label-from-an-issue>
-removeLabelFromIssueR :: Name Owner -> Name Repo -> Id Issue -> Name IssueLabel -> Request 'True ()
+removeLabelFromIssueR :: Name Owner -> Name Repo -> Id Issue -> Name IssueLabel -> Request 'RW ()
 removeLabelFromIssueR user repo iid lbl =
-    Command Delete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels", toPathPart lbl] mempty
+    command Delete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels", toPathPart lbl] mempty
 
 -- | Replace all labels on an issue. Sending an empty list will remove all labels from the issue.
 --
@@ -214,9 +214,9 @@ replaceAllLabelsForIssueR :: Foldable f
                           -> Name Repo
                           -> Id Issue
                           -> f (Name IssueLabel)
-                          -> Request 'True (Vector IssueLabel)
+                          -> Request 'RW (Vector IssueLabel)
 replaceAllLabelsForIssueR user repo iid lbls =
-    Command Put paths (encode $ toList lbls)
+    command Put paths (encode $ toList lbls)
   where
     paths = ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"]
 
@@ -229,9 +229,9 @@ removeAllLabelsFromIssue auth user repo iid =
 
 -- | Remove all labels from an issue.
 -- See <https://developer.github.com/v3/issues/labels/#remove-all-labels-from-an-issue>
-removeAllLabelsFromIssueR :: Name Owner -> Name Repo -> Id Issue -> Request 'True ()
+removeAllLabelsFromIssueR :: Name Owner -> Name Repo -> Id Issue -> Request 'RW ()
 removeAllLabelsFromIssueR user repo iid =
-    Command Delete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"] mempty
+    command Delete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"] mempty
 
 -- | All the labels on a repo's milestone given the milestone ID.
 --
@@ -250,4 +250,4 @@ labelsOnMilestone' auth user repo mid =
 -- See <https://developer.github.com/v3/issues/labels/#get-labels-for-every-issue-in-a-milestone>
 labelsOnMilestoneR :: Name Owner -> Name Repo -> Id Milestone -> FetchCount -> Request k (Vector IssueLabel)
 labelsOnMilestoneR user repo mid =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "milestones", toPathPart mid, "labels"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "milestones", toPathPart mid, "labels"] []

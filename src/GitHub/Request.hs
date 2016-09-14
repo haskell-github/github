@@ -43,6 +43,7 @@ module GitHub.Request (
     unsafeDropAuthRequirements,
     -- * Helpers
     makeHttpRequest,
+    makeHttpSimpleRequest,
     parseResponse,
     parseStatus,
     getNextUrl,
@@ -68,12 +69,11 @@ import Network.HTTP.Client
        (HttpException (..), Manager, RequestBody (..), Response (..),
        applyBasicAuth, httpLbs, method, newManager, requestBody,
        requestHeaders, setQueryString)
-import Network.HTTP.Client.TLS      (tlsManagerSettings)
-import Network.HTTP.Link.Parser     (parseLinkHeaderBS)
-import Network.HTTP.Link.Types
-       (Link (..), LinkParam (..), href, linkParams)
-import Network.HTTP.Types           (Method, RequestHeaders, Status (..))
-import Network.URI                  (URI)
+import Network.HTTP.Client.TLS  (tlsManagerSettings)
+import Network.HTTP.Link.Parser (parseLinkHeaderBS)
+import Network.HTTP.Link.Types  (Link (..), LinkParam (..), href, linkParams)
+import Network.HTTP.Types       (Method, RequestHeaders, Status (..))
+import Network.URI              (URI)
 
 #if !MIN_VERSION_http_client(0,5,0)
 import qualified Control.Exception  as E
@@ -105,41 +105,44 @@ lessFetchCount _ FetchAll         = True
 lessFetchCount i (FetchAtLeast j) = i < fromIntegral j
 
 -- | Like 'executeRequest' but with provided 'Manager'.
-executeRequestWithMgr :: Manager
-                      -> Auth
-                      -> Request k a
-                      -> IO (Either Error a)
-executeRequestWithMgr mgr auth req = runExceptT $
-    execute req
+executeRequestWithMgr
+    :: Manager
+    -> Auth
+    -> Request k a
+    -> IO (Either Error a)
+executeRequestWithMgr mgr auth req = runExceptT $ do
+    httpReq <- makeHttpRequest (Just auth) req
+    performHttpReq httpReq req
   where
-    execute :: Request k a -> ExceptT Error IO a
-    execute req' = case req' of
-        Query {} -> do
-            httpReq <- makeHttpRequest (Just auth) req
-            res <- httpLbs' httpReq
-            parseResponse res
-        PagedQuery _ _ l -> do
-            httpReq <- makeHttpRequest (Just auth) req
-            performPagedRequest httpLbs' predicate httpReq
-          where
-            predicate v = lessFetchCount (V.length v) l
-        Command m _ _ -> do
-            httpReq <- makeHttpRequest (Just auth) req
-            res <- httpLbs' httpReq
-            case m of
-                Delete -> pure ()
-                _      -> parseResponse res
-        StatusQuery sm _ -> do
-            httpReq <- makeHttpRequest (Just auth) req
-            res <- httpLbs' httpReq
-            parseStatus sm . responseStatus $ res
-        HeaderQuery _ r -> do
-            execute r
     httpLbs' :: HTTP.Request -> ExceptT Error IO (Response LBS.ByteString)
     httpLbs' req' = lift (httpLbs req' mgr) `catch` onHttpException
 
+    performHttpReq :: HTTP.Request -> Request k b -> ExceptT Error IO b
+    performHttpReq httpReq (SimpleQuery sreq)   =
+        performHttpReq' httpReq sreq
+    performHttpReq httpReq (HeaderQuery _ sreq) =
+        performHttpReq' httpReq sreq
+    performHttpReq httpReq (StatusQuery sm _)   = do
+        res <- httpLbs' httpReq
+        parseStatus sm  . responseStatus $ res
+
+    performHttpReq' :: FromJSON b => HTTP.Request -> SimpleRequest k b -> ExceptT Error IO b
+    performHttpReq' httpReq Query {} = do
+        res <- httpLbs' httpReq
+        parseResponse res
+    performHttpReq' httpReq (PagedQuery _ _ l) =
+        performPagedRequest httpLbs' predicate httpReq
+      where
+        predicate v = lessFetchCount (V.length v) l
+    performHttpReq' httpReq (Command m _ _) = do
+        res <- httpLbs' httpReq
+        case m of
+             Delete -> pure ()
+             _      -> parseResponse res
+
+
 -- | Like 'executeRequest' but without authentication.
-executeRequest' :: Request 'False a -> IO (Either Error a)
+executeRequest' ::Request 'RO a -> IO (Either Error a)
 executeRequest' req = do
     manager <- newManager tlsManagerSettings
     x <- executeRequestWithMgr' manager req
@@ -149,42 +152,45 @@ executeRequest' req = do
     pure x
 
 -- | Like 'executeRequestWithMgr' but without authentication.
-executeRequestWithMgr' :: Manager
-                       -> Request 'False a
-                       -> IO (Either Error a)
-executeRequestWithMgr' mgr req = runExceptT $
-    execute req
+executeRequestWithMgr'
+    :: Manager
+    -> Request 'RO a
+    -> IO (Either Error a)
+executeRequestWithMgr' mgr req = runExceptT $ do
+    httpReq <- makeHttpRequest Nothing req
+    performHttpReq httpReq req
   where
-    execute :: Request 'False a -> ExceptT Error IO a
-    execute req' = case req' of
-        Query {} -> do
-            httpReq <- makeHttpRequest Nothing req
-            res <- httpLbs' httpReq
-            parseResponse res
-        PagedQuery _ _ l -> do
-            httpReq <- makeHttpRequest Nothing req
-            performPagedRequest httpLbs' predicate httpReq
-          where
-            predicate v = lessFetchCount (V.length v) l
-        StatusQuery sm _ -> do
-            httpReq <- makeHttpRequest Nothing req
-            res <- httpLbs' httpReq
-            parseStatus sm  . responseStatus $ res
-        HeaderQuery _ r -> do
-            execute r
     httpLbs' :: HTTP.Request -> ExceptT Error IO (Response LBS.ByteString)
     httpLbs' req' = lift (httpLbs req' mgr) `catch` onHttpException
+
+    performHttpReq :: HTTP.Request -> Request 'RO b -> ExceptT Error IO b
+    performHttpReq httpReq (SimpleQuery sreq)   =
+        performHttpReq' httpReq sreq
+    performHttpReq httpReq (HeaderQuery _ sreq) =
+        performHttpReq' httpReq sreq
+    performHttpReq httpReq (StatusQuery sm _)   = do
+        res <- httpLbs' httpReq
+        parseStatus sm  . responseStatus $ res
+
+    performHttpReq' :: FromJSON b => HTTP.Request -> SimpleRequest 'RO b -> ExceptT Error IO b
+    performHttpReq' httpReq Query {} = do
+        res <- httpLbs' httpReq
+        parseResponse res
+    performHttpReq' httpReq (PagedQuery _ _ l) =
+        performPagedRequest httpLbs' predicate httpReq
+      where
+        predicate v = lessFetchCount (V.length v) l
 
 -- | Helper for picking between 'executeRequest' and 'executeRequest''.
 --
 -- The use is discouraged.
-executeRequestMaybe :: Maybe Auth -> Request 'False a
-                    -> IO (Either Error a)
+executeRequestMaybe :: Maybe Auth -> Request 'RO a -> IO (Either Error a)
 executeRequestMaybe = maybe executeRequest' executeRequest
 
 -- | Partial function to drop authentication need.
-unsafeDropAuthRequirements :: Request 'True a -> Request k a
-unsafeDropAuthRequirements (Query ps qs) = Query ps qs
+unsafeDropAuthRequirements :: Request k' a -> Request k a
+unsafeDropAuthRequirements (SimpleQuery (Query ps qs)) =
+    SimpleQuery (Query ps qs)
 unsafeDropAuthRequirements r                 =
     error $ "Trying to drop authenatication from" ++ show r
 
@@ -201,39 +207,52 @@ unsafeDropAuthRequirements r                 =
 -- @
 -- parseResponse :: 'Maybe' 'Auth' -> 'Request' k a -> 'Maybe' 'Request'
 -- @
-makeHttpRequest :: MonadThrow m
-                => Maybe Auth
-                -> Request k a
-                -> m HTTP.Request
+makeHttpRequest
+    :: MonadThrow m
+    => Maybe Auth
+    -> Request k a
+    -> m HTTP.Request
 makeHttpRequest auth r = case r of
+    SimpleQuery req ->
+        makeHttpSimpleRequest auth req
     StatusQuery sm req -> do
-        req' <- makeHttpRequest auth req
+        req' <- makeHttpSimpleRequest auth req
         return $ setCheckStatus (Just sm) req'
+    HeaderQuery h req -> do
+        req' <- makeHttpSimpleRequest auth req
+        return $ req' { requestHeaders = h <> requestHeaders req' }
+
+makeHttpSimpleRequest
+    :: MonadThrow m
+    => Maybe Auth
+    -> SimpleRequest k a
+    -> m HTTP.Request
+makeHttpSimpleRequest auth r = case r of
     Query paths qs -> do
         req <- parseUrl' $ url paths
-        return $ setReqHeaders
-               . setCheckStatus Nothing
-               . setAuthRequest auth
-               . setQueryString qs
-               $ req
+        return
+            $ setReqHeaders
+            . setCheckStatus Nothing
+            . setAuthRequest auth
+            . setQueryString qs
+            $ req
     PagedQuery paths qs _ -> do
         req <- parseUrl' $ url paths
-        return $ setReqHeaders
-               . setCheckStatus Nothing
-               . setAuthRequest auth
-               . setQueryString qs
-               $ req
+        return
+            $ setReqHeaders
+            . setCheckStatus Nothing
+            . setAuthRequest auth
+            . setQueryString qs
+            $ req
     Command m paths body -> do
         req <- parseUrl' $ url paths
-        return $ setReqHeaders
-               . setCheckStatus Nothing
-               . setAuthRequest auth
-               . setBody body
-               . setMethod (toMethod m)
-               $ req
-    HeaderQuery h req -> do
-        req' <- makeHttpRequest auth req
-        return $ req' { requestHeaders = h <> requestHeaders req' }
+        return
+            $ setReqHeaders
+            . setCheckStatus Nothing
+            . setAuthRequest auth
+            . setBody body
+            . setMethod (toMethod m)
+            $ req
   where
     parseUrl' :: MonadThrow m => Text -> m HTTP.Request
 #if MIN_VERSION_http_client(0,4,30)
@@ -252,13 +271,6 @@ makeHttpRequest auth r = case r of
 
     setReqHeaders :: HTTP.Request -> HTTP.Request
     setReqHeaders req = req { requestHeaders = reqHeaders <> requestHeaders req }
-
-    setCheckStatus :: Maybe (StatusMap a) -> HTTP.Request -> HTTP.Request
-#if MIN_VERSION_http_client(0,5,0)
-    setCheckStatus sm req = req { HTTP.checkResponse = successOrMissing sm }
-#else
-    setCheckStatus sm req = req { HTTP.checkStatus = successOrMissing sm }
-#endif
 
     setMethod :: Method -> HTTP.Request -> HTTP.Request
     setMethod m req = req { method = m }
@@ -279,8 +291,6 @@ makeHttpRequest auth r = case r of
     getOAuthHeader (OAuth token)             = [("Authorization", "token " <> token)]
     getOAuthHeader (EnterpriseOAuth _ token) = [("Authorization", "token " <> token)]
     getOAuthHeader _                         = []
-
-
 
 -- | Query @Link@ header with @rel=next@ from the request headers.
 getNextUrl :: Response a -> Maybe URI
@@ -312,15 +322,10 @@ parseResponse res = case eitherDecode (responseBody res) of
 -- parseStatus :: 'StatusMap' a -> 'Status' -> 'Either' 'Error' a
 -- @
 parseStatus :: MonadError Error m => StatusMap a -> Status -> m a
-parseStatus StatusOnlyOk (Status sci _)
-    | sci == 204 = return True
-    | sci == 404 = return False
-    | otherwise  = throwError $ JsonError $ "invalid status: " <> T.pack (show sci)
-parseStatus StatusMerge (Status sci _)
-    | sci == 204 = return MergeSuccessful
-    | sci == 405 = return MergeCannotPerform
-    | sci == 409 = return MergeConflict
-    | otherwise  = throwError $ JsonError $ "invalid status: " <> T.pack (show sci)
+parseStatus m (Status sci _) =
+    maybe err return $ lookup sci m
+  where
+    err = throwError $ JsonError $ "invalid status: " <> T.pack (show sci)
 
 -- | Helper for making paginated requests. Responses, @a@ are combined monoidally.
 --
@@ -331,11 +336,12 @@ parseStatus StatusMerge (Status sci _)
 --                     -> 'HTTP.Request'
 --                     -> 'ExceptT' 'Error' 'IO' a
 -- @
-performPagedRequest :: forall a m. (FromJSON a, Semigroup a, MonadCatch m, MonadError Error m)
-                    => (HTTP.Request -> m (Response LBS.ByteString))  -- ^ `httpLbs` analogue
-                    -> (a -> Bool)                                    -- ^ predicate to continue iteration
-                    -> HTTP.Request                                   -- ^ initial request
-                    -> m a
+performPagedRequest
+    :: forall a m. (FromJSON a, Semigroup a, MonadCatch m, MonadError Error m)
+    => (HTTP.Request -> m (Response LBS.ByteString))  -- ^ `httpLbs` analogue
+    -> (a -> Bool)                                    -- ^ predicate to continue iteration
+    -> HTTP.Request                                   -- ^ initial request
+    -> m a
 performPagedRequest httpLbs' predicate initReq = do
     res <- httpLbs' initReq
     m <- parseResponse res
@@ -355,6 +361,15 @@ performPagedRequest httpLbs' predicate initReq = do
 -- Internal
 -------------------------------------------------------------------------------
 
+
+setCheckStatus :: Maybe (StatusMap a) -> HTTP.Request -> HTTP.Request
+#if MIN_VERSION_http_client(0,5,0)
+setCheckStatus sm req = req { HTTP.checkResponse = successOrMissing sm }
+#else
+setCheckStatus sm req = req { HTTP.checkStatus = successOrMissing sm }
+#endif
+
+
 #if MIN_VERSION_http_client(0,5,0)
 successOrMissing :: Maybe (StatusMap a) -> HTTP.Request -> HTTP.Response HTTP.BodyReader -> IO ()
 successOrMissing sm _req res
@@ -373,9 +388,8 @@ successOrMissing sm s@(Status sci _) hs cookiejar
   where
 #endif
     check = case sm of
-      Nothing            -> 200 <= sci && sci < 300
-      Just StatusOnlyOk  -> sci == 204 || sci == 404
-      Just StatusMerge   -> sci `elem` [204, 405, 409]
+      Nothing  -> 200 <= sci && sci < 300
+      Just sm' -> sci `elem` map fst sm'
 
 onHttpException :: MonadError Error m => HttpException -> m a
 onHttpException = throwError . HTTPError

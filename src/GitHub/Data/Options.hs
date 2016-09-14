@@ -54,10 +54,10 @@ module GitHub.Data.Options (
     ) where
 
 import GitHub.Data.Definitions
-import GitHub.Data.Id (Id, untagId)
-import GitHub.Data.Name (Name, untagName)
+import GitHub.Data.Id          (Id, untagId)
+import GitHub.Data.Milestone   (Milestone)
+import GitHub.Data.Name        (Name, untagName)
 import GitHub.Internal.Prelude
-import GitHub.Data.Milestone (Milestone)
 import Prelude ()
 
 import qualified Data.Text          as T
@@ -513,7 +513,7 @@ issueRepoOptionsToQueryString IssueRepoOptions {..} =
         FilterBy x' -> TE.encodeUtf8 (f x')
 
     milestone' = filt (T.pack . show . untagId) issueRepoOptionsMilestone
-    assignee'  = filt untagName issueRepoOptionsAssignee 
+    assignee'  = filt untagName issueRepoOptionsAssignee
 
     state' = case issueRepoOptionsState of
         Nothing          -> "all"
@@ -538,11 +538,11 @@ issueRepoOptionsToQueryString IssueRepoOptions {..} =
 
 optionsAnyMilestone :: IssueRepoMod
 optionsAnyMilestone = IssueRepoMod $ \opts ->
-    opts { issueRepoOptionsMilestone = FilterAny } 
+    opts { issueRepoOptionsMilestone = FilterAny }
 
 optionsNoMilestone :: IssueRepoMod
 optionsNoMilestone = IssueRepoMod $ \opts ->
-    opts { issueRepoOptionsMilestone = FilterNone } 
+    opts { issueRepoOptionsMilestone = FilterNone }
 
 optionsAnyAssignee :: IssueRepoMod
 optionsAnyAssignee = IssueRepoMod $ \opts ->
@@ -550,4 +550,4 @@ optionsAnyAssignee = IssueRepoMod $ \opts ->
 
 optionsNoAssignee :: IssueRepoMod
 optionsNoAssignee = IssueRepoMod $ \opts ->
-    opts { issueRepoOptionsAssignee = FilterNone } 
+    opts { issueRepoOptionsAssignee = FilterNone }

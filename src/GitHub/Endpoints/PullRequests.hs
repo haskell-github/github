@@ -48,7 +48,7 @@ pullRequestsForR
     -> PullRequestMod
     -> FetchCount
     -> Request k (Vector SimplePullRequest)
-pullRequestsForR user repo opts = PagedQuery
+pullRequestsForR user repo opts = pagedQuery
     ["repos", toPathPart user, toPathPart repo, "pulls"]
     (prModToQueryString opts)
 
@@ -72,7 +72,7 @@ pullRequest = pullRequest' Nothing
 -- See <https://developer.github.com/v3/pulls/#get-a-single-pull-request>
 pullRequestR :: Name Owner -> Name Repo -> Id PullRequest -> Request k PullRequest
 pullRequestR user repo prid =
-    Query ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] []
+    query ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] []
 
 createPullRequest :: Auth
                   -> Name Owner
@@ -87,9 +87,9 @@ createPullRequest auth user repo cpr =
 createPullRequestR :: Name Owner
                    -> Name Repo
                    -> CreatePullRequest
-                   -> Request 'True PullRequest
+                   -> Request 'RW PullRequest
 createPullRequestR user repo cpr =
-    Command Post ["repos", toPathPart user, toPathPart repo, "pulls"] (encode cpr)
+    command Post ["repos", toPathPart user, toPathPart repo, "pulls"] (encode cpr)
 
 -- | Update a pull request
 updatePullRequest :: Auth -> Name Owner -> Name Repo -> Id PullRequest -> EditPullRequest -> IO (Either Error PullRequest)
@@ -102,9 +102,9 @@ updatePullRequestR :: Name Owner
                    -> Name Repo
                    -> Id PullRequest
                    -> EditPullRequest
-                   -> Request 'True PullRequest
+                   -> Request 'RW PullRequest
 updatePullRequestR user repo prid epr =
-    Command Patch ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] (encode epr)
+    command Patch ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] (encode epr)
 
 -- | All the commits on a pull request, given the repo owner, repo name, and
 -- the number of the pull request.
@@ -126,7 +126,7 @@ pullRequestCommitsIO = pullRequestCommits' Nothing
 -- See <https://developer.github.com/v3/pulls/#list-commits-on-a-pull-request>
 pullRequestCommitsR :: Name Owner -> Name Repo -> Id PullRequest -> FetchCount -> Request k (Vector Commit)
 pullRequestCommitsR user repo prid =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "commits"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "commits"] []
 
 -- | The individual files that a pull request patches. Takes the repo owner and
 -- name, plus the number assigned to the pull request.
@@ -148,7 +148,7 @@ pullRequestFiles = pullRequestFiles' Nothing
 -- See <https://developer.github.com/v3/pulls/#list-pull-requests-files>
 pullRequestFilesR :: Name Owner -> Name Repo -> Id PullRequest -> FetchCount -> Request k (Vector File)
 pullRequestFilesR user repo prid =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "files"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "files"] []
 
 -- | Check if pull request has been merged.
 isPullRequestMerged :: Auth -> Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error Bool)
@@ -158,7 +158,7 @@ isPullRequestMerged auth user repo prid =
 -- | Query if a pull request has been merged.
 -- See <https://developer.github.com/v3/pulls/#get-if-a-pull-request-has-been-merged>
 isPullRequestMergedR :: Name Owner -> Name Repo -> Id PullRequest -> Request k Bool
-isPullRequestMergedR user repo prid = StatusQuery StatusOnlyOk $
+isPullRequestMergedR user repo prid = StatusQuery statusOnlyOk $
     Query ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "merge"] []
 
 -- | Merge a pull request.
@@ -168,8 +168,8 @@ mergePullRequest auth user repo prid commitMessage =
 
 -- | Merge a pull request (Merge Button).
 -- https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button
-mergePullRequestR :: Name Owner -> Name Repo -> Id PullRequest -> Maybe Text -> Request 'True MergeResult
-mergePullRequestR user repo prid commitMessage = StatusQuery StatusMerge $
+mergePullRequestR :: Name Owner -> Name Repo -> Id PullRequest -> Maybe Text -> Request 'RW MergeResult
+mergePullRequestR user repo prid commitMessage = StatusQuery statusMerge $
     Command Put paths (encode $ buildCommitMessageMap commitMessage)
   where
     paths = ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "merge"]

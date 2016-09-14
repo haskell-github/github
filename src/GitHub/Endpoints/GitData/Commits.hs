@@ -27,4 +27,4 @@ commit user repo sha =
 -- See <https://developer.github.com/v3/git/commits/#get-a-commit>
 gitCommitR :: Name Owner -> Name Repo -> Name GitCommit -> Request k GitCommit
 gitCommitR user repo sha =
-    Query ["repos", toPathPart user, toPathPart repo, "git", "commits", toPathPart sha] []
+    query ["repos", toPathPart user, toPathPart repo, "git", "commits", toPathPart sha] []

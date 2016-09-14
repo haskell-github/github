@@ -74,7 +74,7 @@ commitsWithOptionsFor' auth user repo opts =
 -- See <https://developer.github.com/v3/repos/commits/#list-commits-on-a-repository>
 commitsWithOptionsForR :: Name Owner -> Name Repo -> FetchCount -> [CommitQueryOption] -> Request k (Vector Commit)
 commitsWithOptionsForR user repo limit opts =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "commits"] qs limit
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "commits"] qs limit
   where
     qs = map renderCommitQueryOption opts
 
@@ -97,7 +97,7 @@ commit' auth user repo sha =
 -- See <https://developer.github.com/v3/repos/commits/#get-a-single-commit>
 commitR :: Name Owner -> Name Repo -> Name Commit -> Request k Commit
 commitR user repo sha =
-    Query ["repos", toPathPart user, toPathPart repo, "commits", toPathPart sha] []
+    query ["repos", toPathPart user, toPathPart repo, "commits", toPathPart sha] []
 
 -- | The diff between two treeishes on a repo.
 --
@@ -116,4 +116,4 @@ diff' auth user repo base headref =
 -- See <https://developer.github.com/v3/repos/commits/#compare-two-commits>
 diffR :: Name Owner -> Name Repo -> Name Commit -> Name Commit -> Request k Diff
 diffR user repo base headref =
-    Query ["repos", toPathPart user, toPathPart repo, "compare", toPathPart base <> "..." <> toPathPart headref] []
+    query ["repos", toPathPart user, toPathPart repo, "compare", toPathPart base <> "..." <> toPathPart headref] []

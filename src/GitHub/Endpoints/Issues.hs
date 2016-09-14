@@ -29,14 +29,14 @@ import GitHub.Request
 import Prelude ()
 
 -- | See <https://developer.github.com/v3/issues/#list-issues>.
-currentUserIssuesR :: IssueMod -> FetchCount -> Request k (Vector Issue)
+currentUserIssuesR :: IssueMod -> FetchCount -> Request 'RA (Vector Issue)
 currentUserIssuesR opts =
-    PagedQuery ["user", "issues"] (issueModToQueryString opts)
+    pagedQuery ["user", "issues"] (issueModToQueryString opts)
 
 -- | See <https://developer.github.com/v3/issues/#list-issues>.
 organizationIssuesR :: Name Organization -> IssueMod -> FetchCount -> Request k (Vector Issue)
 organizationIssuesR org opts =
-    PagedQuery ["orgs", toPathPart org, "issues"] (issueModToQueryString opts)
+    pagedQuery ["orgs", toPathPart org, "issues"] (issueModToQueryString opts)
 
 -- | Details on a specific issue, given the repo owner and name, and the issue
 -- number.'
@@ -57,7 +57,7 @@ issue = issue' Nothing
 -- See <https://developer.github.com/v3/issues/#get-a-single-issue>
 issueR :: Name Owner -> Name Repo -> Id Issue -> Request k Issue
 issueR user reqRepoName reqIssueNumber =
-    Query ["repos", toPathPart user, toPathPart reqRepoName, "issues", toPathPart reqIssueNumber] []
+    query ["repos", toPathPart user, toPathPart reqRepoName, "issues", toPathPart reqIssueNumber] []
 
 -- | All issues for a repo (given the repo owner and name), with optional
 -- restrictions as described in the 'IssueRepoMod' data type.
@@ -78,7 +78,7 @@ issuesForRepo = issuesForRepo' Nothing
 -- See <https://developer.github.com/v3/issues/#list-issues-for-a-repository>
 issuesForRepoR :: Name Owner -> Name Repo -> IssueRepoMod -> FetchCount -> Request k (Vector Issue)
 issuesForRepoR user reqRepoName opts =
-    PagedQuery ["repos", toPathPart user, toPathPart reqRepoName, "issues"] qs
+    pagedQuery ["repos", toPathPart user, toPathPart reqRepoName, "issues"] qs
   where
     qs = issueRepoModToQueryString opts
 
@@ -99,9 +99,9 @@ createIssue auth user repo ni =
 
 -- | Create an issue.
 -- See <https://developer.github.com/v3/issues/#create-an-issue>
-createIssueR :: Name Owner -> Name Repo -> NewIssue -> Request 'True Issue
+createIssueR :: Name Owner -> Name Repo -> NewIssue -> Request 'RW Issue
 createIssueR user repo =
-    Command Post ["repos", toPathPart user, toPathPart repo, "issues"] . encode
+    command Post ["repos", toPathPart user, toPathPart repo, "issues"] . encode
 
 -- Editing issues.
 
@@ -119,6 +119,6 @@ editIssue auth user repo iss edit =
 
 -- | Edit an issue.
 -- See <https://developer.github.com/v3/issues/#edit-an-issue>
-editIssueR :: Name Owner -> Name Repo -> Id Issue -> EditIssue -> Request 'True Issue
+editIssueR :: Name Owner -> Name Repo -> Id Issue -> EditIssue -> Request 'RW Issue
 editIssueR user repo iss =
-    Command Patch ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iss] . encode
+    command Patch ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iss] . encode

@@ -40,7 +40,7 @@ eventsForIssue' auth user repo iid =
 -- See <https://developer.github.com/v3/issues/events/#list-events-for-an-issue>
 eventsForIssueR :: Name Owner -> Name Repo -> Id Issue -> FetchCount -> Request k (Vector Event)
 eventsForIssueR user repo iid =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "events"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "events"] []
 
 -- | All the events for all issues in a repo.
 --
@@ -59,7 +59,7 @@ eventsForRepo' auth user repo =
 -- See <https://developer.github.com/v3/issues/events/#list-events-for-a-repository>
 eventsForRepoR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Event)
 eventsForRepoR user repo =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "issues", "events"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "issues", "events"] []
 
 -- | Details on a specific event, by the event's ID.
 --
@@ -78,4 +78,4 @@ event' auth user repo eid =
 -- See <https://developer.github.com/v3/issues/events/#get-a-single-event>
 eventR :: Name Owner -> Name Repo -> Id Event -> Request k Event
 eventR user repo eid =
-    Query ["repos", toPathPart user, toPathPart repo, "issues", "events", toPathPart eid] []
+    query ["repos", toPathPart user, toPathPart repo, "issues", "events", toPathPart eid] []

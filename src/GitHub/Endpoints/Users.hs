@@ -36,12 +36,12 @@ userInfoFor = executeRequest' . userInfoForR
 -- | Query a single user.
 -- See <https://developer.github.com/v3/users/#get-a-single-user>
 userInfoForR :: Name User -> Request k User
-userInfoForR user = Query ["users", toPathPart user] []
+userInfoForR user = query ["users", toPathPart user] []
 
 -- | Query a single user or an organization.
 -- See <https://developer.github.com/v3/users/#get-a-single-user>
 ownerInfoForR :: Name Owner -> Request k Owner
-ownerInfoForR owner = Query ["users", toPathPart owner] []
+ownerInfoForR owner = query ["users", toPathPart owner] []
 
 -- | Retrieve information about the user associated with the supplied authentication.
 --
@@ -52,5 +52,5 @@ userInfoCurrent' auth =
 
 -- | Query the authenticated user.
 -- See <https://developer.github.com/v3/users/#get-the-authenticated-user>
-userInfoCurrentR :: Request 'True User
-userInfoCurrentR = Query ["user"] []
+userInfoCurrentR :: Request 'RA User
+userInfoCurrentR = query ["user"] []

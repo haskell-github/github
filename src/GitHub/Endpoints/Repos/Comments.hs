@@ -42,7 +42,7 @@ commentsFor' auth user repo =
 -- See <https://developer.github.com/v3/repos/comments/#list-commit-comments-for-a-repository>
 commentsForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Comment)
 commentsForR user repo =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "comments"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "comments"] []
 
 -- | Just the comments on a specific SHA for a given Github repo.
 --
@@ -62,7 +62,7 @@ commitCommentsFor' auth user repo sha =
 -- See <https://developer.github.com/v3/repos/comments/#list-comments-for-a-single-commit>
 commitCommentsForR :: Name Owner -> Name Repo -> Name Commit -> FetchCount -> Request k (Vector Comment)
 commitCommentsForR user repo sha =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "commits", toPathPart sha, "comments"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "commits", toPathPart sha, "comments"] []
 
 -- | A comment, by its ID, relative to the Github repo.
 --
@@ -81,4 +81,4 @@ commitCommentFor' auth user repo cid =
 -- See <https://developer.github.com/v3/repos/comments/#get-a-single-commit-comment>
 commitCommentForR :: Name Owner -> Name Repo -> Id Comment -> Request k Comment
 commitCommentForR user repo cid =
-    Query ["repos", toPathPart user, toPathPart repo, "comments", toPathPart cid] []
+    query ["repos", toPathPart user, toPathPart repo, "comments", toPathPart cid] []

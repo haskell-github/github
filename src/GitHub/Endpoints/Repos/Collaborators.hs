@@ -35,7 +35,7 @@ collaboratorsOn' auth user repo =
 -- See <https://developer.github.com/v3/repos/collaborators/#list-collaborators>
 collaboratorsOnR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector SimpleUser)
 collaboratorsOnR user repo =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "collaborators"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "collaborators"] []
 
 -- | Whether the user is collaborating on a repo. Takes the user in question,
 -- the user who owns the repo, and the repo name.
@@ -56,5 +56,5 @@ isCollaboratorOnR :: Name Owner  -- ^ Repository owner
                   -> Name Repo         -- ^ Repository name
                   -> Name User         -- ^ Collaborator?
                   -> Request k Bool
-isCollaboratorOnR user repo coll = StatusQuery StatusOnlyOk $
+isCollaboratorOnR user repo coll = StatusQuery statusOnlyOk $
     Query ["repos", toPathPart user, toPathPart repo, "collaborators", toPathPart coll] []

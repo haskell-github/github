@@ -41,7 +41,7 @@ reference = reference' Nothing
 -- See <https://developer.github.com/v3/git/refs/#get-a-reference>
 referenceR :: Name Owner -> Name Repo -> Name GitReference -> Request k GitReference
 referenceR user repo ref =
-    Query ["repos", toPathPart user, toPathPart repo, "git", "refs", toPathPart ref] []
+    query ["repos", toPathPart user, toPathPart repo, "git", "refs", toPathPart ref] []
 
 -- | The history of references for a repo.
 --
@@ -60,7 +60,7 @@ references = references' Nothing
 -- See <https://developer.github.com/v3/git/refs/#get-all-references>
 referencesR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector GitReference)
 referencesR user repo =
-    PagedQuery ["repos", toPathPart user, toPathPart repo, "git", "refs"] []
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "git", "refs"] []
 
 -- | Create a reference.
 createReference :: Auth -> Name Owner -> Name Repo -> NewGitReference -> IO (Either Error GitReference)
@@ -69,9 +69,9 @@ createReference auth user repo newRef =
 
 -- | Create a reference.
 -- See <https://developer.github.com/v3/git/refs/#create-a-reference>
-createReferenceR :: Name Owner -> Name Repo -> NewGitReference -> Request 'True GitReference
+createReferenceR :: Name Owner -> Name Repo -> NewGitReference -> Request 'RW GitReference
 createReferenceR user repo newRef =
-     Command Post  ["repos", toPathPart user, toPathPart repo , "git", "refs"] (encode newRef)
+     command Post  ["repos", toPathPart user, toPathPart repo , "git", "refs"] (encode newRef)
 
 -- | Limited references by a namespace.
 --
@@ -84,4 +84,4 @@ namespacedReferences user repo namespace =
 -- See <https://developer.github.com/v3/git/refs/#get-all-references>
 namespacedReferencesR :: Name Owner -> Name Repo -> Text -> Request k [GitReference]
 namespacedReferencesR user repo namespace =
-    Query ["repos", toPathPart user, toPathPart repo, "git", "refs", namespace] []
+    query ["repos", toPathPart user, toPathPart repo, "git", "refs", namespace] []

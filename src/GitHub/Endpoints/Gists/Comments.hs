@@ -29,7 +29,7 @@ commentsOn gid =
 -- See <https://developer.github.com/v3/gists/comments/#list-comments-on-a-gist>
 commentsOnR :: Name Gist -> FetchCount -> Request k (Vector GistComment)
 commentsOnR gid =
-    PagedQuery ["gists", toPathPart gid, "comments"] []
+    pagedQuery ["gists", toPathPart gid, "comments"] []
 
 -- | A specific comment, by the comment ID.
 --
@@ -42,4 +42,4 @@ comment cid =
 -- See <https://developer.github.com/v3/gists/comments/#get-a-single-comment>
 gistCommentR :: Id GistComment -> Request k GistComment
 gistCommentR cid =
-    Query ["gists", "comments", toPathPart cid] []
+    query ["gists", "comments", toPathPart cid] []
