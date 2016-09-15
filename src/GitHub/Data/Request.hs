@@ -229,13 +229,13 @@ instance Hashable (SimpleRequest k a) where
              `hashWithSalt` ps
              `hashWithSalt` body
 
-instance Hashable a => Hashable (Request k a) where
+instance Hashable (Request k a) where
     hashWithSalt salt (SimpleQuery req) =
         salt `hashWithSalt` (0 :: Int)
              `hashWithSalt` req
     hashWithSalt salt (StatusQuery sm req) =
         salt `hashWithSalt` (1 :: Int)
-             `hashWithSalt` sm
+             `hashWithSalt` map fst sm
              `hashWithSalt` req
     hashWithSalt salt (HeaderQuery h req) =
         salt `hashWithSalt` (2 :: Int)
