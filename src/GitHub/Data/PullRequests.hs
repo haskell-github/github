@@ -77,6 +77,7 @@ data PullRequest = PullRequest
     , pullRequestCommits        :: !Count
     , pullRequestMerged         :: !Bool
     , pullRequestMergeable      :: !(Maybe Bool)
+    , pullRequestMergeableState :: !Text
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -216,7 +217,7 @@ instance FromJSON PullRequest where
         <*> o .: "number"
         <*> o .: "html_url"
         <*> o .: "updated_at"
-        <*> o .: "body"
+        <*> o .:? "body" .!= "" -- TODO: no body is treated as empty
         <*> o .: "issue_url"
         <*> o .: "diff_url"
         <*> o .: "url"
@@ -235,6 +236,7 @@ instance FromJSON PullRequest where
         <*> o .: "commits"
         <*> o .: "merged"
         <*> o .:? "mergeable"
+        <*> o .: "mergeable_state"
 
 instance FromJSON PullRequestLinks where
     parseJSON = withObject "PullRequestLinks" $ \o -> PullRequestLinks
