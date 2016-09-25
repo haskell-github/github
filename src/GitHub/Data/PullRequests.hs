@@ -19,7 +19,7 @@ module GitHub.Data.PullRequests (
 
 import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id)
-import GitHub.Data.Options     (IssueState (..))
+import GitHub.Data.Options     (IssueState (..), MergeableState (..))
 import GitHub.Data.Repos       (Repo)
 import GitHub.Data.Request     (StatusMap)
 import GitHub.Data.URL         (URL)
@@ -31,11 +31,11 @@ data SimplePullRequest = SimplePullRequest
     , simplePullRequestCreatedAt :: !UTCTime
     , simplePullRequestUser      :: !SimpleUser
     , simplePullRequestPatchUrl  :: !URL
-    , simpleIssueState     :: !IssueState
+    , simplePullRequestState     :: !IssueState
     , simplePullRequestNumber    :: !Int
     , simplePullRequestHtmlUrl   :: !URL
     , simplePullRequestUpdatedAt :: !UTCTime
-    , simplePullRequestBody      :: !Text
+    , simplePullRequestBody      :: !(Maybe Text)
     , simplePullRequestIssueUrl  :: !URL
     , simplePullRequestDiffUrl   :: !URL
     , simplePullRequestUrl       :: !URL
@@ -58,7 +58,7 @@ data PullRequest = PullRequest
     , pullRequestNumber         :: !Int
     , pullRequestHtmlUrl        :: !URL
     , pullRequestUpdatedAt      :: !UTCTime
-    , pullRequestBody           :: !Text
+    , pullRequestBody           :: !(Maybe Text)
     , pullRequestIssueUrl       :: !URL
     , pullRequestDiffUrl        :: !URL
     , pullRequestUrl            :: !URL
@@ -77,7 +77,7 @@ data PullRequest = PullRequest
     , pullRequestCommits        :: !Count
     , pullRequestMerged         :: !Bool
     , pullRequestMergeable      :: !(Maybe Bool)
-    , pullRequestMergeableState :: !Text
+    , pullRequestMergeableState :: !MergeableState
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -185,7 +185,7 @@ instance FromJSON SimplePullRequest where
         <*> o .: "number"
         <*> o .: "html_url"
         <*> o .: "updated_at"
-        <*> o .:? "body" .!= "" -- TODO: no body is treated as empty
+        <*> o .:? "body"
         <*> o .: "issue_url"
         <*> o .: "diff_url"
         <*> o .: "url"
@@ -217,7 +217,7 @@ instance FromJSON PullRequest where
         <*> o .: "number"
         <*> o .: "html_url"
         <*> o .: "updated_at"
-        <*> o .:? "body" .!= "" -- TODO: no body is treated as empty
+        <*> o .:? "body"
         <*> o .: "issue_url"
         <*> o .: "diff_url"
         <*> o .: "url"
