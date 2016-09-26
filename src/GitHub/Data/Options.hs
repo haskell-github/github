@@ -44,6 +44,7 @@ module GitHub.Data.Options (
     optionsNoAssignee,
     -- * Data
     IssueState (..),
+    MergeableState (..),
     -- * Internal
     HasState,
     HasDirection,
@@ -85,6 +86,31 @@ instance FromJSON IssueState where
 
 instance NFData IssueState where rnf = genericRnf
 instance Binary IssueState
+
+-- | 'GitHub.Data.PullRequests.PullRequest' mergeable_state
+data MergeableState
+    = StateUnknown
+    | StateClean
+    | StateDirty
+    | StateUnstable
+  deriving
+    (Eq, Ord, Show, Enum, Bounded, Generic, Typeable, Data)
+
+instance ToJSON MergeableState where
+    toJSON StateUnknown  = String "unknown"
+    toJSON StateClean    = String "clean"
+    toJSON StateDirty    = String "dirty"
+    toJSON StateUnstable = String "unstable"
+
+instance FromJSON MergeableState where
+    parseJSON (String "unknown")  = pure StateUnknown
+    parseJSON (String "clean")    = pure StateClean
+    parseJSON (String "dirty")    = pure StateDirty
+    parseJSON (String "unstable") = pure StateUnstable
+    parseJSON v                 = typeMismatch "MergeableState" v
+
+instance NFData MergeableState where rnf = genericRnf
+instance Binary MergeableState
 
 data SortDirection
     = SortAscending
