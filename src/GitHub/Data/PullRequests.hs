@@ -59,6 +59,7 @@ data PullRequest = PullRequest
     , pullRequestHtmlUrl        :: !URL
     , pullRequestUpdatedAt      :: !UTCTime
     , pullRequestBody           :: !(Maybe Text)
+    , pullRequestAssignees      :: (Vector SimpleUser)
     , pullRequestIssueUrl       :: !URL
     , pullRequestDiffUrl        :: !URL
     , pullRequestUrl            :: !URL
@@ -218,6 +219,7 @@ instance FromJSON PullRequest where
         <*> o .: "html_url"
         <*> o .: "updated_at"
         <*> o .:? "body"
+        <*> o .: "assignees"
         <*> o .: "issue_url"
         <*> o .: "diff_url"
         <*> o .: "url"
