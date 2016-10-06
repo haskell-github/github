@@ -34,6 +34,13 @@ data Permission =
 instance NFData Permission where rnf = genericRnf
 instance Binary Permission
 
+data AddTeamRepoPermission = AddTeamRepoPermission {
+  addTeamRepoPermission :: !Permission
+} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData AddTeamRepoPermission where rnf = genericRnf
+instance Binary AddTeamRepoPermission
+
 data SimpleTeam = SimpleTeam {
    simpleTeamId              :: !(Id Team)
   ,simpleTeamUrl             :: !URL
@@ -177,6 +184,14 @@ instance FromJSON CreateTeamMembership where
 instance ToJSON CreateTeamMembership where
   toJSON (CreateTeamMembership { createTeamMembershipRole = role }) =
     object [ "role" .= role ]
+
+instance FromJSON AddTeamRepoPermission where
+  parseJSON = withObject "AddTeamRepoPermission" $ \o ->
+    AddTeamRepoPermission <$> o .: "permission"
+
+instance ToJSON AddTeamRepoPermission where
+  toJSON (AddTeamRepoPermission { addTeamRepoPermission = permission}) =
+    object [ "permission" .= permission ]
 
 instance FromJSON Role where
   parseJSON (String attr) =
