@@ -168,7 +168,6 @@ instance FromJSON Issue where
         <*> o .:? "closed_by"
         <*> o .: "labels"
         <*> o .: "number"
-        <*> o .:? "assignee"
         <*> o .: "assignees"
         <*> o .: "user"
         <*> o .: "title"
