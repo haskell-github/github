@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -9,8 +10,13 @@ module GitHub.Data.Name (
     untagName,
     ) where
 
-import GitHub.Internal.Prelude
 import Prelude ()
+import GitHub.Internal.Prelude
+
+#if MIN_VERSION_aeson(1,0,0)
+import Data.Aeson.Types
+       (FromJSONKey (..), ToJSONKey (..), fromJSONKeyCoerce, toJSONKeyText)
+#endif
 
 newtype Name entity = N Text
     deriving (Eq, Ord, Show, Generic, Typeable, Data)
@@ -36,3 +42,13 @@ instance ToJSON (Name entity) where
 
 instance IsString (Name entity) where
     fromString = N . fromString
+
+#if MIN_VERSION_aeson(1,0,0)
+-- | @since 0.15.0.0
+instance ToJSONKey (Name entity) where
+    toJSONKey = toJSONKeyText untagName
+
+-- | @since 0.15.0.0
+instance FromJSONKey (Name entity) where
+    fromJSONKey = fromJSONKeyCoerce
+#endif

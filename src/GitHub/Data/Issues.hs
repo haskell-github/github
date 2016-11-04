@@ -104,22 +104,22 @@ instance NFData EventType where rnf = genericRnf
 instance Binary EventType
 
 -- | Issue event
-data Event = Event
-    { eventActor     :: !SimpleUser
-    , eventType      :: !EventType
-    , eventCommitId  :: !(Maybe Text)
-    , eventUrl       :: !URL
-    , eventCreatedAt :: !UTCTime
-    , eventId        :: !Int
-    , eventIssue     :: !(Maybe Issue)
+data IssueEvent = IssueEvent
+    { issueEventActor     :: !SimpleUser
+    , issueEventType      :: !EventType
+    , issueEventCommitId  :: !(Maybe Text)
+    , issueEventUrl       :: !URL
+    , issueEventCreatedAt :: !UTCTime
+    , issueEventId        :: !Int
+    , issueEventIssue     :: !(Maybe Issue)
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData Event where rnf = genericRnf
-instance Binary Event
+instance NFData IssueEvent where rnf = genericRnf
+instance Binary IssueEvent 
 
-instance FromJSON Event where
-    parseJSON = withObject "Event" $ \o -> Event
+instance FromJSON IssueEvent where
+    parseJSON = withObject "Event" $ \o -> IssueEvent
         <$> o .: "actor"
         <*> o .: "event"
         <*> o .:? "commit_id"
