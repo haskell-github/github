@@ -27,37 +27,38 @@ import Unsafe.Coerce (unsafeCoerce)
 #endif
 #endif
 
-data Repo = Repo {
-   repoSshUrl          :: !(Maybe URL)
-  ,repoDescription     :: !(Maybe Text)
-  ,repoCreatedAt       :: !(Maybe UTCTime)
-  ,repoHtmlUrl         :: !URL
-  ,repoSvnUrl          :: !(Maybe URL)
-  ,repoForks           :: !(Maybe Int)
-  ,repoHomepage        :: !(Maybe Text)
-  ,repoFork            :: !(Maybe Bool)
-  ,repoGitUrl          :: !(Maybe URL)
-  ,repoPrivate         :: !Bool
-  ,repoCloneUrl        :: !(Maybe URL)
-  ,repoSize            :: !(Maybe Int)
-  ,repoUpdatedAt       :: !(Maybe UTCTime)
-  ,repoWatchers        :: !(Maybe Int)
-  ,repoOwner           :: !SimpleOwner
-  ,repoName            :: !(Name Repo)
-  ,repoLanguage        :: !(Maybe Language)
-  ,repoDefaultBranch   :: !(Maybe Text)
-  ,repoPushedAt        :: !(Maybe UTCTime)   -- ^ this is Nothing for new repositories
-  ,repoId              :: !(Id Repo)
-  ,repoUrl             :: !URL
-  ,repoOpenIssues      :: !(Maybe Int)
-  ,repoHasWiki         :: !(Maybe Bool)
-  ,repoHasIssues       :: !(Maybe Bool)
-  ,repoHasDownloads    :: !(Maybe Bool)
-  ,repoParent          :: !(Maybe RepoRef)
-  ,repoSource          :: !(Maybe RepoRef)
-  ,repoHooksUrl        :: !URL
-  ,repoStargazersCount :: !Int
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data Repo = Repo
+    { repoSshUrl          :: !(Maybe URL)
+    , repoDescription     :: !(Maybe Text)
+    , repoCreatedAt       :: !(Maybe UTCTime)
+    , repoHtmlUrl         :: !URL
+    , repoSvnUrl          :: !(Maybe URL)
+    , repoForks           :: !(Maybe Int)
+    , repoHomepage        :: !(Maybe Text)
+    , repoFork            :: !(Maybe Bool)
+    , repoGitUrl          :: !(Maybe URL)
+    , repoPrivate         :: !Bool
+    , repoCloneUrl        :: !(Maybe URL)
+    , repoSize            :: !(Maybe Int)
+    , repoUpdatedAt       :: !(Maybe UTCTime)
+    , repoWatchers        :: !(Maybe Int)
+    , repoOwner           :: !SimpleOwner
+    , repoName            :: !(Name Repo)
+    , repoLanguage        :: !(Maybe Language)
+    , repoDefaultBranch   :: !(Maybe Text)
+    , repoPushedAt        :: !(Maybe UTCTime)   -- ^ this is Nothing for new repositories
+    , repoId              :: !(Id Repo)
+    , repoUrl             :: !URL
+    , repoOpenIssues      :: !(Maybe Int)
+    , repoHasWiki         :: !(Maybe Bool)
+    , repoHasIssues       :: !(Maybe Bool)
+    , repoHasDownloads    :: !(Maybe Bool)
+    , repoParent          :: !(Maybe RepoRef)
+    , repoSource          :: !(Maybe RepoRef)
+    , repoHooksUrl        :: !URL
+    , repoStargazersCount :: !Int
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Repo where rnf = genericRnf
 instance Binary Repo
@@ -71,15 +72,15 @@ data RepoRef = RepoRef
 instance NFData RepoRef where rnf = genericRnf
 instance Binary RepoRef
 
-data NewRepo = NewRepo {
-  newRepoName        :: !(Name Repo)
-, newRepoDescription :: !(Maybe Text)
-, newRepoHomepage    :: !(Maybe Text)
-, newRepoPrivate     :: !(Maybe Bool)
-, newRepoHasIssues   :: !(Maybe Bool)
-, newRepoHasWiki     :: !(Maybe Bool)
-, newRepoAutoInit    :: !(Maybe Bool)
-} deriving (Eq, Ord, Show, Data, Typeable, Generic)
+data NewRepo = NewRepo
+    { newRepoName        :: !(Name Repo)
+    , newRepoDescription :: !(Maybe Text)
+    , newRepoHomepage    :: !(Maybe Text)
+    , newRepoPrivate     :: !(Maybe Bool)
+    , newRepoHasIssues   :: !(Maybe Bool)
+    , newRepoHasWiki     :: !(Maybe Bool)
+    , newRepoAutoInit    :: !(Maybe Bool)
+    } deriving (Eq, Ord, Show, Data, Typeable, Generic)
 
 instance NFData NewRepo where rnf = genericRnf
 instance Binary NewRepo
@@ -87,15 +88,16 @@ instance Binary NewRepo
 newRepo :: Name Repo -> NewRepo
 newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing
 
-data EditRepo = EditRepo {
-  editName         :: !(Maybe (Name Repo))
-, editDescription  :: !(Maybe Text)
-, editHomepage     :: !(Maybe Text)
-, editPublic       :: !(Maybe Bool)
-, editHasIssues    :: !(Maybe Bool)
-, editHasWiki      :: !(Maybe Bool)
-, editHasDownloads :: !(Maybe Bool)
-} deriving (Eq, Ord, Show, Data, Typeable, Generic)
+data EditRepo = EditRepo
+    { editName         :: !(Maybe (Name Repo))
+    , editDescription  :: !(Maybe Text)
+    , editHomepage     :: !(Maybe Text)
+    , editPublic       :: !(Maybe Bool)
+    , editHasIssues    :: !(Maybe Bool)
+    , editHasWiki      :: !(Maybe Bool)
+    , editHasDownloads :: !(Maybe Bool)
+    }
+    deriving (Eq, Ord, Show, Data, Typeable, Generic)
 
 instance NFData EditRepo where rnf = genericRnf
 instance Binary EditRepo
@@ -127,12 +129,12 @@ instance IsString Language where
     fromString = Language . fromString
 
 data Contributor
-  -- | An existing Github user, with their number of contributions, avatar
-  -- URL, login, URL, ID, and Gravatar ID.
-  = KnownContributor !Int !URL !(Name User) !URL !(Id User) !Text
-  -- | An unknown Github user with their number of contributions and recorded name.
-  | AnonymousContributor !Int !Text
- deriving (Show, Data, Typeable, Eq, Ord, Generic)
+    -- | An existing Github user, with their number of contributions, avatar
+    -- URL, login, URL, ID, and Gravatar ID.
+    = KnownContributor !Int !URL !(Name User) !URL !(Id User) !Text
+    -- | An unknown Github user with their number of contributions and recorded name.
+    | AnonymousContributor !Int !Text
+   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Contributor where rnf = genericRnf
 instance Binary Contributor
@@ -145,36 +147,35 @@ contributorToSimpleUser (KnownContributor _contributions avatarUrl name url uid 
 -- JSON instances
 
 instance FromJSON Repo where
-  parseJSON = withObject "Repo" $ \o ->
-    Repo <$> o .:? "ssh_url"
-         <*> o .: "description"
-         <*> o .:? "created_at"
-         <*> o .: "html_url"
-         <*> o .:? "svn_url"
-         <*> o .:? "forks"
-         <*> o .:? "homepage"
-         <*> o .: "fork"
-         <*> o .:? "git_url"
-         <*> o .: "private"
-         <*> o .:? "clone_url"
-         <*> o .:? "size"
-         <*> o .:? "updated_at"
-         <*> o .:? "watchers"
-         <*> o .: "owner"
-         <*> o .: "name"
-         <*> o .:? "language"
-         <*> o .:? "default_branch"
-         <*> o .:? "pushed_at"
-         <*> o .: "id"
-         <*> o .: "url"
-         <*> o .:? "open_issues"
-         <*> o .:? "has_wiki"
-         <*> o .:? "has_issues"
-         <*> o .:? "has_downloads"
-         <*> o .:? "parent"
-         <*> o .:? "source"
-         <*> o .: "hooks_url"
-         <*> o .: "stargazers_count"
+    parseJSON = withObject "Repo" $ \o -> Repo <$> o .:? "ssh_url"
+        <*> o .: "description"
+        <*> o .:? "created_at"
+        <*> o .: "html_url"
+        <*> o .:? "svn_url"
+        <*> o .:? "forks"
+        <*> o .:? "homepage"
+        <*> o .: "fork"
+        <*> o .:? "git_url"
+        <*> o .: "private"
+        <*> o .:? "clone_url"
+        <*> o .:? "size"
+        <*> o .:? "updated_at"
+        <*> o .:? "watchers"
+        <*> o .: "owner"
+        <*> o .: "name"
+        <*> o .:? "language"
+        <*> o .:? "default_branch"
+        <*> o .:? "pushed_at"
+        <*> o .: "id"
+        <*> o .: "url"
+        <*> o .:? "open_issues"
+        <*> o .:? "has_wiki"
+        <*> o .:? "has_issues"
+        <*> o .:? "has_downloads"
+        <*> o .:? "parent"
+        <*> o .:? "source"
+        <*> o .: "hooks_url"
+        <*> o .: "stargazers_count"
 
 instance ToJSON NewRepo where
   toJSON (NewRepo { newRepoName         = name
@@ -213,26 +214,24 @@ instance ToJSON EditRepo where
                    ]
 
 instance FromJSON RepoRef where
-  parseJSON = withObject "RepoRef" $ \o ->
-    RepoRef <$> o .: "owner"
-            <*> o .: "name"
+    parseJSON = withObject "RepoRef" $ \o -> RepoRef
+        <$> o .: "owner"
+        <*> o .: "name"
 
 instance FromJSON Contributor where
     parseJSON = withObject "Contributor" $ \o -> do
         t <- o .: "type"
-        case t of
-            _ | t == ("Anonymous" :: Text) ->
-                AnonymousContributor
-                    <$> o .: "contributions"
-                    <*> o .: "name"
-            _ | otherwise ->
-                KnownContributor
-                    <$> o .: "contributions"
-                    <*> o .: "avatar_url"
-                    <*> o .: "login"
-                    <*> o .: "url"
-                    <*> o .: "id"
-                    <*> o .: "gravatar_id"
+        case (t :: Text) of
+            "Anonymous" -> AnonymousContributor
+                <$> o .: "contributions"
+                <*> o .: "name"
+            _  -> KnownContributor
+                <$> o .: "contributions"
+                <*> o .: "avatar_url"
+                <*> o .: "login"
+                <*> o .: "url"
+                <*> o .: "id"
+                <*> o .: "gravatar_id"
 
 instance FromJSON Language where
     parseJSON = withText "Language" (pure . Language)
