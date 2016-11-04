@@ -13,6 +13,12 @@ Changes for 0.15.0
 - Add 'organizationIssuesR'
 - Make `teamName :: Text` amnd `teamSlug :: Name Team` in both: `Team` and `SimpleTeam`
 - Refactor 'Request' structure
+- Added multiple issue assignees
+- Preliminary support for repository events: `repositoryEventsR`
+- Support for adding repository permissions to the team
+- Remove 'simpleUserType', it was always the same.
+
+See [git commit summary](https://github.com/phadej/github/compare/v0.14.1...v0.15.0)
 
 Changes for 0.14.1
 
