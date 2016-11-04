@@ -17,105 +17,111 @@ import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
 
-data Privacy =
-    PrivacyClosed
-  | PrivacySecret
-  deriving (Show, Data, Enum, Bounded, Typeable, Eq, Ord, Generic)
+data Privacy
+    = PrivacyClosed
+    | PrivacySecret
+    deriving (Show, Data, Enum, Bounded, Typeable, Eq, Ord, Generic)
 
 instance NFData Privacy where rnf = genericRnf
 instance Binary Privacy
 
-data Permission =
-    PermissionPull
-  | PermissionPush
-  | PermissionAdmin
-  deriving (Show, Data, Enum, Bounded, Typeable, Eq, Ord, Generic)
+data Permission
+    = PermissionPull
+    | PermissionPush
+    | PermissionAdmin
+    deriving (Show, Data, Enum, Bounded, Typeable, Eq, Ord, Generic)
 
 instance NFData Permission where rnf = genericRnf
 instance Binary Permission
 
-data AddTeamRepoPermission = AddTeamRepoPermission {
-  addTeamRepoPermission :: !Permission
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data AddTeamRepoPermission = AddTeamRepoPermission
+    { addTeamRepoPermission :: !Permission
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData AddTeamRepoPermission where rnf = genericRnf
 instance Binary AddTeamRepoPermission
 
-data SimpleTeam = SimpleTeam {
-   simpleTeamId              :: !(Id Team)
-  ,simpleTeamUrl             :: !URL
-  ,simpleTeamName            :: !Text  -- TODO (0.15.0): unify this and 'simpleTeamSlug' as in 'Team'.
-  ,simpleTeamSlug            :: !(Name Team)
-  ,simpleTeamDescription     :: !(Maybe Text)
-  ,simpleTeamPrivacy         :: !(Maybe Privacy)
-  ,simpleTeamPermission      :: !Permission
-  ,simpleTeamMembersUrl      :: !URL
-  ,simpleTeamRepositoriesUrl :: !URL
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data SimpleTeam = SimpleTeam
+    { simpleTeamId              :: !(Id Team)
+    , simpleTeamUrl             :: !URL
+    , simpleTeamName            :: !Text  -- TODO (0.15.0): unify this and 'simpleTeamSlug' as in 'Team'.
+    , simpleTeamSlug            :: !(Name Team)
+    , simpleTeamDescription     :: !(Maybe Text)
+    , simpleTeamPrivacy         :: !(Maybe Privacy)
+    , simpleTeamPermission      :: !Permission
+    , simpleTeamMembersUrl      :: !URL
+    , simpleTeamRepositoriesUrl :: !URL
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData SimpleTeam where rnf = genericRnf
 instance Binary SimpleTeam
 
-data Team = Team {
-   teamId              :: !(Id Team)
-  ,teamUrl             :: !URL
-  ,teamName            :: !Text
-  ,teamSlug            :: !(Name Team)
-  ,teamDescription     :: !(Maybe Text)
-  ,teamPrivacy         :: !(Maybe Privacy)
-  ,teamPermission      :: !Permission
-  ,teamMembersUrl      :: !URL
-  ,teamRepositoriesUrl :: !URL
-  ,teamMembersCount    :: !Int
-  ,teamReposCount      :: !Int
-  ,teamOrganization    :: !SimpleOrganization
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data Team = Team
+    { teamId              :: !(Id Team)
+    , teamUrl             :: !URL
+    , teamName            :: !Text
+    , teamSlug            :: !(Name Team)
+    , teamDescription     :: !(Maybe Text)
+    , teamPrivacy         :: !(Maybe Privacy)
+    , teamPermission      :: !Permission
+    , teamMembersUrl      :: !URL
+    , teamRepositoriesUrl :: !URL
+    , teamMembersCount    :: !Int
+    , teamReposCount      :: !Int
+    , teamOrganization    :: !SimpleOrganization
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Team where rnf = genericRnf
 instance Binary Team
 
-data CreateTeam = CreateTeam {
-   createTeamName        :: !(Name Team)
-  ,createTeamDescription :: !(Maybe Text)
-  ,createTeamRepoNames   :: !(Vector (Name Repo))
-  {-,createTeamPrivacy :: Privacy-}
-  ,createTeamPermission  :: Permission
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data CreateTeam = CreateTeam
+    { createTeamName        :: !(Name Team)
+    , createTeamDescription :: !(Maybe Text)
+    , createTeamRepoNames   :: !(Vector (Name Repo))
+    -- , createTeamPrivacy    :: Privacy
+    , createTeamPermission  :: Permission
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData CreateTeam where rnf = genericRnf
 instance Binary CreateTeam
 
-data EditTeam = EditTeam {
-   editTeamName        :: !(Name Team)
-  ,editTeamDescription :: !(Maybe Text)
-  {-,editTeamPrivacy :: Privacy-}
-  ,editTeamPermission  :: !Permission
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data EditTeam = EditTeam
+    { editTeamName        :: !(Name Team)
+    , editTeamDescription :: !(Maybe Text)
+    -- , editTeamPrivacy :: Privacy
+    , editTeamPermission  :: !Permission
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData EditTeam where rnf = genericRnf
 instance Binary  EditTeam
 
-data Role =
-     RoleMaintainer
-  |  RoleMember
-  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data Role
+    = RoleMaintainer
+    | RoleMember
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Role
 instance Binary Role
 
-data ReqState =
-     StatePending
-  |  StateActive
-  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data ReqState
+    = StatePending
+    | StateActive
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData ReqState where rnf = genericRnf
 instance Binary ReqState
 
-data TeamMembership = TeamMembership {
-  teamMembershipUrl      :: !URL,
-  teamMembershipRole     :: !Role,
-  teamMembershipReqState :: !ReqState
-} deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data TeamMembership = TeamMembership
+    { teamMembershipUrl      :: !URL
+    , teamMembershipRole     :: !Role
+    , teamMembershipReqState :: !ReqState
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData TeamMembership where rnf = genericRnf
 instance Binary TeamMembership
@@ -130,31 +136,31 @@ instance Binary CreateTeamMembership
 -- JSON Instances
 
 instance FromJSON SimpleTeam where
-  parseJSON = withObject "SimpleTeam" $ \o ->
-    SimpleTeam <$> o .: "id"
-               <*> o .: "url"
-               <*> o .: "name"
-               <*> o .: "slug"
-               <*> o .:?"description" .!= Nothing
-               <*> o .:?"privacy" .!= Nothing
-               <*> o .: "permission"
-               <*> o .: "members_url"
-               <*> o .: "repositories_url"
+    parseJSON = withObject "SimpleTeam" $ \o -> SimpleTeam
+        <$> o .: "id"
+        <*> o .: "url"
+        <*> o .: "name"
+        <*> o .: "slug"
+        <*> o .:?"description" .!= Nothing
+        <*> o .:?"privacy" .!= Nothing
+        <*> o .: "permission"
+        <*> o .: "members_url"
+        <*> o .: "repositories_url"
 
 instance FromJSON Team where
-  parseJSON = withObject "Team" $ \o ->
-    Team <$> o .: "id"
-         <*> o .: "url"
-         <*> o .: "name"
-         <*> o .: "slug"
-         <*> o .:?"description" .!= Nothing
-         <*> o .:?"privacy" .!= Nothing
-         <*> o .: "permission"
-         <*> o .: "members_url"
-         <*> o .: "repositories_url"
-         <*> o .: "members_count"
-         <*> o .: "repos_count"
-         <*> o .: "organization"
+    parseJSON = withObject "Team" $ \o -> Team
+        <$> o .: "id"
+        <*> o .: "url"
+        <*> o .: "name"
+        <*> o .: "slug"
+        <*> o .:?"description" .!= Nothing
+        <*> o .:?"privacy" .!= Nothing
+        <*> o .: "permission"
+        <*> o .: "members_url"
+        <*> o .: "repositories_url"
+        <*> o .: "members_count"
+        <*> o .: "repos_count"
+        <*> o .: "organization"
 
 instance ToJSON CreateTeam where
   toJSON (CreateTeam name desc repo_names {-privacy-} permissions) =
@@ -172,82 +178,68 @@ instance ToJSON EditTeam where
            , "permissions" .= permissions ]
 
 instance FromJSON TeamMembership where
-  parseJSON = withObject "TeamMembership" $ \o ->
-    TeamMembership <$> o .: "url"
-                   <*> o .: "role"
-                   <*> o .: "state"
+    parseJSON = withObject "TeamMembership" $ \o -> TeamMembership
+        <$> o .: "url"
+        <*> o .: "role"
+        <*> o .: "state"
 
 instance FromJSON CreateTeamMembership where
-  parseJSON = withObject "CreateTeamMembership" $ \o ->
-    CreateTeamMembership <$> o .: "role"
+    parseJSON = withObject "CreateTeamMembership" $ \o -> CreateTeamMembership
+        <$> o .: "role"
 
 instance ToJSON CreateTeamMembership where
-  toJSON (CreateTeamMembership { createTeamMembershipRole = role }) =
-    object [ "role" .= role ]
+    toJSON (CreateTeamMembership { createTeamMembershipRole = role }) =
+        object [ "role" .= role ]
 
 instance FromJSON AddTeamRepoPermission where
-  parseJSON = withObject "AddTeamRepoPermission" $ \o ->
-    AddTeamRepoPermission <$> o .: "permission"
+    parseJSON = withObject "AddTeamRepoPermission" $ \o -> AddTeamRepoPermission
+        <$> o .: "permission"
 
 instance ToJSON AddTeamRepoPermission where
-  toJSON (AddTeamRepoPermission { addTeamRepoPermission = permission}) =
-    object [ "permission" .= permission ]
+    toJSON (AddTeamRepoPermission { addTeamRepoPermission = permission}) =
+        object [ "permission" .= permission ]
 
 instance FromJSON Role where
-  parseJSON (String attr) =
-    case attr of
-      "maintainer" -> return RoleMaintainer
-      "member"     -> return RoleMember
-      _            -> fail "Unknown Role"
-  parseJSON _ = fail "Could not build Role"
+    parseJSON = withText "Attribute" $ \attr -> case attr of
+        "maintainer" -> return RoleMaintainer
+        "member"     -> return RoleMember
+        _            -> fail $ "Unknown Role: " ++ show attr
 
 instance ToJSON Role where
-  toJSON RoleMaintainer = String "maintainer"
-  toJSON RoleMember     = String "member"
+    toJSON RoleMaintainer = String "maintainer"
+    toJSON RoleMember     = String "member"
 
 instance ToJSON Permission where
-  toJSON attr =
-    String $
-      case attr of
-        PermissionPull  -> "pull"
-        PermissionPush  -> "push"
-        PermissionAdmin -> "admin"
+    toJSON PermissionPull  = "pull"
+    toJSON PermissionPush  = "push"
+    toJSON PermissionAdmin = "admin"
 
 instance FromJSON Permission where
-  parseJSON (String attr) =
-    case attr of
-      "pull"  -> return PermissionPull
-      "push"  -> return PermissionPush
-      "admin" -> return PermissionAdmin
-      _       -> fail "Unknown Permission Attribute"
-  parseJSON _ = fail "Could not build Permission"
+    parseJSON = withText "Permission Attribute" $ \attr -> case attr of 
+        "pull"  -> return PermissionPull
+        "push"  -> return PermissionPush
+        "admin" -> return PermissionAdmin
+        _       -> fail $ "Unknown Permission Attribute: " ++ show attr
 
 instance FromJSON Privacy where
-  parseJSON (String attr) =
-    case attr of
-      "secret" -> return PrivacySecret
-      "closed" -> return PrivacyClosed
-      _        -> fail "Unknown Privacy Attribute"
-  parseJSON _ = fail "Could not build Privacy"
+    parseJSON  = withText "Privacy Attribute" $ \attr -> case attr of
+        "secret" -> return PrivacySecret
+        "closed" -> return PrivacyClosed
+        _        -> fail $ "Unknown Privacy Attribute: " ++ show attr
 
 instance ToJSON Privacy where
-  toJSON attr =
-    String $
-      case attr of
-        PrivacySecret -> "secret"
-        PrivacyClosed -> "closed"
+    toJSON PrivacySecret = String "secret"
+    toJSON PrivacyClosed = String "closed"
 
 instance FromJSON ReqState where
-  parseJSON (String attr) =
-    case attr of
-      "active"  -> return StateActive
-      "pending" -> return StatePending
-      _         -> fail "Unknown ReqState"
-  parseJSON _ = fail "Could not build ReqState"
+    parseJSON = withText "ReqState" $ \attr -> case attr of
+        "active"  -> return StateActive
+        "pending" -> return StatePending
+        _         -> fail $ "Unknown ReqState: " ++ show attr
 
 instance ToJSON ReqState where
-  toJSON StateActive  = String "active"
-  toJSON StatePending = String "pending"
+    toJSON StateActive  = String "active"
+    toJSON StatePending = String "pending"
 
 -- | Filters members returned by their role in the team.
 data TeamMemberRole

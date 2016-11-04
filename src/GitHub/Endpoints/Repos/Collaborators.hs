@@ -42,19 +42,21 @@ collaboratorsOnR user repo =
 --
 -- > isCollaboratorOn Nothing "mike-burns" "thoughtbot" "paperclip"
 -- > isCollaboratorOn Nothing "johnson" "thoughtbot" "paperclip"
-isCollaboratorOn :: Maybe Auth
-                 -> Name Owner  -- ^ Repository owner
-                 -> Name Repo         -- ^ Repository name
-                 -> Name User         -- ^ Collaborator?
-                 -> IO (Either Error Bool)
+isCollaboratorOn
+    :: Maybe Auth
+    -> Name Owner  -- ^ Repository owner
+    -> Name Repo         -- ^ Repository name
+    -> Name User         -- ^ Collaborator?
+    -> IO (Either Error Bool)
 isCollaboratorOn auth user repo coll =
     executeRequestMaybe auth $ isCollaboratorOnR user repo coll
 
 -- | Check if a user is a collaborator.
 -- See <https://developer.github.com/v3/repos/collaborators/#check-if-a-user-is-a-collaborator>
-isCollaboratorOnR :: Name Owner  -- ^ Repository owner
-                  -> Name Repo         -- ^ Repository name
-                  -> Name User         -- ^ Collaborator?
-                  -> Request k Bool
+isCollaboratorOnR
+    :: Name Owner  -- ^ Repository owner
+    -> Name Repo         -- ^ Repository name
+    -> Name User         -- ^ Collaborator?
+    -> Request k Bool
 isCollaboratorOnR user repo coll = StatusQuery statusOnlyOk $
     Query ["repos", toPathPart user, toPathPart repo, "collaborators", toPathPart coll] []
