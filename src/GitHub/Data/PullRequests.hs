@@ -36,6 +36,7 @@ data SimplePullRequest = SimplePullRequest
     , simplePullRequestHtmlUrl   :: !URL
     , simplePullRequestUpdatedAt :: !UTCTime
     , simplePullRequestBody      :: !(Maybe Text)
+    , simplePullRequestAssignees :: (Vector SimpleUser)
     , simplePullRequestIssueUrl  :: !URL
     , simplePullRequestDiffUrl   :: !URL
     , simplePullRequestUrl       :: !URL
@@ -59,6 +60,7 @@ data PullRequest = PullRequest
     , pullRequestHtmlUrl        :: !URL
     , pullRequestUpdatedAt      :: !UTCTime
     , pullRequestBody           :: !(Maybe Text)
+    , pullRequestAssignees      :: (Vector SimpleUser)
     , pullRequestIssueUrl       :: !URL
     , pullRequestDiffUrl        :: !URL
     , pullRequestUrl            :: !URL
@@ -186,6 +188,7 @@ instance FromJSON SimplePullRequest where
         <*> o .: "html_url"
         <*> o .: "updated_at"
         <*> o .:? "body"
+        <*> o .: "assignees"
         <*> o .: "issue_url"
         <*> o .: "diff_url"
         <*> o .: "url"
@@ -218,6 +221,7 @@ instance FromJSON PullRequest where
         <*> o .: "html_url"
         <*> o .: "updated_at"
         <*> o .:? "body"
+        <*> o .: "assignees"
         <*> o .: "issue_url"
         <*> o .: "diff_url"
         <*> o .: "url"

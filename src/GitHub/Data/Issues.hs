@@ -23,7 +23,7 @@ data Issue = Issue
     , issueClosedBy    :: !(Maybe SimpleUser)
     , issueLabels      :: (Vector IssueLabel)
     , issueNumber      :: !Int
-    , issueAssignee    :: !(Maybe SimpleUser)
+    , issueAssignees   :: !(Vector SimpleUser)
     , issueUser        :: !SimpleUser
     , issueTitle       :: !Text
     , issuePullRequest :: !(Maybe PullRequestReference)
@@ -168,7 +168,7 @@ instance FromJSON Issue where
         <*> o .:? "closed_by"
         <*> o .: "labels"
         <*> o .: "number"
-        <*> o .:? "assignee"
+        <*> o .: "assignees"
         <*> o .: "user"
         <*> o .: "title"
         <*> o .:? "pull_request"
