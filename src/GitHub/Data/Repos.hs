@@ -140,7 +140,7 @@ instance Binary Contributor
 contributorToSimpleUser :: Contributor -> Maybe SimpleUser
 contributorToSimpleUser (AnonymousContributor _ _) = Nothing
 contributorToSimpleUser (KnownContributor _contributions avatarUrl name url uid _gravatarid) =
-    Just $ SimpleUser uid name avatarUrl url OwnerUser
+    Just $ SimpleUser uid name avatarUrl url
 
 -- JSON instances
 

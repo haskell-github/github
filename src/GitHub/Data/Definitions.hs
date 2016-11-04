@@ -43,7 +43,6 @@ data SimpleUser = SimpleUser
     , simpleUserLogin     :: !(Name User)
     , simpleUserAvatarUrl :: !URL
     , simpleUserUrl       :: !URL
-    , simpleUserType      :: !OwnerType  -- ^ Should always be 'OwnerUser'
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -148,7 +147,6 @@ instance FromJSON SimpleUser where
             <*> obj .: "login"
             <*> obj .: "avatar_url"
             <*> obj .: "url"
-            <*> obj .: "type"
 
 instance FromJSON SimpleOrganization where
     parseJSON = withObject "SimpleOrganization" $ \obj ->

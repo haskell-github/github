@@ -15,6 +15,10 @@ module GitHub (
     -- * Activity
     -- | See <https://developer.github.com/v3/activity/>
 
+    -- ** Events
+    -- | See https://developer.github.com/v3/activity/events/#events
+    repositoryEventsR,
+
     -- ** Starring
     -- | See <https://developer.github.com/v3/activity/starring/>
     --
@@ -306,6 +310,7 @@ module GitHub (
     ) where
 
 import GitHub.Data
+import GitHub.Endpoints.Activity.Events
 import GitHub.Endpoints.Activity.Starring
 import GitHub.Endpoints.Activity.Watching
 import GitHub.Endpoints.Gists

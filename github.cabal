@@ -72,12 +72,13 @@ Library
     GitHub.Data.Content
     GitHub.Data.Definitions
     GitHub.Data.DeployKeys
+    GitHub.Data.Events
     GitHub.Data.Gists
     GitHub.Data.GitData
     GitHub.Data.Id
     GitHub.Data.Issues
-    GitHub.Data.Name
     GitHub.Data.Milestone
+    GitHub.Data.Name
     GitHub.Data.Options
     GitHub.Data.PullRequests
     GitHub.Data.Repos
@@ -87,6 +88,7 @@ Library
     GitHub.Data.URL
     GitHub.Data.Webhooks
     GitHub.Data.Webhooks.Validate
+    GitHub.Endpoints.Activity.Events
     GitHub.Endpoints.Activity.Starring
     GitHub.Endpoints.Activity.Watching
     GitHub.Endpoints.Gists
