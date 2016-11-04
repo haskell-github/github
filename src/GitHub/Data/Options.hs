@@ -38,8 +38,10 @@ module GitHub.Data.Options (
     -- * Repo issues
     IssueRepoMod,
     issueRepoModToQueryString,
+    optionsIrrelevantMilestone,
     optionsAnyMilestone,
     optionsNoMilestone,
+    optionsIrrelevantAssignee,
     optionsAnyAssignee,
     optionsNoAssignee,
     -- * Data
@@ -161,6 +163,9 @@ data FilterBy a
     = FilterAny
     | FilterNone
     | FilterBy a
+    | FilterNotSpecified
+      -- ^ e.g. for milestones "any" means "any milestone".
+      -- I.e. won't show issues without mileston specified
   deriving
     (Eq, Ord, Show, Generic, Typeable, Data)
 
@@ -491,9 +496,9 @@ data IssueRepoOptions = IssueRepoOptions
 
 defaultIssueRepoOptions :: IssueRepoOptions
 defaultIssueRepoOptions = IssueRepoOptions
-    { issueRepoOptionsMilestone = FilterAny
+    { issueRepoOptionsMilestone = FilterNotSpecified
     , issueRepoOptionsState     = (Just StateOpen)
-    , issueRepoOptionsAssignee  = FilterAny
+    , issueRepoOptionsAssignee  = FilterNotSpecified
     , issueRepoOptionsCreator   = Nothing
     , issueRepoOptionsMentioned = Nothing
     , issueRepoOptionsLabels    = []
@@ -520,13 +525,13 @@ issueRepoModToQueryString = issueRepoOptionsToQueryString . toIssueRepoOptions
 
 issueRepoOptionsToQueryString :: IssueRepoOptions -> QueryString
 issueRepoOptionsToQueryString IssueRepoOptions {..} =
-    [ mk "milestone" milestone'
-    , mk "assignee"  assignee'
-    , mk "state"     state'
+    [ mk "state"     state'
     , mk "sort"      sort'
     , mk "direction" direction'
     ] ++ catMaybes
-    [ mk "labels"    <$> labels'
+    [ mk "milestone" <$> milestone'
+    , mk "assignee"  <$> assignee'
+    , mk "labels"    <$> labels'
     , mk "since"     <$> since'
     , mk "creator"   <$> creator'
     , mk "mentioned" <$> mentioned'
@@ -534,9 +539,10 @@ issueRepoOptionsToQueryString IssueRepoOptions {..} =
   where
     mk k v = (k, Just v)
     filt f x = case x of
-        FilterAny   -> "*"
-        FilterNone  -> "none"
-        FilterBy x' -> TE.encodeUtf8 (f x')
+        FilterAny          -> Just "*"
+        FilterNone         -> Just "none"
+        FilterBy x'        -> Just $ TE.encodeUtf8 $ f x'
+        FilterNotSpecified -> Nothing
 
     milestone' = filt (T.pack . show . untagId) issueRepoOptionsMilestone
     assignee'  = filt untagName issueRepoOptionsAssignee
@@ -562,6 +568,15 @@ issueRepoOptionsToQueryString IssueRepoOptions {..} =
 -- Issues repo modifiers
 -------------------------------------------------------------------------------
 
+-- | Don't care about milestones.
+--
+-- 'optionsAnyMilestone' means there should be some milestone, but it can be any.
+--
+-- See <https://developer.github.com/v3/issues/#list-issues-for-a-repository>
+optionsIrrelevantMilestone :: IssueRepoMod
+optionsIrrelevantMilestone = IssueRepoMod $ \opts ->
+    opts { issueRepoOptionsMilestone = FilterNotSpecified }
+
 optionsAnyMilestone :: IssueRepoMod
 optionsAnyMilestone = IssueRepoMod $ \opts ->
     opts { issueRepoOptionsMilestone = FilterAny }
@@ -569,6 +584,10 @@ optionsAnyMilestone = IssueRepoMod $ \opts ->
 optionsNoMilestone :: IssueRepoMod
 optionsNoMilestone = IssueRepoMod $ \opts ->
     opts { issueRepoOptionsMilestone = FilterNone }
+
+optionsIrrelevantAssignee :: IssueRepoMod
+optionsIrrelevantAssignee = IssueRepoMod $ \opts ->
+    opts { issueRepoOptionsAssignee = FilterNotSpecified }
 
 optionsAnyAssignee :: IssueRepoMod
 optionsAnyAssignee = IssueRepoMod $ \opts ->
