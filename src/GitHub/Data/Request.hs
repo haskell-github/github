@@ -56,6 +56,7 @@ data CommandMethod a where
     Post   :: CommandMethod a
     Patch  :: CommandMethod a
     Put    :: CommandMethod a
+    Put'   :: CommandMethod ()
     Delete :: CommandMethod ()
     deriving (Typeable)
 
@@ -65,18 +66,21 @@ instance Show (CommandMethod a) where
     showsPrec _ Post    = showString "Post"
     showsPrec _ Patch   = showString "Patch"
     showsPrec _ Put     = showString "Put"
+    showsPrec _ Put'     = showString "Put'"
     showsPrec _ Delete  = showString "Delete"
 
 instance Hashable (CommandMethod a) where
     hashWithSalt salt Post    = hashWithSalt salt (0 :: Int)
     hashWithSalt salt Patch   = hashWithSalt salt (1 :: Int)
     hashWithSalt salt Put     = hashWithSalt salt (2 :: Int)
-    hashWithSalt salt Delete  = hashWithSalt salt (3 :: Int)
+    hashWithSalt salt Put'    = hashWithSalt salt (3 :: Int)
+    hashWithSalt salt Delete  = hashWithSalt salt (4 :: Int)
 
 toMethod :: CommandMethod a -> Method.Method
 toMethod Post   = Method.methodPost
 toMethod Patch  = Method.methodPatch
 toMethod Put    = Method.methodPut
+toMethod Put'   = Method.methodPut
 toMethod Delete = Method.methodDelete
 
 -- | 'PagedQuery' returns just some results, using this data we can specify how

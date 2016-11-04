@@ -138,6 +138,7 @@ executeRequestWithMgr mgr auth req = runExceptT $ do
         res <- httpLbs' httpReq
         case m of
              Delete -> pure ()
+             Put'   -> pure ()
              _      -> parseResponse res
 
 

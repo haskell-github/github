@@ -22,6 +22,8 @@ module GitHub.Endpoints.Organizations.Teams (
     listTeamRepos,
     listTeamRepos',
     listTeamReposR,
+    addOrUpdateTeamRepo',
+    addOrUpdateTeamRepoR,
     teamMembershipInfoFor,
     teamMembershipInfoFor',
     teamMembershipInfoForR,
@@ -156,6 +158,19 @@ listTeamReposR tid  =
 -- > listTeamRepos (GitHub.mkTeamId team_id)
 listTeamRepos :: Id Team -> IO (Either Error (Vector Repo))
 listTeamRepos = listTeamRepos' Nothing
+
+-- | Add a repository to a team or update the permission on the repository.
+--
+-- > addOrUpdateTeamRepo' (OAuth "token") 1010101 "mburns" (Just PermissionPull)
+addOrUpdateTeamRepo' :: Auth -> Id Team -> Name Organization -> Name Repo -> Permission -> IO (Either Error ())
+addOrUpdateTeamRepo' auth tid org repo permission =
+    executeRequest auth $ addOrUpdateTeamRepoR tid org repo permission
+
+-- | Add or update a team repository.
+-- See <https://developer.github.com/v3/orgs/teams/#add-or-update-team-repository>
+addOrUpdateTeamRepoR :: Id Team -> Name Organization -> Name Repo -> Permission -> Request 'RW ()
+addOrUpdateTeamRepoR tid org repo permission =
+    command Put' ["teams", toPathPart tid, "repos", toPathPart org, toPathPart repo] (encode $ AddTeamRepoPermission permission)
 
 -- | Retrieve team mebership information for a user.
 -- With authentication
