@@ -1,4 +1,5 @@
 name:                github
+x-revision:          1
 version:             0.15.0
 synopsis:            Access to the GitHub API, v3.
 description:
