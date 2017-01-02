@@ -121,7 +121,7 @@ Library
 
   -- Packages needed in order to build this package.
   build-depends: base                  >=4.7       && <4.10,
-                 aeson                 >=0.7.0.6   && <1.1,
+                 aeson                 >=0.7.0.6   && <1.2,
                  base-compat           >=0.9.1     && <0.10,
                  base16-bytestring     >=0.1.1.6   && <0.2,
                  binary                >=0.7.1.0   && <0.9,
