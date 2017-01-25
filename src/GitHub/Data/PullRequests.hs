@@ -90,6 +90,9 @@ data EditPullRequest = EditPullRequest
     { editPullRequestTitle :: !(Maybe Text)
     , editPullRequestBody  :: !(Maybe Text)
     , editPullRequestState :: !(Maybe IssueState)
+    , editPullRequestBase  :: !(Maybe Text)
+    , editPullRequestMaintainerCanModify
+                           :: !(Maybe Bool)
     }
   deriving (Show, Generic)
 
@@ -198,8 +201,15 @@ instance FromJSON SimplePullRequest where
         <*> o .: "id"
 
 instance ToJSON EditPullRequest where
-    toJSON (EditPullRequest t b s) =
-        object $ filter notNull [ "title" .= t, "body" .= b, "state" .= s ]
+    toJSON (EditPullRequest t b s base mcm) =
+        object $ filter notNull
+            [ "title" .= t
+            , "body"  .= b
+            , "state" .= s
+            , "base"  .= base
+            , "maintainer_can_modify"
+                      .= mcm
+            ]
       where
         notNull (_, Null) = False
         notNull (_, _) = True
