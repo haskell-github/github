@@ -309,7 +309,7 @@ data MergeResult
 
 statusMerge :: StatusMap MergeResult
 statusMerge =
-    [ (204, MergeSuccessful)
+    [ (200, MergeSuccessful)
     , (405, MergeCannotPerform)
     , (409, MergeConflict)
     ]
