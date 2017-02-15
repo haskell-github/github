@@ -106,3 +106,8 @@ executables:
     source-dirs: Repos/DeployKeys
     dependencies:
       - github-samples
+  github-searchrepos:
+    main: SearchRepos.hs
+    source-dirs: Search
+    dependencies:
+      - time
