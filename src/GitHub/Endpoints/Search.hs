@@ -18,32 +18,36 @@ module GitHub.Endpoints.Search(
     module GitHub.Data,
     ) where
 
-import GitHub.Data
+import GitHub.Data hiding (QueryString)
 import GitHub.Internal.Prelude
-import GitHub.Request
+import GitHub.Request hiding (QueryString)
 import Prelude ()
 
+import Control.Arrow (second)
+
 import qualified Data.Text.Encoding as TE
+import qualified Data.ByteString as BS
+
+type QueryString = [(BS.ByteString, Text)]
 
 -- | Perform a repository search.
 -- With authentication.
 --
 -- > searchRepos' (Just $ BasicAuth "github-username" "github-password') "a in%3Aname language%3Ahaskell created%3A>2013-10-01&per_page=100"
-searchRepos' :: Maybe Auth -> Text -> IO (Either Error (SearchResult Repo))
+searchRepos' :: Maybe Auth -> QueryString -> IO (Either Error (SearchResult Repo))
 searchRepos' auth = executeRequestMaybe auth . searchReposR
 
 -- | Perform a repository search.
 -- Without authentication.
 --
 -- > searchRepos "q=a in%3Aname language%3Ahaskell created%3A>2013-10-01&per_page=100"
-searchRepos :: Text -> IO (Either Error (SearchResult Repo))
+searchRepos :: QueryString -> IO (Either Error (SearchResult Repo))
 searchRepos = searchRepos' Nothing
 
 -- | Search repositories.
 -- See <https://developer.github.com/v3/search/#search-repositories>
-searchReposR :: Text -> Request k (SearchResult Repo)
-searchReposR searchString =
-    query ["search", "repositories"] [("q", Just $ TE.encodeUtf8 searchString)]
+searchReposR :: QueryString -> Request k (SearchResult Repo)
+searchReposR = query ["search", "repositories"] . map (second $ Just . TE.encodeUtf8)
 
 -- | Perform a code search.
 -- With authentication.
