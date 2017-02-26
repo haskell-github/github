@@ -5,10 +5,15 @@
 module GitHub.Data.Statuses where
 
 import GitHub.Data.Definitions
+import GitHub.Data.Name        (Name)
 import GitHub.Data.Id          (Id)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
+
+import GitHub.Data.GitData (Commit)
+import GitHub.Data.Repos   (RepoRef)
+
 
 data StatusState
     = StatusPending
@@ -33,6 +38,7 @@ instance ToJSON StatusState where
   toJSON StatusError   = String "error"
   toJSON StatusFailure = String "failure"
 
+
 data Status = Status
     { statusCreatedAt   :: !UTCTime
     , statusUpdatedAt   :: !UTCTime
@@ -42,7 +48,7 @@ data Status = Status
     , statusId          :: !(Id Status)
     , statusUrl         :: !URL
     , statusContext     :: !(Maybe Text)
-    , statusCreator     :: !SimpleUser
+    , statusCreator     :: !(Maybe SimpleUser)
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -56,7 +62,8 @@ instance FromJSON Status where
       <*> o .: "id"
       <*> o .: "url"
       <*> o .:? "context"
-      <*> o .: "creator"
+      <*> o .:? "creator"
+
 
 data NewStatus = NewStatus
     { newStatusState       :: !StatusState
@@ -79,3 +86,25 @@ instance ToJSON NewStatus where
       where
         notNull (_, Null) = False
         notNull (_, _)    = True
+
+
+data CombinedStatus = CombinedStatus
+    { combinedStatusState      :: !StatusState
+    , combinedStatusSha        :: !(Name Commit)
+    , combinedStatusTotalCount :: !Int
+    , combinedStatusStatuses   :: !(Vector Status)
+    , combinedStatusRepository :: !RepoRef
+    , combinedStatusCommitUrl  :: !URL
+    , combinedStatusUrl        :: !URL
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance FromJSON CombinedStatus where
+    parseJSON = withObject "CombinedStatus" $ \o -> CombinedStatus
+        <$> o .: "state"
+        <*> o .: "sha"
+        <*> o .: "total_count"
+        <*> o .: "statuses"
+        <*> o .: "repository"
+        <*> o .: "commit_url"
+        <*> o .: "url"
