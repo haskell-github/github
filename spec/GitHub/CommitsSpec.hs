@@ -6,13 +6,12 @@ import qualified GitHub
 
 import GitHub.Auth                    (Auth (..))
 import GitHub.Endpoints.Repos.Commits (Commit, commitSha, commitsFor',
-                                       commitsForR, diffR, mkName)
+                                       commitsForR, diffR, mkCommitName)
 import GitHub.Request                 (executeRequest)
 
 import Control.Monad      (forM_)
 import Data.Either.Compat (isRight)
 import Data.List          (nub, sort)
-import Data.Proxy         (Proxy (..))
 import Data.String        (fromString)
 import System.Environment (lookupEnv)
 import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe,
@@ -59,6 +58,5 @@ spec = do
         d `shouldSatisfy` isRight
 
     it "issue #155" $ withAuth $ \auth -> do
-      let mkCommitName = mkName (Proxy :: Proxy Commit)
       d <- executeRequest auth $ diffR "nomeata" "codespeed" (mkCommitName "ghc") (mkCommitName "tobami:master")
       d `shouldSatisfy` isRight
