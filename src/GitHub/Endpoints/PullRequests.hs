@@ -7,6 +7,7 @@
 -- <http://developer.github.com/v3/pulls/>.
 module GitHub.Endpoints.PullRequests (
     pullRequestsFor,
+    pullRequestsFor',
     pullRequestsForR,
     pullRequest',
     pullRequest,
@@ -39,6 +40,13 @@ import Prelude ()
 pullRequestsFor :: Name Owner -> Name Repo -> IO (Either Error (Vector SimplePullRequest))
 pullRequestsFor user repo =
     executeRequest' $ pullRequestsForR user repo mempty FetchAll
+
+-- | All open pull requests for the repo, by owner and repo name.
+--
+-- > pullRequestsFor "rails" "rails"
+pullRequestsFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector SimplePullRequest))
+pullRequestsFor' auth user repo =
+    executeRequestMaybe auth $ pullRequestsForR user repo mempty FetchAll
 
 -- | List pull requests.
 -- See <https://developer.github.com/v3/pulls/#list-pull-requests>
