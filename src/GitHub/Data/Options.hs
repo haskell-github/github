@@ -95,6 +95,7 @@ data MergeableState
     | StateClean
     | StateDirty
     | StateUnstable
+    | StateBlocked
   deriving
     (Eq, Ord, Show, Enum, Bounded, Generic, Typeable, Data)
 
@@ -103,13 +104,15 @@ instance ToJSON MergeableState where
     toJSON StateClean    = String "clean"
     toJSON StateDirty    = String "dirty"
     toJSON StateUnstable = String "unstable"
+    toJSON StateBlocked  = String "blocked"
 
 instance FromJSON MergeableState where
     parseJSON (String "unknown")  = pure StateUnknown
     parseJSON (String "clean")    = pure StateClean
     parseJSON (String "dirty")    = pure StateDirty
     parseJSON (String "unstable") = pure StateUnstable
-    parseJSON v                 = typeMismatch "MergeableState" v
+    parseJSON (String "blocked")  = pure StateBlocked
+    parseJSON v                   = typeMismatch "MergeableState" v
 
 instance NFData MergeableState where rnf = genericRnf
 instance Binary MergeableState
