@@ -18,7 +18,7 @@ module GitHub (
     -- ** Events
     -- | See https://developer.github.com/v3/activity/events/#events
     repositoryEventsR,
-
+    userEventsR,
     -- ** Starring
     -- | See <https://developer.github.com/v3/activity/starring/>
     --
