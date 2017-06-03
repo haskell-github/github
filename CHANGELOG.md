@@ -1,3 +1,8 @@
+Changes for 0.16.0
+- Add support for `mergeable_state = "blocked".`
+- Fix HTTP status code of merge PR
+- Supports newest versions of dependencies
+
 Changes for 0.15.0
 
 - Reworked `PullRequest` (notably `pullRequestsFor`)
