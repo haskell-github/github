@@ -43,6 +43,7 @@ module GitHub.Data (
     module GitHub.Data.Milestone,
     module GitHub.Data.Options,
     module GitHub.Data.PullRequests,
+    module GitHub.Data.Releases,
     module GitHub.Data.Repos,
     module GitHub.Data.Request,
     module GitHub.Data.Search,
@@ -69,6 +70,7 @@ import GitHub.Data.Milestone
 import GitHub.Data.Name
 import GitHub.Data.Options
 import GitHub.Data.PullRequests
+import GitHub.Data.Releases
 import GitHub.Data.Repos
 import GitHub.Data.Request
 import GitHub.Data.Search

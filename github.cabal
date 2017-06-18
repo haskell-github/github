@@ -81,6 +81,7 @@ Library
     GitHub.Data.Name
     GitHub.Data.Options
     GitHub.Data.PullRequests
+    GitHub.Data.Releases
     GitHub.Data.Repos
     GitHub.Data.Request
     GitHub.Data.Search
@@ -111,9 +112,10 @@ Library
     GitHub.Endpoints.Repos.Collaborators
     GitHub.Endpoints.Repos.Comments
     GitHub.Endpoints.Repos.Commits
-    GitHub.Endpoints.Repos.Forks
-    GitHub.Endpoints.Repos.Webhooks
     GitHub.Endpoints.Repos.DeployKeys
+    GitHub.Endpoints.Repos.Forks
+    GitHub.Endpoints.Repos.Releases
+    GitHub.Endpoints.Repos.Webhooks
     GitHub.Endpoints.Search
     GitHub.Endpoints.Users
     GitHub.Endpoints.Users.Followers
@@ -169,6 +171,7 @@ test-suite github-test
     GitHub.OrganizationsSpec
     GitHub.IssuesSpec
     GitHub.PullRequestsSpec
+    GitHub.ReleasesSpec
     GitHub.ReposSpec
     GitHub.SearchSpec
     GitHub.UsersSpec
