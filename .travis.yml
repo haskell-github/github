@@ -89,7 +89,7 @@ script:
  # run samples
  - for sample in show-user list-followers list-following operational; do
      echo "=== SAMPLE $sample ===";
-     $(find dist-newstyle/ -type -f -name github-$sample);
+     $(find dist-newstyle/ -type f -name github-$sample);
    done
 
 # EOF
