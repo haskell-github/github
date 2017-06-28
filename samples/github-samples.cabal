@@ -1,7 +1,3 @@
--- This file has been generated from package.yaml by hpack version 0.14.1.
---
--- see: https://github.com/sol/hpack
-
 name:           github-samples
 version:        0.0.0
 build-type:     Simple
@@ -31,9 +27,6 @@ executable github-add-team-membership-for
     , github
     , text
     , github-samples
-  other-modules:
-      DeleteTeamMembershipFor
-      TeamMembershipInfoFor
   default-language: Haskell2010
 
 executable github-create-deploy-key
@@ -47,10 +40,6 @@ executable github-create-deploy-key
     , github
     , text
     , github-samples
-  other-modules:
-      DeleteDeployKey
-      ListDeployKeys
-      ShowDeployKey
   default-language: Haskell2010
 
 executable github-delete-deploy-key
@@ -64,10 +53,6 @@ executable github-delete-deploy-key
     , github
     , text
     , github-samples
-  other-modules:
-      CreateDeployKey
-      ListDeployKeys
-      ShowDeployKey
   default-language: Haskell2010
 
 executable github-delete-team
@@ -81,14 +66,6 @@ executable github-delete-team
     , github
     , text
     , github-samples
-  other-modules:
-      EditTeam
-      ListRepos
-      ListTeamsCurrent
-      Memberships.AddTeamMembershipFor
-      Memberships.DeleteTeamMembershipFor
-      Memberships.TeamMembershipInfoFor
-      TeamInfoFor
   default-language: Haskell2010
 
 executable github-delete-team-membership-for
@@ -102,9 +79,6 @@ executable github-delete-team-membership-for
     , github
     , text
     , github-samples
-  other-modules:
-      AddTeamMembershipFor
-      TeamMembershipInfoFor
   default-language: Haskell2010
 
 executable github-edit-team
@@ -118,14 +92,6 @@ executable github-edit-team
     , github
     , text
     , github-samples
-  other-modules:
-      DeleteTeam
-      ListRepos
-      ListTeamsCurrent
-      Memberships.AddTeamMembershipFor
-      Memberships.DeleteTeamMembershipFor
-      Memberships.TeamMembershipInfoFor
-      TeamInfoFor
   default-language: Haskell2010
 
 executable github-list-deploy-keys-for
@@ -140,10 +106,6 @@ executable github-list-deploy-keys-for
     , text
     , github-samples
     , vector
-  other-modules:
-      CreateDeployKey
-      DeleteDeployKey
-      ShowDeployKey
   default-language: Haskell2010
 
 executable github-list-followers
@@ -157,9 +119,6 @@ executable github-list-followers
     , github
     , text
     , github-samples
-  other-modules:
-      Example
-      ListFollowing
   default-language: Haskell2010
 
 executable github-list-followers-example
@@ -172,9 +131,6 @@ executable github-list-followers-example
     , base-compat
     , github
     , text
-  other-modules:
-      ListFollowers
-      ListFollowing
   default-language: Haskell2010
 
 executable github-list-following
@@ -188,9 +144,6 @@ executable github-list-following
     , github
     , text
     , github-samples
-  other-modules:
-      Example
-      ListFollowers
   default-language: Haskell2010
 
 executable github-list-team-current
@@ -204,14 +157,6 @@ executable github-list-team-current
     , github
     , text
     , github-samples
-  other-modules:
-      DeleteTeam
-      EditTeam
-      ListRepos
-      Memberships.AddTeamMembershipFor
-      Memberships.DeleteTeamMembershipFor
-      Memberships.TeamMembershipInfoFor
-      TeamInfoFor
   default-language: Haskell2010
 
 executable github-list-team-repos
@@ -225,14 +170,6 @@ executable github-list-team-repos
     , github
     , text
     , github-samples
-  other-modules:
-      DeleteTeam
-      EditTeam
-      ListTeamsCurrent
-      Memberships.AddTeamMembershipFor
-      Memberships.DeleteTeamMembershipFor
-      Memberships.TeamMembershipInfoFor
-      TeamInfoFor
   default-language: Haskell2010
 
 executable github-operational
@@ -264,10 +201,6 @@ executable github-show-deploy-key
     , github
     , text
     , github-samples
-  other-modules:
-      CreateDeployKey
-      DeleteDeployKey
-      ListDeployKeys
   default-language: Haskell2010
 
 executable github-show-user
@@ -281,11 +214,6 @@ executable github-show-user
     , github
     , text
     , github-samples
-  other-modules:
-      Followers.Example
-      Followers.ListFollowers
-      Followers.ListFollowing
-      ShowUser2
   default-language: Haskell2010
 
 executable github-show-user-2
@@ -299,11 +227,6 @@ executable github-show-user-2
     , github
     , text
     , github-samples
-  other-modules:
-      Followers.Example
-      Followers.ListFollowers
-      Followers.ListFollowing
-      ShowUser
   default-language: Haskell2010
 
 executable github-team-membership-info-for
@@ -317,9 +240,6 @@ executable github-team-membership-info-for
     , github
     , text
     , github-samples
-  other-modules:
-      AddTeamMembershipFor
-      DeleteTeamMembershipFor
   default-language: Haskell2010
 
 executable github-teaminfo-for
@@ -333,12 +253,4 @@ executable github-teaminfo-for
     , github
     , text
     , github-samples
-  other-modules:
-      DeleteTeam
-      EditTeam
-      ListRepos
-      ListTeamsCurrent
-      Memberships.AddTeamMembershipFor
-      Memberships.DeleteTeamMembershipFor
-      Memberships.TeamMembershipInfoFor
   default-language: Haskell2010
