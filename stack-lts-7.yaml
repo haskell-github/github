@@ -1,6 +1,0 @@
-resolver: lts-7.7
-packages:
-- '.'
-- samples/
-extra-deps:
-- hsc2hs-0.68
