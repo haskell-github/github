@@ -210,6 +210,25 @@ module GitHub (
     pullRequestReviewCommentsR,
     pullRequestReviewCommentR,
 
+    -- ** Pull request reviews
+    -- | See <https://developer.github.com/v3/pulls/reviews/>
+    --
+    -- Missing endpoints:
+    --
+    -- * Delete a pending review
+    -- * Create a pull request review
+    -- * Submit a pull request review
+    -- * Dismiss a pull request review
+    reviewsForR,
+    reviewsFor,
+    reviewsFor',
+    reviewForR,
+    reviewFor,
+    reviewFor',
+    reviewCommentsForR,
+    reviewCommentsFor,
+    reviewCommentsFor',
+
     -- * Repositories
     -- | See <https://developer.github.com/v3/repos/>
     --
@@ -334,6 +353,7 @@ import GitHub.Endpoints.Organizations
 import GitHub.Endpoints.Organizations.Members
 import GitHub.Endpoints.Organizations.Teams
 import GitHub.Endpoints.PullRequests
+import GitHub.Endpoints.PullRequests.Reviews
 import GitHub.Endpoints.PullRequests.ReviewComments
 import GitHub.Endpoints.Repos
 import GitHub.Endpoints.Repos.Collaborators
