@@ -5,6 +5,7 @@
 --
 module GitHub.Data.Content where
 
+import GitHub.Data.GitData
 import GitHub.Data.URL
 import GitHub.Internal.Prelude
 import Prelude ()
@@ -54,6 +55,15 @@ data ContentInfo = ContentInfo {
 
 instance NFData ContentInfo where rnf = genericRnf
 instance Binary ContentInfo
+
+data ContentResult = ContentResult
+    { contentResultInfo   :: !ContentInfo
+    , contentResultSize   :: !Int
+    , contentResultCommit :: !Commit
+    } deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData ContentResult where rnf = genericRnf
+instance Binary ContentResult
 
 data Author = Author
     { authorName  :: !Text
@@ -136,6 +146,12 @@ instance FromJSON ContentInfo where
                 <*> o .: "url"
                 <*> o .: "git_url"
                 <*> o .: "html_url"
+
+instance FromJSON ContentResult where
+  parseJSON = withObject "ContentResult" $ \o ->
+    ContentResult <$> parseJSON (Object o)
+                  <*> o .: "size"
+                  <*> o .: "commit"
 
 instance ToJSON Author where
   toJSON (Author { authorName   = name

@@ -85,7 +85,7 @@ createFile
     -> Name Owner      -- ^ owner
     -> Name Repo       -- ^ repository name
     -> CreateFile
-    -> IO (Either Error Content)
+    -> IO (Either Error ContentResult)
 createFile auth user repo body =
     executeRequest auth $ createFileR user repo body
 
@@ -95,7 +95,7 @@ createFileR
     :: Name Owner
     -> Name Repo
     -> CreateFile
-    -> Request 'RW Content
+    -> Request 'RW ContentResult
 createFileR user repo body =
     command Put ["repos", toPathPart user, toPathPart repo, "contents", createFilePath body] (encode body)
 
@@ -105,7 +105,7 @@ updateFile
     -> Name Owner      -- ^ owner
     -> Name Repo       -- ^ repository name
     -> UpdateFile
-    -> IO (Either Error Content)
+    -> IO (Either Error ContentResult)
 updateFile auth user repo body =
     executeRequest auth $ updateFileR user repo body
 
@@ -115,7 +115,7 @@ updateFileR
     :: Name Owner
     -> Name Repo
     -> UpdateFile
-    -> Request 'RW Content
+    -> Request 'RW ContentResult
 updateFileR user repo body =
     command Put ["repos", toPathPart user, toPathPart repo, "contents", updateFilePath body] (encode body)
 
