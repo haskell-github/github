@@ -56,10 +56,17 @@ data ContentInfo = ContentInfo {
 instance NFData ContentInfo where rnf = genericRnf
 instance Binary ContentInfo
 
+data ContentResultInfo = ContentResultInfo
+    { contentResultInfo :: !ContentInfo
+    , contentResultSize :: !Int
+    } deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData ContentResultInfo where rnf = genericRnf
+instance Binary ContentResultInfo
+
 data ContentResult = ContentResult
-    { contentResultInfo   :: !ContentInfo
-    , contentResultSize   :: !Int
-    , contentResultCommit :: !Commit
+    { contentResultContent  :: !ContentResultInfo
+    , contentResultCommit   :: !GitCommit
     } deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData ContentResult where rnf = genericRnf
@@ -147,10 +154,14 @@ instance FromJSON ContentInfo where
                 <*> o .: "git_url"
                 <*> o .: "html_url"
 
+instance FromJSON ContentResultInfo where
+  parseJSON = withObject "ContentResultInfo" $ \o ->
+    ContentResultInfo <$> parseJSON (Object o)
+                  <*> o .: "size"
+
 instance FromJSON ContentResult where
   parseJSON = withObject "ContentResult" $ \o ->
-    ContentResult <$> parseJSON (Object o)
-                  <*> o .: "size"
+    ContentResult <$> o .: "content"
                   <*> o .: "commit"
 
 instance ToJSON Author where
