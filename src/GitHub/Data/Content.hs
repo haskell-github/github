@@ -5,6 +5,8 @@
 --
 module GitHub.Data.Content where
 
+import Data.Aeson.Types        (KeyValue)
+import Data.Maybe              (maybe)
 import GitHub.Data.GitData
 import GitHub.Data.URL
 import GitHub.Internal.Prelude
@@ -179,14 +181,14 @@ instance ToJSON CreateFile where
                      , createFileBranch     = branch
                      , createFileAuthor     = author
                      , createFileCommitter  = committer
-                     }) = object
+                     }) = object $
                      [ "path"              .= path
                      , "message"           .= message
                      , "content"           .= content
-                     , "branch"            .= branch
-                     , "author"            .= author
-                     , "committer"         .= committer
                      ]
+                     ++ "branch"           .=? branch
+                     ++ "author"           .=? author
+                     ++ "committer"        .=? committer
 
 instance ToJSON UpdateFile where
   toJSON (UpdateFile { updateFilePath       = path
@@ -196,15 +198,15 @@ instance ToJSON UpdateFile where
                      , updateFileBranch     = branch
                      , updateFileAuthor     = author
                      , updateFileCommitter  = committer
-                     }) = object
+                     }) = object $
                      [ "path"              .= path
                      , "message"           .= message
                      , "content"           .= content
                      , "sha"               .= sha
-                     , "branch"            .= branch
-                     , "author"            .= author
-                     , "committer"         .= committer
                      ]
+                     ++ "branch"           .=? branch
+                     ++ "author"           .=? author
+                     ++ "committer"        .=? committer
 
 instance ToJSON DeleteFile where
   toJSON (DeleteFile { deleteFilePath       = path
@@ -213,11 +215,14 @@ instance ToJSON DeleteFile where
                      , deleteFileBranch     = branch
                      , deleteFileAuthor     = author
                      , deleteFileCommitter  = committer
-                     }) = object
+                     }) = object $
                      [ "path"              .= path
                      , "message"           .= message
                      , "sha"               .= sha
-                     , "branch"            .= branch
-                     , "author"            .= author
-                     , "committer"         .= committer
                      ]
+                     ++ "branch"           .=? branch
+                     ++ "author"           .=? author
+                     ++ "committer"        .=? committer
+
+(.=?) :: ToJSON v => KeyValue t => Text -> Maybe v -> [t]
+name .=? value = maybe [] (pure . (name .=)) value
