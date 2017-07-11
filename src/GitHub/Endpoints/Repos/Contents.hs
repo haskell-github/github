@@ -24,7 +24,9 @@ module GitHub.Endpoints.Repos.Contents (
 
     -- ** Delete
     deleteFile,
-    deleteFileR
+    deleteFileR,
+
+    module GitHub.Data
     ) where
 
 import GitHub.Data
