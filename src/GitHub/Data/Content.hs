@@ -55,6 +55,55 @@ data ContentInfo = ContentInfo {
 instance NFData ContentInfo where rnf = genericRnf
 instance Binary ContentInfo
 
+data Author = Author
+    { authorName  :: !Text
+    , authorEmail :: !Text
+    }
+    deriving (Eq, Ord, Show, Data, Typeable, Generic)
+
+instance NFData Author where rnf = genericRnf
+instance Binary Author
+
+data CreateFile = CreateFile
+    { createFilePath      :: !Text
+    , createFileMessage   :: !Text
+    , createFileContent   :: !Text
+    , createFileBranch    :: !(Maybe Text)
+    , createFileAuthor    :: !(Maybe Author)
+    , createFileCommitter :: !(Maybe Author)
+    }
+    deriving (Eq, Ord, Show, Data, Typeable, Generic)
+
+instance NFData CreateFile where rnf = genericRnf
+instance Binary CreateFile
+
+data UpdateFile = UpdateFile
+    { updateFilePath      :: !Text
+    , updateFileMessage   :: !Text
+    , updateFileContent   :: !Text
+    , updateFileSHA       :: !Text
+    , updateFileBranch    :: !(Maybe Text)
+    , updateFileAuthor    :: !(Maybe Author)
+    , updateFileCommitter :: !(Maybe Author)
+    }
+    deriving (Eq, Ord, Show, Data, Typeable, Generic)
+
+instance NFData UpdateFile where rnf = genericRnf
+instance Binary UpdateFile
+
+data DeleteFile = DeleteFile
+    { deleteFilePath      :: !Text
+    , deleteFileMessage   :: !Text
+    , deleteFileSHA       :: !Text
+    , deleteFileBranch    :: !(Maybe Text)
+    , deleteFileAuthor    :: !(Maybe Author)
+    , deleteFileCommitter :: !(Maybe Author)
+    }
+    deriving (Eq, Ord, Show, Data, Typeable, Generic)
+
+instance NFData DeleteFile where rnf = genericRnf
+instance Binary DeleteFile
+
 instance FromJSON Content where
   parseJSON o@(Object _) = ContentFile <$> parseJSON o
   parseJSON (Array os) = ContentDirectory <$> traverse parseJSON os
@@ -87,3 +136,61 @@ instance FromJSON ContentInfo where
                 <*> o .: "url"
                 <*> o .: "git_url"
                 <*> o .: "html_url"
+
+instance ToJSON Author where
+  toJSON (Author { authorName   = name
+                 , authorEmail  = email
+                 }) = object
+                 [ "name"      .= name
+                 , "email"     .= email
+                 ]
+
+instance ToJSON CreateFile where
+  toJSON (CreateFile { createFilePath       = path
+                     , createFileMessage    = message
+                     , createFileContent    = content
+                     , createFileBranch     = branch
+                     , createFileAuthor     = author
+                     , createFileCommitter  = committer
+                     }) = object
+                     [ "path"              .= path
+                     , "message"           .= message
+                     , "content"           .= content
+                     , "branch"            .= branch
+                     , "author"            .= author
+                     , "committer"         .= committer
+                     ]
+
+instance ToJSON UpdateFile where
+  toJSON (UpdateFile { updateFilePath       = path
+                     , updateFileMessage    = message
+                     , updateFileContent    = content
+                     , updateFileSHA        = sha
+                     , updateFileBranch     = branch
+                     , updateFileAuthor     = author
+                     , updateFileCommitter  = committer
+                     }) = object
+                     [ "path"              .= path
+                     , "message"           .= message
+                     , "content"           .= content
+                     , "sha"               .= sha
+                     , "branch"            .= branch
+                     , "author"            .= author
+                     , "committer"         .= committer
+                     ]
+
+instance ToJSON DeleteFile where
+  toJSON (DeleteFile { deleteFilePath       = path
+                     , deleteFileMessage    = message
+                     , deleteFileSHA        = sha
+                     , deleteFileBranch     = branch
+                     , deleteFileAuthor     = author
+                     , deleteFileCommitter  = committer
+                     }) = object
+                     [ "path"              .= path
+                     , "message"           .= message
+                     , "sha"               .= sha
+                     , "branch"            .= branch
+                     , "author"            .= author
+                     , "committer"         .= committer
+                     ]
