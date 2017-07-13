@@ -55,7 +55,9 @@ instance FromJSON Review where
             o .: "id"
 
 data ReviewComment = ReviewComment
-    { reviewCommentBody :: !Text
+    { reviewCommentId :: !(Id ReviewComment)
+    , reviewCommentUser :: !SimpleUser
+    , reviewCommentBody :: !Text
     , reviewCommentUrl :: !URL
     , reviewCommentPullRequestReviewId :: !(Id Review)
     , reviewCommentDiffHunk :: !Text
@@ -68,8 +70,6 @@ data ReviewComment = ReviewComment
     , reviewCommentUpdatedAt :: !UTCTime
     , reviewCommentHtmlUrl :: !URL
     , reviewCommentPullRequestUrl :: !URL
-    , reviewCommentUser :: !SimpleUser
-    , reviewCommentId :: !(Id ReviewComment)
     } deriving (Show, Generic)
 
 instance NFData ReviewComment where
@@ -79,18 +79,19 @@ instance Binary ReviewComment
 
 instance FromJSON ReviewComment where
     parseJSON =
-        withObject "ReviewComment" $ \o ->
-            ReviewComment <$> o .: "body" <*> o .: "url" <*>
-            o .: "pull_request_review_id" <*>
-            o .: "diff_hunk" <*>
-            o .: "path" <*>
-            o .: "position" <*>
-            o .: "original_position" <*>
-            o .: "commit_id" <*>
-            o .: "original_commit_id" <*>
-            o .: "created_at" <*>
-            o .: "updated_at" <*>
-            o .: "html_url" <*>
-            o .: "pull_request_url" <*>
-            o .: "user" <*>
-            o .: "id"
+        withObject "ReviewComment" $ \o -> ReviewComment
+            <$> o .: "id"
+            <*> o .: "user"
+            <*> o .: "body"
+            <*> o .: "url"
+            <*> o .: "pull_request_review_id"
+            <*> o .: "diff_hunk"
+            <*> o .: "path"
+            <*> o .: "position"
+            <*> o .: "original_position"
+            <*> o .: "commit_id"
+            <*> o .: "original_commit_id"
+            <*> o .: "created_at"
+            <*> o .: "updated_at"
+            <*> o .: "html_url"
+            <*> o .: "pull_request_url"
