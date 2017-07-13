@@ -22,10 +22,10 @@ withAuth action = do
 
 spec :: Spec
 spec = do
-    describe "reviewsForR" $ do
+    describe "pullRequestReviewsR" $ do
         it "works" $ withAuth $ \auth -> for_ prs $ \(owner, repo, prid) -> do
             cs <- GitHub.executeRequest auth $
-                GitHub.reviewsForR owner repo prid GitHub.FetchAll 
+                GitHub.pullRequestReviewsR owner repo prid GitHub.FetchAll
             cs `shouldSatisfy` isRight
   where
     prs =

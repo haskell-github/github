@@ -207,8 +207,8 @@ module GitHub (
     -- * Create a comment
     -- * Edit a comment
     -- * Delete a comment
-    pullRequestReviewCommentsR,
-    pullRequestReviewCommentR,
+    pullRequestCommentsR,
+    pullRequestCommentR,
 
     -- ** Pull request reviews
     -- | See <https://developer.github.com/v3/pulls/reviews/>
@@ -219,15 +219,15 @@ module GitHub (
     -- * Create a pull request review
     -- * Submit a pull request review
     -- * Dismiss a pull request review
-    reviewsForR,
-    reviewsFor,
-    reviewsFor',
-    reviewForR,
-    reviewFor,
-    reviewFor',
-    reviewCommentsForR,
-    reviewCommentsFor,
-    reviewCommentsFor',
+    pullRequestReviewsR,
+    pullRequestReviews,
+    pullRequestReviews',
+    pullRequestReviewR,
+    pullRequestReview,
+    pullRequestReview',
+    pullRequestReviewCommentsR,
+    pullRequestReviewCommentsIO,
+    pullRequestReviewCommentsIO',
 
     -- * Repositories
     -- | See <https://developer.github.com/v3/repos/>

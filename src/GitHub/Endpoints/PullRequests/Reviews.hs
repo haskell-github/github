@@ -5,15 +5,15 @@
 --
 -- The reviews API as described on <http://developer.github.com/v3/pulls/reviews/>.
 module GitHub.Endpoints.PullRequests.Reviews
-  ( reviewsForR
-  , reviewsFor
-  , reviewsFor'
-  , reviewForR
-  , reviewFor
-  , reviewFor'
-  , reviewCommentsForR
-  , reviewCommentsFor
-  , reviewCommentsFor'
+  ( pullRequestReviewsR
+  , pullRequestReviews
+  , pullRequestReviews'
+  , pullRequestReviewR
+  , pullRequestReview
+  , pullRequestReview'
+  , pullRequestReviewCommentsR
+  , pullRequestReviewCommentsIO
+  , pullRequestReviewCommentsIO'
   , module GitHub.Data
   ) where
 
@@ -27,13 +27,13 @@ import Prelude ()
 
 -- | List reviews for a pull request.
 -- See <https://developer.github.com/v3/pulls/reviews/#list-reviews-on-a-pull-request>
-reviewsForR
+pullRequestReviewsR
   :: Name Owner
   -> Name Repo
   -> Id PullRequest
   -> FetchCount
   -> Request k (Vector Review)
-reviewsForR owner repo prid =
+pullRequestReviewsR owner repo prid =
   pagedQuery
     [ "repos"
     , toPathPart owner
@@ -48,37 +48,37 @@ reviewsForR owner repo prid =
 -- | All reviews for a pull request given the repo owner, repo name and the pull
 -- request id.
 --
--- > reviewsFor "thoughtbot" "paperclip" (Id 101)
-reviewsFor :: Name Owner
-           -> Name Repo
-           -> Id PullRequest
-           -> IO (Either Error (Vector Review))
-reviewsFor owner repo prid =
-  executeRequest' $ reviewsForR owner repo prid FetchAll
+-- > pullRequestReviews "thoughtbot" "paperclip" (Id 101)
+pullRequestReviews :: Name Owner
+                   -> Name Repo
+                   -> Id PullRequest
+                   -> IO (Either Error (Vector Review))
+pullRequestReviews owner repo prid =
+  executeRequest' $ pullRequestReviewsR owner repo prid FetchAll
 
 
 -- | All reviews for a pull request given the repo owner, repo name and the pull
 -- request id. With authentication.
 --
--- > reviewsFor' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" (Id 101)
-reviewsFor'
+-- > pullRequestReviews' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" (Id 101)
+pullRequestReviews'
   :: Maybe Auth
   -> Name Owner
   -> Name Repo
   -> Id PullRequest
   -> IO (Either Error (Vector Review))
-reviewsFor' auth owner repo pr =
-  executeRequestMaybe auth $ reviewsForR owner repo pr FetchAll
+pullRequestReviews' auth owner repo pr =
+  executeRequestMaybe auth $ pullRequestReviewsR owner repo pr FetchAll
 
 
 -- | Query a single pull request review.
 -- see <https://developer.github.com/v3/pulls/reviews/#get-a-single-review>
-reviewForR :: Name Owner
-           -> Name Repo
-           -> Id PullRequest
-           -> Id Review
-           -> Request k Review
-reviewForR owner repo prid rid =
+pullRequestReviewR :: Name Owner
+                   -> Name Repo
+                   -> Id PullRequest
+                   -> Id Review
+                   -> Request k Review
+pullRequestReviewR owner repo prid rid =
   query
     [ "repos"
     , toPathPart owner
@@ -94,42 +94,42 @@ reviewForR owner repo prid rid =
 -- | A detailed review on a pull request given the repo owner, repo name, pull
 -- request id and review id.
 --
--- > reviewFor "thoughtbot" "factory_girl" (Id 301819) (Id 332)
-reviewFor
+-- > pullRequestReview "thoughtbot" "factory_girl" (Id 301819) (Id 332)
+pullRequestReview
   :: Name Owner
   -> Name Repo
   -> Id PullRequest
   -> Id Review
   -> IO (Either Error Review)
-reviewFor owner repo prid rid =
-  executeRequest' $ reviewForR owner repo prid rid
+pullRequestReview owner repo prid rid =
+  executeRequest' $ pullRequestReviewR owner repo prid rid
 
 
 -- | A detailed review on a pull request given the repo owner, repo name, pull
 -- request id and review id. With authentication.
 --
--- > reviewFor' (Just ("github-username", "github-password"))
+-- > pullRequestReview' (Just ("github-username", "github-password"))
 -- "thoughtbot" "factory_girl" (Id 301819) (Id 332)
-reviewFor'
+pullRequestReview'
   :: Maybe Auth
   -> Name Owner
   -> Name Repo
   -> Id PullRequest
   -> Id Review
   -> IO (Either Error Review)
-reviewFor' auth owner repo prid rid =
-  executeRequestMaybe auth $ reviewForR owner repo prid rid
+pullRequestReview' auth owner repo prid rid =
+  executeRequestMaybe auth $ pullRequestReviewR owner repo prid rid
 
 
 -- | Query the comments for a single pull request review.
 -- see <https://developer.github.com/v3/pulls/reviews/#get-comments-for-a-single-review>
-reviewCommentsForR
+pullRequestReviewCommentsR
   :: Name Owner
   -> Name Repo
   -> Id PullRequest
   -> Id Review
   -> Request k [ReviewComment]
-reviewCommentsForR owner repo prid rid =
+pullRequestReviewCommentsR owner repo prid rid =
   query
     [ "repos"
     , toPathPart owner
@@ -146,27 +146,27 @@ reviewCommentsForR owner repo prid rid =
 -- | All comments for a review on a pull request given the repo owner, repo
 -- name, pull request id and review id.
 --
--- > reviewCommentsFor "thoughtbot" "factory_girl" (Id 301819) (Id 332)
-reviewCommentsFor
+-- > pullRequestReviewComments "thoughtbot" "factory_girl" (Id 301819) (Id 332)
+pullRequestReviewCommentsIO
   :: Name Owner
   -> Name Repo
   -> Id PullRequest
   -> Id Review
   -> IO (Either Error [ReviewComment])
-reviewCommentsFor owner repo prid rid =
-  executeRequest' $ reviewCommentsForR owner repo prid rid
+pullRequestReviewCommentsIO owner repo prid rid =
+  executeRequest' $ pullRequestReviewCommentsR owner repo prid rid
 
 
 -- | All comments for a review on a pull request given the repo owner, repo
 -- name, pull request id and review id. With authentication.
 --
--- > reviewCommentsFor' (Just ("github-username", "github-password")) "thoughtbot" "factory_girl" (Id 301819) (Id 332)
-reviewCommentsFor'
+-- > pullRequestReviewComments' (Just ("github-username", "github-password")) "thoughtbot" "factory_girl" (Id 301819) (Id 332)
+pullRequestReviewCommentsIO'
   :: Maybe Auth
   -> Name Owner
   -> Name Repo
   -> Id PullRequest
   -> Id Review
   -> IO (Either Error [ReviewComment])
-reviewCommentsFor' auth owner repo prid rid =
-  executeRequestMaybe auth $ reviewCommentsForR owner repo prid rid
+pullRequestReviewCommentsIO' auth owner repo prid rid =
+  executeRequestMaybe auth $ pullRequestReviewCommentsR owner repo prid rid

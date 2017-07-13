@@ -4,7 +4,7 @@ import qualified Github.PullRequests.ReviewComments as Github
 import Data.List
 
 main = do
-  possiblePullRequestComment <- Github.pullRequestReviewComment "thoughtbot" "factory_girl" 301819
+  possiblePullRequestComment <- Github.pullRequestComment "thoughtbot" "factory_girl" 301819
   case possiblePullRequestComment of
        (Left error)     -> putStrLn $ "Error: " ++ (show error)
        (Right comment) -> putStrLn $ formatComment comment
