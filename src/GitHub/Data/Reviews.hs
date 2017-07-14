@@ -2,7 +2,7 @@ module GitHub.Data.Reviews where
 
 import Data.Text (Text)
 import GitHub.Data.Definitions (SimpleUser)
-import GitHub.Data.Id (Id(Id))
+import GitHub.Data.Id (Id)
 import GitHub.Data.URL (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
