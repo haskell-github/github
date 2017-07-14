@@ -109,7 +109,7 @@ Library
     GitHub.Endpoints.Organizations.Teams
     GitHub.Endpoints.PullRequests
     GitHub.Endpoints.PullRequests.Reviews
-    GitHub.Endpoints.PullRequests.ReviewComments
+    GitHub.Endpoints.PullRequests.Comments
     GitHub.Endpoints.Repos
     GitHub.Endpoints.Repos.Collaborators
     GitHub.Endpoints.Repos.Comments

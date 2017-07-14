@@ -1,4 +1,4 @@
-module ShowComments where
+module ShowComment where
 
 import qualified Github.PullRequests.ReviewComments as Github
 import Data.List

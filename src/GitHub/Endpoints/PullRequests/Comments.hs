@@ -5,7 +5,7 @@
 --
 -- The pull request review comments API as described at
 -- <http://developer.github.com/v3/pulls/comments/>.
-module GitHub.Endpoints.PullRequests.ReviewComments (
+module GitHub.Endpoints.PullRequests.Comments (
     pullRequestCommentsIO,
     pullRequestCommentsR,
     pullRequestComment,

@@ -354,7 +354,7 @@ import GitHub.Endpoints.Organizations.Members
 import GitHub.Endpoints.Organizations.Teams
 import GitHub.Endpoints.PullRequests
 import GitHub.Endpoints.PullRequests.Reviews
-import GitHub.Endpoints.PullRequests.ReviewComments
+import GitHub.Endpoints.PullRequests.Comments
 import GitHub.Endpoints.Repos
 import GitHub.Endpoints.Repos.Collaborators
 import GitHub.Endpoints.Repos.Comments
