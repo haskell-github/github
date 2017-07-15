@@ -1,21 +1,29 @@
+{-# LANGUAGE OverloadedStrings #-}
 module ListComments where
 
-import qualified Github.PullRequests.Comments as Github
-import Data.List
+import qualified GitHub.Endpoints.PullRequests.Comments as GitHub
+import GitHub.Data.Id (Id(Id))
+import Data.Monoid ((<>))
+import Data.Text (Text, unpack, pack)
+import Data.Time.Format
 
+main :: IO ()
 main = do
-  possiblePullRequestComments <- Github.pullRequestComments "thoughtbot" "factory_girl" 256
+  possiblePullRequestComments <- GitHub.pullRequestCommentsIO "thoughtbot" "factory_girl" (Id 256)
   case possiblePullRequestComments of
-       (Left error)     -> putStrLn $ "Error: " ++ (show error)
-       (Right comments) -> putStrLn $ intercalate "\n\n" $ map formatComment comments
+       (Left err)     -> putStrLn $ "Error: " <> show err
+       (Right comments) -> putStrLn . unpack $ foldr (\a b -> a <> "\n\n" <> b) "" (formatComment <$> comments)
 
-formatComment :: Github.Comment -> String
+formatComment :: GitHub.Comment -> Text
 formatComment comment =
-  "Author: " ++ (formatAuthor $ Github.commentUser comment) ++
-    "\nUpdated: " ++ (show $ Github.commentUpdatedAt comment) ++
-    (maybe "" ("\nURL: "++) $ Github.commentHtmlUrl comment) ++
-    "\n\n" ++ (Github.commentBody comment)
+    "Author: " <> formatAuthor (GitHub.commentUser comment) <>
+    "\nUpdated: " <> pack (formatTime' (GitHub.commentUpdatedAt comment)) <>
+    (maybe "" (\u -> "\nURL: " <> GitHub.getUrl u) $ GitHub.commentHtmlUrl comment) <>
+    "\n\n" <> GitHub.commentBody comment
 
-formatAuthor :: Github.Owner -> String
+formatAuthor :: GitHub.SimpleUser -> Text
 formatAuthor user =
-  (Github.githubOwnerLogin user) ++ " (" ++ (Github.githubOwnerUrl user) ++ ")"
+  GitHub.untagName (GitHub.simpleUserLogin user) <> " (" <> GitHub.getUrl (GitHub.simpleUserUrl user) <> ")"
+
+formatTime' :: (FormatTime t) => t -> String
+formatTime' = formatTime defaultTimeLocale "%T, %F (%Z)"
