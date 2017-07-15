@@ -42,6 +42,7 @@ module GitHub.Endpoints.Repos (
     createRepoR,
     createOrganizationRepo',
     createOrganizationRepoR,
+    forkExistingRepoR,
 
     -- ** Edit
     editRepo,
@@ -171,6 +172,13 @@ createRepo' auth nrepo =
 createRepoR :: NewRepo -> Request 'RW Repo
 createRepoR nrepo =
     command Post ["user", "repos"] (encode nrepo)
+
+-- | Fork an existing repository.
+-- See <https://developer.github.com/v3/repos/forks/#create-a-fork>
+-- TODO: The third paramater (an optional Organisation) is not used yet.
+forkExistingRepoR :: Name Owner -> Name Repo -> Maybe (Name Owner) -> Request 'RW Repo
+forkExistingRepoR owner repo _morg =
+    command Post ["repos", toPathPart owner, toPathPart repo, "forks" ] mempty
 
 -- | Create a new repository for an organization.
 --
