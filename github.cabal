@@ -112,6 +112,7 @@ Library
     GitHub.Endpoints.Repos.Collaborators
     GitHub.Endpoints.Repos.Comments
     GitHub.Endpoints.Repos.Commits
+    GitHub.Endpoints.Repos.Contents
     GitHub.Endpoints.Repos.DeployKeys
     GitHub.Endpoints.Repos.Forks
     GitHub.Endpoints.Repos.Releases
