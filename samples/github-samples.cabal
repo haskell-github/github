@@ -190,6 +190,20 @@ executable github-operational
     , transformers-compat
   default-language: Haskell2010
 
+executable github-repos-contents-example
+  main-is: Contents.hs
+  hs-source-dirs:
+      Repos
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , github-samples
+    , text
+    , vector
+  default-language: Haskell2010
+
 executable github-show-deploy-key
   main-is: ShowDeployKey.hs
   hs-source-dirs:
