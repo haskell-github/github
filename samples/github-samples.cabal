@@ -198,6 +198,7 @@ executable github-repos-contents-example
   build-depends:
       base
     , base-compat
+    , base64-bytestring
     , github
     , github-samples
     , text
