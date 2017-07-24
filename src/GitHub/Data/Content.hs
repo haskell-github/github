@@ -1,3 +1,4 @@
+{-# LANGUAGE RecordWildCards #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -5,7 +6,7 @@
 --
 module GitHub.Data.Content where
 
-import Data.Aeson.Types        (KeyValue)
+import Data.Aeson.Types        (Pair)
 import Data.Maybe              (maybe)
 import GitHub.Data.GitData
 import GitHub.Data.URL
@@ -167,62 +168,41 @@ instance FromJSON ContentResult where
                   <*> o .: "commit"
 
 instance ToJSON Author where
-  toJSON (Author { authorName   = name
-                 , authorEmail  = email
-                 }) = object
-                 [ "name"      .= name
-                 , "email"     .= email
-                 ]
+  toJSON Author {..} = object
+    [ "name"  .= authorName
+    , "email" .= authorEmail
+    ]
 
 instance ToJSON CreateFile where
-  toJSON (CreateFile { createFilePath       = path
-                     , createFileMessage    = message
-                     , createFileContent    = content
-                     , createFileBranch     = branch
-                     , createFileAuthor     = author
-                     , createFileCommitter  = committer
-                     }) = object $
-                     [ "path"              .= path
-                     , "message"           .= message
-                     , "content"           .= content
-                     ]
-                     ++ "branch"           .=? branch
-                     ++ "author"           .=? author
-                     ++ "committer"        .=? committer
+  toJSON CreateFile {..} = object $
+    [ "path"       .= createFilePath
+    , "message"    .= createFileMessage
+    , "content"    .= createFileContent
+    ]
+    ++ "branch"    .=? createFileBranch
+    ++ "author"    .=? createFileAuthor
+    ++ "committer" .=? createFileCommitter
 
 instance ToJSON UpdateFile where
-  toJSON (UpdateFile { updateFilePath       = path
-                     , updateFileMessage    = message
-                     , updateFileContent    = content
-                     , updateFileSHA        = sha
-                     , updateFileBranch     = branch
-                     , updateFileAuthor     = author
-                     , updateFileCommitter  = committer
-                     }) = object $
-                     [ "path"              .= path
-                     , "message"           .= message
-                     , "content"           .= content
-                     , "sha"               .= sha
-                     ]
-                     ++ "branch"           .=? branch
-                     ++ "author"           .=? author
-                     ++ "committer"        .=? committer
+  toJSON UpdateFile {..} = object $
+    [ "path"       .= updateFilePath
+    , "message"    .= updateFileMessage
+    , "content"    .= updateFileContent
+    , "sha"        .= updateFileSHA
+    ]
+    ++ "branch"    .=? updateFileBranch
+    ++ "author"    .=? updateFileAuthor
+    ++ "committer" .=? updateFileCommitter
 
 instance ToJSON DeleteFile where
-  toJSON (DeleteFile { deleteFilePath       = path
-                     , deleteFileMessage    = message
-                     , deleteFileSHA        = sha
-                     , deleteFileBranch     = branch
-                     , deleteFileAuthor     = author
-                     , deleteFileCommitter  = committer
-                     }) = object $
-                     [ "path"              .= path
-                     , "message"           .= message
-                     , "sha"               .= sha
-                     ]
-                     ++ "branch"           .=? branch
-                     ++ "author"           .=? author
-                     ++ "committer"        .=? committer
+  toJSON DeleteFile {..} = object $
+    [ "path"       .= deleteFilePath
+    , "message"    .= deleteFileMessage
+    , "sha"        .= deleteFileSHA
+    ]
+    ++ "branch"    .=? deleteFileBranch
+    ++ "author"    .=? deleteFileAuthor
+    ++ "committer" .=? deleteFileCommitter
 
-(.=?) :: ToJSON v => KeyValue t => Text -> Maybe v -> [t]
+(.=?) :: ToJSON v => Text -> Maybe v -> [Pair]
 name .=? value = maybe [] (pure . (name .=)) value
