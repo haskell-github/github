@@ -185,9 +185,11 @@ test-suite github-test
                  vector,
                  unordered-containers,
                  file-embed,
+                 aeson,
+                 text,
+                 bytestring,
                  hspec
   if flag(aeson-compat)
     build-depends: aeson-compat
   else
     build-depends: aeson-extra
-

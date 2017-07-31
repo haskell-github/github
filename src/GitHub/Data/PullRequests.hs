@@ -19,11 +19,12 @@ module GitHub.Data.PullRequests (
 
 import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id)
-import GitHub.Data.Options     (IssueState (..), MergeableState (..))
+import GitHub.Data.Options     (IssueState (..))
 import GitHub.Data.Repos       (Repo)
 import GitHub.Data.Request     (StatusMap)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
+import qualified Data.Text as T
 import Prelude ()
 
 data SimplePullRequest = SimplePullRequest
@@ -36,7 +37,7 @@ data SimplePullRequest = SimplePullRequest
     , simplePullRequestHtmlUrl   :: !URL
     , simplePullRequestUpdatedAt :: !UTCTime
     , simplePullRequestBody      :: !(Maybe Text)
-    , simplePullRequestAssignees :: (Vector SimpleUser)
+    , simplePullRequestAssignee  :: !(Maybe SimpleUser)
     , simplePullRequestIssueUrl  :: !URL
     , simplePullRequestDiffUrl   :: !URL
     , simplePullRequestUrl       :: !URL
@@ -60,7 +61,7 @@ data PullRequest = PullRequest
     , pullRequestHtmlUrl        :: !URL
     , pullRequestUpdatedAt      :: !UTCTime
     , pullRequestBody           :: !(Maybe Text)
-    , pullRequestAssignees      :: (Vector SimpleUser)
+    , pullRequestAssignee       :: !(Maybe SimpleUser)
     , pullRequestIssueUrl       :: !URL
     , pullRequestDiffUrl        :: !URL
     , pullRequestUrl            :: !URL
@@ -74,12 +75,10 @@ data PullRequest = PullRequest
     , pullRequestComments       :: !Count
     , pullRequestDeletions      :: !Count
     , pullRequestAdditions      :: !Count
-    , pullRequestReviewComments :: !Count
     , pullRequestBase           :: !PullRequestCommit
     , pullRequestCommits        :: !Count
     , pullRequestMerged         :: !Bool
     , pullRequestMergeable      :: !(Maybe Bool)
-    , pullRequestMergeableState :: !MergeableState
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -160,6 +159,9 @@ data PullRequestEventType
     | PullRequestUnassigned
     | PullRequestLabeled
     | PullRequestUnlabeled
+    | PullRequestReviewRequested
+    | PullRequestReviewRequestRemoved
+    | PullRequestEdited
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData PullRequestEventType where rnf = genericRnf
@@ -191,7 +193,7 @@ instance FromJSON SimplePullRequest where
         <*> o .: "html_url"
         <*> o .: "updated_at"
         <*> o .:? "body"
-        <*> o .: "assignees"
+        <*> o .: "assignee"
         <*> o .: "issue_url"
         <*> o .: "diff_url"
         <*> o .: "url"
@@ -231,7 +233,7 @@ instance FromJSON PullRequest where
         <*> o .: "html_url"
         <*> o .: "updated_at"
         <*> o .:? "body"
-        <*> o .: "assignees"
+        <*> o .: "assignee"
         <*> o .: "issue_url"
         <*> o .: "diff_url"
         <*> o .: "url"
@@ -245,12 +247,10 @@ instance FromJSON PullRequest where
         <*> o .: "comments"
         <*> o .: "deletions"
         <*> o .: "additions"
-        <*> o .: "review_comments"
         <*> o .: "base"
         <*> o .: "commits"
         <*> o .: "merged"
         <*> o .:? "mergeable"
-        <*> o .: "mergeable_state"
 
 instance FromJSON PullRequestLinks where
     parseJSON = withObject "PullRequestLinks" $ \o -> PullRequestLinks
@@ -284,6 +284,10 @@ instance FromJSON PullRequestEventType where
     parseJSON (String "unassigned") = pure PullRequestUnassigned
     parseJSON (String "labeled") = pure PullRequestLabeled
     parseJSON (String "unlabeled") = pure PullRequestUnlabeled
+    parseJSON (String "review_requested") = pure PullRequestReviewRequested
+    parseJSON (String "review_request_removed") = pure PullRequestReviewRequestRemoved
+    parseJSON (String "edited") = pure PullRequestEdited
+    parseJSON (String s) = fail $ "Unknown action type " <> T.unpack s
     parseJSON v = typeMismatch "Could not build a PullRequestEventType" v
 
 instance FromJSON PullRequestReference where
