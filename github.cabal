@@ -34,7 +34,8 @@ extra-source-files:
   fixtures/list-teams.json,
   fixtures/members-list.json,
   fixtures/user-organizations.json,
-  fixtures/user.json
+  fixtures/user.json,
+  fixtures/pull-request.json
 
 flag aeson-compat
   description: Whether to use aeson-compat or aeson-extra
