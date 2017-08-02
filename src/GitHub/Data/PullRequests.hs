@@ -19,7 +19,7 @@ module GitHub.Data.PullRequests (
 
 import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id)
-import GitHub.Data.Options     (IssueState (..))
+import GitHub.Data.Options     (IssueState (..), MergeableState (..))
 import GitHub.Data.Repos       (Repo)
 import GitHub.Data.Request     (StatusMap)
 import GitHub.Data.URL         (URL)
@@ -81,6 +81,7 @@ data PullRequest = PullRequest
     , pullRequestCommits        :: !Count
     , pullRequestMerged         :: !Bool
     , pullRequestMergeable      :: !(Maybe Bool)
+    , pullRequestMergeableState :: !MergeableState
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -184,7 +185,7 @@ instance Binary PullRequestReference
 -- JSON instances
 -------------------------------------------------------------------------------
 
--- | Helper function, reads either the "assignee" OR "assigneed" OR
+-- | Helper function, reads either the "assignee" OR "assignees" OR
 -- both from a JSON object.
 getAssignees :: Object -> Parser (Vector SimpleUser)
 getAssignees o = do
@@ -267,6 +268,7 @@ instance FromJSON PullRequest where
         <*> o .: "commits"
         <*> o .: "merged"
         <*> o .:? "mergeable"
+        <*> o .: "mergeable_state"
 
 instance FromJSON PullRequestLinks where
     parseJSON = withObject "PullRequestLinks" $ \o -> PullRequestLinks
