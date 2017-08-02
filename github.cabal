@@ -35,7 +35,10 @@ extra-source-files:
   fixtures/members-list.json,
   fixtures/user-organizations.json,
   fixtures/user.json,
-  fixtures/pull-request.json
+  fixtures/pull-request-realworld.json,
+  fixtures/pull-request-baxterthehacker.json,
+  fixtures/pull-request-event-github-example.json
+  fixtures/pull-request-event-realworld.json,
 
 flag aeson-compat
   description: Whether to use aeson-compat or aeson-extra

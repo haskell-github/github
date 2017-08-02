@@ -24,6 +24,8 @@ import GitHub.Data.Repos       (Repo)
 import GitHub.Data.Request     (StatusMap)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
+import Data.Vector as V (elem, snoc)
+import Data.Aeson.Types (Parser)
 import qualified Data.Text as T
 import Prelude ()
 
@@ -37,7 +39,7 @@ data SimplePullRequest = SimplePullRequest
     , simplePullRequestHtmlUrl   :: !URL
     , simplePullRequestUpdatedAt :: !UTCTime
     , simplePullRequestBody      :: !(Maybe Text)
-    , simplePullRequestAssignee  :: !(Maybe SimpleUser)
+    , simplePullRequestAssignees :: !(Vector SimpleUser)
     , simplePullRequestIssueUrl  :: !URL
     , simplePullRequestDiffUrl   :: !URL
     , simplePullRequestUrl       :: !URL
@@ -61,7 +63,7 @@ data PullRequest = PullRequest
     , pullRequestHtmlUrl        :: !URL
     , pullRequestUpdatedAt      :: !UTCTime
     , pullRequestBody           :: !(Maybe Text)
-    , pullRequestAssignee       :: !(Maybe SimpleUser)
+    , pullRequestAssignees      :: !(Vector SimpleUser)
     , pullRequestIssueUrl       :: !URL
     , pullRequestDiffUrl        :: !URL
     , pullRequestUrl            :: !URL
@@ -182,8 +184,22 @@ instance Binary PullRequestReference
 -- JSON instances
 -------------------------------------------------------------------------------
 
+-- | Helper function, reads either the "assignee" OR "assigneed" OR
+-- both from a JSON object.
+getAssignees :: Object -> Parser (Vector SimpleUser)
+getAssignees o = do
+    assignees <- o .:? "assignees" .!= mempty
+    maybeAssignee <- o .:? "assignee"
+    pure $ case maybeAssignee of
+        Nothing -> assignees
+        Just assignee | assignee `V.elem` assignees -> assignees
+                      | otherwise -> assignees `V.snoc` assignee
+
 instance FromJSON SimplePullRequest where
-    parseJSON = withObject "SimplePullRequest" $ \o -> SimplePullRequest
+    parseJSON = withObject "SimplePullRequest" $ \o -> do
+      -- | Either key, or both, might be present, and might contain
+      -- redundant information. Take both keys and uniquify the list.
+      SimplePullRequest
         <$> o .:? "closed_at"
         <*> o .: "created_at"
         <*> o .: "user"
@@ -193,7 +209,7 @@ instance FromJSON SimplePullRequest where
         <*> o .: "html_url"
         <*> o .: "updated_at"
         <*> o .:? "body"
-        <*> o .: "assignee"
+        <*> getAssignees o
         <*> o .: "issue_url"
         <*> o .: "diff_url"
         <*> o .: "url"
@@ -233,7 +249,7 @@ instance FromJSON PullRequest where
         <*> o .: "html_url"
         <*> o .: "updated_at"
         <*> o .:? "body"
-        <*> o .: "assignee"
+        <*> getAssignees o
         <*> o .: "issue_url"
         <*> o .: "diff_url"
         <*> o .: "url"
