@@ -25,12 +25,12 @@ module GitHub (
     -- Missing endpoints:
     --
     -- * Check if you are starring a repository
-    -- * Star a repository
-    -- * Unstar a repository
     stargazersForR,
     reposStarredByR,
     myStarredR,
     myStarredAcceptStarR,
+    starRepoR,
+    unstarRepoR,
 
     -- ** Watching
     -- | See <https://developer.github.com/v3/activity/>
