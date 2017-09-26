@@ -26,6 +26,8 @@ import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
 
+import qualified Data.Text as T
+
 data SimplePullRequest = SimplePullRequest
     { simplePullRequestClosedAt  :: !(Maybe UTCTime)
     , simplePullRequestCreatedAt :: !UTCTime
