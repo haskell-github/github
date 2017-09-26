@@ -160,6 +160,9 @@ data PullRequestEventType
     | PullRequestUnassigned
     | PullRequestLabeled
     | PullRequestUnlabeled
+    | PullRequestReviewRequested
+    | PullRequestReviewRequestRemoved
+    | PullRequestEdited
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData PullRequestEventType where rnf = genericRnf
@@ -284,6 +287,10 @@ instance FromJSON PullRequestEventType where
     parseJSON (String "unassigned") = pure PullRequestUnassigned
     parseJSON (String "labeled") = pure PullRequestLabeled
     parseJSON (String "unlabeled") = pure PullRequestUnlabeled
+    parseJSON (String "review_requested") = pure PullRequestReviewRequested
+    parseJSON (String "review_request_removed") = pure PullRequestReviewRequestRemoved
+    parseJSON (String "edited") = pure PullRequestEdited
+    parseJSON (String s) = fail $ "Unknown action type " <> T.unpack s
     parseJSON v = typeMismatch "Could not build a PullRequestEventType" v
 
 instance FromJSON PullRequestReference where
