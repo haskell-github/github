@@ -61,6 +61,7 @@ data CommandMethod a where
     deriving (Typeable)
 
 deriving instance Eq (CommandMethod a)
+deriving instance Ord (CommandMethod a)
 
 instance Show (CommandMethod a) where
     showsPrec _ Post    = showString "Post"
@@ -180,6 +181,9 @@ command m ps body = SimpleQuery (Command m ps body)
 
 deriving instance Eq a => Eq (Request k a)
 deriving instance Eq a => Eq (SimpleRequest k a)
+
+deriving instance Ord a => Ord (Request k a)
+deriving instance Ord a => Ord (SimpleRequest k a)
 
 instance Show (SimpleRequest k a) where
     showsPrec d r = showParen (d > appPrec) $ case r of

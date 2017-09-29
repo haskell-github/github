@@ -25,12 +25,12 @@ module GitHub (
     -- Missing endpoints:
     --
     -- * Check if you are starring a repository
-    -- * Star a repository
-    -- * Unstar a repository
     stargazersForR,
     reposStarredByR,
     myStarredR,
     myStarredAcceptStarR,
+    starRepoR,
+    unstarRepoR,
 
     -- ** Watching
     -- | See <https://developer.github.com/v3/activity/>
@@ -207,8 +207,27 @@ module GitHub (
     -- * Create a comment
     -- * Edit a comment
     -- * Delete a comment
+    pullRequestCommentsR,
+    pullRequestCommentR,
+
+    -- ** Pull request reviews
+    -- | See <https://developer.github.com/v3/pulls/reviews/>
+    --
+    -- Missing endpoints:
+    --
+    -- * Delete a pending review
+    -- * Create a pull request review
+    -- * Submit a pull request review
+    -- * Dismiss a pull request review
+    pullRequestReviewsR,
+    pullRequestReviews,
+    pullRequestReviews',
+    pullRequestReviewR,
+    pullRequestReview,
+    pullRequestReview',
     pullRequestReviewCommentsR,
-    pullRequestReviewCommentR,
+    pullRequestReviewCommentsIO,
+    pullRequestReviewCommentsIO',
 
     -- * Repositories
     -- | See <https://developer.github.com/v3/repos/>
@@ -334,7 +353,8 @@ import GitHub.Endpoints.Organizations
 import GitHub.Endpoints.Organizations.Members
 import GitHub.Endpoints.Organizations.Teams
 import GitHub.Endpoints.PullRequests
-import GitHub.Endpoints.PullRequests.ReviewComments
+import GitHub.Endpoints.PullRequests.Reviews
+import GitHub.Endpoints.PullRequests.Comments
 import GitHub.Endpoints.Repos
 import GitHub.Endpoints.Repos.Collaborators
 import GitHub.Endpoints.Repos.Comments

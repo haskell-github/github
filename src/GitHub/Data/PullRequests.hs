@@ -29,6 +29,8 @@ import Data.Aeson.Types (Parser)
 import qualified Data.Text as T
 import Prelude ()
 
+import qualified Data.Text as T
+
 data SimplePullRequest = SimplePullRequest
     { simplePullRequestClosedAt  :: !(Maybe UTCTime)
     , simplePullRequestCreatedAt :: !UTCTime

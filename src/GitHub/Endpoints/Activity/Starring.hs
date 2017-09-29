@@ -14,6 +14,10 @@ module GitHub.Endpoints.Activity.Starring (
     myStarredR,
     myStarredAcceptStar,
     myStarredAcceptStarR,
+    starRepo,
+    starRepoR,
+    unstarRepo,
+    unstarRepoR,
     module GitHub.Data,
     ) where
 
@@ -69,3 +73,25 @@ myStarredAcceptStar auth =
 -- See <https://developer.github.com/v3/activity/starring/#alternative-response-with-star-creation-timestamps-1>
 myStarredAcceptStarR :: FetchCount -> Request 'RA (Vector RepoStarred)
 myStarredAcceptStarR = HeaderQuery [("Accept", "application/vnd.github.v3.star+json")] . PagedQuery ["user", "starred"] []
+
+-- | Star a repo by the authenticated user.
+starRepo :: Auth -> Name Owner -> Name Repo -> IO (Either Error ())
+starRepo auth user repo = executeRequest auth $ starRepoR user repo
+
+-- | Star a repo by the authenticated user.
+-- See <https://developer.github.com/v3/activity/starring/#star-a-repository>
+starRepoR :: Name Owner -> Name Repo -> Request 'RW ()
+starRepoR user repo = command Put' paths mempty
+  where
+    paths = ["user", "starred", toPathPart user, toPathPart repo]
+
+-- | Unstar a repo by the authenticated user.
+unstarRepo :: Auth -> Name Owner -> Name Repo -> IO (Either Error ())
+unstarRepo auth user repo = executeRequest auth $ unstarRepoR user repo
+
+-- | Unstar a repo by the authenticated user.
+-- See <https://developer.github.com/v3/activity/starring/#unstar-a-repository>
+unstarRepoR :: Name Owner -> Name Repo -> Request 'RW ()
+unstarRepoR user repo = command Delete paths mempty
+  where
+    paths = ["user", "starred", toPathPart user, toPathPart repo]

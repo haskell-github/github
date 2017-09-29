@@ -1,3 +1,9 @@
+Changes for 0.17.0
+- Add `Ord Request` instance
+- Repository contents
+- Repository starring endpoints
+- Pull Request review endpoints
+
 Changes for 0.16.0
 - Add support for `mergeable_state = "blocked".`
 - Fix HTTP status code of merge PR
