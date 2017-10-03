@@ -33,6 +33,8 @@ extra-source-files:
   fixtures/issue-search.json,
   fixtures/list-teams.json,
   fixtures/members-list.json,
+  fixtures/pull-request-opened.json,
+  fixtures/pull-request-review-requested.json,
   fixtures/user-organizations.json,
   fixtures/user.json
 
@@ -184,6 +186,7 @@ test-suite github-test
   ghc-options: -Wall
   build-depends: base,
                  base-compat,
+                 bytestring,
                  github,
                  vector,
                  unordered-containers,
