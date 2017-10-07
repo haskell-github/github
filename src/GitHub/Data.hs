@@ -48,6 +48,7 @@ module GitHub.Data (
     module GitHub.Data.Request,
     module GitHub.Data.Reviews,
     module GitHub.Data.Search,
+    module GitHub.Data.Status,
     module GitHub.Data.Teams,
     module GitHub.Data.URL,
     module GitHub.Data.Webhooks
@@ -76,6 +77,7 @@ import GitHub.Data.Repos
 import GitHub.Data.Request
 import GitHub.Data.Reviews
 import GitHub.Data.Search
+import GitHub.Data.Status
 import GitHub.Data.Teams
 import GitHub.Data.URL
 import GitHub.Data.Webhooks
