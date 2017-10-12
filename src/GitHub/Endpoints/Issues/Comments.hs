@@ -13,6 +13,8 @@ module GitHub.Endpoints.Issues.Comments (
     comments',
     createComment,
     createCommentR,
+    deleteComment,
+    deleteCommentR,
     editComment,
     editCommentR,
     module GitHub.Data,
@@ -86,5 +88,21 @@ editComment auth user repo commid body =
 editCommentR :: Name Owner -> Name Repo -> Id Comment -> Text -> Request 'RW Comment
 editCommentR user repo commid body =
     command Patch parts (encode $ EditComment body)
+  where
+    parts = ["repos", toPathPart user, toPathPart repo, "issues", "comments", toPathPart commid]
+
+-- | Delete a comment.
+--
+-- > deleteComment (User (user, password)) user repo commentid
+deleteComment :: Auth -> Name Owner -> Name Repo -> Id Comment
+              -> IO (Either Error ())
+deleteComment auth user repo commid =
+    executeRequest auth $ deleteCommentR user repo commid
+
+-- | Delete a comment.
+-- See <https://developer.github.com/v3/issues/comments/#delete-a-comment>
+deleteCommentR :: Name Owner -> Name Repo -> Id Comment -> Request 'RW ()
+deleteCommentR user repo commid =
+    command Delete parts mempty
   where
     parts = ["repos", toPathPart user, toPathPart repo, "issues", "comments", toPathPart commid]
