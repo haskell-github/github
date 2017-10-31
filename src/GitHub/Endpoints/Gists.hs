@@ -11,6 +11,8 @@ module GitHub.Endpoints.Gists (
     gist,
     gist',
     gistR,
+    deleteGist,
+    deleteGistR,
     module GitHub.Data,
     ) where
 
@@ -55,3 +57,14 @@ gist = gist' Nothing
 gistR :: Name Gist -> Request k Gist
 gistR gid =
     query ["gists", toPathPart gid] []
+
+-- | Delete a gist by the authenticated user.
+--
+-- > deleteGist ("github-username", "github-password") "225074"
+deleteGist :: Auth -> Name Gist -> IO (Either Error ())
+deleteGist auth gid = executeRequest auth $ deleteGistR gid
+
+-- | Delete a gist by the authenticated user.
+-- See <https://developer.github.com/v3/gists/#delete-a-gist>
+deleteGistR :: Name Gist -> Request 'RW ()
+deleteGistR gid = command Delete ["gists", toPathPart gid] mempty

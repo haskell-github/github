@@ -57,9 +57,9 @@ module GitHub (
     -- * Check if a gist is starred
     -- * Fork a gist
     -- * List gist forks
-    -- * Delete a gist
     gistsR,
     gistR,
+    deleteGistR,
 
     -- ** Comments
     -- | See <https://developer.github.com/v3/gists/comments/>
