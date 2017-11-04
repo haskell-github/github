@@ -34,7 +34,11 @@ extra-source-files:
   fixtures/list-teams.json,
   fixtures/members-list.json,
   fixtures/user-organizations.json,
-  fixtures/user.json
+  fixtures/user.json,
+  fixtures/pull-request-realworld.json,
+  fixtures/pull-request-baxterthehacker.json,
+  fixtures/pull-request-event-github-example.json,
+  fixtures/pull-request-event-realworld.json
 
 flag aeson-compat
   description: Whether to use aeson-compat or aeson-extra
@@ -188,9 +192,11 @@ test-suite github-test
                  vector,
                  unordered-containers,
                  file-embed,
+                 aeson,
+                 text,
+                 bytestring,
                  hspec
   if flag(aeson-compat)
     build-depends: aeson-compat
   else
     build-depends: aeson-extra
-
