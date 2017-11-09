@@ -29,23 +29,24 @@ import Prelude ()
 import qualified Data.Text as T
 
 data SimplePullRequest = SimplePullRequest
-    { simplePullRequestClosedAt  :: !(Maybe UTCTime)
-    , simplePullRequestCreatedAt :: !UTCTime
-    , simplePullRequestUser      :: !SimpleUser
-    , simplePullRequestPatchUrl  :: !URL
-    , simplePullRequestState     :: !IssueState
-    , simplePullRequestNumber    :: !Int
-    , simplePullRequestHtmlUrl   :: !URL
-    , simplePullRequestUpdatedAt :: !UTCTime
-    , simplePullRequestBody      :: !(Maybe Text)
-    , simplePullRequestAssignees :: (Vector SimpleUser)
-    , simplePullRequestIssueUrl  :: !URL
-    , simplePullRequestDiffUrl   :: !URL
-    , simplePullRequestUrl       :: !URL
-    , simplePullRequestLinks     :: !PullRequestLinks
-    , simplePullRequestMergedAt  :: !(Maybe UTCTime)
-    , simplePullRequestTitle     :: !Text
-    , simplePullRequestId        :: !(Id PullRequest)
+    { simplePullRequestClosedAt           :: !(Maybe UTCTime)
+    , simplePullRequestCreatedAt          :: !UTCTime
+    , simplePullRequestUser               :: !SimpleUser
+    , simplePullRequestPatchUrl           :: !URL
+    , simplePullRequestState              :: !IssueState
+    , simplePullRequestNumber             :: !Int
+    , simplePullRequestHtmlUrl            :: !URL
+    , simplePullRequestUpdatedAt          :: !UTCTime
+    , simplePullRequestBody               :: !(Maybe Text)
+    , simplePullRequestAssignees          :: (Vector SimpleUser)
+    , simplePullRequestRequestedReviewers :: (Vector SimpleUser)
+    , simplePullRequestIssueUrl           :: !URL
+    , simplePullRequestDiffUrl            :: !URL
+    , simplePullRequestUrl                :: !URL
+    , simplePullRequestLinks              :: !PullRequestLinks
+    , simplePullRequestMergedAt           :: !(Maybe UTCTime)
+    , simplePullRequestTitle              :: !Text
+    , simplePullRequestId                 :: !(Id PullRequest)
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -53,35 +54,36 @@ instance NFData SimplePullRequest where rnf = genericRnf
 instance Binary SimplePullRequest
 
 data PullRequest = PullRequest
-    { pullRequestClosedAt       :: !(Maybe UTCTime)
-    , pullRequestCreatedAt      :: !UTCTime
-    , pullRequestUser           :: !SimpleUser
-    , pullRequestPatchUrl       :: !URL
-    , pullRequestState          :: !IssueState
-    , pullRequestNumber         :: !Int
-    , pullRequestHtmlUrl        :: !URL
-    , pullRequestUpdatedAt      :: !UTCTime
-    , pullRequestBody           :: !(Maybe Text)
-    , pullRequestAssignees      :: (Vector SimpleUser)
-    , pullRequestIssueUrl       :: !URL
-    , pullRequestDiffUrl        :: !URL
-    , pullRequestUrl            :: !URL
-    , pullRequestLinks          :: !PullRequestLinks
-    , pullRequestMergedAt       :: !(Maybe UTCTime)
-    , pullRequestTitle          :: !Text
-    , pullRequestId             :: !(Id PullRequest)
-    , pullRequestMergedBy       :: !(Maybe SimpleUser)
-    , pullRequestChangedFiles   :: !Int
-    , pullRequestHead           :: !PullRequestCommit
-    , pullRequestComments       :: !Count
-    , pullRequestDeletions      :: !Count
-    , pullRequestAdditions      :: !Count
-    , pullRequestReviewComments :: !Count
-    , pullRequestBase           :: !PullRequestCommit
-    , pullRequestCommits        :: !Count
-    , pullRequestMerged         :: !Bool
-    , pullRequestMergeable      :: !(Maybe Bool)
-    , pullRequestMergeableState :: !MergeableState
+    { pullRequestClosedAt             :: !(Maybe UTCTime)
+    , pullRequestCreatedAt            :: !UTCTime
+    , pullRequestUser                 :: !SimpleUser
+    , pullRequestPatchUrl             :: !URL
+    , pullRequestState                :: !IssueState
+    , pullRequestNumber               :: !Int
+    , pullRequestHtmlUrl              :: !URL
+    , pullRequestUpdatedAt            :: !UTCTime
+    , pullRequestBody                 :: !(Maybe Text)
+    , pullRequestAssignees            :: (Vector SimpleUser)
+    , pullRequestRequestedReviewers   :: (Vector SimpleUser)
+    , pullRequestIssueUrl             :: !URL
+    , pullRequestDiffUrl              :: !URL
+    , pullRequestUrl                  :: !URL
+    , pullRequestLinks                :: !PullRequestLinks
+    , pullRequestMergedAt             :: !(Maybe UTCTime)
+    , pullRequestTitle                :: !Text
+    , pullRequestId                   :: !(Id PullRequest)
+    , pullRequestMergedBy             :: !(Maybe SimpleUser)
+    , pullRequestChangedFiles         :: !Int
+    , pullRequestHead                 :: !PullRequestCommit
+    , pullRequestComments             :: !Count
+    , pullRequestDeletions            :: !Count
+    , pullRequestAdditions            :: !Count
+    , pullRequestReviewComments       :: !Count
+    , pullRequestBase                 :: !PullRequestCommit
+    , pullRequestCommits              :: !Count
+    , pullRequestMerged               :: !Bool
+    , pullRequestMergeable            :: !(Maybe Bool)
+    , pullRequestMergeableState       :: !MergeableState
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -197,6 +199,7 @@ instance FromJSON SimplePullRequest where
         <*> o .: "updated_at"
         <*> o .:? "body"
         <*> o .: "assignees"
+        <*> o .:? "requested_reviewers" .!= mempty
         <*> o .: "issue_url"
         <*> o .: "diff_url"
         <*> o .: "url"
@@ -237,6 +240,7 @@ instance FromJSON PullRequest where
         <*> o .: "updated_at"
         <*> o .:? "body"
         <*> o .: "assignees"
+        <*> o .:? "requested_reviewers" .!= mempty
         <*> o .: "issue_url"
         <*> o .: "diff_url"
         <*> o .: "url"
