@@ -106,12 +106,10 @@ module GitHub (
     -- ** Comments
     -- | See <https://developer.github.com/v3/issues/comments/>
     --
-    -- Missing endpoints:
-    --
-    -- * Delete comment
     commentR,
     commentsR,
     createCommentR,
+    deleteCommentR,
     editCommentR,
 
     -- ** Events
