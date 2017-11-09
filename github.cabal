@@ -86,6 +86,7 @@ Library
     GitHub.Data.Request
     GitHub.Data.Reviews
     GitHub.Data.Search
+    GitHub.Data.Statuses
     GitHub.Data.Teams
     GitHub.Data.URL
     GitHub.Data.Webhooks
@@ -118,6 +119,7 @@ Library
     GitHub.Endpoints.Repos.DeployKeys
     GitHub.Endpoints.Repos.Forks
     GitHub.Endpoints.Repos.Releases
+    GitHub.Endpoints.Repos.Statuses
     GitHub.Endpoints.Repos.Webhooks
     GitHub.Endpoints.Search
     GitHub.Endpoints.Users
