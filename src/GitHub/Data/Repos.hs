@@ -158,7 +158,7 @@ instance FromJSON Repo where
         <*> o .: "fork"
         <*> o .:? "git_url"
         <*> o .: "private"
-        <*> o .: "archived"
+        <*> o .:? "archived" .!= False
         <*> o .:? "clone_url"
         <*> o .:? "size"
         <*> o .:? "updated_at"
