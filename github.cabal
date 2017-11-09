@@ -182,6 +182,7 @@ test-suite github-test
     GitHub.EventsSpec
   main-is: Spec.hs
   ghc-options: -Wall
+  build-tool-depends: hspec-discover:hspec-discover
   build-depends: base,
                  base-compat,
                  github,
