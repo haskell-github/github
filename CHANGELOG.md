@@ -1,3 +1,17 @@
+Changes for 0.18
+- Endpoints for deleting issue comments. 
+  [#294](https://github.com/phadej/github/pull/294)
+- Endpoints for (un)starring gists.
+  [#296](https://github.com/phadej/github/pull/296)
+- Add `archived` field to `Repo`.
+  [#298](https://github.com/phadej/github/pull/298)
+- Update dependencies.
+  [#295](https://github.com/phadej/github/pull/295)
+- Add Statuses endpoints.
+  [#268](https://github.com/phadej/github/pull/268)
+- Add requested reviewers field to pull request records.
+  [#292](https://github.com/phadej/github/pull/292)
+
 Changes for 0.17.0
 - Add `Ord Request` instance
 - Repository contents
