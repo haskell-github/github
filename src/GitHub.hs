@@ -52,13 +52,13 @@ module GitHub (
     -- * Create a gist
     -- * Edit a gist
     -- * List gist commits
-    -- * Star a gist
-    -- * Unstar a gist
     -- * Check if a gist is starred
     -- * Fork a gist
     -- * List gist forks
     gistsR,
     gistR,
+    starGistR,
+    unstarGistR,
     deleteGistR,
 
     -- ** Comments
