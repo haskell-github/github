@@ -52,13 +52,13 @@ module GitHub (
     -- * Create a gist
     -- * Edit a gist
     -- * List gist commits
-    -- * Star a gist
-    -- * Unstar a gist
     -- * Check if a gist is starred
     -- * Fork a gist
     -- * List gist forks
     gistsR,
     gistR,
+    starGistR,
+    unstarGistR,
     deleteGistR,
 
     -- ** Comments
@@ -106,12 +106,10 @@ module GitHub (
     -- ** Comments
     -- | See <https://developer.github.com/v3/issues/comments/>
     --
-    -- Missing endpoints:
-    --
-    -- * Delete comment
     commentR,
     commentsR,
     createCommentR,
+    deleteCommentR,
     editCommentR,
 
     -- ** Events
@@ -328,6 +326,12 @@ module GitHub (
     usersFollowingR,
     usersFollowedByR,
 
+    -- ** Statuses
+    -- | See <https://developer.github.com/v3/repos/statuses/>
+    createStatusR,
+    statusesForR,
+    statusForR,
+
     -- * Data definitions
     module GitHub.Data,
     -- * Request handling
@@ -361,6 +365,7 @@ import GitHub.Endpoints.Repos.Comments
 import GitHub.Endpoints.Repos.Commits
 import GitHub.Endpoints.Repos.Forks
 import GitHub.Endpoints.Repos.Releases
+import GitHub.Endpoints.Repos.Statuses
 import GitHub.Endpoints.Repos.Webhooks
 import GitHub.Endpoints.Search
 import GitHub.Endpoints.Users

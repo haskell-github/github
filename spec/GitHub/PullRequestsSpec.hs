@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell   #-}
 module GitHub.PullRequestsSpec where
 
 import qualified GitHub
@@ -6,11 +7,15 @@ import qualified GitHub
 import Prelude ()
 import Prelude.Compat
 
-import Data.Either.Compat   (isRight)
-import Data.Foldable        (for_)
-import Data.String          (fromString)
-import System.Environment   (lookupEnv)
-import Test.Hspec           (Spec, describe, it, pendingWith, shouldSatisfy)
+import Data.Aeson.Compat     (eitherDecodeStrict)
+import Data.ByteString       (ByteString)
+import Data.Either.Compat    (isRight)
+import Data.FileEmbed        (embedFile)
+import Data.Foldable         (for_)
+import Data.String           (fromString)
+import qualified Data.Vector as V
+import System.Environment    (lookupEnv)
+import Test.Hspec            (Spec, describe, it, pendingWith, shouldBe, shouldSatisfy)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -28,8 +33,23 @@ spec = do
     describe "pullRequestsForR" $ do
         it "works" $ withAuth $ \auth -> for_ repos $ \(owner, repo) -> do
             cs <- GitHub.executeRequest auth $
-                GitHub.pullRequestsForR owner repo opts GitHub.FetchAll 
+                GitHub.pullRequestsForR owner repo opts GitHub.FetchAll
             cs `shouldSatisfy` isRight
+
+    describe "decoding pull request payloads" $ do
+        it "decodes a pull request 'opened' payload" $ do
+            V.length (GitHub.simplePullRequestRequestedReviewers simplePullRequestOpened)
+                `shouldBe` 0
+
+            V.length (GitHub.pullRequestRequestedReviewers pullRequestOpened)
+                `shouldBe` 0
+
+        it "decodes a pull request 'review_requested' payload" $ do
+            V.length (GitHub.simplePullRequestRequestedReviewers simplePullRequestReviewRequested)
+                `shouldBe` 1
+
+            V.length (GitHub.pullRequestRequestedReviewers pullRequestReviewRequested)
+                `shouldBe` 1
   where
     repos =
       [ ("thoughtbot", "paperclip")
@@ -37,3 +57,25 @@ spec = do
       , ("haskell", "cabal")
       ]
     opts = GitHub.stateClosed
+
+    simplePullRequestOpened :: GitHub.SimplePullRequest
+    simplePullRequestOpened =
+        fromRightS (eitherDecodeStrict prOpenedPayload)
+
+    pullRequestOpened :: GitHub.PullRequest
+    pullRequestOpened =
+        fromRightS (eitherDecodeStrict prOpenedPayload)
+
+    simplePullRequestReviewRequested :: GitHub.SimplePullRequest
+    simplePullRequestReviewRequested =
+        fromRightS (eitherDecodeStrict prReviewRequestedPayload)
+
+    pullRequestReviewRequested :: GitHub.PullRequest
+    pullRequestReviewRequested =
+        fromRightS (eitherDecodeStrict prReviewRequestedPayload)
+
+    prOpenedPayload :: ByteString
+    prOpenedPayload = $(embedFile "fixtures/pull-request-opened.json")
+
+    prReviewRequestedPayload :: ByteString
+    prReviewRequestedPayload = $(embedFile "fixtures/pull-request-review-requested.json")

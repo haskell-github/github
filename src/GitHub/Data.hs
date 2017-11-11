@@ -16,6 +16,7 @@ module GitHub.Data (
     mkTeamName,
     mkOrganizationName,
     mkRepoName,
+    mkCommitName,
     fromUserName,
     fromOrganizationName,
     -- ** Id
@@ -48,6 +49,7 @@ module GitHub.Data (
     module GitHub.Data.Request,
     module GitHub.Data.Reviews,
     module GitHub.Data.Search,
+    module GitHub.Data.Statuses,
     module GitHub.Data.Teams,
     module GitHub.Data.URL,
     module GitHub.Data.Webhooks
@@ -76,6 +78,7 @@ import GitHub.Data.Repos
 import GitHub.Data.Request
 import GitHub.Data.Reviews
 import GitHub.Data.Search
+import GitHub.Data.Statuses
 import GitHub.Data.Teams
 import GitHub.Data.URL
 import GitHub.Data.Webhooks
@@ -109,6 +112,9 @@ mkRepoId = Id
 
 mkRepoName :: Text -> Name Repo
 mkRepoName = N
+
+mkCommitName :: Text -> Name Commit
+mkCommitName = N
 
 fromOrganizationName :: Name Organization -> Name Owner
 fromOrganizationName = N . untagName

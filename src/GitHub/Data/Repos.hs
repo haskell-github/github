@@ -38,6 +38,7 @@ data Repo = Repo
     , repoFork            :: !(Maybe Bool)
     , repoGitUrl          :: !(Maybe URL)
     , repoPrivate         :: !Bool
+    , repoArchived        :: !Bool
     , repoCloneUrl        :: !(Maybe URL)
     , repoSize            :: !(Maybe Int)
     , repoUpdatedAt       :: !(Maybe UTCTime)
@@ -157,6 +158,7 @@ instance FromJSON Repo where
         <*> o .: "fork"
         <*> o .:? "git_url"
         <*> o .: "private"
+        <*> o .:? "archived" .!= False
         <*> o .:? "clone_url"
         <*> o .:? "size"
         <*> o .:? "updated_at"

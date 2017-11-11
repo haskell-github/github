@@ -11,6 +11,10 @@ module GitHub.Endpoints.Gists (
     gist,
     gist',
     gistR,
+    starGist,
+    starGistR,
+    unstarGist,
+    unstarGistR,
     deleteGist,
     deleteGistR,
     module GitHub.Data,
@@ -57,6 +61,28 @@ gist = gist' Nothing
 gistR :: Name Gist -> Request k Gist
 gistR gid =
     query ["gists", toPathPart gid] []
+
+-- | Star a gist by the authenticated user.
+--
+-- > starGist ("github-username", "github-password") "225074"
+starGist :: Auth -> Name Gist -> IO (Either Error ())
+starGist auth gid = executeRequest auth $ starGistR gid
+
+-- | Star a gist by the authenticated user.
+-- See <https://developer.github.com/v3/gists/#star-a-gist>
+starGistR :: Name Gist -> Request 'RW ()
+starGistR gid = command Put' ["gists", toPathPart gid, "star"] mempty
+
+-- | Unstar a gist by the authenticated user.
+--
+-- > unstarGist ("github-username", "github-password") "225074"
+unstarGist :: Auth -> Name Gist -> IO (Either Error ())
+unstarGist auth gid = executeRequest auth $ unstarGistR gid
+
+-- | Unstar a gist by the authenticated user.
+-- See <https://developer.github.com/v3/gists/#unstar-a-gist>
+unstarGistR :: Name Gist -> Request 'RW ()
+unstarGistR gid = command Delete ["gists", toPathPart gid, "star"] mempty
 
 -- | Delete a gist by the authenticated user.
 --

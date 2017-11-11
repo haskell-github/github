@@ -1,5 +1,5 @@
 name:                github
-version:             0.17.0
+version:             0.18
 synopsis:            Access to the GitHub API, v3.
 description:
   The GitHub API provides programmatic access to the full
@@ -33,6 +33,8 @@ extra-source-files:
   fixtures/issue-search.json,
   fixtures/list-teams.json,
   fixtures/members-list.json,
+  fixtures/pull-request-opened.json,
+  fixtures/pull-request-review-requested.json,
   fixtures/user-organizations.json,
   fixtures/user.json
 
@@ -86,6 +88,7 @@ Library
     GitHub.Data.Request
     GitHub.Data.Reviews
     GitHub.Data.Search
+    GitHub.Data.Statuses
     GitHub.Data.Teams
     GitHub.Data.URL
     GitHub.Data.Webhooks
@@ -118,6 +121,7 @@ Library
     GitHub.Endpoints.Repos.DeployKeys
     GitHub.Endpoints.Repos.Forks
     GitHub.Endpoints.Repos.Releases
+    GitHub.Endpoints.Repos.Statuses
     GitHub.Endpoints.Repos.Webhooks
     GitHub.Endpoints.Search
     GitHub.Endpoints.Users
@@ -182,8 +186,10 @@ test-suite github-test
     GitHub.EventsSpec
   main-is: Spec.hs
   ghc-options: -Wall
+  build-tool-depends: hspec-discover:hspec-discover
   build-depends: base,
                  base-compat,
+                 bytestring,
                  github,
                  vector,
                  unordered-containers,
