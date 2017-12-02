@@ -13,3 +13,4 @@ cabal.sandbox.config
 run.sh
 src/hightlight.js
 src/style.css
+stack.yaml

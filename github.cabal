@@ -92,6 +92,8 @@ Library
     GitHub.Data.Teams
     GitHub.Data.URL
     GitHub.Data.Webhooks
+    GitHub.Data.Webhooks.Events
+    GitHub.Data.Webhooks.Payload
     GitHub.Data.Webhooks.Validate
     GitHub.Endpoints.Activity.Events
     GitHub.Endpoints.Activity.Starring
