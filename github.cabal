@@ -1,5 +1,6 @@
 name:                github
 version:             0.18
+x-revision:          1
 synopsis:            Access to the GitHub API, v3.
 description:
   The GitHub API provides programmatic access to the full
@@ -146,7 +147,7 @@ Library
                  http-client           >=0.4.8.1   && <0.6,
                  http-client-tls       >=0.2.2     && <0.4,
                  http-link-header      >=1.0.1     && <1.1,
-                 http-types            >=0.8.6     && <0.11,
+                 http-types            >=0.8.6     && <0.12,
                  iso8601-time          >=0.1.4     && <0.2,
                  mtl                   >=2.1.3.1   && <2.3,
                  network-uri           >=2.6.0.3   && <2.7,
