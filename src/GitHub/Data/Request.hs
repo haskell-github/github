@@ -36,6 +36,7 @@ import qualified Data.ByteString.Lazy      as LBS
 import qualified Data.Text                 as T
 import qualified Network.HTTP.Types        as Types
 import qualified Network.HTTP.Types.Method as Method
+import Network.URI                         (URI)
 ------------------------------------------------------------------------------
 -- Auxillary types
 ------------------------------------------------------------------------------
@@ -141,6 +142,7 @@ data Request (k :: RW) a where
     SimpleQuery   :: FromJSON a => SimpleRequest k a -> Request k a
     StatusQuery   :: StatusMap a -> SimpleRequest k () -> Request k a
     HeaderQuery   :: FromJSON a => Types.RequestHeaders -> SimpleRequest k a -> Request k a
+    RedirectQuery :: SimpleRequest k () -> Request k URI
   deriving (Typeable)
 
 data SimpleRequest (k :: RW) a where
@@ -218,6 +220,8 @@ instance Show (Request k a) where
             . showsPrec (appPrec + 1) m
             . showString " "
             . showsPrec (appPrec + 1) req
+        RedirectQuery req -> showString "Redirect "
+            . showsPrec (appPrec + 1) req
       where
         appPrec = 10 :: Int
 
@@ -248,4 +252,7 @@ instance Hashable (Request k a) where
     hashWithSalt salt (HeaderQuery h req) =
         salt `hashWithSalt` (2 :: Int)
              `hashWithSalt` h
+             `hashWithSalt` req
+    hashWithSalt salt (RedirectQuery req) =
+        salt `hashWithSalt` (3 :: Int)
              `hashWithSalt` req

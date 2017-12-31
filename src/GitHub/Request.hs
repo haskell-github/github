@@ -59,6 +59,7 @@ import Control.Monad.Except (MonadError (..))
 import Control.Monad.Error (MonadError (..))
 #endif
 
+import Control.Monad              (when)
 import Control.Monad.Catch        (MonadCatch (..), MonadThrow)
 import Control.Monad.Trans.Class  (lift)
 import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
@@ -67,13 +68,13 @@ import Data.List                  (find)
 
 import Network.HTTP.Client
        (HttpException (..), Manager, RequestBody (..), Response (..),
-       applyBasicAuth, httpLbs, method, newManager, requestBody,
-       requestHeaders, setQueryString)
+       applyBasicAuth, getUri, httpLbs, method, newManager, redirectCount,
+       requestBody, requestHeaders, setQueryString, setRequestIgnoreStatus)
 import Network.HTTP.Client.TLS  (tlsManagerSettings)
 import Network.HTTP.Link.Parser (parseLinkHeaderBS)
 import Network.HTTP.Link.Types  (Link (..), LinkParam (..), href, linkParams)
 import Network.HTTP.Types       (Method, RequestHeaders, Status (..))
-import Network.URI              (URI)
+import Network.URI              (URI, parseURIReference, relativeTo)
 
 #if !MIN_VERSION_http_client(0,5,0)
 import qualified Control.Exception  as E
@@ -82,6 +83,7 @@ import           Network.HTTP.Types (ResponseHeaders)
 
 import qualified Data.ByteString.Lazy         as LBS
 import qualified Data.Text                    as T
+import qualified Data.Text.Encoding           as TE
 import qualified Data.Vector                  as V
 import qualified Network.HTTP.Client          as HTTP
 import qualified Network.HTTP.Client.Internal as HTTP
@@ -125,6 +127,9 @@ executeRequestWithMgr mgr auth req = runExceptT $ do
     performHttpReq httpReq (StatusQuery sm _)   = do
         res <- httpLbs' httpReq
         parseStatus sm  . responseStatus $ res
+    performHttpReq httpReq (RedirectQuery _)   = do
+        res <- httpLbs' httpReq
+        parseRedirect (getUri httpReq) res
 
     performHttpReq' :: FromJSON b => HTTP.Request -> SimpleRequest k b -> ExceptT Error IO b
     performHttpReq' httpReq Query {} = do
@@ -172,6 +177,9 @@ executeRequestWithMgr' mgr req = runExceptT $ do
     performHttpReq httpReq (StatusQuery sm _)   = do
         res <- httpLbs' httpReq
         parseStatus sm  . responseStatus $ res
+    performHttpReq httpReq (RedirectQuery _)   = do
+        res <- httpLbs' httpReq
+        parseRedirect (getUri httpReq) res
 
     performHttpReq' :: FromJSON b => HTTP.Request -> SimpleRequest 'RO b -> ExceptT Error IO b
     performHttpReq' httpReq Query {} = do
@@ -222,6 +230,9 @@ makeHttpRequest auth r = case r of
     HeaderQuery h req -> do
         req' <- makeHttpSimpleRequest auth req
         return $ req' { requestHeaders = h <> requestHeaders req' }
+    RedirectQuery req -> do
+        req' <- makeHttpSimpleRequest auth req
+        return $ setRequestIgnoreStatus $ req' { redirectCount = 0 }
 
 makeHttpSimpleRequest
     :: MonadThrow m
@@ -327,6 +338,24 @@ parseStatus m (Status sci _) =
     maybe err return $ lookup sci m
   where
     err = throwError $ JsonError $ "invalid status: " <> T.pack (show sci)
+
+-- | Helper for handling of 'RequestRedirect'.
+--
+-- @
+-- parseRedirect :: 'Response' 'LBS.ByteString' -> 'Either' 'Error' a
+-- @
+parseRedirect :: MonadError Error m => URI -> Response LBS.ByteString -> m URI
+parseRedirect originalUri rsp = do
+    let status = responseStatus rsp
+    when (statusCode status /= 302) $
+        throwError $ ParseError $ "invalid status: " <> T.pack (show status)
+    loc <- maybe noLocation return $ lookup "Location" $ responseHeaders rsp
+    case parseURIReference $ T.unpack $ TE.decodeUtf8 loc of
+        Nothing -> throwError $ ParseError $
+            "location header does not contain a URI: " <> T.pack (show loc)
+        Just uri -> return $ uri `relativeTo` originalUri
+  where
+    noLocation = throwError $ ParseError "no location header in response"
 
 -- | Helper for making paginated requests. Responses, @a@ are combined monoidally.
 --
