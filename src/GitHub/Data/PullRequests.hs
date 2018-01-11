@@ -136,7 +136,7 @@ data PullRequestCommit = PullRequestCommit
     , pullRequestCommitRef   :: !Text
     , pullRequestCommitSha   :: !Text
     , pullRequestCommitUser  :: !SimpleUser
-    , pullRequestCommitRepo  :: !Repo
+    , pullRequestCommitRepo  :: !(Maybe Repo)
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
