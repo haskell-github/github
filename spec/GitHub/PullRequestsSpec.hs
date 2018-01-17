@@ -3,6 +3,7 @@
 module GitHub.PullRequestsSpec where
 
 import qualified GitHub
+import GitHub.Data.Id (Id(Id))
 
 import Prelude ()
 import Prelude.Compat
@@ -50,6 +51,13 @@ spec = do
 
             V.length (GitHub.pullRequestRequestedReviewers pullRequestReviewRequested)
                 `shouldBe` 1
+
+    describe "checking if a pull request is merged" $ do
+        it "works" $ withAuth $ \auth -> do
+            b <- GitHub.executeRequest auth $ GitHub.isPullRequestMergedR "phadej" "github" (Id 14)
+            b `shouldSatisfy` isRight
+            fromRightS b `shouldBe` True
+
   where
     repos =
       [ ("thoughtbot", "paperclip")

@@ -158,9 +158,10 @@ module GitHub (
     -- ** Members
     -- | See <https://developer.github.com/v3/orgs/members/>
     --
-    -- Missing endpoints: All except /Members List/
+    -- Missing endpoints: All except /Members List/ and /Check Membership/
     membersOfR,
     membersOfWithR,
+    isMemberOfR,
 
     -- ** Teams
     -- | See <https://developer.github.com/v3/orgs/teams/>

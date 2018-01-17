@@ -158,7 +158,7 @@ type StatusMap a = [(Int, a)]
 
 statusOnlyOk :: StatusMap Bool
 statusOnlyOk =
-    [ (202, True)
+    [ (204, True)
     , (404, False)
     ]
 
