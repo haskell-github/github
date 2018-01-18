@@ -75,6 +75,7 @@ Library
     GitHub.Data.Content
     GitHub.Data.Definitions
     GitHub.Data.DeployKeys
+    GitHub.Data.Email
     GitHub.Data.Events
     GitHub.Data.Gists
     GitHub.Data.GitData
@@ -126,6 +127,7 @@ Library
     GitHub.Endpoints.Repos.Webhooks
     GitHub.Endpoints.Search
     GitHub.Endpoints.Users
+    GitHub.Endpoints.Users.Emails
     GitHub.Endpoints.Users.Followers
     GitHub.Request
 
