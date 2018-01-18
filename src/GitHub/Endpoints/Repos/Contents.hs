@@ -13,6 +13,9 @@ module GitHub.Endpoints.Repos.Contents (
     readmeFor,
     readmeFor',
     readmeForR,
+    archiveFor,
+    archiveFor',
+    archiveForR,
 
     -- ** Create
     createFile,
@@ -34,7 +37,9 @@ import GitHub.Internal.Prelude
 import GitHub.Request
 import Prelude ()
 
+import Data.Maybe (maybeToList)
 import qualified Data.Text.Encoding as TE
+import Network.URI (URI)
 
 -- | The contents of a file or directory in a repo, given the repo owner, name, and path to the file
 --
@@ -78,6 +83,31 @@ readmeFor' auth user repo =
 readmeForR :: Name Owner -> Name Repo -> Request k Content
 readmeForR user repo =
     query ["repos", toPathPart user, toPathPart repo, "readme"] []
+
+-- | The archive of a repo, given the repo owner, name, and archive type
+--
+-- > archiveFor "thoughtbot" "paperclip" ArchiveFormatTarball Nothing
+archiveFor :: Name Owner -> Name Repo -> ArchiveFormat -> Maybe Text -> IO (Either Error URI)
+archiveFor = archiveFor' Nothing
+
+-- | The archive of a repo, given the repo owner, name, and archive type
+-- With Authentication
+--
+-- > archiveFor' (Just (BasicAuth (user, password))) "thoughtbot" "paperclip" ArchiveFormatTarball Nothing
+archiveFor' :: Maybe Auth ->  Name Owner -> Name Repo -> ArchiveFormat -> Maybe Text -> IO (Either Error URI)
+archiveFor' auth user repo path ref =
+    executeRequestMaybe auth $ archiveForR user repo path ref
+
+archiveForR
+    :: Name Owner
+    -> Name Repo
+    -> ArchiveFormat   -- ^ The type of archive to retrieve
+    -> Maybe Text      -- ^ Git commit
+    -> Request k URI
+archiveForR user repo format ref =
+    RedirectQuery $ Query path []
+  where
+    path = ["repos", toPathPart user, toPathPart repo, toPathPart format] <> maybeToList ref
 
 -- | Create a file.
 createFile
