@@ -136,14 +136,14 @@ organizationReposR org publicity =
 
 -- | Details on a specific repo, given the owner and repo name.
 --
--- > userRepo "mike-burns" "github"
+-- > repository "mike-burns" "github"
 repository :: Name Owner -> Name Repo -> IO (Either Error Repo)
 repository = repository' Nothing
 
 -- | Details on a specific repo, given the owner and repo name.
 -- With authentication.
 --
--- > userRepo' (Just (BasicAuth (user, password))) "mike-burns" "github"
+-- > repository' (Just (BasicAuth (user, password))) "mike-burns" "github"
 repository' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error Repo)
 repository' auth user repo =
     executeRequestMaybe auth $ repositoryR user repo

@@ -14,6 +14,7 @@ module GitHub.Data.Repos where
 import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id)
 import GitHub.Data.Name        (Name)
+import GitHub.Data.Request     (IsPathPart (..))
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
@@ -257,3 +258,13 @@ instance FromJSON a => FromJSON (HM.HashMap Language a) where
         mapKey f = HM.fromList . map (first f) . HM.toList
 #endif
 #endif
+
+data ArchiveFormat
+    = ArchiveFormatTarball -- ^ ".tar.gz" format
+    | ArchiveFormatZipball -- ^ ".zip" format
+    deriving (Show, Eq, Ord, Enum, Bounded, Typeable, Data, Generic)
+
+instance IsPathPart ArchiveFormat where
+    toPathPart af = case af of
+        ArchiveFormatTarball -> "tarball"
+        ArchiveFormatZipball -> "zipball"

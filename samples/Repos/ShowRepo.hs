@@ -5,7 +5,7 @@ import Data.List
 import Data.Maybe
 
 main = do
-  possibleRepo <- Github.userRepo "mike-burns" "trylambda"
+  possibleRepo <- Github.repository "mike-burns" "trylambda"
   case possibleRepo of
        (Left error) -> putStrLn $ "Error: " ++ (show error)
        (Right repo) -> putStrLn $ formatRepo repo

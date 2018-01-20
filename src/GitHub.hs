@@ -158,9 +158,10 @@ module GitHub (
     -- ** Members
     -- | See <https://developer.github.com/v3/orgs/members/>
     --
-    -- Missing endpoints: All except /Members List/
+    -- Missing endpoints: All except /Members List/ and /Check Membership/
     membersOfR,
     membersOfWithR,
+    isMemberOfR,
 
     -- ** Teams
     -- | See <https://developer.github.com/v3/orgs/teams/>
@@ -314,6 +315,17 @@ module GitHub (
     ownerInfoForR,
     userInfoCurrentR,
 
+    -- ** Emails
+    -- | See <https://developer.github.com/v3/users/emails/>
+    --
+    -- Missing endpoints:
+    --
+    -- * Add email address(es)
+    -- * Delete email address(es)
+    -- * Toggle primary email visibility
+    currentUserEmailsR,
+    currentUserPublicEmailsR,
+
     -- ** Followers
     -- | See <https://developer.github.com/v3/users/followers/>
     --
@@ -369,5 +381,6 @@ import GitHub.Endpoints.Repos.Statuses
 import GitHub.Endpoints.Repos.Webhooks
 import GitHub.Endpoints.Search
 import GitHub.Endpoints.Users
+import GitHub.Endpoints.Users.Emails
 import GitHub.Endpoints.Users.Followers
 import GitHub.Request
