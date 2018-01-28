@@ -1,3 +1,6 @@
+Changes for 0.19
+- TBW
+
 Changes for 0.18
 - Endpoints for deleting issue comments. 
   [#294](https://github.com/phadej/github/pull/294)
