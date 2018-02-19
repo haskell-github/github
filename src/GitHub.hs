@@ -162,6 +162,7 @@ module GitHub (
     membersOfR,
     membersOfWithR,
     isMemberOfR,
+    orgInvitationsR,
 
     -- ** Teams
     -- | See <https://developer.github.com/v3/orgs/teams/>

@@ -41,6 +41,7 @@ module GitHub.Data (
     module GitHub.Data.Events,
     module GitHub.Data.Gists,
     module GitHub.Data.GitData,
+    module GitHub.Data.Invitation,
     module GitHub.Data.Issues,
     module GitHub.Data.Milestone,
     module GitHub.Data.Options,
@@ -70,6 +71,7 @@ import GitHub.Data.Events
 import GitHub.Data.Gists
 import GitHub.Data.GitData
 import GitHub.Data.Id
+import GitHub.Data.Invitation
 import GitHub.Data.Issues
 import GitHub.Data.Milestone
 import GitHub.Data.Name

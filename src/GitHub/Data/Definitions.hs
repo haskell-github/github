@@ -18,7 +18,7 @@ import qualified Data.Text         as T
 
 import GitHub.Data.Id   (Id)
 import GitHub.Data.Name (Name)
-import GitHub.Data.URL  (URL)
+import GitHub.Data.URL  (URL (..))
 
 -- | Errors have been tagged according to their source, so you can more easily
 -- dispatch and handle them.
@@ -254,5 +254,5 @@ instance Binary IssueLabel
 instance FromJSON IssueLabel where
     parseJSON = withObject "IssueLabel" $ \o -> IssueLabel
         <$> o .: "color"
-        <*> o .: "url"
+        <*> o .:? "url" .!= URL "" -- in events there aren't URL
         <*> o .: "name"
