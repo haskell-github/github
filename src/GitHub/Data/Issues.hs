@@ -21,7 +21,7 @@ data Issue = Issue
     , issueEventsUrl   :: !URL
     , issueHtmlUrl     :: !(Maybe URL)
     , issueClosedBy    :: !(Maybe SimpleUser)
-    , issueLabels      :: (Vector IssueLabel)
+    , issueLabels      :: !(Vector IssueLabel)
     , issueNumber      :: !Int
     , issueAssignees   :: !(Vector SimpleUser)
     , issueUser        :: !SimpleUser
@@ -122,6 +122,7 @@ data IssueEvent = IssueEvent
     , issueEventCreatedAt :: !UTCTime
     , issueEventId        :: !Int
     , issueEventIssue     :: !(Maybe Issue)
+    , issueEventLabel     :: !(Maybe IssueLabel)
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -137,6 +138,7 @@ instance FromJSON IssueEvent where
         <*> o .: "created_at"
         <*> o .: "id"
         <*> o .:? "issue"
+        <*> o .:? "label"
 
 instance FromJSON EventType where
     parseJSON = withText "EventType" $ \t -> case t of
