@@ -79,6 +79,7 @@ Library
     GitHub.Data.Gists
     GitHub.Data.GitData
     GitHub.Data.Id
+    GitHub.Data.Invitation
     GitHub.Data.Issues
     GitHub.Data.Milestone
     GitHub.Data.Name

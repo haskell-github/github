@@ -13,6 +13,7 @@ module GitHub.Endpoints.Organizations.Members (
     isMemberOf,
     isMemberOf',
     isMemberOfR,
+    orgInvitationsR,
     module GitHub.Data,
     ) where
 
@@ -79,3 +80,9 @@ isMemberOf = isMemberOf' Nothing
 isMemberOfR :: Name User -> Name Organization -> Request k Bool
 isMemberOfR user org = StatusQuery statusOnlyOk $
     Query [ "orgs", toPathPart org, "members", toPathPart user ] []
+
+-- | List pending organization invitations
+--
+-- See <https://developer.github.com/v3/orgs/members/#list-pending-organization-invitations>
+orgInvitationsR :: Name Organization -> FetchCount -> Request 'RA (Vector Invitation)
+orgInvitationsR org = pagedQuery ["orgs", toPathPart org, "invitations"] []
