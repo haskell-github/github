@@ -79,25 +79,35 @@ data IssueComment = IssueComment
 instance NFData IssueComment where rnf = genericRnf
 instance Binary IssueComment
 
+-- | See <https://developer.github.com/v3/issues/events/#events-1>
 data EventType
-    = Mentioned        -- ^ The actor was @mentioned in an issue body.
-    | Subscribed       -- ^ The actor subscribed to receive notifications for an issue.
-    | Unsubscribed     -- ^ The issue was unsubscribed from by the actor.
-    | Referenced       -- ^ The issue was referenced from a commit message. The commit_id attribute is the commit SHA1 of where that happened.
-    | Merged           -- ^ The issue was merged by the actor. The commit_id attribute is the SHA1 of the HEAD commit that was merged.
-    | Assigned         -- ^ The issue was assigned to the actor.
-    | Closed           -- ^ The issue was closed by the actor. When the commit_id is present, it identifies the commit that closed the issue using “closes / fixes #NN” syntax.
-    | Reopened         -- ^ The issue was reopened by the actor.
-    | ActorUnassigned  -- ^ The issue was unassigned to the actor
-    | Labeled          -- ^ A label was added to the issue.
-    | Unlabeled        -- ^ A label was removed from the issue.
-    | Milestoned       -- ^ The issue was added to a milestone.
-    | Demilestoned     -- ^ The issue was removed from a milestone.
-    | Renamed          -- ^ The issue title was changed.
-    | Locked           -- ^ The issue was locked by the actor.
-    | Unlocked         -- ^ The issue was unlocked by the actor.
-    | HeadRefDeleted   -- ^ The pull request’s branch was deleted.
-    | HeadRefRestored  -- ^ The pull request’s branch was restored.
+    = Mentioned             -- ^ The actor was @mentioned in an issue body.
+    | Subscribed            -- ^ The actor subscribed to receive notifications for an issue.
+    | Unsubscribed          -- ^ The issue was unsubscribed from by the actor.
+    | Referenced            -- ^ The issue was referenced from a commit message. The commit_id attribute is the commit SHA1 of where that happened.
+    | Merged                -- ^ The issue was merged by the actor. The commit_id attribute is the SHA1 of the HEAD commit that was merged.
+    | Assigned              -- ^ The issue was assigned to the actor.
+    | Closed                -- ^ The issue was closed by the actor. When the commit_id is present, it identifies the commit that closed the issue using “closes / fixes #NN” syntax.
+    | Reopened              -- ^ The issue was reopened by the actor.
+    | ActorUnassigned       -- ^ The issue was unassigned to the actor
+    | Labeled               -- ^ A label was added to the issue.
+    | Unlabeled             -- ^ A label was removed from the issue.
+    | Milestoned            -- ^ The issue was added to a milestone.
+    | Demilestoned          -- ^ The issue was removed from a milestone.
+    | Renamed               -- ^ The issue title was changed.
+    | Locked                -- ^ The issue was locked by the actor.
+    | Unlocked              -- ^ The issue was unlocked by the actor.
+    | HeadRefDeleted        -- ^ The pull request’s branch was deleted.
+    | HeadRefRestored       -- ^ The pull request’s branch was restored.
+    | ReviewRequested       -- ^ The actor requested review from the subject on this pull request.
+    | ReviewDismissed       -- ^ The actor dismissed a review from the pull request.
+    | ReviewRequestRemoved  -- ^ The actor removed the review request for the subject on this pull request.
+    | MarkedAsDuplicate     -- ^ A user with write permissions marked an issue as a duplicate of another issue or a pull request as a duplicate of another pull request.
+    | UnmarkedAsDuplicate   -- ^ An issue that a user had previously marked as a duplicate of another issue is no longer considered a duplicate, or a pull request that a user had previously marked as a duplicate of another pull request is no longer considered a duplicate.
+    | AddedToProject        -- ^ The issue was added to a project board.
+    | MovedColumnsInProject -- ^ The issue was moved between columns in a project board.
+    | RemovedFromProject    -- ^ The issue was removed from a project board.
+    | ConvertedNoteToIssue  -- ^ The issue was created by converting a note in a project board to an issue.
   deriving (Show, Data, Enum, Bounded, Typeable, Eq, Ord, Generic)
 
 instance NFData EventType where rnf = genericRnf
@@ -116,7 +126,7 @@ data IssueEvent = IssueEvent
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData IssueEvent where rnf = genericRnf
-instance Binary IssueEvent 
+instance Binary IssueEvent
 
 instance FromJSON IssueEvent where
     parseJSON = withObject "Event" $ \o -> IssueEvent
@@ -129,25 +139,35 @@ instance FromJSON IssueEvent where
         <*> o .:? "issue"
 
 instance FromJSON EventType where
-    parseJSON (String "closed") = pure Closed
-    parseJSON (String "reopened") = pure Reopened
-    parseJSON (String "subscribed") = pure Subscribed
-    parseJSON (String "merged") = pure Merged
-    parseJSON (String "referenced") = pure Referenced
-    parseJSON (String "mentioned") = pure Mentioned
-    parseJSON (String "assigned") = pure Assigned
-    parseJSON (String "unsubscribed") = pure Unsubscribed
-    parseJSON (String "unassigned") = pure ActorUnassigned
-    parseJSON (String "labeled") = pure Labeled
-    parseJSON (String "unlabeled") = pure Unlabeled
-    parseJSON (String "milestoned") = pure Milestoned
-    parseJSON (String "demilestoned") = pure Demilestoned
-    parseJSON (String "renamed") = pure Renamed
-    parseJSON (String "locked") = pure Locked
-    parseJSON (String "unlocked") = pure Unlocked
-    parseJSON (String "head_ref_deleted") = pure HeadRefDeleted
-    parseJSON (String "head_ref_restored") = pure HeadRefRestored
-    parseJSON _ = fail "Could not build an EventType"
+    parseJSON = withText "EventType" $ \t -> case t of
+        "closed"                   -> pure Closed
+        "reopened"                 -> pure Reopened
+        "subscribed"               -> pure Subscribed
+        "merged"                   -> pure Merged
+        "referenced"               -> pure Referenced
+        "mentioned"                -> pure Mentioned
+        "assigned"                 -> pure Assigned
+        "unassigned"               -> pure ActorUnassigned
+        "labeled"                  -> pure Labeled
+        "unlabeled"                -> pure Unlabeled
+        "milestoned"               -> pure Milestoned
+        "demilestoned"             -> pure Demilestoned
+        "renamed"                  -> pure Renamed
+        "locked"                   -> pure Locked
+        "unlocked"                 -> pure Unlocked
+        "head_ref_deleted"         -> pure HeadRefDeleted
+        "head_ref_restored"        -> pure HeadRefRestored
+        "review_requested"         -> pure ReviewRequested
+        "review_dismissed"         -> pure ReviewDismissed
+        "review_request_removed"   -> pure ReviewRequestRemoved
+        "marked_as_duplicate"      -> pure MarkedAsDuplicate
+        "unmarked_as_duplicate"    -> pure UnmarkedAsDuplicate
+        "added_to_project"         -> pure AddedToProject
+        "moved_columns_in_project" -> pure MovedColumnsInProject
+        "removed_from_project"     -> pure RemovedFromProject
+        "converted_note_to_issue"  -> pure ConvertedNoteToIssue
+        "unsubscribed"             -> pure Unsubscribed -- not in api docs list
+        _                          -> fail $ "Unknown EventType " ++ show t
 
 instance FromJSON IssueComment where
     parseJSON = withObject "IssueComment" $ \o -> IssueComment
