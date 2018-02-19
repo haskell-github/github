@@ -1,7 +1,27 @@
-Changes for 0.19
-- TBW
+## Changes for 0.19
 
-Changes for 0.18
+- Fix issue event type enumeration
+  [#301](https://github.com/phadej/github/issues/301)
+- Include label info in `IssseEvent`
+  [#302](https://github.com/phadej/github/issues/302)
+- Fix `ShowRepo` example
+  [#306](https://github.com/phadej/github/pull/306)
+- Add "Get archive link" API
+  [#307](https://github.com/phadej/github/pull/307)
+- Make "repo" in PullRequestCommit nullable (repository can be gone)
+  [#311](https://github.com/phadej/github/pull/311)
+- Add 	read-only emails endpoint
+  [#313](https://github.com/phadej/github/pull/313)
+- Organisation membership API
+  [#312](https://github.com/phadej/github/pull/312)
+- Fix isPullRequestMerged and other boolean responses
+  [#312](https://github.com/phadej/github/pull/312)
+- Add `behind` pull request mergeable state
+  [#308](https://github.com/phadej/github/pull/308)
+- Add list organisation invitations endpoint
+
+## Changes for 0.18
+
 - Endpoints for deleting issue comments. 
   [#294](https://github.com/phadej/github/pull/294)
 - Endpoints for (un)starring gists.
@@ -15,13 +35,15 @@ Changes for 0.18
 - Add requested reviewers field to pull request records.
   [#292](https://github.com/phadej/github/pull/292)
 
-Changes for 0.17.0
+## Changes for 0.17.0
+
 - Add `Ord Request` instance
 - Repository contents
 - Repository starring endpoints
 - Pull Request review endpoints
 
-Changes for 0.16.0
+## Changes for 0.16.0
+
 - Add support for `mergeable_state = "blocked".`
 - Fix HTTP status code of merge PR
 - Supports newest versions of dependencies
@@ -29,7 +51,7 @@ Changes for 0.16.0
 - release endpoints
 - forkExistingRepo
 
-Changes for 0.15.0
+## Changes for 0.15.0
 
 - Reworked `PullRequest` (notably `pullRequestsFor`)
 - Reworked PR and Issue filtering
@@ -51,7 +73,7 @@ Changes for 0.15.0
 
 See [git commit summary](https://github.com/phadej/github/compare/v0.14.1...v0.15.0)
 
-Changes for 0.14.1
+## Changes for 0.14.1
 
 - Add `membersOfWithR`, `listTeamMembersR`
 - Add related enums: `OrgMemberFilter`, `OrgMemberRole`, `TeamMemberRole`
@@ -59,7 +81,7 @@ Changes for 0.14.1
   `RepoPublicity`
 - Don't require network access for search tests
 
-Changes for 0.14.0
+## Changes for 0.14.0
 
 Large API changes:
 
@@ -70,7 +92,7 @@ Large API changes:
 - Add `Binary` instances for all data
 - `GithubOwner` is a `newtype` of `Either User Organization`. There's still `SimpleOwner`.
 
-Changes for 0.5.0:
+## Changes for 0.5.0:
 
 * OAuth.
 * New function: `Github.Repos.organizationRepo`, to get the repo for a specific organization.
@@ -78,7 +100,7 @@ Changes for 0.5.0:
 * Relax the attoparsec version requirements.
 * The above by [John Wiegley](https://github.com/jwiegley).
 
-Changes for 0.4.1:
+## Changes for 0.4.1:
 
 * Stop using the uri package.
 * Use aeson version 0.6.1.0.
@@ -86,11 +108,11 @@ Changes for 0.4.1:
 * Use http-conduit over 1.8.
 * Use unordered-containers between 0.2 and 0.3.
 
-Changes for 0.4.0:
+## Changes for 0.4.0:
 
 * Use http-conduit version 1.4.1.10.
 
-Changes for 0.3.0:
+## Changes for 0.3.0:
 
 * Re-instantiate the Blobs API.
 * `repoDescription1` and `repoPushedAt` are a `Maybe GithubDate`.
@@ -100,11 +122,11 @@ Changes for 0.3.0:
   ever-changing `http-conduit` package.
 * Features by [Pavel Ryzhov](https://github.com/paulrzcz) and [Simon Hengel](https://github.com/sol).
 
-Changes for 0.2.1:
+## Changes for 0.2.1:
 
 * Expand the unordered-containers dependency to anything in 0.1.x .
 
-Changes for 0.2.0:
+## Changes for 0.2.0:
 
 * `milestoneDueOn` and `repoLanguage` are now `Maybe` types.
 * Introduce `GithubOwner` as the sum type for a `GithubUser` or `GithubOrganization`. Everything that once produced a `GithubUser` now produces a `GithubOwner`. All record accessors have changed their names
