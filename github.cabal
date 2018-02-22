@@ -1,5 +1,5 @@
 name:                github
-version:             0.19
+version:             0.20
 synopsis:            Access to the GitHub API, v3.
 description:
   The GitHub API provides programmatic access to the full
@@ -64,6 +64,7 @@ Library
     GADTs
     KindSignatures
     StandaloneDeriving
+    RecordWildCards 
   exposed-modules:
     GitHub
     GitHub.Internal.Prelude
@@ -85,6 +86,7 @@ Library
     GitHub.Data.Name
     GitHub.Data.Options
     GitHub.Data.PullRequests
+    GitHub.Data.RateLimit
     GitHub.Data.Releases
     GitHub.Data.Repos
     GitHub.Data.Request
@@ -115,6 +117,7 @@ Library
     GitHub.Endpoints.PullRequests
     GitHub.Endpoints.PullRequests.Reviews
     GitHub.Endpoints.PullRequests.Comments
+    GitHub.Endpoints.RateLimit
     GitHub.Endpoints.Repos
     GitHub.Endpoints.Repos.Collaborators
     GitHub.Endpoints.Repos.Comments

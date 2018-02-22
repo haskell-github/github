@@ -46,6 +46,7 @@ module GitHub.Data (
     module GitHub.Data.Milestone,
     module GitHub.Data.Options,
     module GitHub.Data.PullRequests,
+    module GitHub.Data.RateLimit,
     module GitHub.Data.Releases,
     module GitHub.Data.Repos,
     module GitHub.Data.Request,
@@ -77,6 +78,7 @@ import GitHub.Data.Milestone
 import GitHub.Data.Name
 import GitHub.Data.Options
 import GitHub.Data.PullRequests
+import GitHub.Data.RateLimit
 import GitHub.Data.Releases
 import GitHub.Data.Repos
 import GitHub.Data.Request
