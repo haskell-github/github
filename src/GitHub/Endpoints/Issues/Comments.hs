@@ -25,33 +25,33 @@ import GitHub.Internal.Prelude
 import GitHub.Request
 import Prelude ()
 
--- | A specific comment, by ID.
+-- | Get a specific comment, by ID.
 --
 -- > comment "thoughtbot" "paperclip" 1468184
 comment :: Name Owner -> Name Repo -> Id Comment -> IO (Either Error IssueComment)
 comment user repo cid =
     executeRequest' $ commentR user repo cid
 
--- | Query a single comment.
+-- | Get a specific comment, by ID.
 -- See <https://developer.github.com/v3/issues/comments/#get-a-single-comment>
 commentR :: Name Owner -> Name Repo -> Id Comment -> Request k IssueComment
 commentR user repo cid =
     query ["repos", toPathPart user, toPathPart repo, "issues", "comments", toPathPart cid] []
 
--- | All comments on an issue, by the issue's number.
+-- | Get all comments on an issue, by the issue's number.
 --
 -- > comments "thoughtbot" "paperclip" 635
 comments :: Name Owner -> Name Repo -> Id Issue -> IO (Either Error (Vector IssueComment))
 comments = comments' Nothing
 
--- | All comments on an issue, by the issue's number, using authentication.
+-- | Get all comments on an issue, by the issue's number, using authentication.
 --
 -- > comments' (User (user, password)) "thoughtbot" "paperclip" 635
 comments' :: Maybe Auth -> Name Owner -> Name Repo -> Id Issue -> IO (Either Error (Vector IssueComment))
 comments' auth user repo iid =
     executeRequestMaybe auth $ commentsR user repo iid FetchAll
 
--- | List comments on an issue.
+-- | Get comments on an issue.
 -- See <https://developer.github.com/v3/issues/comments/#list-comments-on-an-issue>
 commentsR :: Name Owner -> Name Repo -> Id Issue -> FetchCount -> Request k (Vector IssueComment)
 commentsR user repo iid =
