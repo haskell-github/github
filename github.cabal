@@ -25,7 +25,7 @@ homepage:            https://github.com/phadej/github
 copyright:           Copyright 2012-2013 Mike Burns, Copyright 2013-2015 John Wiegley, Copyright 2016 Oleg Grenrus
 category:            Network
 build-type:          Simple
-tested-with:         GHC==7.8.4, GHC==7.10.3, GHC==8.0.2, GHC==8.2.2
+tested-with:         GHC==7.8.4, GHC==7.10.3, GHC==8.0.2, GHC==8.2.2, GHC==8.4.1
 cabal-version:       >=1.10
 extra-source-files:
   README.md,
@@ -133,7 +133,7 @@ Library
 
   -- Packages bundles with GHC, mtl and text are also here
   build-depends:
-    base                  >=4.7       && <4.11,
+    base                  >=4.7       && <4.12,
     bytestring            >=0.10.4.0  && <0.11,
     containers            >=0.5.5.1   && <0.6,
     deepseq               >=1.3.0.2   && <1.5,
@@ -144,7 +144,7 @@ Library
 
   -- other packages
   build-depends:
-    aeson                 >=0.7.0.6   && <1.3,
+    aeson                 >=0.7.0.6   && <1.4,
     base-compat           >=0.9.1     && <0.10,
     base16-bytestring     >=0.1.1.6   && <0.2,
     binary                >=0.7.1.0   && <0.10,
@@ -152,7 +152,7 @@ Library
     byteable              >=0.1.1     && <0.2,
     cryptohash            >=0.11      && <0.12,
     deepseq-generics      >=0.1.1.2   && <0.3,
-    exceptions            >=0.8.0.2   && <0.9,
+    exceptions            >=0.8.0.2   && <0.11,
     hashable              >=1.2.3.3   && <1.3,
     http-client           >=0.4.8.1   && <0.6,
     http-client-tls       >=0.2.2     && <0.4,
@@ -161,7 +161,7 @@ Library
     iso8601-time          >=0.1.4     && <0.2,
     network-uri           >=2.6.0.3   && <2.7,
     semigroups            >=0.16.2.2  && <0.19,
-    transformers-compat   >=0.4.0.3   && <0.6,
+    transformers-compat   >=0.4.0.3   && <0.7,
     unordered-containers  >=0.2       && <0.3,
     vector                >=0.10.12.3 && <0.13,
     vector-instances      >=3.3.0.1   && <3.5,
