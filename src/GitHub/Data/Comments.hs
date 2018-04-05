@@ -54,6 +54,25 @@ instance Binary NewComment
 instance ToJSON NewComment where
     toJSON (NewComment b) = object [ "body" .= b ]
 
+data NewPullComment = NewPullComment
+    { newPullCommentCommit :: !Text
+    , newPulLCommentPath :: !Text
+    , newPullCommentPosition :: !Int
+    , newPullCommentBody :: !Text
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData NewPullComment where rnf = genericRnf
+instance Binary NewPullComment
+
+instance ToJSON NewPullComment where
+    toJSON (NewPullComment c path pos b) =
+        object [ "body" .= b
+               , "commit_id" .= c
+               , "path" .= path
+               , "position" .= pos
+               ]
+
 data EditComment = EditComment
     { editCommentBody :: !Text
     }
