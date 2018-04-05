@@ -41,16 +41,20 @@ import Data.Maybe (maybeToList)
 import qualified Data.Text.Encoding as TE
 import Network.URI (URI)
 
--- | The contents of a file or directory in a repo, given the repo owner, name, and path to the file
+-- | The contents of a file or directory in a repo, given the repo owner, name, path to the file,
+-- and an optional commit hash or tag.
 --
--- > contentsFor "thoughtbot" "paperclip" "README.md"
+-- > contentsFor "thoughtbot" "paperclip" "README.md" Nothing
+-- > contentsFor "thoughtbot" "paperclip" "README.md" (Just "2b10b06ee5b75373505d497d6dd7602680ad6efc")
 contentsFor :: Name Owner -> Name Repo -> Text -> Maybe Text -> IO (Either Error Content)
 contentsFor = contentsFor' Nothing
 
--- | The contents of a file or directory in a repo, given the repo owner, name, and path to the file
+-- | The contents of a file or directory in a repo, given the repo owner, name, path to the file,
+-- and an optional commit hash or tag.
 -- With Authentication
 --
 -- > contentsFor' (Just (BasicAuth (user, password))) "thoughtbot" "paperclip" "README.md" Nothing
+-- > contentsFor' (Just (BasicAuth (user, password))) "thoughtbot" "paperclip" "README.md" (Just "v1.3.0")
 contentsFor' :: Maybe Auth ->  Name Owner -> Name Repo -> Text -> Maybe Text -> IO (Either Error Content)
 contentsFor' auth user repo path ref =
     executeRequestMaybe auth $ contentsForR user repo path ref
