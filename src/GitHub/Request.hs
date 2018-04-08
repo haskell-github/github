@@ -124,12 +124,17 @@ executeRequestWithMgr mgr auth req = runExceptT $ do
         performHttpReq' httpReq sreq
     performHttpReq httpReq (HeaderQuery _ sreq) =
         performHttpReq' httpReq sreq
+    performHttpReq httpReq (RawHeaderQuery _ sreq) =
+        performHttpReqRaw httpReq sreq
     performHttpReq httpReq (StatusQuery sm _)   = do
         res <- httpLbs' httpReq
         parseStatus sm  . responseStatus $ res
     performHttpReq httpReq (RedirectQuery _)   = do
         res <- httpLbs' httpReq
         parseRedirect (getUri httpReq) res
+
+    performHttpReqRaw :: HTTP.Request -> SimpleRequest k b -> ExceptT Error IO LBS.ByteString
+    performHttpReqRaw httpReq Query {} = responseBody <$> httpLbs' httpReq
 
     performHttpReq' :: FromJSON b => HTTP.Request -> SimpleRequest k b -> ExceptT Error IO b
     performHttpReq' httpReq Query {} = do
@@ -174,6 +179,8 @@ executeRequestWithMgr' mgr req = runExceptT $ do
         performHttpReq' httpReq sreq
     performHttpReq httpReq (HeaderQuery _ sreq) =
         performHttpReq' httpReq sreq
+    performHttpReq httpReq (RawHeaderQuery _ sreq) =
+        performHttpReqRaw httpReq sreq
     performHttpReq httpReq (StatusQuery sm _)   = do
         res <- httpLbs' httpReq
         parseStatus sm  . responseStatus $ res
@@ -181,6 +188,8 @@ executeRequestWithMgr' mgr req = runExceptT $ do
         res <- httpLbs' httpReq
         parseRedirect (getUri httpReq) res
 
+    performHttpReqRaw :: HTTP.Request -> SimpleRequest 'RO LBS.ByteString -> ExceptT Error IO LBS.ByteString
+    performHttpReqRaw httpReq Query {} = responseBody <$> httpLbs' httpReq
     performHttpReq' :: FromJSON b => HTTP.Request -> SimpleRequest 'RO b -> ExceptT Error IO b
     performHttpReq' httpReq Query {} = do
         res <- httpLbs' httpReq
@@ -228,6 +237,9 @@ makeHttpRequest auth r = case r of
         req' <- makeHttpSimpleRequest auth req
         return $ setCheckStatus (Just sm) req'
     HeaderQuery h req -> do
+        req' <- makeHttpSimpleRequest auth req
+        return $ req' { requestHeaders = h <> requestHeaders req' }
+    RawHeaderQuery h req -> do
         req' <- makeHttpSimpleRequest auth req
         return $ req' { requestHeaders = h <> requestHeaders req' }
     RedirectQuery req -> do

@@ -12,6 +12,9 @@ module GitHub.Endpoints.PullRequests (
     pullRequest',
     pullRequest,
     pullRequestR,
+    pullRequestDiff',
+    pullRequestDiff,
+    pullRequestDiffR,
     createPullRequest,
     createPullRequestR,
     updatePullRequest,
@@ -33,6 +36,7 @@ import GitHub.Data
 import GitHub.Internal.Prelude
 import GitHub.Request
 import Prelude ()
+import Data.ByteString.Lazy (ByteString)
 
 -- | All open pull requests for the repo, by owner and repo name.
 --
@@ -59,6 +63,25 @@ pullRequestsForR
 pullRequestsForR user repo opts = pagedQuery
     ["repos", toPathPart user, toPathPart repo, "pulls"]
     (prModToQueryString opts)
+
+-- | Obtain the diff of a pull request
+-- See <https://developer.github.com/v3/pulls/#get-a-single-pull-request>
+pullRequestDiff' :: Maybe Auth -> Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error ByteString)
+pullRequestDiff' auth user repo prid =
+    executeRequestMaybe auth $ pullRequestDiffR user repo prid
+
+-- | Obtain the diff of a pull request
+-- See <https://developer.github.com/v3/pulls/#get-a-single-pull-request>
+pullRequestDiff :: Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error ByteString)
+pullRequestDiff = pullRequestDiff' Nothing
+
+-- | Query a single pull request to obtain the diff
+-- See <https://developer.github.com/v3/pulls/#get-a-single-pull-request>
+pullRequestDiffR :: Name Owner -> Name Repo -> Id PullRequest -> Request k ByteString
+pullRequestDiffR user repo prid =
+    RawHeaderQuery
+        [("Accept", "application/vnd.github.v3.diff")]
+        (Query ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] []) -- XXX change the accept header here
 
 -- | A detailed pull request, which has much more information. This takes the
 -- repo owner and name along with the number assigned to the pull request.

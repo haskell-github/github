@@ -142,6 +142,7 @@ data Request (k :: RW) a where
     SimpleQuery   :: FromJSON a => SimpleRequest k a -> Request k a
     StatusQuery   :: StatusMap a -> SimpleRequest k () -> Request k a
     HeaderQuery   :: FromJSON a => Types.RequestHeaders -> SimpleRequest k a -> Request k a
+    RawHeaderQuery :: Types.RequestHeaders -> SimpleRequest k LBS.ByteString -> Request k LBS.ByteString
     RedirectQuery :: SimpleRequest k () -> Request k URI
   deriving (Typeable)
 
@@ -184,7 +185,27 @@ command m ps body = SimpleQuery (Command m ps body)
 deriving instance Eq a => Eq (Request k a)
 deriving instance Eq a => Eq (SimpleRequest k a)
 
-deriving instance Ord a => Ord (Request k a)
+-- deriving instance Ord a => Ord (Request k a)
+instance Ord a => Ord (Request k a) where
+    compare s1 s2 =
+        case (s1,s2) of
+            (SimpleQuery a,SimpleQuery b) -> compare a b
+            (StatusQuery a1 a2,StatusQuery b1 b2) -> compare (a1,a2) (b1,b2)
+            (HeaderQuery a1 a2, HeaderQuery b1 b2) -> compare (a1,a2) (b1,b2)
+            (RawHeaderQuery a1 a2, RawHeaderQuery b1 b2) -> compare (a1,a2) (b1,b2)
+            (RedirectQuery a, RedirectQuery b) -> compare a b
+            (SimpleQuery _ , _) -> LT
+            (StatusQuery _ _, SimpleQuery _) -> GT
+            (StatusQuery _ _, _) -> GT
+            (HeaderQuery _ _, SimpleQuery _) -> GT
+            (HeaderQuery _ _, StatusQuery _ _) -> GT
+            (HeaderQuery _ _, _) -> LT
+            (RawHeaderQuery _ _, SimpleQuery _) -> GT
+            (RawHeaderQuery _ _, StatusQuery _ _) -> GT
+            (RawHeaderQuery _ _, HeaderQuery _ _) -> GT
+            -- (RawHeaderQuery _ _, RedirectQuery _) -> LT -- This case is
+            -- derived, does not type check, in GHC 8.4.1
+            (RedirectQuery _ , _) -> GT
 deriving instance Ord a => Ord (SimpleRequest k a)
 
 instance Show (SimpleRequest k a) where
@@ -220,6 +241,10 @@ instance Show (Request k a) where
             . showsPrec (appPrec + 1) m
             . showString " "
             . showsPrec (appPrec + 1) req
+        RawHeaderQuery m req -> showString "RawHeader "
+            . showsPrec (appPrec + 1) m
+            . showString " "
+            . showsPrec (appPrec + 1) req
         RedirectQuery req -> showString "Redirect "
             . showsPrec (appPrec + 1) req
       where
@@ -250,6 +275,10 @@ instance Hashable (Request k a) where
              `hashWithSalt` map fst sm
              `hashWithSalt` req
     hashWithSalt salt (HeaderQuery h req) =
+        salt `hashWithSalt` (2 :: Int)
+             `hashWithSalt` h
+             `hashWithSalt` req
+    hashWithSalt salt (RawHeaderQuery h req) =
         salt `hashWithSalt` (2 :: Int)
              `hashWithSalt` h
              `hashWithSalt` req
