@@ -206,11 +206,11 @@ module GitHub (
     -- Missing endpoints:
     --
     -- * List comments in a repository
-    -- * Create a comment
     -- * Edit a comment
     -- * Delete a comment
     pullRequestCommentsR,
     pullRequestCommentR,
+    createPullCommentR,
 
     -- ** Pull request reviews
     -- | See <https://developer.github.com/v3/pulls/reviews/>
