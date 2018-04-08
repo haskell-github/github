@@ -59,6 +59,6 @@ createPullComment auth user repo iss commit path position body =
 -- See <https://developer.github.com/v3/pulls/comments/#create-a-comment>
 createPullCommentR :: Name Owner -> Name Repo -> Id Issue -> Text -> Text -> Int -> Text -> Request 'RW Comment
 createPullCommentR user repo iss commit path position body =
-    command Post parts (encode $ NewComment body)
+    command Post parts (encode $ NewPullComment commit path position body)
   where
     parts = ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart iss, "comments"]

@@ -56,7 +56,7 @@ instance ToJSON NewComment where
 
 data NewPullComment = NewPullComment
     { newPullCommentCommit :: !Text
-    , newPulLCommentPath :: !Text
+    , newPullCommentPath :: !Text
     , newPullCommentPosition :: !Int
     , newPullCommentBody :: !Text
     }
