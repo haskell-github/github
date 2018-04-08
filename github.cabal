@@ -1,5 +1,6 @@
 name:                github
 version:             0.19
+x-revision:          2
 synopsis:            Access to the GitHub API, v3.
 description:
   The GitHub API provides programmatic access to the full
@@ -145,7 +146,7 @@ Library
   -- other packages
   build-depends:
     aeson                 >=0.7.0.6   && <1.4,
-    base-compat           >=0.9.1     && <0.10,
+    base-compat           >=0.9.1     && <0.11,
     base16-bytestring     >=0.1.1.6   && <0.2,
     binary                >=0.7.1.0   && <0.10,
     binary-orphans        >=0.1.0.0   && <0.2,
