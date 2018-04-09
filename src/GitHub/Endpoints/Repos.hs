@@ -55,14 +55,15 @@ module GitHub.Endpoints.Repos (
 import GitHub.Data
 import GitHub.Internal.Prelude
 import GitHub.Request
+import qualified Network.HTTP.Types as W
 import Prelude ()
 
 repoPublicityQueryString :: RepoPublicity -> QueryString
-repoPublicityQueryString RepoPublicityAll     = [("type", Just "all")]
-repoPublicityQueryString RepoPublicityOwner   = [("type", Just "owner")]
-repoPublicityQueryString RepoPublicityMember  = [("type", Just "member")]
-repoPublicityQueryString RepoPublicityPublic  = [("type", Just "public")]
-repoPublicityQueryString RepoPublicityPrivate = [("type", Just "private")]
+repoPublicityQueryString RepoPublicityAll     = [("type", [W.QE "all"])]
+repoPublicityQueryString RepoPublicityOwner   = [("type", [W.QE "owner"])]
+repoPublicityQueryString RepoPublicityMember  = [("type", [W.QE "member"])]
+repoPublicityQueryString RepoPublicityPublic  = [("type", [W.QE "public"])]
+repoPublicityQueryString RepoPublicityPrivate = [("type", [W.QE "private"])]
 
 -- | List your repositories.
 currentUserRepos :: Auth -> RepoPublicity -> IO (Either Error (Vector Repo))
@@ -234,7 +235,7 @@ contributorsR
 contributorsR user repo anon =
     pagedQuery ["repos", toPathPart user, toPathPart repo, "contributors"] qs
   where
-    qs | anon      = [("anon", Just "true")]
+    qs | anon      = [("anon", [W.QE "true"])]
        | otherwise = []
 
 -- | The contributors to a repo, including anonymous contributors (such as

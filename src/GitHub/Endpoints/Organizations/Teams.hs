@@ -39,6 +39,7 @@ module GitHub.Endpoints.Organizations.Teams (
 import GitHub.Data
 import GitHub.Internal.Prelude
 import GitHub.Request
+import qualified Network.HTTP.Types as W
 import Prelude ()
 
 -- | List teams.  List the teams of an Owner.
@@ -133,7 +134,7 @@ deleteTeamR tid =
 -- See <https://developer.github.com/v3/orgs/teams/#list-team-members>
 listTeamMembersR :: Id Team -> TeamMemberRole -> FetchCount -> Request 'RA (Vector SimpleUser)
 listTeamMembersR tid r =
-    pagedQuery ["teams", toPathPart tid, "members"] [("role", Just r')]
+    pagedQuery ["teams", toPathPart tid, "members"] [("role", [W.QE r'])]
   where
     r' = case r of
         TeamMemberRoleAll         -> "all"

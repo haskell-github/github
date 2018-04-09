@@ -69,7 +69,8 @@ import Data.List                  (find)
 import Network.HTTP.Client
        (HttpException (..), Manager, RequestBody (..), Response (..),
        applyBasicAuth, getUri, httpLbs, method, newManager, redirectCount,
-       requestBody, requestHeaders, setQueryString, setRequestIgnoreStatus)
+       requestBody, requestHeaders, setQueryStringPartialEscape,
+       setRequestIgnoreStatus)
 import Network.HTTP.Client.TLS  (tlsManagerSettings)
 import Network.HTTP.Link.Parser (parseLinkHeaderBS)
 import Network.HTTP.Link.Types  (Link (..), LinkParam (..), href, linkParams)
@@ -246,7 +247,7 @@ makeHttpSimpleRequest auth r = case r of
             $ setReqHeaders
             . setCheckStatus Nothing
             . setAuthRequest auth
-            . setQueryString qs
+            . setQueryStringPartialEscape qs
             $ req
     PagedQuery paths qs _ -> do
         req <- parseUrl' $ url paths
@@ -254,7 +255,7 @@ makeHttpSimpleRequest auth r = case r of
             $ setReqHeaders
             . setCheckStatus Nothing
             . setAuthRequest auth
-            . setQueryString qs
+            . setQueryStringPartialEscape qs
             $ req
     Command m paths body -> do
         req <- parseUrl' $ url paths
@@ -297,7 +298,7 @@ makeHttpSimpleRequest auth r = case r of
 
     setAuthRequest :: Maybe Auth -> HTTP.Request -> HTTP.Request
     setAuthRequest (Just (BasicAuth user pass)) = applyBasicAuth user pass
-    setAuthRequest _                                  = id
+    setAuthRequest _                            = id
 
     getOAuthHeader :: Auth -> RequestHeaders
     getOAuthHeader (OAuth token)             = [("Authorization", "token " <> token)]

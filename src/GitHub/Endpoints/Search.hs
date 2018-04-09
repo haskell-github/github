@@ -15,72 +15,99 @@ module GitHub.Endpoints.Search(
     searchIssues',
     searchIssues,
     searchIssuesR,
+    W.EscapeItem(..),
     module GitHub.Data,
     ) where
 
 import GitHub.Data
 import GitHub.Internal.Prelude
 import GitHub.Request
+import qualified Network.HTTP.Types as W
 import Prelude ()
 
-import qualified Data.Text.Encoding as TE
+-- | Perform a repository search.
+-- With authentication (5000 queries per hour).
+--
+-- >     let query search = search { searchRepoOptionsLanguage = Just (Language "Haskell")
+--                                 , searchRepoOptionsSortBy   = Just Stars
+--                                 , searchRepoOptionsOrder    = Just SortDescending
+--                                 , searchRepoOptionsCreated  = Just (start, newDate)
+--                                 }
+--    res <- searchRepos' (Just $ BasicAuth "github-username" "github-password") (SearchRepoMod query)
+searchRepos' :: Maybe Auth -> SearchRepoMod -> IO (Either Error (SearchResult Repo))
+searchRepos' auth opts = executeRequestMaybe auth $ searchReposR opts
 
 -- | Perform a repository search.
--- With authentication.
+-- Without authentication (60 queries per hour).
 --
--- > searchRepos' (Just $ BasicAuth "github-username" "github-password') "a in%3Aname language%3Ahaskell created%3A>2013-10-01&per_page=100"
-searchRepos' :: Maybe Auth -> Text -> IO (Either Error (SearchResult Repo))
-searchRepos' auth = executeRequestMaybe auth . searchReposR
-
--- | Perform a repository search.
--- Without authentication.
---
--- > searchRepos "q=a in%3Aname language%3Ahaskell created%3A>2013-10-01&per_page=100"
-searchRepos :: Text -> IO (Either Error (SearchResult Repo))
+-- >     let query search = search { searchRepoOptionsLanguage = Just (Language "Haskell")
+--                                 , searchRepoOptionsSortBy   = Just Stars
+--                                 , searchRepoOptionsOrder    = Just SortDescending
+--                                 , searchRepoOptionsCreated  = Just (start, newDate)
+--                                 }
+--    res <- searchRepos (SearchRepoMod query)
+searchRepos :: SearchRepoMod -> IO (Either Error (SearchResult Repo))
 searchRepos = searchRepos' Nothing
 
 -- | Search repositories.
 -- See <https://developer.github.com/v3/search/#search-repositories>
-searchReposR :: Text -> Request k (SearchResult Repo)
-searchReposR searchString =
-    query ["search", "repositories"] [("q", Just $ TE.encodeUtf8 searchString)]
+searchReposR :: SearchRepoMod -> Request k (SearchResult Repo)
+searchReposR opts =
+    query ["search", "repositories"] qs
+  where
+    qs = searchRepoModToQueryString opts
 
 -- | Perform a code search.
--- With authentication.
+-- With authentication (5000 queries per hour).
 --
--- > searchCode' (Just $ BasicAuth "github-username" "github-password') "a in%3Aname language%3Ahaskell created%3A>2013-10-01&per_page=100"
-searchCode' :: Maybe Auth -> Text -> IO (Either Error (SearchResult Code))
+-- QE = URI encode
+-- QN = Not URI encode
+-- >    res <- searchCode' (Just $ BasicAuth "github-username" "github-password")
+--                       [("q", [QE "language", QN ":", QE "haskell"]),
+--                        ("sort", [QE "stars"]),
+--                        ("order", [QE "desc"])]
+searchCode' :: Maybe Auth -> QueryString -> IO (Either Error (SearchResult Code))
 searchCode' auth = executeRequestMaybe auth . searchCodeR
 
 -- | Perform a code search.
--- Without authentication.
+-- Without authentication (60 queries per hour).
 --
--- > searchCode "q=addClass+in:file+language:js+repo:jquery/jquery"
-searchCode :: Text -> IO (Either Error (SearchResult Code))
+-- >    res <- searchCode'  [("q", [QE "language", QN ":", QE "haskell"]),
+--                         ("sort", [QE "stars"]),
+--                         ("order", [QE "desc"])]
+searchCode :: QueryString -> IO (Either Error (SearchResult Code))
 searchCode = searchCode' Nothing
 
 -- | Search code.
 -- See <https://developer.github.com/v3/search/#search-code>
-searchCodeR :: Text -> Request k (SearchResult Code)
+searchCodeR :: QueryString -> Request k (SearchResult Code)
 searchCodeR searchString =
-    query ["search", "code"] [("q", Just $ TE.encodeUtf8 searchString)]
+    query ["search", "code"] searchString
 
 -- | Perform an issue search.
 -- With authentication.
 --
--- > searchIssues' (Just $ BasicAuth "github-username" "github-password') "a repo%3Aphadej%2Fgithub&per_page=100"
-searchIssues' :: Maybe Auth -> Text -> IO (Either Error (SearchResult Issue))
+-- Because of URI encoding 
+-- "q=a+repo:phadej/github&per_page=100"
+-- has to be written as
+-- > searchIssues' (Just $ BasicAuth "github-username" "github-password")
+--                   [("q", [QE "a", QN "+", QE "repo", QN ":", QE "phadej", QN "/", QE "github"]),
+--                    ("per_page", [QE "100"])]
+searchIssues' :: Maybe Auth -> QueryString -> IO (Either Error (SearchResult Issue))
 searchIssues' auth = executeRequestMaybe auth . searchIssuesR
 
 -- | Perform an issue search.
 -- Without authentication.
 --
--- > searchIssues "q=a repo%3Aphadej%2Fgithub&per_page=100"
-searchIssues :: Text -> IO (Either Error (SearchResult Issue))
+-- "q=a+repo:phadej/github&per_page=100"
+-- has to be written as
+-- > searchIssues [("q", [QE "a", QN "+", QE "repo", QN ":", QE "phadej", QN "/", QE "github"]),
+--                 ("per_page", [QE "100"])]
+searchIssues :: QueryString -> IO (Either Error (SearchResult Issue))
 searchIssues = searchIssues' Nothing
 
 -- | Search issues.
 -- See <https://developer.github.com/v3/search/#search-issues>
-searchIssuesR :: Text -> Request k (SearchResult Issue)
+searchIssuesR :: QueryString -> Request k (SearchResult Issue)
 searchIssuesR searchString =
-    query ["search", "issues"] [("q", Just $ TE.encodeUtf8 searchString)]
+    query ["search", "issues"] searchString

@@ -20,6 +20,7 @@ module GitHub.Endpoints.Organizations.Members (
 import GitHub.Data
 import GitHub.Internal.Prelude
 import GitHub.Request
+import qualified Network.HTTP.Types as W
 import Prelude ()
 
 -- | All the users who are members of the specified organization,
@@ -49,7 +50,7 @@ membersOfR organization =
 -- See <https://developer.github.com/v3/orgs/members/#members-list>
 membersOfWithR :: Name Organization -> OrgMemberFilter -> OrgMemberRole -> FetchCount -> Request k (Vector SimpleUser)
 membersOfWithR org f r =
-    pagedQuery ["orgs", toPathPart org, "members"] [("filter", Just f'), ("role", Just r')]
+    pagedQuery ["orgs", toPathPart org, "members"] [("filter", [W.QE f']), ("role", [W.QE r'])]
   where
     f' = case f of
         OrgMemberFilter2faDisabled -> "2fa_disabled"

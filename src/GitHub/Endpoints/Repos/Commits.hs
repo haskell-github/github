@@ -31,13 +31,14 @@ import Prelude ()
 import qualified Data.ByteString    as BS
 import qualified Data.Text          as T
 import qualified Data.Text.Encoding as TE
+import qualified Network.HTTP.Types as W
 
-renderCommitQueryOption :: CommitQueryOption -> (BS.ByteString, Maybe BS.ByteString)
-renderCommitQueryOption (CommitQuerySha sha)      = ("sha", Just $ TE.encodeUtf8 sha)
-renderCommitQueryOption (CommitQueryPath path)     = ("path", Just $ TE.encodeUtf8 path)
-renderCommitQueryOption (CommitQueryAuthor author) = ("author", Just $ TE.encodeUtf8 author)
-renderCommitQueryOption (CommitQuerySince date)    = ("since", Just $ TE.encodeUtf8 . T.pack $ formatISO8601 date)
-renderCommitQueryOption (CommitQueryUntil date)    = ("until", Just $ TE.encodeUtf8 . T.pack $ formatISO8601 date)
+renderCommitQueryOption :: CommitQueryOption -> (BS.ByteString, [W.EscapeItem])
+renderCommitQueryOption (CommitQuerySha sha)      = ("sha", [W.QE $ TE.encodeUtf8 sha])
+renderCommitQueryOption (CommitQueryPath path)    = ("path", [W.QE $ TE.encodeUtf8 path])
+renderCommitQueryOption (CommitQueryAuthor author) = ("author", [W.QE $ TE.encodeUtf8 author])
+renderCommitQueryOption (CommitQuerySince date) = ("since", [W.QE $ TE.encodeUtf8 . T.pack $ formatISO8601 date])
+renderCommitQueryOption (CommitQueryUntil date) = ("until", [W.QE $ TE.encodeUtf8 . T.pack $ formatISO8601 date])
 
 -- | The commit history for a repo.
 --

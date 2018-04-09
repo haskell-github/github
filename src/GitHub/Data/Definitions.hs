@@ -15,6 +15,7 @@ import Network.HTTP.Client (HttpException)
 import qualified Control.Exception as E
 import qualified Data.ByteString   as BS
 import qualified Data.Text         as T
+import qualified Network.HTTP.Types as W
 
 import GitHub.Data.Id   (Id)
 import GitHub.Data.Name (Name)
@@ -232,7 +233,7 @@ data OrgMemberRole
     deriving (Show, Eq, Ord, Enum, Bounded, Typeable, Data, Generic)
 
 -- | Request query string
-type QueryString = [(BS.ByteString, Maybe BS.ByteString)]
+type QueryString = [(BS.ByteString, [W.EscapeItem])]
 
 -- | Count of elements
 type Count = Int

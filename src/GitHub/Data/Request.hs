@@ -36,6 +36,7 @@ import qualified Data.ByteString.Lazy      as LBS
 import qualified Data.Text                 as T
 import qualified Network.HTTP.Types        as Types
 import qualified Network.HTTP.Types.Method as Method
+import qualified Network.HTTP.Types        as W
 import Network.URI                         (URI)
 ------------------------------------------------------------------------------
 -- Auxillary types
@@ -240,6 +241,14 @@ instance Hashable (SimpleRequest k a) where
              `hashWithSalt` m
              `hashWithSalt` ps
              `hashWithSalt` body
+
+instance Hashable W.EscapeItem where
+    hashWithSalt salt (W.QE b) =
+        salt `hashWithSalt` (0 :: Int)
+             `hashWithSalt` b
+    hashWithSalt salt (W.QN b) =
+        salt `hashWithSalt` (1 :: Int)
+             `hashWithSalt` b
 
 instance Hashable (Request k a) where
     hashWithSalt salt (SimpleQuery req) =

@@ -35,6 +35,7 @@ module GitHub.Endpoints.Repos.Contents (
 import GitHub.Data
 import GitHub.Internal.Prelude
 import GitHub.Request
+import Network.HTTP.Types(EscapeItem(..))
 import Prelude ()
 
 import Data.Maybe (maybeToList)
@@ -64,7 +65,7 @@ contentsForR
 contentsForR user repo path ref =
     query ["repos", toPathPart user, toPathPart repo, "contents", path] qs
   where
-    qs =  maybe [] (\r -> [("ref", Just . TE.encodeUtf8 $ r)]) ref
+    qs =  maybe [] (\r -> [("ref", [QE (TE.encodeUtf8 r)] )]) ref
 
 -- | The contents of a README file in a repo, given the repo owner and name
 --
