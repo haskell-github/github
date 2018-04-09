@@ -24,6 +24,7 @@ module GitHub.Endpoints.Repos.Commits (
     ) where
 
 import GitHub.Data
+import GitHub.Data.Definitions(wrapEsc)
 import GitHub.Internal.Prelude
 import GitHub.Request
 import Prelude ()
@@ -77,7 +78,7 @@ commitsWithOptionsForR :: Name Owner -> Name Repo -> FetchCount -> [CommitQueryO
 commitsWithOptionsForR user repo limit opts =
     pagedQuery ["repos", toPathPart user, toPathPart repo, "commits"] qs limit
   where
-    qs = map renderCommitQueryOption opts
+    qs = wrapEsc (map renderCommitQueryOption opts)
 
 
 -- | Details on a specific SHA1 for a repo.

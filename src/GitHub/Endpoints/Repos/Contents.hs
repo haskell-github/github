@@ -33,6 +33,7 @@ module GitHub.Endpoints.Repos.Contents (
     ) where
 
 import GitHub.Data
+import GitHub.Data.Definitions(wrapEsc)
 import GitHub.Internal.Prelude
 import GitHub.Request
 import Network.HTTP.Types(EscapeItem(..))
@@ -63,7 +64,7 @@ contentsForR
     -> Maybe Text      -- ^ Git commit
     -> Request k Content
 contentsForR user repo path ref =
-    query ["repos", toPathPart user, toPathPart repo, "contents", path] qs
+    query ["repos", toPathPart user, toPathPart repo, "contents", path] (wrapEsc qs)
   where
     qs =  maybe [] (\r -> [("ref", [QE (TE.encodeUtf8 r)] )]) ref
 

@@ -18,7 +18,7 @@ module GitHub.Endpoints.GitData.Trees (
 import GitHub.Data
 import GitHub.Internal.Prelude
 import GitHub.Request
-import qualified Network.HTTP.Types as W
+import qualified Network.HTTP.Types as Types
 import Prelude ()
 
 -- | A tree for a SHA1.
@@ -58,4 +58,4 @@ nestedTree = nestedTree' Nothing
 nestedTreeR :: Name Owner -> Name Repo -> Name Tree -> Request k Tree
 nestedTreeR user repo sha =
     query  ["repos", toPathPart user, toPathPart repo, "git", "trees", toPathPart sha]
-           [("recursive", [W.QE "1"])]
+           [("recursive", [Esc (Types.QE "1")])]

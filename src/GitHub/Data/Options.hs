@@ -309,7 +309,7 @@ pullRequestOptionsToQueryString (PullRequestOptions st head_ base sort dir) =
     , mk "base" <$> base'
     ]
   where
-    mk k v = (k, [W.QE v])
+    mk k v = (k, [Esc (W.QE v)])
     state' = case st of
         Nothing          -> "all"
         Just StateOpen   -> "open"
@@ -406,7 +406,7 @@ issueOptionsToQueryString (IssueOptions filt st labels sort dir since) =
     , mk "since" <$> since'
     ]
   where
-    mk k v = (k, [W.QE v])
+    mk k v = (k, [Esc (W.QE v)])
     filt' = case filt of
         IssueFilterAssigned   -> "assigned"
         IssueFilterCreated    -> "created"
@@ -554,7 +554,7 @@ issueRepoOptionsToQueryString IssueRepoOptions {..} =
     , mk "mentioned" <$> mentioned'
     ]
   where
-    mk k v = (k, [W.QE v])
+    mk k v = (k, [Esc (W.QE v)])
     filt f x = case x of
         FilterAny          -> Just "*"
         FilterNone         -> Just "none"
@@ -718,26 +718,27 @@ searchRepoOptionsToQueryString SearchRepoOptions {..} =
     ]
   where
     mk k v = (k, v)
-    one = (\x -> [x]) . W.QE . TE.encodeUtf8
+    one = (\x -> [x]) . Esc . W.QE . TE.encodeUtf8
 
     -- example  q=tetris+language:assembly+topic:ruby
     -- into       [QS "tetris", QPlus, QS "language", QColon, QS "assembly", QPlus, ..
-    plussedArgs = [W.QE (TE.encodeUtf8 searchRepoOptionsKeyword), W.QN "+"] ++ intercalate [W.QN "+"]
-       ( catMaybes [ ([W.QE "created",  W.QN ":"] ++) <$> created'
-                   , ([W.QE "pushed",   W.QN ":"] ++) <$> pushed'
-                   , ([W.QE "topic",    W.QN ":"] ++) <$> topic'
-                   , ([W.QE "language", W.QN ":"] ++) <$> language'
-                   , ([W.QE "license",  W.QN ":"] ++) <$> license'
+    plussedArgs = [Esc (W.QE (TE.encodeUtf8 searchRepoOptionsKeyword)),
+                   Esc (W.QN "+")] ++ intercalate [Esc (W.QN "+")]
+       ( catMaybes [ ([Esc (W.QE "created"),  Esc (W.QN ":")] ++) <$> created'
+                   , ([Esc (W.QE "pushed"),   Esc (W.QN ":")] ++) <$> pushed'
+                   , ([Esc (W.QE "topic"),    Esc (W.QN ":")] ++) <$> topic'
+                   , ([Esc (W.QE "language"), Esc (W.QN ":")] ++) <$> language'
+                   , ([Esc (W.QE "license"),  Esc (W.QN ":")] ++) <$> license'
                    ])
 
     sort' x = case x of
-        Stars   -> [W.QE "stars"]
-        Forks   -> [W.QE "forks"]
-        Updated -> [W.QE "updated"]
+        Stars   -> [Esc (W.QE "stars")]
+        Forks   -> [Esc (W.QE "forks")]
+        Updated -> [Esc (W.QE "updated")]
 
     direction' x = case x of
-        SortDescending -> [W.QE "desc"]
-        SortAscending  -> [W.QE "asc"]
+        SortDescending -> [Esc (W.QE "desc")]
+        SortAscending  -> [Esc (W.QE "asc")]
 
     created'  = one . T.pack . (\(x,y) -> showGregorian x
                                           ++ ".." ++

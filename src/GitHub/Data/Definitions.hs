@@ -15,7 +15,7 @@ import Network.HTTP.Client (HttpException)
 import qualified Control.Exception as E
 import qualified Data.ByteString   as BS
 import qualified Data.Text         as T
-import qualified Network.HTTP.Types as W
+import qualified Network.HTTP.Types as Types
 
 import GitHub.Data.Id   (Id)
 import GitHub.Data.Name (Name)
@@ -233,7 +233,27 @@ data OrgMemberRole
     deriving (Show, Eq, Ord, Enum, Bounded, Typeable, Data, Generic)
 
 -- | Request query string
-type QueryString = [(BS.ByteString, [W.EscapeItem])]
+type QueryString = [(BS.ByteString, [EscapeItem])]
+
+newtype EscapeItem = Esc Types.EscapeItem deriving (Eq,Ord, Show)
+
+unwrapEsc :: [(BS.ByteString, [EscapeItem])] -> [(BS.ByteString, [Types.EscapeItem])]
+unwrapEsc qs = map t qs
+  where t (bs, items) = (bs, map unesc items)
+        unesc (Esc i) = i
+
+wrapEsc :: [(BS.ByteString, [Types.EscapeItem])] -> [(BS.ByteString, [EscapeItem])]
+wrapEsc qs = map t qs
+  where t (bs, items) = (bs, map Esc items)
+
+instance Hashable EscapeItem where
+    hashWithSalt salt (Esc (Types.QE b)) =
+        salt `hashWithSalt` (0 :: Int)
+             `hashWithSalt` b
+    hashWithSalt salt (Esc (Types.QN b)) =
+        salt `hashWithSalt` (1 :: Int)
+             `hashWithSalt` b
+
 
 -- | Count of elements
 type Count = Int

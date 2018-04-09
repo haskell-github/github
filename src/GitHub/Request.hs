@@ -51,6 +51,7 @@ module GitHub.Request (
     ) where
 
 import GitHub.Internal.Prelude
+import GitHub.Data.Definitions(unwrapEsc)
 import Prelude ()
 
 #if MIN_VERSION_mtl(2,2,0)
@@ -247,7 +248,7 @@ makeHttpSimpleRequest auth r = case r of
             $ setReqHeaders
             . setCheckStatus Nothing
             . setAuthRequest auth
-            . setQueryStringPartialEscape qs
+            . setQueryStringPartialEscape (unwrapEsc qs)
             $ req
     PagedQuery paths qs _ -> do
         req <- parseUrl' $ url paths
@@ -255,7 +256,7 @@ makeHttpSimpleRequest auth r = case r of
             $ setReqHeaders
             . setCheckStatus Nothing
             . setAuthRequest auth
-            . setQueryStringPartialEscape qs
+            . setQueryStringPartialEscape (unwrapEsc qs)
             $ req
     Command m paths body -> do
         req <- parseUrl' $ url paths

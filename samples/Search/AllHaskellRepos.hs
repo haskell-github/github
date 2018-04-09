@@ -28,7 +28,7 @@ updateGithub :: [FilePath] -> IO ()
 updateGithub [lastIntervalEnd, authorsCsv, packagesCsv] = do
   lastEnd <- T.readFile lastIntervalEnd -- first time: 2008-03-01
   start <- parseTimeM True defaultTimeLocale (iso8601DateFormat Nothing) (T.unpack lastEnd)
-  intervals pass start 10 -- stop after 10 queries
+  intervals "pass" start 10 -- stop after 10 queries
   a <- T.readFile authorsCsv
   T.writeFile authorsCsv  (dups a)
   p <- T.readFile packagesCsv

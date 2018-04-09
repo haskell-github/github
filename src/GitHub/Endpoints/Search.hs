@@ -15,37 +15,35 @@ module GitHub.Endpoints.Search(
     searchIssues',
     searchIssues,
     searchIssuesR,
-    W.EscapeItem(..),
     module GitHub.Data,
     ) where
 
 import GitHub.Data
 import GitHub.Internal.Prelude
 import GitHub.Request
-import qualified Network.HTTP.Types as W
 import Prelude ()
 
 -- | Perform a repository search.
--- With authentication (5000 queries per hour).
+--   With authentication (5000 queries per hour).
 --
--- >     let query search = search { searchRepoOptionsLanguage = Just (Language "Haskell")
---                                 , searchRepoOptionsSortBy   = Just Stars
---                                 , searchRepoOptionsOrder    = Just SortDescending
---                                 , searchRepoOptionsCreated  = Just (start, newDate)
---                                 }
---    res <- searchRepos' (Just $ BasicAuth "github-username" "github-password") (SearchRepoMod query)
+-- >  let query search = search { searchRepoOptionsLanguage = Just (Language "Haskell")
+-- >                            , searchRepoOptionsSortBy   = Just Stars
+-- >                            , searchRepoOptionsOrder    = Just SortDescending
+-- >                            , searchRepoOptionsCreated  = Just (start, newDate)
+-- >                            }
+-- >  res <- searchRepos' (Just $ BasicAuth "github-username" "github-password") (SearchRepoMod query)
 searchRepos' :: Maybe Auth -> SearchRepoMod -> IO (Either Error (SearchResult Repo))
 searchRepos' auth opts = executeRequestMaybe auth $ searchReposR opts
 
 -- | Perform a repository search.
--- Without authentication (60 queries per hour).
+--   Without authentication (60 queries per hour).
 --
--- >     let query search = search { searchRepoOptionsLanguage = Just (Language "Haskell")
---                                 , searchRepoOptionsSortBy   = Just Stars
---                                 , searchRepoOptionsOrder    = Just SortDescending
---                                 , searchRepoOptionsCreated  = Just (start, newDate)
---                                 }
---    res <- searchRepos (SearchRepoMod query)
+-- >  let query search = search { searchRepoOptionsLanguage = Just (Language "Haskell")
+-- >                            , searchRepoOptionsSortBy   = Just Stars
+-- >                            , searchRepoOptionsOrder    = Just SortDescending
+-- >                            , searchRepoOptionsCreated  = Just (start, newDate)
+-- >                            }
+-- >  res <- searchRepos (SearchRepoMod query)
 searchRepos :: SearchRepoMod -> IO (Either Error (SearchResult Repo))
 searchRepos = searchRepos' Nothing
 
@@ -60,21 +58,22 @@ searchReposR opts =
 -- | Perform a code search.
 -- With authentication (5000 queries per hour).
 --
--- QE = URI encode
--- QN = Not URI encode
--- >    res <- searchCode' (Just $ BasicAuth "github-username" "github-password")
---                       [("q", [QE "language", QN ":", QE "haskell"]),
---                        ("sort", [QE "stars"]),
---                        ("order", [QE "desc"])]
+-- > QE = URI encode
+-- > QN = Not URI encode
+--
+-- >  res <- searchCode' (Just $ BasicAuth "github-username" "github-password")
+-- >                     [("q", [QE "language", QN ":", QE "haskell"]),
+-- >                      ("sort", [QE "stars"]),
+-- >                      ("order", [QE "desc"])]
 searchCode' :: Maybe Auth -> QueryString -> IO (Either Error (SearchResult Code))
 searchCode' auth = executeRequestMaybe auth . searchCodeR
 
 -- | Perform a code search.
 -- Without authentication (60 queries per hour).
 --
--- >    res <- searchCode'  [("q", [QE "language", QN ":", QE "haskell"]),
---                         ("sort", [QE "stars"]),
---                         ("order", [QE "desc"])]
+-- >  res <- searchCode' [("q", [QE "language", QN ":", QE "haskell"]),
+-- >                      ("sort", [QE "stars"]),
+-- >                      ("order", [QE "desc"])]
 searchCode :: QueryString -> IO (Either Error (SearchResult Code))
 searchCode = searchCode' Nothing
 
@@ -90,9 +89,10 @@ searchCodeR searchString =
 -- Because of URI encoding 
 -- "q=a+repo:phadej/github&per_page=100"
 -- has to be written as
+--
 -- > searchIssues' (Just $ BasicAuth "github-username" "github-password")
---                   [("q", [QE "a", QN "+", QE "repo", QN ":", QE "phadej", QN "/", QE "github"]),
---                    ("per_page", [QE "100"])]
+-- >               [("q", [QE "a", QN "+", QE "repo", QN ":", QE "phadej", QN "/", QE "github"]),
+-- >                ("per_page", [QE "100"])]
 searchIssues' :: Maybe Auth -> QueryString -> IO (Either Error (SearchResult Issue))
 searchIssues' auth = executeRequestMaybe auth . searchIssuesR
 
@@ -101,8 +101,9 @@ searchIssues' auth = executeRequestMaybe auth . searchIssuesR
 --
 -- "q=a+repo:phadej/github&per_page=100"
 -- has to be written as
+--
 -- > searchIssues [("q", [QE "a", QN "+", QE "repo", QN ":", QE "phadej", QN "/", QE "github"]),
---                 ("per_page", [QE "100"])]
+-- >               ("per_page", [QE "100"])]
 searchIssues :: QueryString -> IO (Either Error (SearchResult Issue))
 searchIssues = searchIssues' Nothing
 
