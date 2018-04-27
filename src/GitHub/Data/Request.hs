@@ -117,7 +117,7 @@ instance NFData FetchCount where rnf = genericRnf
 -- or aren't read-only.
 data RW
     = RO  -- ^ /Read-only/, doesn't necessarily requires authentication
-    | RA  -- ^ /Read autenticated/
+    | RA  -- ^ /Read authenticated/
     | RW  -- ^ /Read-write/, requires authentication
   deriving (Eq, Ord, Read, Show, Enum, Bounded, Typeable, Data, Generic)
 

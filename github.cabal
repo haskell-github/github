@@ -98,6 +98,7 @@ Library
     GitHub.Data.Webhooks.Validate
     GitHub.Endpoints.Activity.Events
     GitHub.Endpoints.Activity.Starring
+    GitHub.Endpoints.Activity.Notifications
     GitHub.Endpoints.Activity.Watching
     GitHub.Endpoints.Gists
     GitHub.Endpoints.Gists.Comments
