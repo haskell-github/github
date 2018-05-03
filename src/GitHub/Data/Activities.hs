@@ -5,9 +5,9 @@
 --
 module GitHub.Data.Activities where
 
-import GitHub.Data.Id (Id)
-import GitHub.Data.Repos (RepoRef, Repo)
-import GitHub.Data.URL (URL)
+import GitHub.Data.Id          (Id)
+import GitHub.Data.Repos       (Repo, RepoRef)
+import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 
 import Prelude ()
@@ -74,7 +74,7 @@ instance FromJSON NotificationReason where
         "state_change" -> pure StateChangeReason
         "subscribed" -> pure SubscribedReason
         "team_mention" -> pure TeamMentionReason
-        _ -> fail $ "Unknown EventType " ++ show t
+        _ -> fail $ "Unknown NotificationReason " ++ show t
 
 data Notification = Notification
     -- XXX: The notification id field type IS in fact string. Not sure why gh
