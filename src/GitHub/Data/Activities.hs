@@ -5,7 +5,7 @@
 --
 module GitHub.Data.Activities where
 
-import GitHub.Data.Id          (Id)
+import GitHub.Data.Id          (Id, mkId)
 import GitHub.Data.Repos       (Repo, RepoRef)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
@@ -79,7 +79,7 @@ instance FromJSON NotificationReason where
 data Notification = Notification
     -- XXX: The notification id field type IS in fact string. Not sure why gh
     -- chose to do this when all the other ids are Numbers...
-    { notificationId :: !(Text)
+    { notificationId :: !(Id Notification)
     , notificationRepo :: !RepoRef
     , notificationSubject :: !Subject
     , notificationReason :: !NotificationReason
@@ -95,7 +95,7 @@ instance Binary Notification
 
 instance FromJSON Notification where
     parseJSON = withObject "Notification" $ \o -> Notification
-        <$> o .: "id"
+        <$> (mkId undefined . read <$> o .: "id")
         <*> o .: "repository"
         <*> o .: "subject"
         <*> o .: "reason"

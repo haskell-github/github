@@ -20,3 +20,20 @@ getNotifications auth =
 getNotificationsR :: FetchCount -> Request 'RA (Vector Notification)
 getNotificationsR =
   pagedQuery ["notifications"] []
+
+markNotificationAsRead :: Auth -> Id Notification -> IO (Either Error ())
+markNotificationAsRead auth notificationId =
+  executeRequest auth $ markNotificationAsReadR notificationId
+
+markNotificationAsReadR :: Id Notification -> Request 'RW ()
+markNotificationAsReadR notificationId = SimpleQuery $
+  Command Patch ["notifications", "threads", toPathPart notificationId]
+            (encode ())
+
+markNotificationsAsRead :: Auth -> IO (Either Error ())
+markNotificationsAsRead auth =
+  executeRequest auth markAllNotificationsAsReadR
+
+markAllNotificationsAsReadR :: Request 'RW ()
+markAllNotificationsAsReadR = SimpleQuery $
+  Command Put ["notifications"] $ encode ()
