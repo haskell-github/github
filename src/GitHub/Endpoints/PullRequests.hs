@@ -15,6 +15,9 @@ module GitHub.Endpoints.PullRequests (
     pullRequestDiff',
     pullRequestDiff,
     pullRequestDiffR,
+    pullRequestPatch',
+    pullRequestPatch,
+    pullRequestPatchR,
     createPullRequest,
     createPullRequestR,
     updatePullRequest,
@@ -81,6 +84,26 @@ pullRequestDiffR :: Name Owner -> Name Repo -> Id PullRequest -> Request k ByteS
 pullRequestDiffR user repo prid =
     RawHeaderQuery
         [("Accept", "application/vnd.github.v3.diff")]
+        (Query ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] []) -- XXX change the accept header here
+
+-- | Obtain the patch of a pull request
+--
+-- See <https://developer.github.com/v3/pulls/#get-a-single-pull-request>
+pullRequestPatch' :: Maybe Auth -> Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error ByteString)
+pullRequestPatch' auth user repo prid =
+    executeRequestMaybe auth $ pullRequestPatchR user repo prid
+
+-- | Obtain the patch of a pull request
+-- See <https://developer.github.com/v3/pulls/#get-a-single-pull-request>
+pullRequestPatch :: Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error ByteString)
+pullRequestPatch = pullRequestPatch' Nothing
+
+-- | Query a single pull request to obtain the patch
+-- See <https://developer.github.com/v3/pulls/#get-a-single-pull-request>
+pullRequestPatchR :: Name Owner -> Name Repo -> Id PullRequest -> Request k ByteString
+pullRequestPatchR user repo prid =
+    RawHeaderQuery
+        [("Accept", "application/vnd.github.v3.patch")]
         (Query ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid] []) -- XXX change the accept header here
 
 -- | A detailed pull request, which has much more information. This takes the
