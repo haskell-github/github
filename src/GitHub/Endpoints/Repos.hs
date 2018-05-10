@@ -38,6 +38,7 @@ module GitHub.Endpoints.Repos (
     createRepoR,
     createOrganizationRepo',
     createOrganizationRepoR,
+    forkExistingRepo',
     forkExistingRepoR,
 
     -- ** Edit
@@ -166,6 +167,11 @@ createRepo' auth nrepo =
 createRepoR :: NewRepo -> Request 'RW Repo
 createRepoR nrepo =
     command Post ["user", "repos"] (encode nrepo)
+
+-- | Fork an existing repository.
+forkExistingRepo' :: Auth -> Name Owner -> Name Repo -> Maybe (Name Owner) -> IO (Either Error Repo)
+forkExistingRepo' auth owner repo morg =
+    executeRequest auth $ forkExistingRepoR owner repo morg
 
 -- | Fork an existing repository.
 -- See <https://developer.github.com/v3/repos/forks/#create-a-fork>
