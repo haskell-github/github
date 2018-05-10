@@ -36,4 +36,4 @@ markNotificationsAsRead auth =
 
 markAllNotificationsAsReadR :: Request 'RW ()
 markAllNotificationsAsReadR = SimpleQuery $
-  Command Put ["notifications"] $ encode ()
+  Command Put ["notifications"] $ encode emptyObject
