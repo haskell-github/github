@@ -32,7 +32,7 @@ data SimplePullRequest = SimplePullRequest
     , simplePullRequestUser               :: !SimpleUser
     , simplePullRequestPatchUrl           :: !URL
     , simplePullRequestState              :: !IssueState
-    , simplePullRequestNumber             :: !Int
+    , simplePullRequestNumber             :: !IssueNumber
     , simplePullRequestHtmlUrl            :: !URL
     , simplePullRequestUpdatedAt          :: !UTCTime
     , simplePullRequestBody               :: !(Maybe Text)
@@ -57,7 +57,7 @@ data PullRequest = PullRequest
     , pullRequestUser                 :: !SimpleUser
     , pullRequestPatchUrl             :: !URL
     , pullRequestState                :: !IssueState
-    , pullRequestNumber               :: !Int
+    , pullRequestNumber               :: !IssueNumber
     , pullRequestHtmlUrl              :: !URL
     , pullRequestUpdatedAt            :: !UTCTime
     , pullRequestBody                 :: !(Maybe Text)

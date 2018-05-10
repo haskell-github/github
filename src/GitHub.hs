@@ -193,6 +193,8 @@ module GitHub (
     -- | See <https://developer.github.com/v3/pulls/>
     pullRequestsForR,
     pullRequestR,
+    pullRequestPatchR,
+    pullRequestDiffR,
     createPullRequestR,
     updatePullRequestR,
     pullRequestCommitsR,

@@ -14,6 +14,7 @@ import           Data.FileEmbed     (embedFile)
 import           Data.Foldable      (for_)
 import           Data.String        (fromString)
 import qualified Data.Vector        as V
+import qualified Data.ByteString.Lazy.Char8 as LBS8
 import           System.Environment (lookupEnv)
 import           Test.Hspec
                  (Spec, describe, it, pendingWith, shouldBe, shouldSatisfy)
@@ -36,6 +37,12 @@ spec = do
             cs <- GitHub.executeRequest auth $
                 GitHub.pullRequestsForR owner repo opts GitHub.FetchAll
             cs `shouldSatisfy` isRight
+
+    describe "pullRequestPatchR" $
+        it "works" $ withAuth $ \auth -> do
+            Right patch <- GitHub.executeRequest auth $
+                GitHub.pullRequestPatchR "phadej" "github" (GitHub.IssueNumber 349)
+            head (LBS8.lines patch) `shouldBe` "From c0e4ad33811be82e1f72ee76116345c681703103 Mon Sep 17 00:00:00 2001"
 
     describe "decoding pull request payloads" $ do
         it "decodes a pull request 'opened' payload" $ do
@@ -62,7 +69,6 @@ spec = do
     repos =
       [ ("thoughtbot", "paperclip")
       , ("phadej", "github")
-      , ("haskell", "cabal")
       ]
     opts = GitHub.stateClosed
 
