@@ -22,7 +22,7 @@ data Issue = Issue
     , issueHtmlUrl     :: !(Maybe URL)
     , issueClosedBy    :: !(Maybe SimpleUser)
     , issueLabels      :: !(Vector IssueLabel)
-    , issueNumber      :: !Int
+    , issueNumber      :: !(Id Issue)
     , issueAssignees   :: !(Vector SimpleUser)
     , issueUser        :: !SimpleUser
     , issueTitle       :: !Text
@@ -31,7 +31,6 @@ data Issue = Issue
     , issueCreatedAt   :: !UTCTime
     , issueBody        :: !(Maybe Text)
     , issueState       :: !IssueState
-    , issueId          :: !(Id Issue)
     , issueComments    :: !Int
     , issueMilestone   :: !(Maybe Milestone)
     }
@@ -198,7 +197,6 @@ instance FromJSON Issue where
         <*> o .: "created_at"
         <*> o .: "body"
         <*> o .: "state"
-        <*> o .: "id"
         <*> o .: "comments"
         <*> o .:? "milestone"
 
