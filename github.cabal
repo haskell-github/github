@@ -1,6 +1,6 @@
 name:                github
 version:             0.19
-x-revision:          2
+x-revision:          3
 synopsis:            Access to the GitHub API, v3.
 description:
   The GitHub API provides programmatic access to the full
@@ -26,7 +26,7 @@ homepage:            https://github.com/phadej/github
 copyright:           Copyright 2012-2013 Mike Burns, Copyright 2013-2015 John Wiegley, Copyright 2016 Oleg Grenrus
 category:            Network
 build-type:          Simple
-tested-with:         GHC==7.8.4, GHC==7.10.3, GHC==8.0.2, GHC==8.2.2, GHC==8.4.1
+tested-with:         GHC==7.8.4, GHC==7.10.3, GHC==8.0.2, GHC==8.2.2, GHC==8.4.3
 cabal-version:       >=1.10
 extra-source-files:
   README.md,
@@ -145,7 +145,7 @@ Library
 
   -- other packages
   build-depends:
-    aeson                 >=0.7.0.6   && <1.4,
+    aeson                 >=0.7.0.6   && <1.5,
     base-compat           >=0.9.1     && <0.11,
     base16-bytestring     >=0.1.1.6   && <0.2,
     binary                >=0.7.1.0   && <0.10,
