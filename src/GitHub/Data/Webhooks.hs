@@ -38,6 +38,8 @@ data RepoWebhookEvent
     | WebhookDeploymentStatusEvent
     | WebhookForkEvent
     | WebhookGollumEvent
+    | WebhookInstallationEvent
+    | WebhookInstallationRepositoriesEvent
     | WebhookIssueCommentEvent
     | WebhookIssuesEvent
     | WebhookMemberEvent
@@ -110,6 +112,8 @@ instance FromJSON RepoWebhookEvent where
     parseJSON (String "deployment_status") = pure WebhookDeploymentStatusEvent
     parseJSON (String "fork") = pure WebhookForkEvent
     parseJSON (String "gollum") = pure WebhookGollumEvent
+    parseJSON (String "installation") = pure WebhookInstallationEvent
+    parseJSON (String "installation_repositories") = pure WebhookInstallationRepositoriesEvent
     parseJSON (String "issue_comment") = pure WebhookIssueCommentEvent
     parseJSON (String "issues") = pure WebhookIssuesEvent
     parseJSON (String "member") = pure WebhookMemberEvent
@@ -134,6 +138,8 @@ instance ToJSON RepoWebhookEvent where
     toJSON WebhookDeploymentStatusEvent         = String "deployment_status"
     toJSON WebhookForkEvent                     = String "fork"
     toJSON WebhookGollumEvent                   = String "gollum"
+    toJSON WebhookInstallationEvent             = String "installation"
+    toJSON WebhookInstallationRepositoriesEvent = String "installation_repositories"
     toJSON WebhookIssueCommentEvent             = String "issue_comment"
     toJSON WebhookIssuesEvent                   = String "issues"
     toJSON WebhookMemberEvent                   = String "member"
