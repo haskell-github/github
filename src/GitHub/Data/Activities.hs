@@ -55,6 +55,7 @@ data NotificationReason
     | InvitationReason
     | ManualReason
     | MentionReason
+    | ReviewRequestedReason
     | StateChangeReason
     | SubscribedReason
     | TeamMentionReason
@@ -71,6 +72,7 @@ instance FromJSON NotificationReason where
         "invitation" -> pure InvitationReason
         "manual" -> pure ManualReason
         "mention" -> pure MentionReason
+        "review_requested" -> pure ReviewRequestedReason
         "state_change" -> pure StateChangeReason
         "subscribed" -> pure SubscribedReason
         "team_mention" -> pure TeamMentionReason
