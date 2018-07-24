@@ -37,6 +37,7 @@ module GitHub.Data (
     module GitHub.Data.Content,
     module GitHub.Data.Definitions,
     module GitHub.Data.DeployKeys,
+    module GitHub.Data.Deployments,
     module GitHub.Data.Email,
     module GitHub.Data.Events,
     module GitHub.Data.Gists,
@@ -66,6 +67,7 @@ import GitHub.Data.Comments
 import GitHub.Data.Content
 import GitHub.Data.Definitions
 import GitHub.Data.DeployKeys
+import GitHub.Data.Deployments
 import GitHub.Data.Email
 import GitHub.Data.Events
 import GitHub.Data.Gists

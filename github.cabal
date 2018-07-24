@@ -75,6 +75,7 @@ Library
     GitHub.Data.Content
     GitHub.Data.Definitions
     GitHub.Data.DeployKeys
+    GitHub.Data.Deployments
     GitHub.Data.Email
     GitHub.Data.Events
     GitHub.Data.Gists
@@ -122,6 +123,7 @@ Library
     GitHub.Endpoints.Repos.Commits
     GitHub.Endpoints.Repos.Contents
     GitHub.Endpoints.Repos.DeployKeys
+    GitHub.Endpoints.Repos.Deployments
     GitHub.Endpoints.Repos.Forks
     GitHub.Endpoints.Repos.Releases
     GitHub.Endpoints.Repos.Statuses
