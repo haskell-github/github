@@ -344,6 +344,11 @@ module GitHub (
     createStatusR,
     statusesForR,
     statusForR,
+    
+    -- ** Rate Limit
+    -- | See <https://developer.github.com/v3/rate_limit/>
+    rateLimit,
+    rateLimit',
 
     -- * Data definitions
     module GitHub.Data,
@@ -372,6 +377,7 @@ import GitHub.Endpoints.Organizations.Teams
 import GitHub.Endpoints.PullRequests
 import GitHub.Endpoints.PullRequests.Reviews
 import GitHub.Endpoints.PullRequests.Comments
+import GitHub.Endpoints.RateLimit
 import GitHub.Endpoints.Repos
 import GitHub.Endpoints.Repos.Collaborators
 import GitHub.Endpoints.Repos.Comments

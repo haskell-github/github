@@ -65,6 +65,7 @@ Library
     GADTs
     KindSignatures
     StandaloneDeriving
+    RecordWildCards 
   exposed-modules:
     GitHub
     GitHub.Internal.Prelude
@@ -87,6 +88,7 @@ Library
     GitHub.Data.Name
     GitHub.Data.Options
     GitHub.Data.PullRequests
+    GitHub.Data.RateLimit
     GitHub.Data.Releases
     GitHub.Data.Repos
     GitHub.Data.Request
@@ -117,6 +119,7 @@ Library
     GitHub.Endpoints.PullRequests
     GitHub.Endpoints.PullRequests.Reviews
     GitHub.Endpoints.PullRequests.Comments
+    GitHub.Endpoints.RateLimit
     GitHub.Endpoints.Repos
     GitHub.Endpoints.Repos.Collaborators
     GitHub.Endpoints.Repos.Comments
