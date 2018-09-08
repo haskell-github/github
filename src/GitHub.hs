@@ -259,7 +259,7 @@ module GitHub (
     --
     -- * Create a commit comment
     -- * Update a commit comment
-    -- *  Delete a commit comment
+    -- * Delete a commit comment
     commentsForR,
     commitCommentsForR,
     commitCommentForR,
@@ -270,6 +270,18 @@ module GitHub (
     commitsWithOptionsForR,
     commitR,
     diffR,
+
+    -- ** Deployments
+    -- | See <https://developer.github.com/v3/repos/deployments/#deployments>
+    --
+    -- Missing endpoints:
+    -- * Get a single deployment
+    -- * Update a deployment
+    -- * Get a single deployment status
+    deploymentsWithOptionsForR,
+    createDeploymentR,
+    deploymentStatusesForR,
+    createDeploymentStatusR,
 
     -- ** Forks
     -- | See <https://developer.github.com/v3/repos/forks/>
@@ -344,7 +356,7 @@ module GitHub (
     createStatusR,
     statusesForR,
     statusForR,
-    
+
     -- ** Rate Limit
     -- | See <https://developer.github.com/v3/rate_limit/>
     rateLimit,
@@ -375,13 +387,14 @@ import GitHub.Endpoints.Organizations
 import GitHub.Endpoints.Organizations.Members
 import GitHub.Endpoints.Organizations.Teams
 import GitHub.Endpoints.PullRequests
-import GitHub.Endpoints.PullRequests.Reviews
 import GitHub.Endpoints.PullRequests.Comments
+import GitHub.Endpoints.PullRequests.Reviews
 import GitHub.Endpoints.RateLimit
 import GitHub.Endpoints.Repos
 import GitHub.Endpoints.Repos.Collaborators
 import GitHub.Endpoints.Repos.Comments
 import GitHub.Endpoints.Repos.Commits
+import GitHub.Endpoints.Repos.Deployments
 import GitHub.Endpoints.Repos.Forks
 import GitHub.Endpoints.Repos.Releases
 import GitHub.Endpoints.Repos.Statuses

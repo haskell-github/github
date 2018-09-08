@@ -1,5 +1,3 @@
-{-# LANGUAGE LambdaCase #-}
-
 -- | The deployments API, as described at <https://developer.github.com/v3/repos/deployments/>
 module GitHub.Endpoints.Repos.Deployments
     ( deploymentsWithOptionsForR
@@ -18,6 +16,8 @@ import Data.Vector (Vector)
 import GitHub.Data
 import GitHub.Internal.Prelude
 
+-- | List deployments.
+-- See <https://developer.github.com/v3/repos/deployments/#list-deployments>
 deploymentsWithOptionsForR
     :: FromJSON a
     => Name Owner
@@ -30,6 +30,8 @@ deploymentsWithOptionsForR owner repo limit opts =
         (map (second Just . renderDeploymentQueryOption) opts)
         limit
 
+-- | Create a deployment.
+-- See <https://developer.github.com/v3/repos/deployments/#create-a-deployment>
 createDeploymentR
     :: ( ToJSON   a
        , FromJSON a
@@ -41,6 +43,8 @@ createDeploymentR
 createDeploymentR owner repo =
     command Post (deployPaths owner repo) . encode
 
+-- | List deployment statuses.
+-- See <https://developer.github.com/v3/repos/deployments/#list-deployment-statuses>
 deploymentStatusesForR
     :: Name Owner
     -> Name Repo
@@ -50,6 +54,8 @@ deploymentStatusesForR
 deploymentStatusesForR owner repo deploy =
     pagedQuery (statusesPaths owner repo deploy) []
 
+-- | Create a deployment status.
+-- See <https://developer.github.com/v3/repos/deployments/#list-deployment-statuses>
 createDeploymentStatusR
     :: Name Owner
     -> Name Repo
