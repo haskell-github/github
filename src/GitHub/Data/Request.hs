@@ -37,6 +37,7 @@ import qualified Data.Text                 as T
 import qualified Network.HTTP.Types        as Types
 import qualified Network.HTTP.Types.Method as Method
 import Network.URI                         (URI)
+
 ------------------------------------------------------------------------------
 -- Auxillary types
 ------------------------------------------------------------------------------

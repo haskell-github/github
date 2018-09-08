@@ -3,19 +3,18 @@
 module GitHub.OrganizationsSpec where
 
 import GitHub.Auth                            (Auth (..))
-import GitHub.Data                            (SimpleOrganization (..),
-                                               SimpleOwner (..),
-                                               SimpleTeam (..))
+import GitHub.Data
+       (SimpleOrganization (..), SimpleOwner (..), SimpleTeam (..))
 import GitHub.Endpoints.Organizations         (publicOrganizationsFor')
 import GitHub.Endpoints.Organizations.Members (membersOf')
 
-import Data.Aeson.Compat  (eitherDecodeStrict)
+import Data.Aeson         (eitherDecodeStrict)
 import Data.Either.Compat (isRight)
 import Data.FileEmbed     (embedFile)
 import Data.String        (fromString)
 import System.Environment (lookupEnv)
-import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe,
-                           shouldSatisfy)
+import Test.Hspec
+       (Spec, describe, it, pendingWith, shouldBe, shouldSatisfy)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b

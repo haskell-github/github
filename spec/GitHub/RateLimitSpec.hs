@@ -1,8 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
-module GitHub.PullRequestReviewsSpec where
+module GitHub.RateLimitSpec where
 
 import qualified GitHub
-import           GitHub.Data.Id (Id (Id))
 
 import Prelude ()
 import Prelude.Compat
@@ -13,6 +12,10 @@ import Data.String        (fromString)
 import System.Environment (lookupEnv)
 import Test.Hspec         (Spec, describe, it, pendingWith, shouldSatisfy)
 
+fromRightS :: Show a => Either a b -> b
+fromRightS (Right b) = b
+fromRightS (Left a) = error $ "Expected a Right and got a Left" ++ show a
+
 withAuth :: (GitHub.Auth -> IO ()) -> IO ()
 withAuth action = do
     mtoken <- lookupEnv "GITHUB_TOKEN"
@@ -21,12 +24,7 @@ withAuth action = do
         Just token -> action (GitHub.OAuth $ fromString token)
 
 spec :: Spec
-spec = do
-    describe "pullRequestReviewsR" $ do
-        it "works" $ withAuth $ \auth -> for_ prs $ \(owner, repo, prid) -> do
-            cs <- GitHub.executeRequest auth $
-                GitHub.pullRequestReviewsR owner repo prid GitHub.FetchAll
-            cs `shouldSatisfy` isRight
-  where
-    prs =
-      [("phadej", "github", Id 268)]
+spec = describe "rateLimitR" $
+    it "works" $ withAuth $ \auth -> do
+        cs <- GitHub.executeRequest auth GitHub.rateLimitR
+        cs `shouldSatisfy` isRight

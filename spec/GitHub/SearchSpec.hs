@@ -2,10 +2,10 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module GitHub.SearchSpec where
 
-import Prelude        ()
+import Prelude ()
 import Prelude.Compat
 
-import Data.Aeson.Compat  (eitherDecodeStrict)
+import Data.Aeson         (eitherDecodeStrict)
 import Data.FileEmbed     (embedFile)
 import Data.Proxy         (Proxy (..))
 import Data.String        (fromString)
@@ -14,7 +14,7 @@ import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe)
 
 import qualified Data.Vector as V
 
-import GitHub.Data             (Auth (..), Issue (..), mkId, IssueState (..))
+import GitHub.Data             (Auth (..), Issue (..), IssueState (..), mkId)
 import GitHub.Endpoints.Search (SearchResult (..), searchIssues')
 
 fromRightS :: Show a => Either a b -> b

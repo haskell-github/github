@@ -1,11 +1,13 @@
-## Changes for 0.19.1
+## Changes for 0.20
 
 - Add ratelimit endpoint
-  [#315](https://github.com/phadej/github/pull/315/)
+  [#315](https://github.com/phadej/github/pull/315)
 - Add some deployment endoints
-  [#330](https://github.com/phadej/github/pull/330/)
+  [#330](https://github.com/phadej/github/pull/330)
 - Add webhook installation events
-  [#329](https://github.com/phadej/github/pull/330/)
+  [#329](https://github.com/phadej/github/pull/330)
+- Tigthen lower bounds (also remove aeson-compat dep)
+  [#332](https://github.com/phadej/github/pull/332)
 
 ## Changes for 0.19
 
