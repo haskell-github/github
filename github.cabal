@@ -38,11 +38,6 @@ extra-source-files:
   fixtures/user-organizations.json,
   fixtures/user.json
 
-flag aeson-compat
-  description: Whether to use aeson-compat or aeson-extra
-  default: True
-  manual: False
-
 source-repository head
   type: git
   location: git://github.com/phadej/github.git
