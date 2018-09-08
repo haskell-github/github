@@ -359,8 +359,7 @@ module GitHub (
 
     -- ** Rate Limit
     -- | See <https://developer.github.com/v3/rate_limit/>
-    rateLimit,
-    rateLimit',
+    rateLimitR,
 
     -- * Data definitions
     module GitHub.Data,

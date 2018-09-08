@@ -1,3 +1,12 @@
+## Changes for 0.19.1
+
+- Add ratelimit endpoint
+  [#315](https://github.com/phadej/github/pull/315/)
+- Add some deployment endoints
+  [#330](https://github.com/phadej/github/pull/330/)
+- Add webhook installation events
+  [#329](https://github.com/phadej/github/pull/330/)
+
 ## Changes for 0.19
 
 - Fix issue event type enumeration

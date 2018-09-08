@@ -1,5 +1,3 @@
-{-# LANGUAGE RecordWildCards #-}
-
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -10,14 +8,26 @@ module GitHub.Data.RateLimit where
 import GitHub.Internal.Prelude
 import Prelude ()
 
+data Limits = Limits
+    { limitsMax       :: !Int
+    , limitsRemaining :: !Int
+    , limitsReset     :: !Int -- TODO: change to proper type
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Limits where rnf = genericRnf
+instance Binary Limits
+
+instance FromJSON Limits where
+    parseJSON = withObject "Limits" $ \obj -> Limits
+        <$> obj .: "limit"
+        <*> obj .: "remaining"
+        <*> obj .: "reset"
 
 data RateLimit = RateLimit
-    { coreLimit       :: !Int
-    , coreRemaining   :: !Int
-    , coreReset       :: !Int
-    , searchLimit     :: !Int
-    , searchRemaining :: !Int
-    , searchReset     :: !Int
+    { rateLimitCore    :: Limits
+    , rateLimitSearch  :: Limits
+    , rateLimitGraphQL :: Limits
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -25,16 +35,9 @@ instance NFData RateLimit where rnf = genericRnf
 instance Binary RateLimit
 
 instance FromJSON RateLimit where
-    parseJSON = withObject "RateLimit" $ \o -> do
-        resources <- o .: "resources"
-        core <- resources .: "core"
-        coreLimit <- core .: "limit"
-        coreRemaining <- core .: "remaining"
-        coreReset <- core .: "reset"
-
-        search <- resources .: "search"
-        searchLimit <- search .: "limit"
-        searchRemaining <- search .: "remaining"
-        searchReset <- search .: "reset"
-
-        return RateLimit{..}
+    parseJSON = withObject "RateLimit" $ \obj -> do
+        resources <- obj .: "resources"
+        RateLimit
+            <$> resources .: "core"
+            <*> resources .: "search"
+            <*> resources .: "graphql"
