@@ -53,16 +53,18 @@ module GitHub.Endpoints.Repos (
     ) where
 
 import GitHub.Data
+import GitHub.Data.Definitions(wrapEsc)
 import GitHub.Internal.Prelude
 import GitHub.Request
+import qualified Network.HTTP.Types as W
 import Prelude ()
 
 repoPublicityQueryString :: RepoPublicity -> QueryString
-repoPublicityQueryString RepoPublicityAll     = [("type", Just "all")]
-repoPublicityQueryString RepoPublicityOwner   = [("type", Just "owner")]
-repoPublicityQueryString RepoPublicityMember  = [("type", Just "member")]
-repoPublicityQueryString RepoPublicityPublic  = [("type", Just "public")]
-repoPublicityQueryString RepoPublicityPrivate = [("type", Just "private")]
+repoPublicityQueryString RepoPublicityAll     = [("type", [Esc (W.QE "all")])]
+repoPublicityQueryString RepoPublicityOwner   = [("type", [Esc (W.QE "owner")])]
+repoPublicityQueryString RepoPublicityMember  = [("type", [Esc (W.QE "member")])]
+repoPublicityQueryString RepoPublicityPublic  = [("type", [Esc (W.QE "public")])]
+repoPublicityQueryString RepoPublicityPrivate = [("type", [Esc (W.QE "private")])]
 
 -- | List your repositories.
 currentUserRepos :: Auth -> RepoPublicity -> IO (Either Error (Vector Repo))
@@ -232,9 +234,9 @@ contributorsR
     -> FetchCount
     -> Request k (Vector Contributor)
 contributorsR user repo anon =
-    pagedQuery ["repos", toPathPart user, toPathPart repo, "contributors"] qs
+    pagedQuery ["repos", toPathPart user, toPathPart repo, "contributors"] (wrapEsc qs)
   where
-    qs | anon      = [("anon", Just "true")]
+    qs | anon      = [("anon", [W.QE "true"])]
        | otherwise = []
 
 -- | The contributors to a repo, including anonymous contributors (such as

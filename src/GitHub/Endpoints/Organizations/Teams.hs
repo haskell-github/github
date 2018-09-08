@@ -41,6 +41,8 @@ import GitHub.Internal.Prelude
 import GitHub.Request
 import Prelude ()
 
+import qualified Network.HTTP.Types as W
+
 -- | List teams.  List the teams of an Owner.
 -- When authenticated, lists private teams visible to the authenticated user.
 -- When unauthenticated, lists only public teams for an Owner.
@@ -133,7 +135,7 @@ deleteTeamR tid =
 -- See <https://developer.github.com/v3/orgs/teams/#list-team-members>
 listTeamMembersR :: Id Team -> TeamMemberRole -> FetchCount -> Request 'RA (Vector SimpleUser)
 listTeamMembersR tid r =
-    pagedQuery ["teams", toPathPart tid, "members"] [("role", Just r')]
+    pagedQuery ["teams", toPathPart tid, "members"] [("role", [Esc (W.QE r')])]
   where
     r' = case r of
         TeamMemberRoleAll         -> "all"

@@ -44,6 +44,14 @@ module GitHub.Data.Options (
     optionsIrrelevantAssignee,
     optionsAnyAssignee,
     optionsNoAssignee,
+    -- * Repo Search
+    SearchRepoMod(..),
+    searchRepoModToQueryString,
+    SearchRepoOptions(..),
+    SortDirection(..),
+    License(..),
+    Language(..),
+    StarsForksUpdated(..),
     -- * Data
     IssueState (..),
     MergeableState (..),
@@ -56,13 +64,16 @@ module GitHub.Data.Options (
     HasSince,
     ) where
 
+import Data.Time.Calendar      (Day, showGregorian)
 import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id, untagId)
 import GitHub.Data.Milestone   (Milestone)
 import GitHub.Data.Name        (Name, untagName)
+import GitHub.Data.Repos       (Language(..))
 import GitHub.Internal.Prelude
 import Prelude ()
 
+import qualified Network.HTTP.Types as W
 import qualified Data.Text          as T
 import qualified Data.Text.Encoding as TE
 
@@ -298,7 +309,7 @@ pullRequestOptionsToQueryString (PullRequestOptions st head_ base sort dir) =
     , mk "base" <$> base'
     ]
   where
-    mk k v = (k, Just v)
+    mk k v = (k, [Esc (W.QE v)])
     state' = case st of
         Nothing          -> "all"
         Just StateOpen   -> "open"
@@ -395,7 +406,7 @@ issueOptionsToQueryString (IssueOptions filt st labels sort dir since) =
     , mk "since" <$> since'
     ]
   where
-    mk k v = (k, Just v)
+    mk k v = (k, [Esc (W.QE v)])
     filt' = case filt of
         IssueFilterAssigned   -> "assigned"
         IssueFilterCreated    -> "created"
@@ -543,7 +554,7 @@ issueRepoOptionsToQueryString IssueRepoOptions {..} =
     , mk "mentioned" <$> mentioned'
     ]
   where
-    mk k v = (k, Just v)
+    mk k v = (k, [Esc (W.QE v)])
     filt f x = case x of
         FilterAny          -> Just "*"
         FilterNone         -> Just "none"
@@ -602,3 +613,143 @@ optionsAnyAssignee = IssueRepoMod $ \opts ->
 optionsNoAssignee :: IssueRepoMod
 optionsNoAssignee = IssueRepoMod $ \opts ->
     opts { issueRepoOptionsAssignee = FilterNone }
+
+------------------------------------------------------------------------------------
+-- SearchRepo Options
+------------------------------------------------------------------------------------
+
+data StarsForksUpdated
+    = Stars
+    | Forks
+    | Updated
+  deriving
+    (Eq, Ord, Show, Enum, Bounded, Generic, Typeable, Data)
+
+instance ToJSON StarsForksUpdated where
+    toJSON Stars = String "stars"
+    toJSON Forks = String "forks"
+    toJSON Updated = String "updated"
+
+instance FromJSON StarsForksUpdated where
+    parseJSON (String "stars") = pure Stars
+    parseJSON (String "forks") = pure Forks
+    parseJSON (String "updated") = pure Updated
+    parseJSON v                 = typeMismatch "StarsForksUpdated" v
+
+newtype License = License Text
+   deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+data RepoUser = Repo | User
+  deriving
+    (Eq, Ord, Show, Enum, Bounded, Generic, Typeable, Data)
+
+data RepoIn = RName | RDescription | Readme
+  deriving
+    (Eq, Ord, Show, Enum, Bounded, Generic, Typeable, Data)
+
+type Topic = String
+
+data SearchRepoOptions = SearchRepoOptions
+    { searchRepoOptionsKeyword  :: !Text
+    , searchRepoOptionsSortBy   :: !(Maybe StarsForksUpdated)
+    , searchRepoOptionsOrder    :: !(Maybe SortDirection)
+    , searchRepoOptionsCreated  :: !(Maybe (Day, Day)) -- period
+    , searchRepoOptionsPushed   :: !(Maybe (Day, Day))
+    , searchRepoOptionsFork     :: !(Maybe Bool)
+    , searchRepoOptionsForks    :: !(Maybe Int)
+    , searchRepoOptionsIn       :: !(Maybe RepoIn)
+    , searchRepoOptionsLanguage :: !(Maybe Language)
+    , searchRepoOptionsLicense  :: !(Maybe License)
+    , searchRepoOptionsRepoUser :: !(Maybe RepoUser)
+    , searchRepoOptionsSize     :: !(Maybe Int)
+    , searchRepoOptionsStars    :: !(Maybe Int)
+    , searchRepoOptionsTopic    :: !(Maybe Topic)
+    , searchRepoOptionsArchived :: !(Maybe Bool)
+    }
+  deriving
+    (Eq, Ord, Show, Generic, Typeable, Data)
+
+defaultSearchRepoOptions :: SearchRepoOptions
+defaultSearchRepoOptions = SearchRepoOptions
+    { searchRepoOptionsKeyword  = ""
+    , searchRepoOptionsSortBy   = Nothing
+    , searchRepoOptionsOrder    = Nothing
+    , searchRepoOptionsCreated  = Nothing
+    , searchRepoOptionsPushed   = Nothing
+    , searchRepoOptionsFork     = Nothing
+    , searchRepoOptionsForks    = Nothing
+    , searchRepoOptionsIn       = Nothing
+    , searchRepoOptionsLanguage = Nothing
+    , searchRepoOptionsLicense  = Nothing
+    , searchRepoOptionsRepoUser = Nothing
+    , searchRepoOptionsSize     = Nothing
+    , searchRepoOptionsStars    = Nothing
+    , searchRepoOptionsTopic    = Nothing
+    , searchRepoOptionsArchived = Nothing
+    }
+
+-- | See <https://developer.github.com/v3/issues/#parameters-1>.
+newtype SearchRepoMod = SearchRepoMod (SearchRepoOptions -> SearchRepoOptions)
+
+instance Semigroup SearchRepoMod where
+    SearchRepoMod f <> SearchRepoMod g = SearchRepoMod (g . f)
+
+instance Monoid SearchRepoMod where
+    mempty  = SearchRepoMod id
+    mappend = (<>)
+
+toSearchRepoOptions :: SearchRepoMod -> SearchRepoOptions
+toSearchRepoOptions (SearchRepoMod f) = f defaultSearchRepoOptions
+
+searchRepoModToQueryString :: SearchRepoMod -> QueryString
+searchRepoModToQueryString = searchRepoOptionsToQueryString . toSearchRepoOptions
+
+searchRepoOptionsToQueryString :: SearchRepoOptions -> QueryString
+searchRepoOptionsToQueryString SearchRepoOptions {..} =
+    [ ("q", plussedArgs)
+    ] ++ catMaybes
+    [ mk "sort"     <$> fmap sort' searchRepoOptionsSortBy
+    , mk "order"    <$> fmap direction' searchRepoOptionsOrder
+    , mk "fork"     <$> fmap (one . T.pack . show) searchRepoOptionsFork
+    , mk "forks"    <$> fmap (one . T.pack . show) searchRepoOptionsForks
+    , mk "size"     <$> fmap (one . T.pack . show) searchRepoOptionsSize
+    , mk "stars"    <$> fmap (one . T.pack . show) searchRepoOptionsStars
+    , mk "archived" <$> fmap (one . T.pack . show) searchRepoOptionsArchived
+    ]
+  where
+    mk k v = (k, v)
+    one = (\x -> [x]) . Esc . W.QE . TE.encodeUtf8
+
+    -- example  q=tetris+language:assembly+topic:ruby
+    -- into       [QS "tetris", QPlus, QS "language", QColon, QS "assembly", QPlus, ..
+    plussedArgs = [Esc (W.QE (TE.encodeUtf8 searchRepoOptionsKeyword)),
+                   Esc (W.QN "+")] ++ intercalate [Esc (W.QN "+")]
+       ( catMaybes [ ([Esc (W.QE "created"),  Esc (W.QN ":")] ++) <$> created'
+                   , ([Esc (W.QE "pushed"),   Esc (W.QN ":")] ++) <$> pushed'
+                   , ([Esc (W.QE "topic"),    Esc (W.QN ":")] ++) <$> topic'
+                   , ([Esc (W.QE "language"), Esc (W.QN ":")] ++) <$> language'
+                   , ([Esc (W.QE "license"),  Esc (W.QN ":")] ++) <$> license'
+                   ])
+
+    sort' x = case x of
+        Stars   -> [Esc (W.QE "stars")]
+        Forks   -> [Esc (W.QE "forks")]
+        Updated -> [Esc (W.QE "updated")]
+
+    direction' x = case x of
+        SortDescending -> [Esc (W.QE "desc")]
+        SortAscending  -> [Esc (W.QE "asc")]
+
+    created'  = one . T.pack . (\(x,y) -> showGregorian x
+                                          ++ ".." ++
+                                          showGregorian y) <$> searchRepoOptionsCreated
+
+    pushed'   = one . T.pack . (\(x,y) -> showGregorian x
+                                          ++ ".." ++
+                                          showGregorian y) <$> searchRepoOptionsPushed
+    topic' = one . T.pack <$> searchRepoOptionsTopic
+    language' = one . (\(Language x) -> x) <$> searchRepoOptionsLanguage
+
+    -- see <https://help.github.com/articles/licensing-a-repository/#searching-github-by-license-type>
+    license' = one . (\(License x) -> x) <$> searchRepoOptionsLicense
+

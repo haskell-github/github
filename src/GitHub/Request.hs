@@ -51,6 +51,7 @@ module GitHub.Request (
     ) where
 
 import GitHub.Internal.Prelude
+import GitHub.Data.Definitions(unwrapEsc)
 import Prelude ()
 
 #if MIN_VERSION_mtl(2,2,0)
@@ -69,7 +70,8 @@ import Data.List                  (find)
 import Network.HTTP.Client
        (HttpException (..), Manager, RequestBody (..), Response (..),
        applyBasicAuth, getUri, httpLbs, method, newManager, redirectCount,
-       requestBody, requestHeaders, setQueryString, setRequestIgnoreStatus)
+       requestBody, requestHeaders, setQueryStringPartialEscape,
+       setRequestIgnoreStatus)
 import Network.HTTP.Client.TLS  (tlsManagerSettings)
 import Network.HTTP.Link.Parser (parseLinkHeaderBS)
 import Network.HTTP.Link.Types  (Link (..), LinkParam (..), href, linkParams)
@@ -246,7 +248,7 @@ makeHttpSimpleRequest auth r = case r of
             $ setReqHeaders
             . setCheckStatus Nothing
             . setAuthRequest auth
-            . setQueryString qs
+            . setQueryStringPartialEscape (unwrapEsc qs)
             $ req
     PagedQuery paths qs _ -> do
         req <- parseUrl' $ url paths
@@ -254,7 +256,7 @@ makeHttpSimpleRequest auth r = case r of
             $ setReqHeaders
             . setCheckStatus Nothing
             . setAuthRequest auth
-            . setQueryString qs
+            . setQueryStringPartialEscape (unwrapEsc qs)
             $ req
     Command m paths body -> do
         req <- parseUrl' $ url paths
@@ -297,7 +299,7 @@ makeHttpSimpleRequest auth r = case r of
 
     setAuthRequest :: Maybe Auth -> HTTP.Request -> HTTP.Request
     setAuthRequest (Just (BasicAuth user pass)) = applyBasicAuth user pass
-    setAuthRequest _                                  = id
+    setAuthRequest _                            = id
 
     getOAuthHeader :: Auth -> RequestHeaders
     getOAuthHeader (OAuth token)             = [("Authorization", "token " <> token)]
