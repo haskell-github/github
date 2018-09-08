@@ -3,20 +3,21 @@
 module GitHub.PullRequestsSpec where
 
 import qualified GitHub
-import GitHub.Data.Id (Id(Id))
+import           GitHub.Data.Id (Id (Id))
 
 import Prelude ()
 import Prelude.Compat
 
-import Data.Aeson.Compat     (eitherDecodeStrict)
-import Data.ByteString       (ByteString)
-import Data.Either.Compat    (isRight)
-import Data.FileEmbed        (embedFile)
-import Data.Foldable         (for_)
-import Data.String           (fromString)
-import qualified Data.Vector as V
-import System.Environment    (lookupEnv)
-import Test.Hspec            (Spec, describe, it, pendingWith, shouldBe, shouldSatisfy)
+import           Data.Aeson         (eitherDecodeStrict)
+import           Data.ByteString    (ByteString)
+import           Data.Either.Compat (isRight)
+import           Data.FileEmbed     (embedFile)
+import           Data.Foldable      (for_)
+import           Data.String        (fromString)
+import qualified Data.Vector        as V
+import           System.Environment (lookupEnv)
+import           Test.Hspec
+                 (Spec, describe, it, pendingWith, shouldBe, shouldSatisfy)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b

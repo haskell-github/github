@@ -1,4 +1,4 @@
-## Changes for 0.19.1
+## Changes for 0.20
 
 - Add ratelimit endpoint
   [#315](https://github.com/phadej/github/pull/315/)

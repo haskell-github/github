@@ -1,8 +1,6 @@
 {-# LANGUAGE CPP                #-}
 {-# LANGUAGE FlexibleContexts   #-}
 {-# LANGUAGE GADTs              #-}
-{-# LANGUAGE KindSignatures     #-}
-{-# LANGUAGE StandaloneDeriving #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -53,17 +51,13 @@ module GitHub.Request (
 import GitHub.Internal.Prelude
 import Prelude ()
 
-#if MIN_VERSION_mtl(2,2,0)
-import Control.Monad.Except (MonadError (..))
-#else
-import Control.Monad.Error (MonadError (..))
-#endif
+import Control.Monad.Error.Class (MonadError (..))
 
 import Control.Monad              (when)
 import Control.Monad.Catch        (MonadCatch (..), MonadThrow)
 import Control.Monad.Trans.Class  (lift)
 import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
-import Data.Aeson.Compat          (eitherDecode)
+import Data.Aeson                 (eitherDecode)
 import Data.List                  (find)
 
 import Network.HTTP.Client
@@ -75,11 +69,6 @@ import Network.HTTP.Link.Parser (parseLinkHeaderBS)
 import Network.HTTP.Link.Types  (Link (..), LinkParam (..), href, linkParams)
 import Network.HTTP.Types       (Method, RequestHeaders, Status (..))
 import Network.URI              (URI, parseURIReference, relativeTo)
-
-#if !MIN_VERSION_http_client(0,5,0)
-import qualified Control.Exception  as E
-import           Network.HTTP.Types (ResponseHeaders)
-#endif
 
 import qualified Data.ByteString.Lazy         as LBS
 import qualified Data.Text                    as T
@@ -96,11 +85,7 @@ import GitHub.Data.Request
 executeRequest :: Auth -> Request k a -> IO (Either Error a)
 executeRequest auth req = do
     manager <- newManager tlsManagerSettings
-    x <- executeRequestWithMgr manager auth req
-#if !MIN_VERSION_http_client(0, 4, 18)
-    closeManager manager
-#endif
-    pure x
+    executeRequestWithMgr manager auth req
 
 lessFetchCount :: Int -> FetchCount -> Bool
 lessFetchCount _ FetchAll         = True
@@ -151,11 +136,7 @@ executeRequestWithMgr mgr auth req = runExceptT $ do
 executeRequest' ::Request 'RO a -> IO (Either Error a)
 executeRequest' req = do
     manager <- newManager tlsManagerSettings
-    x <- executeRequestWithMgr' manager req
-#if !MIN_VERSION_http_client(0, 4, 18)
-    closeManager manager
-#endif
-    pure x
+    executeRequestWithMgr' manager req
 
 -- | Like 'executeRequestWithMgr' but without authentication.
 executeRequestWithMgr'
@@ -267,11 +248,7 @@ makeHttpSimpleRequest auth r = case r of
             $ req
   where
     parseUrl' :: MonadThrow m => Text -> m HTTP.Request
-#if MIN_VERSION_http_client(0,4,30)
     parseUrl' = HTTP.parseRequest . T.unpack
-#else
-    parseUrl' = HTTP.parseUrl . T.unpack
-#endif
 
     url :: Paths -> Text
     url paths = baseUrl <> "/" <> T.intercalate "/" paths
@@ -393,14 +370,8 @@ performPagedRequest httpLbs' predicate initReq = do
 
 
 setCheckStatus :: Maybe (StatusMap a) -> HTTP.Request -> HTTP.Request
-#if MIN_VERSION_http_client(0,5,0)
 setCheckStatus sm req = req { HTTP.checkResponse = successOrMissing sm }
-#else
-setCheckStatus sm req = req { HTTP.checkStatus = successOrMissing sm }
-#endif
 
-
-#if MIN_VERSION_http_client(0,5,0)
 successOrMissing :: Maybe (StatusMap a) -> HTTP.Request -> HTTP.Response HTTP.BodyReader -> IO ()
 successOrMissing sm _req res
     | check     = pure ()
@@ -410,13 +381,6 @@ successOrMissing sm _req res
         HTTP.throwHttp $ HTTP.StatusCodeException res' (LBS.toStrict chunk)
   where
     Status sci _ = HTTP.responseStatus res
-#else
-successOrMissing :: Maybe (StatusMap a) -> Status -> ResponseHeaders -> HTTP.CookieJar -> Maybe E.SomeException
-successOrMissing sm s@(Status sci _) hs cookiejar
-    | check     = Nothing
-    | otherwise = Just $ E.toException $ StatusCodeException s hs cookiejar
-  where
-#endif
     check = case sm of
       Nothing  -> 200 <= sci && sci < 300
       Just sm' -> sci `elem` map fst sm'
