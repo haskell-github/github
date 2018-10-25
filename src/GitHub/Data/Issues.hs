@@ -203,7 +203,7 @@ instance FromJSON Issue where
         <*> o .:? "milestone"
 
 instance ToJSON NewIssue where
-    toJSON (NewIssue t b a m ls) = object
+    toJSON (NewIssue t b a m ls) = object $ filter notNull
         [ "title"     .= t
         , "body"      .= b
         , "assignees" .= a
@@ -212,7 +212,7 @@ instance ToJSON NewIssue where
         ]
 
 instance ToJSON EditIssue where
-    toJSON (EditIssue t b a s m ls) = object $ filter notNull $
+    toJSON (EditIssue t b a s m ls) = object $ filter notNull
         [ "title"     .= t
         , "body"      .= b
         , "assignees" .= a
