@@ -13,7 +13,7 @@ import GitHub.Data.Options      (IssueState)
 import GitHub.Data.PullRequests
 import GitHub.Data.URL          (URL)
 import GitHub.Internal.Prelude
-import Prelude ()
+import Prelude                  ()
 
 data Issue = Issue
     { issueClosedAt    :: !(Maybe UTCTime)
@@ -43,7 +43,7 @@ instance Binary Issue
 data NewIssue = NewIssue
     { newIssueTitle     :: !Text
     , newIssueBody      :: !(Maybe Text)
-    , newIssueAssignee  :: !(Maybe Text)
+    , newIssueAssignees :: !(Maybe (Vector (Name User)))
     , newIssueMilestone :: !(Maybe (Id Milestone))
     , newIssueLabels    :: !(Maybe (Vector (Name IssueLabel)))
     }
@@ -55,7 +55,7 @@ instance Binary NewIssue
 data EditIssue = EditIssue
     { editIssueTitle     :: !(Maybe Text)
     , editIssueBody      :: !(Maybe Text)
-    , editIssueAssignee  :: !(Maybe (Name User))
+    , editIssueAssignees :: !(Maybe (Vector (Name User)))
     , editIssueState     :: !(Maybe IssueState)
     , editIssueMilestone :: !(Maybe (Id Milestone))
     , editIssueLabels    :: !(Maybe (Vector (Name IssueLabel)))
@@ -206,7 +206,7 @@ instance ToJSON NewIssue where
     toJSON (NewIssue t b a m ls) = object
         [ "title"     .= t
         , "body"      .= b
-        , "assignee"  .= a
+        , "assignees" .= a
         , "milestone" .= m
         , "labels"    .= ls
         ]
@@ -215,7 +215,7 @@ instance ToJSON EditIssue where
     toJSON (EditIssue t b a s m ls) = object $ filter notNull $
         [ "title"     .= t
         , "body"      .= b
-        , "assignee"  .= a
+        , "assignees" .= a
         , "state"     .= s
         , "milestone" .= m
         , "labels"    .= ls
