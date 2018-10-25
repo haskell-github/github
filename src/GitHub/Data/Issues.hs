@@ -210,6 +210,9 @@ instance ToJSON NewIssue where
         , "milestone" .= m
         , "labels"    .= ls
         ]
+      where
+        notNull (_, Null) = False
+        notNull (_, _)    = True
 
 instance ToJSON EditIssue where
     toJSON (EditIssue t b a s m ls) = object $ filter notNull
