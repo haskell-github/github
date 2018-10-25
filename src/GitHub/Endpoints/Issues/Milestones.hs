@@ -12,6 +12,7 @@ module GitHub.Endpoints.Issues.Milestones (
     milestone,
     milestoneR,
     createMilestone,
+    createMilestoneR,
     module GitHub.Data,
     ) where
 
