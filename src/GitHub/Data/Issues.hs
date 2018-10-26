@@ -43,7 +43,7 @@ instance Binary Issue
 data NewIssue = NewIssue
     { newIssueTitle     :: !Text
     , newIssueBody      :: !(Maybe Text)
-    , newIssueAssignees :: !(Maybe (Vector (Name User)))
+    , newIssueAssignees :: !(Vector (Name User))
     , newIssueMilestone :: !(Maybe (Id Milestone))
     , newIssueLabels    :: !(Maybe (Vector (Name IssueLabel)))
     }
