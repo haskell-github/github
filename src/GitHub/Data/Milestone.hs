@@ -68,7 +68,7 @@ data UpdateMilestone = UpdateMilestone
   { updateMilestoneTitle       :: !(Maybe Text)
   , updateMilestoneState       :: !(Maybe Text)
   , updateMilestoneDescription :: !(Maybe Text)
-  , updateMilestoneDueOn       :: !(Maybe (Maybe UTCTime))
+  , updateMilestoneDueOn       :: !(Maybe UTCTime)
   }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
