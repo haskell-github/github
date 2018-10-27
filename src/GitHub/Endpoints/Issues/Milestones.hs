@@ -67,6 +67,8 @@ createMilestoneR user repo =
 deleteMilestone :: Auth -> Name Owner -> Name Repo -> Id Milestone -> IO (Either Error ())
 deleteMilestone auth user repo mid = executeRequest auth $ deleteMilestoneR user repo mid
 
+-- | Delete a milestone.
+-- See <https://developer.github.com/v3/issues/milestones/#delete-a-milestone>
 deleteMilestoneR :: Name Owner -> Name Repo -> Id Milestone -> Request 'RW ()
 deleteMilestoneR user repo mid =
     command Delete
