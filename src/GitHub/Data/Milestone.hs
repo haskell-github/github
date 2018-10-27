@@ -63,3 +63,26 @@ instance ToJSON NewMilestone where
       where
         notNull (_, Null) = False
         notNull (_, _)    = True
+
+data UpdateMilestone = UpdateMilestone
+  { updateMilestoneTitle       :: !(Maybe Text)
+  , updateMilestoneState       :: !(Maybe Text)
+  , updateMilestoneDescription :: !(Maybe Text)
+  , updateMilestoneDueOn       :: !(Maybe UTCTime)
+  }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData UpdateMilestone where rnf = genericRnf
+instance Binary UpdateMilestone
+
+
+instance ToJSON UpdateMilestone where
+  toJSON (UpdateMilestone title state desc due) = object $ filter notNull
+      [ "title"       .= title
+      , "state"       .= state
+      , "description" .= desc
+      , "due_on"      .= due
+      ]
+    where
+      notNull (_, Null) = False
+      notNull (_, _)    = True
