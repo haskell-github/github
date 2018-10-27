@@ -13,6 +13,8 @@ module GitHub.Endpoints.Issues.Milestones (
     milestoneR,
     createMilestone,
     createMilestoneR,
+    updateMilestone,
+    updateMilestoneR,
     deleteMilestone,
     deleteMilestoneR,
     module GitHub.Data,
@@ -63,6 +65,15 @@ createMilestone auth user repo mlstn = executeRequest auth $ createMilestoneR us
 createMilestoneR :: Name Owner -> Name Repo -> NewMilestone -> Request 'RW Milestone
 createMilestoneR user repo =
     command Post ["repos", toPathPart user, toPathPart repo, "milestones"] . encode
+
+updateMilestone :: Auth -> Name Owner -> Name Repo -> Id Milestone -> UpdateMilestone -> IO (Either Error Milestone)
+updateMilestone auth user repo mid mlstn = executeRequest auth $ updateMilestoneR user repo mid mlstn
+
+-- | Update a milestone.
+-- See <https://developer.github.com/v3/issues/milestones/#update-a-milestone>
+updateMilestoneR :: Name Owner -> Name Repo -> Id Milestone -> UpdateMilestone -> Request 'RW Milestone
+updateMilestoneR user repo mid =
+    command Patch ["repos", toPathPart user, toPathPart repo, "milestones", toPathPart mid ] . encode
 
 deleteMilestone :: Auth -> Name Owner -> Name Repo -> Id Milestone -> IO (Either Error ())
 deleteMilestone auth user repo mid = executeRequest auth $ deleteMilestoneR user repo mid
