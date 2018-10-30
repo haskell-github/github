@@ -251,9 +251,9 @@ instance FromJSON GitUser where
 
 instance FromJSON File where
     parseJSON = withObject "File" $ \o -> File
-        <$> o .: "blob_url"
+        <$> o .:? "blob_url"
         <*> o .: "status"
-        <*> o .: "raw_url"
+        <*> o .:? "raw_url"
         <*> o .: "additions"
         <*> o .: "sha"
         <*> o .: "changes"
