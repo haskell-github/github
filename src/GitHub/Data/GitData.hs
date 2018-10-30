@@ -184,9 +184,9 @@ instance NFData GitUser where rnf = genericRnf
 instance Binary GitUser
 
 data File = File
-    { fileBlobUrl   :: !URL
+    { fileBlobUrl   :: !(Maybe URL)
     , fileStatus    :: !Text
-    , fileRawUrl    :: !URL
+    , fileRawUrl    :: !(Maybe URL)
     , fileAdditions :: !Int
     , fileSha       :: !Text
     , fileChanges   :: !Int

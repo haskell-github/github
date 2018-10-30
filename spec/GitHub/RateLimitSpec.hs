@@ -7,7 +7,6 @@ import Prelude ()
 import Prelude.Compat
 
 import Data.Either.Compat (isRight)
-import Data.Foldable      (for_)
 import Data.String        (fromString)
 import System.Environment (lookupEnv)
 import Test.Hspec         (Spec, describe, it, pendingWith, shouldSatisfy)
