@@ -11,13 +11,15 @@ module GitHub.Endpoints.Repos.Collaborators (
     collaboratorsOnR,
     isCollaboratorOn,
     isCollaboratorOnR,
+    addCollaborator,
+    addCollaboratorR,
     module GitHub.Data,
     ) where
 
-import GitHub.Data
-import GitHub.Internal.Prelude
-import GitHub.Request
-import Prelude ()
+import           GitHub.Data
+import           GitHub.Internal.Prelude
+import           GitHub.Request
+import           Prelude                 ()
 
 -- | All the users who have collaborated on a repo.
 --
@@ -60,3 +62,21 @@ isCollaboratorOnR
     -> Request k Bool
 isCollaboratorOnR user repo coll = StatusQuery statusOnlyOk $
     Query ["repos", toPathPart user, toPathPart repo, "collaborators", toPathPart coll] []
+
+addCollaborator
+    :: Auth
+    -> Name Owner        -- ^ Repository owner
+    -> Name Repo         -- ^ Repository name
+    -> Name User         -- ^ Collaborator to add
+    -> IO (Either Error Invitation)
+addCollaborator auth owner repo coll =
+    executeRequest auth $ addCollaboratorR owner repo coll
+
+addCollaboratorR
+    :: Name Owner        -- ^ Repository owner
+    -> Name Repo         -- ^ Repository name
+    -> Name User         -- ^ Collaborator to add
+    -> Request 'RW Invitation
+addCollaboratorR owner repo coll =
+    command Put ["repos", toPathPart owner, toPathPart repo, "collaborators", toPathPart coll] mempty
+-- /repos/:owner/:repo/collaborators/:username
