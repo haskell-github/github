@@ -16,10 +16,10 @@ module GitHub.Endpoints.Repos.Collaborators (
     module GitHub.Data,
     ) where
 
-import           GitHub.Data
-import           GitHub.Internal.Prelude
-import           GitHub.Request
-import           Prelude                 ()
+import GitHub.Data
+import GitHub.Internal.Prelude
+import GitHub.Request
+import Prelude ()
 
 -- | All the users who have collaborated on a repo.
 --
@@ -72,6 +72,8 @@ addCollaborator
 addCollaborator auth owner repo coll =
     executeRequest auth $ addCollaboratorR owner repo coll
 
+-- | Invite a user as a collaborator.
+-- See <https://developer.github.com/v3/repos/collaborators/#add-user-as-a-collaborator>
 addCollaboratorR
     :: Name Owner        -- ^ Repository owner
     -> Name Repo         -- ^ Repository name
@@ -79,4 +81,3 @@ addCollaboratorR
     -> Request 'RW ()
 addCollaboratorR owner repo coll =
     command Put' ["repos", toPathPart owner, toPathPart repo, "collaborators", toPathPart coll] mempty
--- /repos/:owner/:repo/collaborators/:username
