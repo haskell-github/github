@@ -312,14 +312,13 @@ module GitHub (
     -- | See <https://developer.github.com/v3/repos/invitations/>
     -- Missing endpoints:
 
-    -- * List invitations for a repository
     -- * Delete a repository invitation
     -- * Update a repository invitation
     -- * List a user's repository invitations
-    -- * Accept a repository invitation
     -- * Decline a repository invitation
 
     listInvitationsOnR,
+    acceptInvitationFromR,
 
 
     -- * Search
