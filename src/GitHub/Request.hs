@@ -129,6 +129,7 @@ executeRequestWithMgr mgr auth req = runExceptT $ do
         case m of
              Delete -> pure ()
              Put'   -> pure ()
+             Patch' -> pure ()
              _      -> parseResponse res
 
 
