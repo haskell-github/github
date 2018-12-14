@@ -19,6 +19,6 @@ import GitHub.Data.Invitation
 
 -- | List open invitations of a repository
 -- See <https://developer.github.com/v3/repos/invitations/#list-invitations-for-a-repository>
-listInvitationsOnR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Invitation)
+listInvitationsOnR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector RepoInvitation)
 listInvitationsOnR user repo =
     pagedQuery ["repos", toPathPart user, toPathPart repo, "invitations"] []

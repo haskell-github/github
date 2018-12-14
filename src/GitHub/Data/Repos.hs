@@ -58,7 +58,7 @@ data Repo = Repo
     , repoParent          :: !(Maybe RepoRef)
     , repoSource          :: !(Maybe RepoRef)
     , repoHooksUrl        :: !URL
-    , repoStargazersCount :: !Int
+    , repoStargazersCount :: !(Maybe Int)
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -178,7 +178,7 @@ instance FromJSON Repo where
         <*> o .:? "parent"
         <*> o .:? "source"
         <*> o .: "hooks_url"
-        <*> o .: "stargazers_count"
+        <*> o .:? "stargazers_count"
 
 instance ToJSON NewRepo where
   toJSON (NewRepo { newRepoName         = name
