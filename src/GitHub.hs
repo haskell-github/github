@@ -308,6 +308,20 @@ module GitHub (
     latestReleaseR,
     releaseByTagNameR,
 
+    -- ** Invitations
+    -- | See <https://developer.github.com/v3/repos/invitations/>
+    -- Missing endpoints:
+
+    -- * List invitations for a repository
+    -- * Delete a repository invitation
+    -- * Update a repository invitation
+    -- * List a user's repository invitations
+    -- * Accept a repository invitation
+    -- * Decline a repository invitation
+
+    listInvitationsOnR,
+
+
     -- * Search
     -- | See <https://developer.github.com/v3/search/>
     --
@@ -396,6 +410,7 @@ import GitHub.Endpoints.Repos.Comments
 import GitHub.Endpoints.Repos.Commits
 import GitHub.Endpoints.Repos.Deployments
 import GitHub.Endpoints.Repos.Forks
+import GitHub.Endpoints.Repos.Invitations
 import GitHub.Endpoints.Repos.Releases
 import GitHub.Endpoints.Repos.Statuses
 import GitHub.Endpoints.Repos.Webhooks
