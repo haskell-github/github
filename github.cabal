@@ -189,7 +189,7 @@ test-suite github-test
     GitHub.UsersSpec
   main-is: Spec.hs
   ghc-options: -Wall
-  build-tool-depends: hspec-discover:hspec-discover >=2.5.6 && <2.6
+  build-tool-depends: hspec-discover:hspec-discover >=2.5.6 && <=2.6
   build-depends: base,
                  base-compat,
                  aeson,
@@ -198,4 +198,4 @@ test-suite github-test
                  vector,
                  unordered-containers,
                  file-embed,
-                 hspec >= 2.5.6 && <2.6
+                 hspec >= 2.5.6 && <=2.6
