@@ -39,14 +39,12 @@ spec = do
       V.length issues `shouldBe` 2
 
       let issue1 = issues V.! 0
-      issueId issue1 `shouldBe` mkId (Proxy :: Proxy Issue) 123898390
-      issueNumber issue1 `shouldBe` 130
+      issueNumber issue1 `shouldBe` mkId (Proxy :: Proxy Issue) 130
       issueTitle issue1 `shouldBe` "Make test runner more robust"
       issueState issue1 `shouldBe` StateClosed
 
       let issue2 = issues V.! 1
-      issueId issue2 `shouldBe` mkId (Proxy :: Proxy Issue) 119694665
-      issueNumber issue2 `shouldBe` 127
+      issueNumber issue2 `shouldBe` mkId (Proxy :: Proxy Issue) 127
       issueTitle issue2 `shouldBe` "Decouple request creation from execution"
       issueState issue2 `shouldBe` StateOpen
 
@@ -54,4 +52,4 @@ spec = do
       let query = "Decouple in:title repo:phadej/github created:<=2015-12-01"
       issues <- searchResultResults . fromRightS <$> searchIssues' (Just auth) query
       length issues `shouldBe` 1
-      issueId (V.head issues) `shouldBe` mkId (Proxy :: Proxy Issue) 119694665
+      issueNumber (V.head issues) `shouldBe` mkId (Proxy :: Proxy Issue) 127

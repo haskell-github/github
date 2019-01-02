@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE LambdaCase #-}
 module GitHub.IssuesSpec where
 
 import qualified GitHub
@@ -10,7 +11,7 @@ import Data.Either.Compat (isRight)
 import Data.Foldable      (for_)
 import Data.String        (fromString)
 import System.Environment (lookupEnv)
-import Test.Hspec         (Spec, describe, it, pendingWith, shouldSatisfy)
+import Test.Hspec         (Spec, describe, expectationFailure, it, pendingWith, shouldSatisfy)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -27,9 +28,17 @@ spec :: Spec
 spec = do
     describe "issuesForRepoR" $ do
         it "works" $ withAuth $ \auth -> for_ repos $ \(owner, repo) -> do
-            cs <- GitHub.executeRequest auth $
-                GitHub.issuesForRepoR owner repo mempty GitHub.FetchAll 
-            cs `shouldSatisfy` isRight
+            GitHub.executeRequest auth $
+                GitHub.issuesForRepoR owner repo mempty GitHub.FetchAll
+            >>= \case
+                Left err ->
+                    expectationFailure $ show err
+                Right issues ->
+                    for_ issues $ \issue -> do
+                        comments <- GitHub.executeRequest auth $
+                            GitHub.commentsR owner repo (GitHub.issueNumber issue) 1
+                        comments `shouldSatisfy` isRight
+
   where
     repos =
       [ ("thoughtbot", "paperclip")
