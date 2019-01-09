@@ -1,3 +1,9 @@
+## Changes for next
+
+- Allow http-client-0.6
+
+- Change to use `cryptohash-sha1` (before `cryptohash`)
+
 ## Changes for 0.20
 
 - Add ratelimit endpoint
