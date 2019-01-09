@@ -12,9 +12,8 @@ module GitHub.Data.Webhooks.Validate (
 import GitHub.Internal.Prelude
 import Prelude ()
 
-import Crypto.Hash     (HMAC, SHA1, hmac, hmacGetDigest)
-import Data.Byteable   (constEqBytes, toBytes)
-import Data.ByteString (ByteString)
+import Crypto.Hash.SHA1 (hmac)
+import Data.ByteString  (ByteString)
 
 import qualified Data.ByteString.Base16 as Hex
 import qualified Data.Text.Encoding     as TE
@@ -30,10 +29,9 @@ isValidPayload
                     -- including the 'sha1=...' prefix
   -> ByteString     -- ^ the body
   -> Bool
-isValidPayload secret shaOpt payload = maybe False (constEqBytes sign) shaOptBS
+isValidPayload secret shaOpt payload = maybe False (sign ==) shaOptBS
   where
     shaOptBS = TE.encodeUtf8 <$> shaOpt
-    hexDigest = Hex.encode . toBytes . hmacGetDigest
-
-    hm = hmac (TE.encodeUtf8 secret) payload :: HMAC SHA1
+    hexDigest = Hex.encode
+    hm = hmac (TE.encodeUtf8 secret) payload
     sign = "sha1=" <> hexDigest hm
