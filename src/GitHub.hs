@@ -156,6 +156,7 @@ module GitHub (
     -- * Edit an organization
     publicOrganizationsForR,
     publicOrganizationR,
+    organizationsR,
     -- ** Members
     -- | See <https://developer.github.com/v3/orgs/members/>
     --
