@@ -5,7 +5,7 @@ module GitHub.CommitsSpec where
 import qualified GitHub
 
 import GitHub.Auth                    (Auth (..))
-import GitHub.Endpoints.Repos.Commits (Commit, commitSha, commitsFor',
+import GitHub.Endpoints.Repos.Commits (commitSha, commitsFor',
                                        commitsForR, diffR, mkCommitName)
 import GitHub.Request                 (executeRequest)
 
@@ -59,4 +59,9 @@ spec = do
 
     it "issue #155" $ withAuth $ \auth -> do
       d <- executeRequest auth $ diffR "nomeata" "codespeed" (mkCommitName "ghc") (mkCommitName "tobami:master")
+      d `shouldSatisfy` isRight
+
+    -- diff that includes a commit where a submodule is removed
+    it "issue #339" $ withAuth $ \auth -> do
+      d <- executeRequest auth $ diffR "scott-fleischman" "repo-remove-submodule" "d03c152482169d809be9b1eab71dcf64d7405f76" "42cfd732b20cd093534f246e630b309186eb485d"
       d `shouldSatisfy` isRight
