@@ -11,6 +11,8 @@ module GitHub.Endpoints.Repos.Collaborators (
     collaboratorsOnR,
     isCollaboratorOn,
     isCollaboratorOnR,
+    addCollaborator,
+    addCollaboratorR,
     module GitHub.Data,
     ) where
 
@@ -60,3 +62,22 @@ isCollaboratorOnR
     -> Request k Bool
 isCollaboratorOnR user repo coll = StatusQuery statusOnlyOk $
     Query ["repos", toPathPart user, toPathPart repo, "collaborators", toPathPart coll] []
+
+addCollaborator
+    :: Auth
+    -> Name Owner        -- ^ Repository owner
+    -> Name Repo         -- ^ Repository name
+    -> Name User         -- ^ Collaborator to add
+    -> IO (Either Error ())
+addCollaborator auth owner repo coll =
+    executeRequest auth $ addCollaboratorR owner repo coll
+
+-- | Invite a user as a collaborator.
+-- See <https://developer.github.com/v3/repos/collaborators/#add-user-as-a-collaborator>
+addCollaboratorR
+    :: Name Owner        -- ^ Repository owner
+    -> Name Repo         -- ^ Repository name
+    -> Name User         -- ^ Collaborator to add
+    -> Request 'RW ()
+addCollaboratorR owner repo coll =
+    command Put' ["repos", toPathPart owner, toPathPart repo, "collaborators", toPathPart coll] mempty
