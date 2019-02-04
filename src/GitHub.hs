@@ -137,14 +137,14 @@ module GitHub (
     -- ** Milestone
     -- | See <https://developer.github.com/v3/issues/milestones/>
     --
-    -- Missing endpoints:
-    --
-    -- * Update a milestone
-    -- * Delete a milestone
     milestonesR,
     milestoneR,
     createMilestone,
     createMilestoneR,
+    updateMilestone,
+    updateMilestoneR,
+    deleteMilestone,
+    deleteMilestoneR,
 
     -- * Organizations
     -- | See <https://developer.github.com/v3/orgs/>
