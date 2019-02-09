@@ -159,24 +159,24 @@ pullRequestFilesR user repo prid =
     pagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "files"] []
 
 -- | Check if pull request has been merged.
-isPullRequestMerged :: Auth -> Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error Bool)
+isPullRequestMerged :: Auth -> Name Owner -> Name Repo -> IssueNumber -> IO (Either Error Bool)
 isPullRequestMerged auth user repo prid =
     executeRequest auth $ isPullRequestMergedR user repo prid
 
 -- | Query if a pull request has been merged.
 -- See <https://developer.github.com/v3/pulls/#get-if-a-pull-request-has-been-merged>
-isPullRequestMergedR :: Name Owner -> Name Repo -> Id PullRequest -> Request k Bool
+isPullRequestMergedR :: Name Owner -> Name Repo -> IssueNumber -> Request k Bool
 isPullRequestMergedR user repo prid = StatusQuery statusOnlyOk $
     Query ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "merge"] []
 
 -- | Merge a pull request.
-mergePullRequest :: Auth -> Name Owner -> Name Repo -> Id PullRequest -> Maybe Text -> IO (Either Error MergeResult)
+mergePullRequest :: Auth -> Name Owner -> Name Repo -> IssueNumber -> Maybe Text -> IO (Either Error MergeResult)
 mergePullRequest auth user repo prid commitMessage =
     executeRequest auth $ mergePullRequestR user repo prid commitMessage
 
 -- | Merge a pull request (Merge Button).
 -- https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button
-mergePullRequestR :: Name Owner -> Name Repo -> Id PullRequest -> Maybe Text -> Request 'RW MergeResult
+mergePullRequestR :: Name Owner -> Name Repo -> IssueNumber -> Maybe Text -> Request 'RW MergeResult
 mergePullRequestR user repo prid commitMessage = StatusQuery statusMerge $
     Command Put paths (encode $ buildCommitMessageMap commitMessage)
   where

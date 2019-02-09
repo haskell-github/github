@@ -22,7 +22,7 @@ data Issue = Issue
     , issueHtmlUrl     :: !(Maybe URL)
     , issueClosedBy    :: !(Maybe SimpleUser)
     , issueLabels      :: !(Vector IssueLabel)
-    , issueNumber      :: !Int
+    , issueNumber      :: !IssueNumber
     , issueAssignees   :: !(Vector SimpleUser)
     , issueUser        :: !SimpleUser
     , issueTitle       :: !Text
