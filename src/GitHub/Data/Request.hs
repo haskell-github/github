@@ -27,7 +27,7 @@ module GitHub.Data.Request (
     Count,
     ) where
 
-import GitHub.Data.Definitions (Count, QueryString)
+import GitHub.Data.Definitions (Count, QueryString, IssueNumber, unIssueNumber)
 import GitHub.Data.Id          (Id, untagId)
 import GitHub.Data.Name        (Name, untagName)
 import GitHub.Internal.Prelude
@@ -52,6 +52,9 @@ instance IsPathPart (Name a) where
 
 instance IsPathPart (Id a) where
     toPathPart = T.pack . show . untagId
+
+instance IsPathPart IssueNumber where
+    toPathPart = T.pack . show . unIssueNumber
 
 -- | Http method of requests with body.
 data CommandMethod a where

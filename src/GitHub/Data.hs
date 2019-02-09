@@ -30,6 +30,8 @@ module GitHub.Data (
     mkRepoId,
     fromUserId,
     fromOrganizationId,
+    -- * IssueNumber
+    IssueNumber (..),
     -- * Module re-exports
     module GitHub.Auth,
     module GitHub.Data.Activities,

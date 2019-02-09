@@ -1,8 +1,9 @@
 ## Changes for next
 
-- Allow http-client-0.6
+## Changes for 0.21
 
-- Change to use `cryptohash-sha1` (before `cryptohash`)
+- Allow `http-client-0.6`
+- Change to use `cryptohash-sha1` (`cryptohash` was used before)
 
 ## Changes for 0.20
 

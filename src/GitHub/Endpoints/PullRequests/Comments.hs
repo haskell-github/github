@@ -21,13 +21,13 @@ import Prelude ()
 -- | All the comments on a pull request with the given ID.
 --
 -- > pullRequestComments "thoughtbot" "factory_girl" (Id 256)
-pullRequestCommentsIO :: Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector Comment))
+pullRequestCommentsIO :: Name Owner -> Name Repo -> IssueNumber -> IO (Either Error (Vector Comment))
 pullRequestCommentsIO user repo prid =
     executeRequest' $ pullRequestCommentsR user repo prid FetchAll
 
 -- | List comments on a pull request.
 -- See <https://developer.github.com/v3/pulls/comments/#list-comments-on-a-pull-request>
-pullRequestCommentsR :: Name Owner -> Name Repo -> Id PullRequest -> FetchCount -> Request k (Vector Comment)
+pullRequestCommentsR :: Name Owner -> Name Repo -> IssueNumber -> FetchCount -> Request k (Vector Comment)
 pullRequestCommentsR user repo prid =
     pagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "comments"] []
 
