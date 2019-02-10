@@ -61,6 +61,8 @@ data CommandMethod a where
     Post   :: CommandMethod a
     Patch  :: CommandMethod a
     Put    :: CommandMethod a
+
+    -- | Put requests, where we don't care about response's body
     Put'   :: CommandMethod ()
     Delete :: CommandMethod ()
     deriving (Typeable)
@@ -146,6 +148,8 @@ data Request (k :: RW) a where
     SimpleQuery   :: FromJSON a => SimpleRequest k a -> Request k a
     StatusQuery   :: StatusMap a -> SimpleRequest k () -> Request k a
     HeaderQuery   :: FromJSON a => Types.RequestHeaders -> SimpleRequest k a -> Request k a
+
+    -- | Redirect query is /some/ query where we expect status 302 response with @Location@ header.
     RedirectQuery :: SimpleRequest k () -> Request k URI
   deriving (Typeable)
 
