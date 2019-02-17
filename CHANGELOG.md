@@ -19,6 +19,7 @@
 - Allow multiple assignees in NewIssue and EditIssue
   [#336](https://github.com/phadej/github/pull/336)
 - Add `pullRequestPatchR` and `pullRequestDiffR`
+  [#325](https://github.com/phadej/github/pull/325)
 
 ## Changes for 0.20
 
