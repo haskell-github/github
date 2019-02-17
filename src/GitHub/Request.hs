@@ -1,6 +1,9 @@
-{-# LANGUAGE CPP                #-}
-{-# LANGUAGE FlexibleContexts   #-}
-{-# LANGUAGE GADTs              #-}
+{-# LANGUAGE CPP                   #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE GADTs                 #-}
+{-# LANGUAGE KindSignatures        #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -27,7 +30,8 @@
 -- > githubRequest = singleton
 module GitHub.Request (
     -- * Types
-    Request(..),
+    Request,
+    GenRequest (..),
     CommandMethod(..),
     toMethod,
     Paths,
@@ -40,10 +44,11 @@ module GitHub.Request (
     executeRequestMaybe,
     unsafeDropAuthRequirements,
     -- * Helpers
+    Accept (..),
+    ParseResponse (..),
     makeHttpRequest,
-    makeHttpSimpleRequest,
-    parseResponse,
     parseStatus,
+    StatusMap,
     getNextUrl,
     performPagedRequest,
     ) where
@@ -59,6 +64,7 @@ import Control.Monad.Trans.Class  (lift)
 import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
 import Data.Aeson                 (eitherDecode)
 import Data.List                  (find)
+import Data.Tagged                (Tagged (..))
 
 import Network.HTTP.Client
        (HttpException (..), Manager, RequestBody (..), Response (..),
@@ -70,6 +76,7 @@ import Network.HTTP.Link.Types  (Link (..), LinkParam (..), href, linkParams)
 import Network.HTTP.Types       (Method, RequestHeaders, Status (..))
 import Network.URI              (URI, parseURIReference, relativeTo)
 
+import qualified Data.ByteString              as BS
 import qualified Data.ByteString.Lazy         as LBS
 import qualified Data.Text                    as T
 import qualified Data.Text.Encoding           as TE
@@ -77,12 +84,13 @@ import qualified Data.Vector                  as V
 import qualified Network.HTTP.Client          as HTTP
 import qualified Network.HTTP.Client.Internal as HTTP
 
-import GitHub.Auth         (Auth (..))
-import GitHub.Data         (Error (..))
+import GitHub.Auth              (Auth (..))
+import GitHub.Data              (Error (..))
+import GitHub.Data.PullRequests (MergeResult (..))
 import GitHub.Data.Request
 
 -- | Execute 'Request' in 'IO'
-executeRequest :: Auth -> Request k a -> IO (Either Error a)
+executeRequest :: ParseResponse mt a => Auth -> GenRequest mt rw a -> IO (Either Error a)
 executeRequest auth req = do
     manager <- newManager tlsManagerSettings
     executeRequestWithMgr manager auth req
@@ -93,9 +101,10 @@ lessFetchCount i (FetchAtLeast j) = i < fromIntegral j
 
 -- | Like 'executeRequest' but with provided 'Manager'.
 executeRequestWithMgr
-    :: Manager
+    :: ParseResponse mt a
+    => Manager
     -> Auth
-    -> Request k a
+    -> GenRequest mt rw a
     -> IO (Either Error a)
 executeRequestWithMgr mgr auth req = runExceptT $ do
     httpReq <- makeHttpRequest (Just auth) req
@@ -104,44 +113,31 @@ executeRequestWithMgr mgr auth req = runExceptT $ do
     httpLbs' :: HTTP.Request -> ExceptT Error IO (Response LBS.ByteString)
     httpLbs' req' = lift (httpLbs req' mgr) `catch` onHttpException
 
-    performHttpReq :: HTTP.Request -> Request k b -> ExceptT Error IO b
-    performHttpReq httpReq (SimpleQuery sreq)   =
-        performHttpReq' httpReq sreq
-    performHttpReq httpReq (HeaderQuery _ sreq) =
-        performHttpReq' httpReq sreq
-    performHttpReq httpReq (StatusQuery sm _)   = do
+    performHttpReq :: forall rw mt b. ParseResponse mt b => HTTP.Request -> GenRequest mt rw b -> ExceptT Error IO b
+    performHttpReq httpReq Query {} = do
         res <- httpLbs' httpReq
-        parseStatus sm  . responseStatus $ res
-    performHttpReq httpReq (RedirectQuery _)   = do
-        res <- httpLbs' httpReq
-        parseRedirect (getUri httpReq) res
+        unTagged (parseResponse httpReq res :: Tagged mt (ExceptT Error IO b))
 
-    performHttpReq' :: FromJSON b => HTTP.Request -> SimpleRequest k b -> ExceptT Error IO b
-    performHttpReq' httpReq Query {} = do
-        res <- httpLbs' httpReq
-        parseResponse res
-    performHttpReq' httpReq (PagedQuery _ _ l) =
-        performPagedRequest httpLbs' predicate httpReq
+    performHttpReq httpReq (PagedQuery _ _ l) =
+        unTagged (performPagedRequest httpLbs' predicate httpReq :: Tagged mt (ExceptT Error IO b))
       where
         predicate v = lessFetchCount (V.length v) l
-    performHttpReq' httpReq (Command m _ _) = do
-        res <- httpLbs' httpReq
-        case m of
-             Delete -> pure ()
-             Put'   -> pure ()
-             _      -> parseResponse res
 
+    performHttpReq httpReq (Command _ _ _) = do
+        res <- httpLbs' httpReq
+        unTagged (parseResponse httpReq res :: Tagged mt (ExceptT Error IO b))
 
 -- | Like 'executeRequest' but without authentication.
-executeRequest' ::Request 'RO a -> IO (Either Error a)
+executeRequest' :: ParseResponse mt a => GenRequest mt 'RO a -> IO (Either Error a)
 executeRequest' req = do
     manager <- newManager tlsManagerSettings
     executeRequestWithMgr' manager req
 
 -- | Like 'executeRequestWithMgr' but without authentication.
 executeRequestWithMgr'
-    :: Manager
-    -> Request 'RO a
+    :: ParseResponse mt a
+    => Manager
+    -> GenRequest mt 'RO a
     -> IO (Either Error a)
 executeRequestWithMgr' mgr req = runExceptT $ do
     httpReq <- makeHttpRequest Nothing req
@@ -150,39 +146,156 @@ executeRequestWithMgr' mgr req = runExceptT $ do
     httpLbs' :: HTTP.Request -> ExceptT Error IO (Response LBS.ByteString)
     httpLbs' req' = lift (httpLbs req' mgr) `catch` onHttpException
 
-    performHttpReq :: HTTP.Request -> Request 'RO b -> ExceptT Error IO b
-    performHttpReq httpReq (SimpleQuery sreq)   =
-        performHttpReq' httpReq sreq
-    performHttpReq httpReq (HeaderQuery _ sreq) =
-        performHttpReq' httpReq sreq
-    performHttpReq httpReq (StatusQuery sm _)   = do
+    performHttpReq :: forall mt b. ParseResponse mt b => HTTP.Request -> GenRequest mt 'RO b -> ExceptT Error IO b
+    performHttpReq httpReq Query {} = do
         res <- httpLbs' httpReq
-        parseStatus sm  . responseStatus $ res
-    performHttpReq httpReq (RedirectQuery _)   = do
-        res <- httpLbs' httpReq
-        parseRedirect (getUri httpReq) res
-
-    performHttpReq' :: FromJSON b => HTTP.Request -> SimpleRequest 'RO b -> ExceptT Error IO b
-    performHttpReq' httpReq Query {} = do
-        res <- httpLbs' httpReq
-        parseResponse res
-    performHttpReq' httpReq (PagedQuery _ _ l) =
-        performPagedRequest httpLbs' predicate httpReq
+        unTagged (parseResponse httpReq res :: Tagged mt (ExceptT Error IO b))
+    performHttpReq httpReq (PagedQuery _ _ l) =
+        unTagged (performPagedRequest httpLbs' predicate httpReq :: Tagged mt (ExceptT Error IO b))
       where
         predicate v = lessFetchCount (V.length v) l
 
 -- | Helper for picking between 'executeRequest' and 'executeRequest''.
 --
 -- The use is discouraged.
-executeRequestMaybe :: Maybe Auth -> Request 'RO a -> IO (Either Error a)
+executeRequestMaybe :: ParseResponse mt a => Maybe Auth -> GenRequest mt 'RO a -> IO (Either Error a)
 executeRequestMaybe = maybe executeRequest' executeRequest
 
 -- | Partial function to drop authentication need.
-unsafeDropAuthRequirements :: Request k' a -> Request k a
-unsafeDropAuthRequirements (SimpleQuery (Query ps qs)) =
-    SimpleQuery (Query ps qs)
-unsafeDropAuthRequirements r                 =
+unsafeDropAuthRequirements :: GenRequest mt rw' a -> GenRequest mt rw a
+unsafeDropAuthRequirements (Query ps qs) = Query ps qs
+unsafeDropAuthRequirements r             =
     error $ "Trying to drop authenatication from" ++ show r
+
+-------------------------------------------------------------------------------
+-- Parse response
+-------------------------------------------------------------------------------
+
+class Accept (mt :: MediaType) where
+    contentType :: Tagged mt BS.ByteString
+    contentType = Tagged "application/json" -- default is JSON
+
+    modifyRequest :: Tagged mt (HTTP.Request -> HTTP.Request)
+    modifyRequest = Tagged id
+
+class Accept mt => ParseResponse (mt :: MediaType) a where
+    parseResponse :: MonadError Error m => HTTP.Request -> HTTP.Response LBS.ByteString -> Tagged mt (m a)
+
+-------------------------------------------------------------------------------
+-- JSON (+ star)
+-------------------------------------------------------------------------------
+
+-- | Parse API response.
+--
+-- @
+-- parseResponse :: 'FromJSON' a => 'Response' 'LBS.ByteString' -> 'Either' 'Error' a
+-- @
+parseResponseJSON :: (FromJSON a, MonadError Error m) => Response LBS.ByteString -> m a
+parseResponseJSON res = case eitherDecode (responseBody res) of
+    Right x  -> return x
+    Left err -> throwError . ParseError . T.pack $ err
+
+instance Accept 'MtJSON where
+    contentType = Tagged "application/vnd.github.v3+json"
+
+instance FromJSON a => ParseResponse 'MtJSON a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtStar where
+    contentType = Tagged "application/vnd.github.v3.star+json"
+
+instance FromJSON a => ParseResponse 'MtStar a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+-------------------------------------------------------------------------------
+-- Raw / Diff / Patch / Sha 
+-------------------------------------------------------------------------------
+
+instance Accept 'MtRaw   where contentType = Tagged "application/vnd.github.v3.raw"
+instance Accept 'MtDiff  where contentType = Tagged "application/vnd.github.v3.diff"
+instance Accept 'MtPatch where contentType = Tagged "application/vnd.github.v3.patch"
+instance Accept 'MtSha   where contentType = Tagged "application/vnd.github.v3.sha"
+
+instance a ~ LBS.ByteString => ParseResponse 'MtRaw   a where parseResponse _ = Tagged . return . responseBody
+instance a ~ LBS.ByteString => ParseResponse 'MtDiff  a where parseResponse _ = Tagged . return . responseBody
+instance a ~ LBS.ByteString => ParseResponse 'MtPatch a where parseResponse _ = Tagged . return . responseBody
+instance a ~ LBS.ByteString => ParseResponse 'MtSha   a where parseResponse _ = Tagged . return . responseBody
+
+-------------------------------------------------------------------------------
+-- Redirect
+-------------------------------------------------------------------------------
+
+instance Accept 'MtRedirect where
+    modifyRequest = Tagged $ \req ->
+        setRequestIgnoreStatus $ req { redirectCount = 0 }
+
+instance b ~ URI => ParseResponse 'MtRedirect b where
+    parseResponse req = Tagged . parseRedirect (getUri req)
+
+-- | Helper for handling of 'RequestRedirect'.
+--
+-- @
+-- parseRedirect :: 'Response' 'LBS.ByteString' -> 'Either' 'Error' a
+-- @
+parseRedirect :: MonadError Error m => URI -> Response LBS.ByteString -> m URI
+parseRedirect originalUri rsp = do
+    let status = responseStatus rsp
+    when (statusCode status /= 302) $
+        throwError $ ParseError $ "invalid status: " <> T.pack (show status)
+    loc <- maybe noLocation return $ lookup "Location" $ responseHeaders rsp
+    case parseURIReference $ T.unpack $ TE.decodeUtf8 loc of
+        Nothing -> throwError $ ParseError $
+            "location header does not contain a URI: " <> T.pack (show loc)
+        Just uri -> return $ uri `relativeTo` originalUri
+  where
+    noLocation = throwError $ ParseError "no location header in response"
+
+-------------------------------------------------------------------------------
+-- Status
+-------------------------------------------------------------------------------
+
+instance Accept 'MtStatus where
+    modifyRequest = Tagged setRequestIgnoreStatus
+
+instance HasStatusMap a => ParseResponse 'MtStatus a where
+    parseResponse _ = Tagged . parseStatus statusMap . responseStatus
+
+type StatusMap a = [(Int, a)]
+
+class HasStatusMap a where
+    statusMap :: StatusMap a
+
+instance HasStatusMap Bool where
+    statusMap =
+        [ (204, True)
+        , (404, False)
+        ]
+
+instance HasStatusMap MergeResult where
+    statusMap =
+        [ (200, MergeSuccessful)
+        , (405, MergeCannotPerform)
+        , (409, MergeConflict)
+        ]
+
+-- | Helper for handling of 'RequestStatus'.
+--
+-- @
+-- parseStatus :: 'StatusMap' a -> 'Status' -> 'Either' 'Error' a
+-- @
+parseStatus :: MonadError Error m => StatusMap a -> Status -> m a
+parseStatus m (Status sci _) =
+    maybe err return $ lookup sci m
+  where
+    err = throwError $ JsonError $ "invalid status: " <> T.pack (show sci)
+
+-------------------------------------------------------------------------------
+-- Unit
+-------------------------------------------------------------------------------
+
+instance Accept 'MtUnit
+instance a ~ () => ParseResponse 'MtUnit a where
+    parseResponse _ _ = Tagged (return ())
 
 ------------------------------------------------------------------------------
 -- Tools
@@ -194,38 +307,17 @@ unsafeDropAuthRequirements r                 =
 -- * for 'Status', the 'Request' for underlying 'Request' is created,
 --   status checking is modifying accordingly.
 --
--- @
--- parseResponse :: 'Maybe' 'Auth' -> 'Request' k a -> 'Maybe' 'Request'
--- @
 makeHttpRequest
-    :: MonadThrow m
+    :: forall mt rw a m. (MonadThrow m, Accept mt)
     => Maybe Auth
-    -> Request k a
+    -> GenRequest mt rw a
     -> m HTTP.Request
 makeHttpRequest auth r = case r of
-    SimpleQuery req ->
-        makeHttpSimpleRequest auth req
-    StatusQuery sm req -> do
-        req' <- makeHttpSimpleRequest auth req
-        return $ setCheckStatus (Just sm) req'
-    HeaderQuery h req -> do
-        req' <- makeHttpSimpleRequest auth req
-        return $ req' { requestHeaders = h <> requestHeaders req' }
-    RedirectQuery req -> do
-        req' <- makeHttpSimpleRequest auth req
-        return $ setRequestIgnoreStatus $ req' { redirectCount = 0 }
-
-makeHttpSimpleRequest
-    :: MonadThrow m
-    => Maybe Auth
-    -> SimpleRequest k a
-    -> m HTTP.Request
-makeHttpSimpleRequest auth r = case r of
     Query paths qs -> do
         req <- parseUrl' $ url paths
         return
             $ setReqHeaders
-            . setCheckStatus Nothing
+            . unTagged (modifyRequest :: Tagged mt (HTTP.Request -> HTTP.Request))
             . setAuthRequest auth
             . setQueryString qs
             $ req
@@ -233,7 +325,7 @@ makeHttpSimpleRequest auth r = case r of
         req <- parseUrl' $ url paths
         return
             $ setReqHeaders
-            . setCheckStatus Nothing
+            . unTagged (modifyRequest :: Tagged mt (HTTP.Request -> HTTP.Request))
             . setAuthRequest auth
             . setQueryString qs
             $ req
@@ -241,7 +333,7 @@ makeHttpSimpleRequest auth r = case r of
         req <- parseUrl' $ url paths
         return
             $ setReqHeaders
-            . setCheckStatus Nothing
+            . unTagged (modifyRequest :: Tagged mt (HTTP.Request -> HTTP.Request))
             . setAuthRequest auth
             . setBody body
             . setMethod (toMethod m)
@@ -266,15 +358,15 @@ makeHttpSimpleRequest auth r = case r of
 
     reqHeaders :: RequestHeaders
     reqHeaders = maybe [] getOAuthHeader auth
-        <> [("User-Agent", "github.hs/0.7.4")]
-        <> [("Accept", "application/vnd.github.preview")]
+        <> [("User-Agent", "github.hs/0.21")] -- Version
+        <> [("Accept", unTagged (contentType :: Tagged mt BS.ByteString))]
 
     setBody :: LBS.ByteString -> HTTP.Request -> HTTP.Request
     setBody body req = req { requestBody = RequestBodyLBS body }
 
     setAuthRequest :: Maybe Auth -> HTTP.Request -> HTTP.Request
     setAuthRequest (Just (BasicAuth user pass)) = applyBasicAuth user pass
-    setAuthRequest _                                  = id
+    setAuthRequest _                            = id
 
     getOAuthHeader :: Auth -> RequestHeaders
     getOAuthHeader (OAuth token)             = [("Authorization", "token " <> token)]
@@ -295,45 +387,6 @@ getNextUrl req = do
     relNextLinkParam :: (LinkParam, Text)
     relNextLinkParam = (Rel, "next")
 
--- | Parse API response.
---
--- @
--- parseResponse :: 'FromJSON' a => 'Response' 'LBS.ByteString' -> 'Either' 'Error' a
--- @
-parseResponse :: (FromJSON a, MonadError Error m) => Response LBS.ByteString -> m a
-parseResponse res = case eitherDecode (responseBody res) of
-    Right x  -> return x
-    Left err -> throwError . ParseError . T.pack $ err
-
--- | Helper for handling of 'RequestStatus'.
---
--- @
--- parseStatus :: 'StatusMap' a -> 'Status' -> 'Either' 'Error' a
--- @
-parseStatus :: MonadError Error m => StatusMap a -> Status -> m a
-parseStatus m (Status sci _) =
-    maybe err return $ lookup sci m
-  where
-    err = throwError $ JsonError $ "invalid status: " <> T.pack (show sci)
-
--- | Helper for handling of 'RequestRedirect'.
---
--- @
--- parseRedirect :: 'Response' 'LBS.ByteString' -> 'Either' 'Error' a
--- @
-parseRedirect :: MonadError Error m => URI -> Response LBS.ByteString -> m URI
-parseRedirect originalUri rsp = do
-    let status = responseStatus rsp
-    when (statusCode status /= 302) $
-        throwError $ ParseError $ "invalid status: " <> T.pack (show status)
-    loc <- maybe noLocation return $ lookup "Location" $ responseHeaders rsp
-    case parseURIReference $ T.unpack $ TE.decodeUtf8 loc of
-        Nothing -> throwError $ ParseError $
-            "location header does not contain a URI: " <> T.pack (show loc)
-        Just uri -> return $ uri `relativeTo` originalUri
-  where
-    noLocation = throwError $ ParseError "no location header in response"
-
 -- | Helper for making paginated requests. Responses, @a@ are combined monoidally.
 --
 -- @
@@ -344,14 +397,14 @@ parseRedirect originalUri rsp = do
 --                     -> 'ExceptT' 'Error' 'IO' a
 -- @
 performPagedRequest
-    :: forall a m. (FromJSON a, Semigroup a, MonadCatch m, MonadError Error m)
+    :: forall a m mt. (ParseResponse mt a, Semigroup a, MonadCatch m, MonadError Error m)
     => (HTTP.Request -> m (Response LBS.ByteString))  -- ^ `httpLbs` analogue
     -> (a -> Bool)                                    -- ^ predicate to continue iteration
     -> HTTP.Request                                   -- ^ initial request
-    -> m a
-performPagedRequest httpLbs' predicate initReq = do
+    -> Tagged mt (m a)
+performPagedRequest httpLbs' predicate initReq = Tagged $ do
     res <- httpLbs' initReq
-    m <- parseResponse res
+    m <- unTagged (parseResponse initReq res :: Tagged mt (m a))
     go m res initReq
   where
     go :: a -> Response LBS.ByteString -> HTTP.Request -> m a
@@ -360,30 +413,13 @@ performPagedRequest httpLbs' predicate initReq = do
             (True, Just uri) -> do
                 req' <- HTTP.setUri req uri
                 res' <- httpLbs' req'
-                m <- parseResponse res'
+                m <- unTagged (parseResponse req' res' :: Tagged mt (m a))
                 go (acc <> m) res' req'
             (_, _)           -> return acc
 
 -------------------------------------------------------------------------------
 -- Internal
 -------------------------------------------------------------------------------
-
-
-setCheckStatus :: Maybe (StatusMap a) -> HTTP.Request -> HTTP.Request
-setCheckStatus sm req = req { HTTP.checkResponse = successOrMissing sm }
-
-successOrMissing :: Maybe (StatusMap a) -> HTTP.Request -> HTTP.Response HTTP.BodyReader -> IO ()
-successOrMissing sm _req res
-    | check     = pure ()
-    | otherwise = do
-        chunk <- HTTP.brReadSome (HTTP.responseBody res) 1024
-        let res' = fmap (const ()) res
-        HTTP.throwHttp $ HTTP.StatusCodeException res' (LBS.toStrict chunk)
-  where
-    Status sci _ = HTTP.responseStatus res
-    check = case sm of
-      Nothing  -> 200 <= sci && sci < 300
-      Just sm' -> sci `elem` map fst sm'
 
 onHttpException :: MonadError Error m => HttpException -> m a
 onHttpException = throwError . HTTPError

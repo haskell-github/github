@@ -1,4 +1,4 @@
------------------------------------------------------------------------------
+ -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
@@ -83,8 +83,8 @@ testPushRepoWebhook' auth user repo hookId =
 
 -- | Test a push hook.
 -- See <https://developer.github.com/v3/repos/hooks/#test-a-push-hook>
-testPushRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> Request 'RW Bool
-testPushRepoWebhookR user repo hookId = StatusQuery statusOnlyOk $
+testPushRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> GenRequest 'MtStatus 'RW Bool
+testPushRepoWebhookR user repo hookId =
     Command Post (createWebhookOpPath user repo hookId $ Just "tests") (encode ())
 
 pingRepoWebhook' :: Auth -> Name Owner -> Name Repo -> Id RepoWebhook -> IO (Either Error Bool)
@@ -93,8 +93,8 @@ pingRepoWebhook' auth user repo hookId =
 
 -- | Ping a hook.
 -- See <https://developer.github.com/v3/repos/hooks/#ping-a-hook>
-pingRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> Request 'RW Bool
-pingRepoWebhookR user repo hookId = StatusQuery statusOnlyOk $
+pingRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> GenRequest 'MtStatus 'RW Bool
+pingRepoWebhookR user repo hookId =
     Command Post (createWebhookOpPath user repo hookId $ Just "pings") (encode ())
 
 deleteRepoWebhook' :: Auth -> Name Owner -> Name Repo -> Id RepoWebhook -> IO (Either Error ())

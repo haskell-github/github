@@ -14,14 +14,12 @@ module GitHub.Data.PullRequests (
     PullRequestEventType(..),
     PullRequestReference(..),
     MergeResult(..),
-    statusMerge,
     ) where
 
 import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id)
 import GitHub.Data.Options     (IssueState (..), MergeableState (..))
 import GitHub.Data.Repos       (Repo)
-import GitHub.Data.Request     (StatusMap)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
@@ -319,10 +317,3 @@ data MergeResult
     | MergeCannotPerform
     | MergeConflict
   deriving (Eq, Ord, Read, Show, Enum, Bounded, Generic, Typeable)
-
-statusMerge :: StatusMap MergeResult
-statusMerge =
-    [ (200, MergeSuccessful)
-    , (405, MergeCannotPerform)
-    , (409, MergeConflict)
-    ]

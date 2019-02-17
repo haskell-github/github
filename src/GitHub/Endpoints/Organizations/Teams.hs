@@ -168,9 +168,9 @@ addOrUpdateTeamRepo' auth tid org repo permission =
 
 -- | Add or update a team repository.
 -- See <https://developer.github.com/v3/orgs/teams/#add-or-update-team-repository>
-addOrUpdateTeamRepoR :: Id Team -> Name Organization -> Name Repo -> Permission -> Request 'RW ()
+addOrUpdateTeamRepoR :: Id Team -> Name Organization -> Name Repo -> Permission -> GenRequest 'MtUnit 'RW ()
 addOrUpdateTeamRepoR tid org repo permission =
-    command Put' ["teams", toPathPart tid, "repos", toPathPart org, toPathPart repo] (encode $ AddTeamRepoPermission permission)
+    Command Put ["teams", toPathPart tid, "repos", toPathPart org, toPathPart repo] (encode $ AddTeamRepoPermission permission)
 
 -- | Retrieve team mebership information for a user.
 -- With authentication

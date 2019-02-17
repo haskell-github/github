@@ -70,8 +70,8 @@ starGist auth gid = executeRequest auth $ starGistR gid
 
 -- | Star a gist by the authenticated user.
 -- See <https://developer.github.com/v3/gists/#star-a-gist>
-starGistR :: Name Gist -> Request 'RW ()
-starGistR gid = command Put' ["gists", toPathPart gid, "star"] mempty
+starGistR :: Name Gist -> GenRequest 'MtUnit 'RW ()
+starGistR gid = Command Put ["gists", toPathPart gid, "star"] mempty
 
 -- | Unstar a gist by the authenticated user.
 --
