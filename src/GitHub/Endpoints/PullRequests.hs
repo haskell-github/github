@@ -165,8 +165,8 @@ isPullRequestMerged auth user repo prid =
 
 -- | Query if a pull request has been merged.
 -- See <https://developer.github.com/v3/pulls/#get-if-a-pull-request-has-been-merged>
-isPullRequestMergedR :: Name Owner -> Name Repo -> IssueNumber -> Request k Bool
-isPullRequestMergedR user repo prid = StatusQuery statusOnlyOk $
+isPullRequestMergedR :: Name Owner -> Name Repo -> IssueNumber -> GenRequest 'MtStatus rw Bool
+isPullRequestMergedR user repo prid =
     Query ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "merge"] []
 
 -- | Merge a pull request.
@@ -176,8 +176,8 @@ mergePullRequest auth user repo prid commitMessage =
 
 -- | Merge a pull request (Merge Button).
 -- https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button
-mergePullRequestR :: Name Owner -> Name Repo -> IssueNumber -> Maybe Text -> Request 'RW MergeResult
-mergePullRequestR user repo prid commitMessage = StatusQuery statusMerge $
+mergePullRequestR :: Name Owner -> Name Repo -> IssueNumber -> Maybe Text -> GenRequest 'MtStatus 'RW MergeResult
+mergePullRequestR user repo prid commitMessage =
     Command Put paths (encode $ buildCommitMessageMap commitMessage)
   where
     paths = ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "merge"]

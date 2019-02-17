@@ -59,8 +59,8 @@ isCollaboratorOnR
     :: Name Owner  -- ^ Repository owner
     -> Name Repo         -- ^ Repository name
     -> Name User         -- ^ Collaborator?
-    -> Request k Bool
-isCollaboratorOnR user repo coll = StatusQuery statusOnlyOk $
+    -> GenRequest 'MtStatus rw Bool
+isCollaboratorOnR user repo coll =
     Query ["repos", toPathPart user, toPathPart repo, "collaborators", toPathPart coll] []
 
 addCollaborator
@@ -78,6 +78,6 @@ addCollaboratorR
     :: Name Owner        -- ^ Repository owner
     -> Name Repo         -- ^ Repository name
     -> Name User         -- ^ Collaborator to add
-    -> Request 'RW ()
+    -> GenRequest 'MtUnit 'RW ()
 addCollaboratorR owner repo coll =
-    command Put' ["repos", toPathPart owner, toPathPart repo, "collaborators", toPathPart coll] mempty
+    Command Put ["repos", toPathPart owner, toPathPart repo, "collaborators", toPathPart coll] mempty

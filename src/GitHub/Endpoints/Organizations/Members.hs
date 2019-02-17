@@ -77,8 +77,8 @@ isMemberOf = isMemberOf' Nothing
 -- | Check if a user is a member of an organization.
 --
 -- See <https://developer.github.com/v3/orgs/members/#check-membership>
-isMemberOfR :: Name User -> Name Organization -> Request k Bool
-isMemberOfR user org = StatusQuery statusOnlyOk $
+isMemberOfR :: Name User -> Name Organization -> GenRequest 'MtStatus rw Bool
+isMemberOfR user org =
     Query [ "orgs", toPathPart org, "members", toPathPart user ] []
 
 -- | List pending organization invitations
