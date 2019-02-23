@@ -98,14 +98,15 @@ archiveFor' :: Maybe Auth ->  Name Owner -> Name Repo -> ArchiveFormat -> Maybe 
 archiveFor' auth user repo path ref =
     executeRequestMaybe auth $ archiveForR user repo path ref
 
+-- | Get archive link.
+-- See <https://developer.github.com/v3/repos/contents/#get-archive-link>
 archiveForR
     :: Name Owner
     -> Name Repo
     -> ArchiveFormat   -- ^ The type of archive to retrieve
     -> Maybe Text      -- ^ Git commit
-    -> Request k URI
-archiveForR user repo format ref =
-    RedirectQuery $ Query path []
+    -> GenRequest 'MtRedirect rw URI
+archiveForR user repo format ref = Query path []
   where
     path = ["repos", toPathPart user, toPathPart repo, toPathPart format] <> maybeToList ref
 

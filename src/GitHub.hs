@@ -137,13 +137,14 @@ module GitHub (
     -- ** Milestone
     -- | See <https://developer.github.com/v3/issues/milestones/>
     --
-    -- Missing endpoints:
-    --
-    -- * Create a milestone
-    -- * Update a milestone
-    -- * Delete a milestone
     milestonesR,
     milestoneR,
+    createMilestone,
+    createMilestoneR,
+    updateMilestone,
+    updateMilestoneR,
+    deleteMilestone,
+    deleteMilestoneR,
 
     -- * Organizations
     -- | See <https://developer.github.com/v3/orgs/>
@@ -155,6 +156,7 @@ module GitHub (
     -- * Edit an organization
     publicOrganizationsForR,
     publicOrganizationR,
+    organizationsR,
     -- ** Members
     -- | See <https://developer.github.com/v3/orgs/members/>
     --
@@ -191,6 +193,8 @@ module GitHub (
     -- | See <https://developer.github.com/v3/pulls/>
     pullRequestsForR,
     pullRequestR,
+    pullRequestPatchR,
+    pullRequestDiffR,
     createPullRequestR,
     updatePullRequestR,
     pullRequestCommitsR,
@@ -204,11 +208,11 @@ module GitHub (
     -- Missing endpoints:
     --
     -- * List comments in a repository
-    -- * Create a comment
     -- * Edit a comment
     -- * Delete a comment
     pullRequestCommentsR,
     pullRequestCommentR,
+    createPullCommentR,
 
     -- ** Pull request reviews
     -- | See <https://developer.github.com/v3/pulls/reviews/>
@@ -251,6 +255,7 @@ module GitHub (
     -- | See <https://developer.github.com/v3/repos/collaborators/>
     collaboratorsOnR,
     isCollaboratorOnR,
+    addCollaboratorR,
 
     -- ** Comments
     -- | See <https://developer.github.com/v3/repos/comments/>
@@ -259,7 +264,7 @@ module GitHub (
     --
     -- * Create a commit comment
     -- * Update a commit comment
-    -- *  Delete a commit comment
+    -- * Delete a commit comment
     commentsForR,
     commitCommentsForR,
     commitCommentForR,
@@ -270,6 +275,18 @@ module GitHub (
     commitsWithOptionsForR,
     commitR,
     diffR,
+
+    -- ** Deployments
+    -- | See <https://developer.github.com/v3/repos/deployments/#deployments>
+    --
+    -- Missing endpoints:
+    -- * Get a single deployment
+    -- * Update a deployment
+    -- * Get a single deployment status
+    deploymentsWithOptionsForR,
+    createDeploymentR,
+    deploymentStatusesForR,
+    createDeploymentStatusR,
 
     -- ** Forks
     -- | See <https://developer.github.com/v3/repos/forks/>
@@ -345,6 +362,10 @@ module GitHub (
     statusesForR,
     statusForR,
 
+    -- ** Rate Limit
+    -- | See <https://developer.github.com/v3/rate_limit/>
+    rateLimitR,
+
     -- * Data definitions
     module GitHub.Data,
     -- * Request handling
@@ -370,12 +391,14 @@ import GitHub.Endpoints.Organizations
 import GitHub.Endpoints.Organizations.Members
 import GitHub.Endpoints.Organizations.Teams
 import GitHub.Endpoints.PullRequests
-import GitHub.Endpoints.PullRequests.Reviews
 import GitHub.Endpoints.PullRequests.Comments
+import GitHub.Endpoints.PullRequests.Reviews
+import GitHub.Endpoints.RateLimit
 import GitHub.Endpoints.Repos
 import GitHub.Endpoints.Repos.Collaborators
 import GitHub.Endpoints.Repos.Comments
 import GitHub.Endpoints.Repos.Commits
+import GitHub.Endpoints.Repos.Deployments
 import GitHub.Endpoints.Repos.Forks
 import GitHub.Endpoints.Repos.Releases
 import GitHub.Endpoints.Repos.Statuses

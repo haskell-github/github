@@ -1,3 +1,37 @@
+## Changes for next
+
+## Changes for 0.21
+
+- Refactor `Request` type.
+  [#349](https://github.com/phadej/github/pull/349)
+- Allow `http-client-0.6`
+  [#344](https://github.com/phadej/github/pull/344)
+- Change to use `cryptohash-sha1` (`cryptohash` was used before)
+- Add Create milestone endponts
+  [#337](https://github.com/phadej/github/pull/337)
+- Make fileBlobUrl and fileRawUrl are optional
+  [#339](https://github.com/phadej/github/issues/339)
+  [#340](https://github.com/phadej/github/pull/340)
+- Add organizationsR to request user organizations
+  [#345](https://github.com/phadej/github/pull/345)
+- Add updateMilestoneR, deleteMilestoneR
+  [#338](https://github.com/phadej/github/pull/338)
+- Allow multiple assignees in NewIssue and EditIssue
+  [#336](https://github.com/phadej/github/pull/336)
+- Add `pullRequestPatchR` and `pullRequestDiffR`
+  [#325](https://github.com/phadej/github/pull/325)
+
+## Changes for 0.20
+
+- Add ratelimit endpoint
+  [#315](https://github.com/phadej/github/pull/315)
+- Add some deployment endoints
+  [#330](https://github.com/phadej/github/pull/330)
+- Add webhook installation events
+  [#329](https://github.com/phadej/github/pull/330)
+- Tigthen lower bounds (also remove aeson-compat dep)
+  [#332](https://github.com/phadej/github/pull/332)
+
 ## Changes for 0.19
 
 - Fix issue event type enumeration

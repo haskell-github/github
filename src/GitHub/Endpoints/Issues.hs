@@ -85,7 +85,7 @@ issuesForRepoR user reqRepoName opts =
 -- Creating new issues.
 
 newIssue :: Text -> NewIssue
-newIssue title = NewIssue title Nothing Nothing Nothing Nothing
+newIssue title = NewIssue title Nothing mempty Nothing Nothing
 
 
 -- | Create a new issue.

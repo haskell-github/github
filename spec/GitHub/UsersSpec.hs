@@ -2,20 +2,20 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module GitHub.UsersSpec where
 
-import Data.Aeson.Compat  (eitherDecodeStrict)
+import Data.Aeson         (eitherDecodeStrict)
 import Data.Either.Compat (isLeft, isRight)
 import Data.FileEmbed     (embedFile)
 import Data.String        (fromString)
 import System.Environment (lookupEnv)
-import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe,
-                           shouldSatisfy)
+import Test.Hspec
+       (Spec, describe, it, pendingWith, shouldBe, shouldSatisfy)
 
 import qualified GitHub
 
-import GitHub.Data                      (Auth (..), Organization (..),
-                                         User (..), fromOwner)
-import GitHub.Endpoints.Users           (ownerInfoForR, userInfoCurrent',
-                                         userInfoFor')
+import GitHub.Data
+       (Auth (..), Organization (..), User (..), fromOwner)
+import GitHub.Endpoints.Users
+       (ownerInfoForR, userInfoCurrent', userInfoFor')
 import GitHub.Endpoints.Users.Followers (usersFollowedByR, usersFollowingR)
 import GitHub.Request                   (executeRequest)
 

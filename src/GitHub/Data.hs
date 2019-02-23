@@ -30,6 +30,8 @@ module GitHub.Data (
     mkRepoId,
     fromUserId,
     fromOrganizationId,
+    -- * IssueNumber
+    IssueNumber (..),
     -- * Module re-exports
     module GitHub.Auth,
     module GitHub.Data.Activities,
@@ -37,6 +39,7 @@ module GitHub.Data (
     module GitHub.Data.Content,
     module GitHub.Data.Definitions,
     module GitHub.Data.DeployKeys,
+    module GitHub.Data.Deployments,
     module GitHub.Data.Email,
     module GitHub.Data.Events,
     module GitHub.Data.Gists,
@@ -46,6 +49,7 @@ module GitHub.Data (
     module GitHub.Data.Milestone,
     module GitHub.Data.Options,
     module GitHub.Data.PullRequests,
+    module GitHub.Data.RateLimit,
     module GitHub.Data.Releases,
     module GitHub.Data.Repos,
     module GitHub.Data.Request,
@@ -66,6 +70,7 @@ import GitHub.Data.Comments
 import GitHub.Data.Content
 import GitHub.Data.Definitions
 import GitHub.Data.DeployKeys
+import GitHub.Data.Deployments
 import GitHub.Data.Email
 import GitHub.Data.Events
 import GitHub.Data.Gists
@@ -77,6 +82,7 @@ import GitHub.Data.Milestone
 import GitHub.Data.Name
 import GitHub.Data.Options
 import GitHub.Data.PullRequests
+import GitHub.Data.RateLimit
 import GitHub.Data.Releases
 import GitHub.Data.Repos
 import GitHub.Data.Request

@@ -11,6 +11,7 @@ module GitHub.Endpoints.Organizations (
     publicOrganization,
     publicOrganization',
     publicOrganizationR,
+    organizationsR,
     module GitHub.Data,
     ) where
 
@@ -32,7 +33,12 @@ publicOrganizationsFor' auth org =
 publicOrganizationsFor :: Name User -> IO (Either Error (Vector SimpleOrganization))
 publicOrganizationsFor = publicOrganizationsFor' Nothing
 
--- | List user organizations.
+-- | List all user organizations.
+-- See <https://developer.github.com/v3/orgs/#list-your-organizations>
+organizationsR :: FetchCount -> Request k (Vector SimpleOrganization)
+organizationsR = pagedQuery ["user", "orgs"] []
+
+-- | List public user organizations.
 -- See <https://developer.github.com/v3/orgs/#list-user-organizations>
 publicOrganizationsForR :: Name User -> FetchCount -> Request k (Vector SimpleOrganization)
 publicOrganizationsForR user = pagedQuery ["users", toPathPart user, "orgs"] []

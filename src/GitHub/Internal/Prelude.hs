@@ -38,7 +38,7 @@ module GitHub.Internal.Prelude (
 import Control.Applicative      ((<|>))
 import Control.DeepSeq          (NFData (..))
 import Control.DeepSeq.Generics (genericRnf)
-import Data.Aeson.Compat
+import Data.Aeson
        (FromJSON (..), Object, ToJSON (..), Value (..), encode, object,
        withObject, withText, (.!=), (.:), (.:?), (.=))
 import Data.Aeson.Types         (emptyObject, typeMismatch)

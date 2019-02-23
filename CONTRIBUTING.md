@@ -1,26 +1,30 @@
 Contributing
-------------
+============
 
-When adding a new public function
-=================================
+When adding a new endpoint
+--------------------------
 
-* Write a test (or sample) in the appropriate place in the samples/ directory.
-* Implement the function.
-* Submit a pull request.
+```haskell
+-- | The title, as in the GitHub API docs.
+-- <url to the docs>
+endpointR :: Request k EndpointResult
+endpointR = query ["endpoint"] []
+```
 
-When modifying an existing data structure
-=========================================
+For example:
 
-* Find all samples that use the data structure and make sure they run.
-* Modify the data structure.
-* Modify the samples as appropriate.
-* Make sure all relevant samples still run.
-* Submit a pull request.
+```haskell
+-- | Get your current rate limit status.
+-- <https://developer.github.com/v3/rate_limit/#get-your-current-rate-limit-status>
+rateLimitR :: Request k RateLimit
+rateLimitR = query ["rate_limit"] []
+```
 
-Submitting a pull request
-=========================
+Also re-export endpoints from the top `GitHub` module. *Note:* only `R` variants, not `IO`.
 
-* If your code is radically different from existing functionality, give
-some explanation for how it fits in this library.
-* Create a topic branch on your fork.
-* Rebase and squash your commits.
+Miscellaneous
+-------------
+
+* **Don't** edit `CHANGELOG.md`, it will only conflict.
+* **Don't** edit package version.
+* The codebase is not uniform in style, don't make it worse.

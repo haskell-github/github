@@ -238,6 +238,28 @@ type QueryString = [(BS.ByteString, Maybe BS.ByteString)]
 type Count = Int
 
 -------------------------------------------------------------------------------
+-- IssueNumber
+-------------------------------------------------------------------------------
+
+newtype IssueNumber = IssueNumber Int
+    deriving (Eq, Ord, Show, Generic, Typeable, Data)
+
+unIssueNumber :: IssueNumber -> Int
+unIssueNumber (IssueNumber i) = i
+
+instance Hashable IssueNumber
+instance Binary IssueNumber
+
+instance NFData IssueNumber where
+    rnf (IssueNumber s) = rnf s
+
+instance FromJSON IssueNumber where
+    parseJSON = fmap IssueNumber . parseJSON
+
+instance ToJSON IssueNumber where
+    toJSON = toJSON . unIssueNumber
+
+-------------------------------------------------------------------------------
 -- IssueLabel
 -------------------------------------------------------------------------------
 

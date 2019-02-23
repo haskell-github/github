@@ -1,7 +1,8 @@
-name:                github
-version:             0.19
-x-revision:          2
-synopsis:            Access to the GitHub API, v3.
+cabal-version:      >=1.10
+name:               github
+version:            0.21
+synopsis:           Access to the GitHub API, v3.
+category:           Network
 description:
   The GitHub API provides programmatic access to the full
   GitHub Web site, from Issues to Gists to repos down to the underlying git data
@@ -18,56 +19,56 @@ description:
   >     print possibleUser
   .
   For more of an overview please see the README: <https://github.com/phadej/github/blob/master/README.md>
-license:             BSD3
-license-file:        LICENSE
-author:              Mike Burns, John Wiegley, Oleg Grenrus
-maintainer:          Oleg Grenrus <oleg.grenrus@iki.fi>
-homepage:            https://github.com/phadej/github
-copyright:           Copyright 2012-2013 Mike Burns, Copyright 2013-2015 John Wiegley, Copyright 2016 Oleg Grenrus
-category:            Network
-build-type:          Simple
-tested-with:         GHC==7.8.4, GHC==7.10.3, GHC==8.0.2, GHC==8.2.2, GHC==8.4.1
-cabal-version:       >=1.10
+
+license:            BSD3
+license-file:       LICENSE
+author:             Mike Burns, John Wiegley, Oleg Grenrus
+maintainer:         Oleg Grenrus <oleg.grenrus@iki.fi>
+homepage:           https://github.com/phadej/github
+build-type:         Simple
+copyright:
+  Copyright 2012-2013 Mike Burns, Copyright 2013-2015 John Wiegley, Copyright 2016-2019 Oleg Grenrus
+
+tested-with:
+  ghc ==7.8.4 || ==7.10.3 || ==8.0.2 || ==8.2.2 || ==8.4.3 || ==8.6.3
+
 extra-source-files:
-  README.md,
-  CHANGELOG.md,
-  fixtures/issue-search.json,
-  fixtures/list-teams.json,
-  fixtures/members-list.json,
-  fixtures/pull-request-opened.json,
-  fixtures/pull-request-review-requested.json,
-  fixtures/user-organizations.json,
+  README.md
+  CHANGELOG.md
+  fixtures/issue-search.json
+  fixtures/list-teams.json
+  fixtures/members-list.json
+  fixtures/pull-request-opened.json
+  fixtures/pull-request-review-requested.json
+  fixtures/user-organizations.json
   fixtures/user.json
 
-flag aeson-compat
-  description: Whether to use aeson-compat or aeson-extra
-  default: True
-  manual: False
-
 source-repository head
-  type: git
+  type:     git
   location: git://github.com/phadej/github.git
 
-Library
-  default-language: Haskell2010
-  ghc-options: -Wall
-  hs-source-dirs: src
+library
+  default-language:   Haskell2010
+  ghc-options:        -Wall
+  hs-source-dirs:     src
   default-extensions:
     DataKinds
     DeriveDataTypeable
     DeriveGeneric
     OverloadedStrings
     ScopedTypeVariables
+
   other-extensions:
     CPP
     FlexibleContexts
     FlexibleInstances
     GADTs
     KindSignatures
+    RecordWildCards
     StandaloneDeriving
+
   exposed-modules:
     GitHub
-    GitHub.Internal.Prelude
     GitHub.Auth
     GitHub.Data
     GitHub.Data.Activities
@@ -75,6 +76,7 @@ Library
     GitHub.Data.Content
     GitHub.Data.Definitions
     GitHub.Data.DeployKeys
+    GitHub.Data.Deployments
     GitHub.Data.Email
     GitHub.Data.Events
     GitHub.Data.Gists
@@ -86,6 +88,7 @@ Library
     GitHub.Data.Name
     GitHub.Data.Options
     GitHub.Data.PullRequests
+    GitHub.Data.RateLimit
     GitHub.Data.Releases
     GitHub.Data.Repos
     GitHub.Data.Request
@@ -115,14 +118,16 @@ Library
     GitHub.Endpoints.Organizations.Members
     GitHub.Endpoints.Organizations.Teams
     GitHub.Endpoints.PullRequests
-    GitHub.Endpoints.PullRequests.Reviews
     GitHub.Endpoints.PullRequests.Comments
+    GitHub.Endpoints.PullRequests.Reviews
+    GitHub.Endpoints.RateLimit
     GitHub.Endpoints.Repos
     GitHub.Endpoints.Repos.Collaborators
     GitHub.Endpoints.Repos.Comments
     GitHub.Endpoints.Repos.Commits
     GitHub.Endpoints.Repos.Contents
     GitHub.Endpoints.Repos.DeployKeys
+    GitHub.Endpoints.Repos.Deployments
     GitHub.Endpoints.Repos.Forks
     GitHub.Endpoints.Repos.Releases
     GitHub.Endpoints.Repos.Statuses
@@ -131,81 +136,74 @@ Library
     GitHub.Endpoints.Users
     GitHub.Endpoints.Users.Emails
     GitHub.Endpoints.Users.Followers
+    GitHub.Internal.Prelude
     GitHub.Request
 
   -- Packages bundles with GHC, mtl and text are also here
   build-depends:
-    base                  >=4.7       && <4.12,
-    bytestring            >=0.10.4.0  && <0.11,
-    containers            >=0.5.5.1   && <0.6,
-    deepseq               >=1.3.0.2   && <1.5,
-    mtl                   (>=2.1.3.1   && <2.2) || (>=2.2.1 && <2.3),
-    text                  >=1.2.0.6   && <1.3,
-    time                  >=1.4       && <1.10,
-    transformers          >=0.3.0.0   && <0.6
+      base          >=4.7      && <4.13
+    , binary        >=0.7.1.0  && <0.11
+    , bytestring    >=0.10.4.0 && <0.11
+    , containers    >=0.5.5.1  && <0.7
+    , deepseq       >=1.3.0.2  && <1.5
+    , mtl           >=2.1.3.1  && <2.2 || >=2.2.1 && <2.3
+    , text          >=1.2.0.6  && <1.3
+    , time          >=1.4      && <1.10
+    , transformers  >=0.3.0.0  && <0.6
 
   -- other packages
   build-depends:
-    aeson                 >=0.7.0.6   && <1.4,
-    base-compat           >=0.9.1     && <0.11,
-    base16-bytestring     >=0.1.1.6   && <0.2,
-    binary                >=0.7.1.0   && <0.10,
-    binary-orphans        >=0.1.0.0   && <0.2,
-    byteable              >=0.1.1     && <0.2,
-    cryptohash            >=0.11      && <0.12,
-    deepseq-generics      >=0.1.1.2   && <0.3,
-    exceptions            >=0.8.0.2   && <0.11,
-    hashable              >=1.2.3.3   && <1.3,
-    http-client           >=0.4.8.1   && <0.6,
-    http-client-tls       >=0.2.2     && <0.4,
-    http-link-header      >=1.0.1     && <1.1,
-    http-types            >=0.12.1    && <0.13,
-    iso8601-time          >=0.1.4     && <0.2,
-    network-uri           >=2.6.0.3   && <2.7,
-    semigroups            >=0.16.2.2  && <0.19,
-    transformers-compat   >=0.4.0.3   && <0.7,
-    unordered-containers  >=0.2       && <0.3,
-    vector                >=0.10.12.3 && <0.13,
-    vector-instances      >=3.3.0.1   && <3.5,
-
-    tls                   >=1.3.5
-
-  if flag(aeson-compat)
-    build-depends: aeson-compat >=0.3.0.0 && <0.4
-  else
-    build-depends: aeson-extra  >=0.2.0.0 && <0.3
+      aeson                 >=1.4.0.0    && <1.5
+    , base-compat           >=0.10.4     && <0.11
+    , base16-bytestring     >=0.1.1.6    && <0.2
+    , binary-orphans        >=0.1.8.0    && <0.2
+    , cryptohash-sha1       >=0.11.100.1 && <0.12
+    , deepseq-generics      >=0.2.0.0    && <0.3
+    , exceptions            >=0.10.0     && <0.11
+    , hashable              >=1.2.7.0    && <1.3
+    , http-client           >=0.5.12     && <0.7
+    , http-client-tls       >=0.3.5.3    && <0.4
+    , http-link-header      >=1.0.3.1    && <1.1
+    , http-types            >=0.12.1     && <0.13
+    , iso8601-time          >=0.1.5      && <0.2
+    , network-uri           >=2.6.1.0    && <2.7
+    , semigroups            >=0.18.5     && <0.19
+    , tagged
+    , tls                   >=1.4.1
+    , transformers-compat   >=0.6        && <0.7
+    , unordered-containers  >=0.2.9.0    && <0.3
+    , vector                >=0.12.0.1   && <0.13
+    , vector-instances      >=3.4        && <3.5
 
 test-suite github-test
-  default-language: Haskell2010
-  type: exitcode-stdio-1.0
-  hs-source-dirs: spec
-  other-extensions:
-    TemplateHaskell
+  default-language:   Haskell2010
+  type:               exitcode-stdio-1.0
+  hs-source-dirs:     spec
+  main-is:            Spec.hs
+  ghc-options:        -Wall
+  build-tool-depends: hspec-discover:hspec-discover >=2.6.1 && <2.8
+  other-extensions:   TemplateHaskell
   other-modules:
     GitHub.ActivitySpec
     GitHub.CommitsSpec
-    GitHub.OrganizationsSpec
+    GitHub.EventsSpec
     GitHub.IssuesSpec
-    GitHub.PullRequestsSpec
+    GitHub.OrganizationsSpec
     GitHub.PullRequestReviewsSpec
+    GitHub.PullRequestsSpec
+    GitHub.RateLimitSpec
     GitHub.ReleasesSpec
     GitHub.ReposSpec
     GitHub.SearchSpec
     GitHub.UsersSpec
-    GitHub.EventsSpec
-  main-is: Spec.hs
-  ghc-options: -Wall
-  build-tool-depends: hspec-discover:hspec-discover
-  build-depends: base,
-                 base-compat,
-                 bytestring,
-                 github,
-                 vector,
-                 unordered-containers,
-                 file-embed,
-                 hspec
-  if flag(aeson-compat)
-    build-depends: aeson-compat
-  else
-    build-depends: aeson-extra
 
+  build-depends:
+      aeson
+    , base
+    , base-compat
+    , bytestring
+    , file-embed
+    , github
+    , hspec                 >=2.6.1 && <2.8
+    , unordered-containers
+    , vector
