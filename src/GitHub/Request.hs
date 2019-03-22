@@ -340,7 +340,7 @@ makeHttpRequest auth r = case r of
             $ req
   where
     parseUrl' :: MonadThrow m => Text -> m HTTP.Request
-    parseUrl' = HTTP.parseRequest . T.unpack
+    parseUrl' = HTTP.parseUrlThrow . T.unpack
 
     url :: Paths -> Text
     url paths = baseUrl <> "/" <> T.intercalate "/" paths
