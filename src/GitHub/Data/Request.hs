@@ -158,9 +158,9 @@ data GenRequest (mt :: MediaType *) (rw :: RW) a where
 
     -- | Command
     Command
-        :: CommandMethod           -- ^ command
-        -> Paths                   -- ^ path
-        -> LBS.ByteString          -- ^ body
+        :: CommandMethod           -- command
+        -> Paths                   -- path
+        -> LBS.ByteString          -- body
         -> GenRequest mt 'RW a
   deriving (Typeable)
 
