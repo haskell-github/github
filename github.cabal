@@ -30,7 +30,7 @@ copyright:
   Copyright 2012-2013 Mike Burns, Copyright 2013-2015 John Wiegley, Copyright 2016-2019 Oleg Grenrus
 
 tested-with:
-  ghc ==7.8.4 || ==7.10.3 || ==8.0.2 || ==8.2.2 || ==8.4.3 || ==8.6.3
+  GHC ==7.8.4 || ==7.10.3 || ==8.0.2 || ==8.2.2 || ==8.4.3 || ==8.6.4
 
 extra-source-files:
   README.md
