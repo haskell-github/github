@@ -7,7 +7,7 @@
 -- this package.
 --
 -- See "GitHub.Request" module for executing 'Request', or other modules
--- of this package (e.g. "GitHub.Users") for already composed versions.
+-- of this package (e.g. "GitHub.Endpoints.Users") for already composed versions.
 --
 -- The missing endpoints lists show which endpoints we know are missing, there
 -- might be more.

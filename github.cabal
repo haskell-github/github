@@ -15,7 +15,7 @@ description:
   >
   > main :: IO ()
   > main = do
-  >     possibleUser <- GH.executeRequest' $ GH.userInfoR "phadej"
+  >     possibleUser <- GH.executeRequest' $ GH.userInfoForR "phadej"
   >     print possibleUser
   .
   For more of an overview please see the README: <https://github.com/phadej/github/blob/master/README.md>

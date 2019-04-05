@@ -48,7 +48,7 @@ labelsOnRepo = labelsOnRepo' Nothing
 
 -- | All the labels available to use on any issue in the repo using authentication.
 --
--- > labelsOnRepo' (Just (User (user password))) "thoughtbot" "paperclip"
+-- > labelsOnRepo' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip"
 labelsOnRepo' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector IssueLabel))
 labelsOnRepo' auth user repo =
     executeRequestMaybe auth $ labelsOnRepoR user repo FetchAll
@@ -67,7 +67,7 @@ label = label' Nothing
 
 -- | A label by name using authentication.
 --
--- > label' (Just (User (user password))) "thoughtbot" "paperclip" "bug"
+-- > label' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" "bug"
 label' :: Maybe Auth -> Name Owner -> Name Repo -> Name IssueLabel -> IO (Either Error IssueLabel)
 label' auth user repo lbl =
     executeRequestMaybe auth $ labelR user repo lbl
@@ -80,7 +80,7 @@ labelR user repo lbl =
 
 -- | Create a label
 --
--- > createLabel (User (user password)) "thoughtbot" "paperclip" "bug" "f29513"
+-- > createLabel (BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" "bug" "f29513"
 createLabel :: Auth -> Name Owner -> Name Repo -> Name IssueLabel -> String -> IO (Either Error IssueLabel)
 createLabel auth user repo lbl color =
     executeRequest auth $ createLabelR user repo lbl color
@@ -96,7 +96,7 @@ createLabelR user repo lbl color =
 
 -- | Update a label
 --
--- > updateLabel (User (user password)) "thoughtbot" "paperclip" "bug" "new-bug" "ff1111"
+-- > updateLabel (BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" "bug" "new-bug" "ff1111"
 updateLabel :: Auth
             -> Name Owner
             -> Name Repo
@@ -123,7 +123,7 @@ updateLabelR user repo oldLbl newLbl color =
 
 -- | Delete a label
 --
--- > deleteLabel (User (user password)) "thoughtbot" "paperclip" "bug"
+-- > deleteLabel (BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" "bug"
 deleteLabel :: Auth -> Name Owner -> Name Repo -> Name IssueLabel -> IO (Either Error ())
 deleteLabel auth user repo lbl =
     executeRequest auth $ deleteLabelR user repo lbl
@@ -142,7 +142,7 @@ labelsOnIssue = labelsOnIssue' Nothing
 
 -- | The labels on an issue in a repo using authentication.
 --
--- > labelsOnIssue' (Just (User (user password))) "thoughtbot" "paperclip" (Id 585)
+-- > labelsOnIssue' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" (Id 585)
 labelsOnIssue' :: Maybe Auth -> Name Owner -> Name Repo -> Id Issue -> IO (Either Error (Vector IssueLabel))
 labelsOnIssue' auth user repo iid =
     executeRequestMaybe auth $ labelsOnIssueR user repo iid FetchAll
@@ -155,7 +155,7 @@ labelsOnIssueR user repo iid =
 
 -- | Add labels to an issue.
 --
--- > addLabelsToIssue (User (user password)) "thoughtbot" "paperclip" (Id 585) ["Label1" "Label2"]
+-- > addLabelsToIssue (BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" (Id 585) ["Label1" "Label2"]
 addLabelsToIssue :: Foldable f
                  => Auth
                  -> Name Owner
@@ -181,7 +181,7 @@ addLabelsToIssueR user repo iid lbls =
 
 -- | Remove a label from an issue.
 --
--- > removeLabelFromIssue (User (user password)) "thoughtbot" "paperclip" (Id 585) "bug"
+-- > removeLabelFromIssue (BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" (Id 585) "bug"
 removeLabelFromIssue :: Auth -> Name Owner -> Name Repo -> Id Issue -> Name IssueLabel -> IO (Either Error ())
 removeLabelFromIssue auth user repo iid lbl =
     executeRequest auth $ removeLabelFromIssueR user repo iid lbl
@@ -194,7 +194,7 @@ removeLabelFromIssueR user repo iid lbl =
 
 -- | Replace all labels on an issue. Sending an empty list will remove all labels from the issue.
 --
--- > replaceAllLabelsForIssue (User (user password)) "thoughtbot" "paperclip" (Id 585) ["Label1" "Label2"]
+-- > replaceAllLabelsForIssue (BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" (Id 585) ["Label1" "Label2"]
 replaceAllLabelsForIssue :: Foldable f
                          => Auth
                          -> Name Owner
@@ -222,7 +222,7 @@ replaceAllLabelsForIssueR user repo iid lbls =
 
 -- | Remove all labels from an issue.
 --
--- > removeAllLabelsFromIssue (User (user password)) "thoughtbot" "paperclip" (Id 585)
+-- > removeAllLabelsFromIssue (BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" (Id 585)
 removeAllLabelsFromIssue :: Auth -> Name Owner -> Name Repo -> Id Issue -> IO (Either Error ())
 removeAllLabelsFromIssue auth user repo iid =
     executeRequest auth $ removeAllLabelsFromIssueR user repo iid
@@ -241,7 +241,7 @@ labelsOnMilestone = labelsOnMilestone' Nothing
 
 -- | All the labels on a repo's milestone given the milestone ID using authentication.
 --
--- > labelsOnMilestone' (Just (User (user password))) "thoughtbot" "paperclip" (Id 2)
+-- > labelsOnMilestone' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" (Id 2)
 labelsOnMilestone' :: Maybe Auth -> Name Owner -> Name Repo -> Id Milestone -> IO (Either Error (Vector IssueLabel))
 labelsOnMilestone' auth user repo mid =
     executeRequestMaybe auth $ labelsOnMilestoneR user repo mid FetchAll

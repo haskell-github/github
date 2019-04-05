@@ -208,7 +208,7 @@ instance FromJSON a => ParseResponse 'MtStar a where
     parseResponse _ res = Tagged (parseResponseJSON res)
 
 -------------------------------------------------------------------------------
--- Raw / Diff / Patch / Sha 
+-- Raw / Diff / Patch / Sha
 -------------------------------------------------------------------------------
 
 instance Accept 'MtRaw   where contentType = Tagged "application/vnd.github.v3.raw"

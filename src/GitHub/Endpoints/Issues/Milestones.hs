@@ -33,7 +33,7 @@ milestones = milestones' Nothing
 
 -- | All milestones in the repo, using authentication.
 --
--- > milestones' (User (user, passwordG) "thoughtbot" "paperclip"
+-- > milestones' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip"
 milestones' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Milestone))
 milestones' auth user repo =
     executeRequestMaybe auth $ milestonesR user repo FetchAll

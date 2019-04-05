@@ -58,7 +58,7 @@ pullRequestReviews owner repo prid =
 -- | All reviews for a pull request given the repo owner, repo name and the pull
 -- request id. With authentication.
 --
--- > pullRequestReviews' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" (Id 101)
+-- > pullRequestReviews' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" (Id 101)
 pullRequestReviews'
     :: Maybe Auth
     -> Name Owner
@@ -104,8 +104,8 @@ pullRequestReview owner repo prid rid =
 -- | A detailed review on a pull request given the repo owner, repo name, pull
 -- request id and review id. With authentication.
 --
--- > pullRequestReview' (Just ("github-username", "github-password"))
--- "thoughtbot" "factory_girl" (Id 301819) (Id 332)
+-- > pullRequestReview' (Just $ BasicAuth "github-username" "github-password")
+-- > "thoughtbot" "factory_girl" (Id 301819) (Id 332)
 pullRequestReview'
     :: Maybe Auth
     -> Name Owner
@@ -153,7 +153,7 @@ pullRequestReviewCommentsIO owner repo prid rid =
 -- | All comments for a review on a pull request given the repo owner, repo
 -- name, pull request id and review id. With authentication.
 --
--- > pullRequestReviewComments' (Just ("github-username", "github-password")) "thoughtbot" "factory_girl" (Id 301819) (Id 332)
+-- > pullRequestReviewComments' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "factory_girl" (Id 301819) (Id 332)
 pullRequestReviewCommentsIO'
     :: Maybe Auth
     -> Name Owner

@@ -50,7 +50,7 @@ contentsFor = contentsFor' Nothing
 -- | The contents of a file or directory in a repo, given the repo owner, name, and path to the file
 -- With Authentication
 --
--- > contentsFor' (Just (BasicAuth (user, password))) "thoughtbot" "paperclip" "README.md" Nothing
+-- > contentsFor' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" "README.md" Nothing
 contentsFor' :: Maybe Auth ->  Name Owner -> Name Repo -> Text -> Maybe Text -> IO (Either Error Content)
 contentsFor' auth user repo path ref =
     executeRequestMaybe auth $ contentsForR user repo path ref
@@ -75,7 +75,7 @@ readmeFor = readmeFor' Nothing
 -- | The contents of a README file in a repo, given the repo owner and name
 -- With Authentication
 --
--- > readmeFor' (Just (BasicAuth (user, password))) "thoughtbot" "paperclip"
+-- > readmeFor' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip"
 readmeFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error Content)
 readmeFor' auth user repo =
     executeRequestMaybe auth $ readmeForR user repo
@@ -93,7 +93,7 @@ archiveFor = archiveFor' Nothing
 -- | The archive of a repo, given the repo owner, name, and archive type
 -- With Authentication
 --
--- > archiveFor' (Just (BasicAuth (user, password))) "thoughtbot" "paperclip" ArchiveFormatTarball Nothing
+-- > archiveFor' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" ArchiveFormatTarball Nothing
 archiveFor' :: Maybe Auth ->  Name Owner -> Name Repo -> ArchiveFormat -> Maybe Text -> IO (Either Error URI)
 archiveFor' auth user repo path ref =
     executeRequestMaybe auth $ archiveForR user repo path ref

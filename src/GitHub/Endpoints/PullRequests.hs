@@ -106,7 +106,7 @@ pullRequestPatchR user repo prid =
 -- repo owner and name along with the number assigned to the pull request.
 -- With authentification.
 --
--- > pullRequest' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 562
+-- > pullRequest' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" 562
 pullRequest' :: Maybe Auth -> Name Owner -> Name Repo -> IssueNumber -> IO (Either Error PullRequest)
 pullRequest' auth user repo prid =
     executeRequestMaybe auth $ pullRequestR user repo prid
@@ -160,7 +160,7 @@ updatePullRequestR user repo prid epr =
 -- the number of the pull request.
 -- With authentification.
 --
--- > pullRequestCommits' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 688
+-- > pullRequestCommits' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" 688
 pullRequestCommits' :: Maybe Auth -> Name Owner -> Name Repo -> IssueNumber -> IO (Either Error (Vector Commit))
 pullRequestCommits' auth user repo prid =
     executeRequestMaybe auth $ pullRequestCommitsR user repo prid FetchAll
@@ -182,7 +182,7 @@ pullRequestCommitsR user repo prid =
 -- name, plus the number assigned to the pull request.
 -- With authentification.
 --
--- > pullRequestFiles' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" 688
+-- > pullRequestFiles' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" 688
 pullRequestFiles' :: Maybe Auth -> Name Owner -> Name Repo -> IssueNumber -> IO (Either Error (Vector File))
 pullRequestFiles' auth user repo prid =
     executeRequestMaybe auth $ pullRequestFilesR user repo prid FetchAll

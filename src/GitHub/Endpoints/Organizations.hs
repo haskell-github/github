@@ -22,7 +22,7 @@ import Prelude ()
 
 -- | The public organizations for a user, given the user's login, with authorization
 --
--- > publicOrganizationsFor' (Just ("github-username", "github-password")) "mike-burns"
+-- > publicOrganizationsFor' (Just $ BasicAuth "github-username" "github-password") "mike-burns"
 publicOrganizationsFor' :: Maybe Auth -> Name User -> IO (Either Error (Vector SimpleOrganization))
 publicOrganizationsFor' auth org =
     executeRequestMaybe auth $ publicOrganizationsForR org FetchAll
@@ -45,7 +45,7 @@ publicOrganizationsForR user = pagedQuery ["users", toPathPart user, "orgs"] []
 
 -- | Details on a public organization. Takes the organization's login.
 --
--- > publicOrganization' (Just ("github-username", "github-password")) "thoughtbot"
+-- > publicOrganization' (Just $ BasicAuth "github-username" "github-password") "thoughtbot"
 publicOrganization' :: Maybe Auth -> Name Organization -> IO (Either Error Organization)
 publicOrganization' auth = executeRequestMaybe auth . publicOrganizationR
 
