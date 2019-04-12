@@ -29,7 +29,7 @@ releases = releases' Nothing
 
 -- | All releases for the given repo with authentication.
 --
--- > releases' (Just (User (user, password))) "calleerlandsson" "pick"
+-- > releases' (Just $ BasicAuth "github-username" "github-password") "calleerlandsson" "pick"
 releases' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error  (Vector Release))
 releases' auth user repo =
     executeRequestMaybe auth $ releasesR user repo FetchAll
@@ -48,7 +48,7 @@ release = release' Nothing
 
 -- | Query a single release with authentication.
 --
--- > release' (Just (User (user, password))) "calleerlandsson" "pick"
+-- > release' (Just $ BasicAuth "github-username" "github-password") "calleerlandsson" "pick"
 release' :: Maybe Auth -> Name Owner -> Name Repo -> Id Release -> IO (Either Error Release)
 release' auth user repo reqReleaseId =
     executeRequestMaybe auth $ releaseR user repo reqReleaseId
@@ -67,7 +67,7 @@ latestRelease = latestRelease' Nothing
 
 -- | Query latest release with authentication.
 --
--- > latestRelease' (Just (User (user, password))) "calleerlandsson" "pick"
+-- > latestRelease' (Just $ BasicAuth "github-username" "github-password") "calleerlandsson" "pick"
 latestRelease' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error Release)
 latestRelease' auth user repo  =
     executeRequestMaybe auth $ latestReleaseR user repo
@@ -86,7 +86,7 @@ releaseByTagName = releaseByTagName' Nothing
 
 -- | Query release by tag name with authentication.
 --
--- > releaseByTagName' (Just (User (user, password))) "calleerlandsson" "pick"
+-- > releaseByTagName' (Just $ BasicAuth "github-username" "github-password") "calleerlandsson" "pick"
 releaseByTagName' :: Maybe Auth -> Name Owner -> Name Repo -> Text -> IO (Either Error Release)
 releaseByTagName' auth user repo reqTagName =
     executeRequestMaybe auth $ releaseByTagNameR user repo reqTagName

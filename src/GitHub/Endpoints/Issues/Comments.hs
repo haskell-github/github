@@ -46,7 +46,7 @@ comments = comments' Nothing
 
 -- | All comments on an issue, by the issue's number, using authentication.
 --
--- > comments' (User (user, password)) "thoughtbot" "paperclip" 635
+-- > comments' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" 635
 comments' :: Maybe Auth -> Name Owner -> Name Repo -> IssueNumber -> IO (Either Error (Vector IssueComment))
 comments' auth user repo iid =
     executeRequestMaybe auth $ commentsR user repo iid FetchAll
@@ -59,7 +59,7 @@ commentsR user repo iid =
 
 -- | Create a new comment.
 --
--- > createComment (User (user, password)) user repo issue
+-- > createComment (BasicAuth "github-username" "github-password") user repo issue
 -- >  "some words"
 createComment :: Auth -> Name Owner -> Name Repo -> IssueNumber -> Text
             -> IO (Either Error Comment)
@@ -76,7 +76,7 @@ createCommentR user repo iss body =
 
 -- | Edit a comment.
 --
--- > editComment (User (user, password)) user repo commentid
+-- > editComment (BasicAuth "github-username" "github-password") user repo commentid
 -- >  "new words"
 editComment :: Auth -> Name Owner -> Name Repo -> Id Comment -> Text
             -> IO (Either Error Comment)
@@ -93,7 +93,7 @@ editCommentR user repo commid body =
 
 -- | Delete a comment.
 --
--- > deleteComment (User (user, password)) user repo commentid
+-- > deleteComment (BasicAuth "github-username" "github-password") user repo commentid
 deleteComment :: Auth -> Name Owner -> Name Repo -> Id Comment
               -> IO (Either Error ())
 deleteComment auth user repo commid =

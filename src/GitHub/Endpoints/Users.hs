@@ -23,7 +23,7 @@ import Prelude ()
 -- | The information for a single user, by login name.
 -- With authentification
 --
--- > userInfoFor' (Just ("github-username", "github-password")) "mike-burns"
+-- > userInfoFor' (Just $ BasicAuth "github-username" "github-password") "mike-burns"
 userInfoFor' :: Maybe Auth -> Name User -> IO (Either Error User)
 userInfoFor' auth = executeRequestMaybe auth . userInfoForR
 

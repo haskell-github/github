@@ -31,7 +31,7 @@ eventsForIssue = eventsForIssue' Nothing
 
 -- | All events that have happened on an issue, using authentication.
 --
--- > eventsForIssue' (User (user, password)) "thoughtbot" "paperclip" 49
+-- > eventsForIssue' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" 49
 eventsForIssue' :: Maybe Auth -> Name Owner -> Name Repo -> Id Issue -> IO (Either Error (Vector IssueEvent))
 eventsForIssue' auth user repo iid =
     executeRequestMaybe auth $ eventsForIssueR user repo iid FetchAll
@@ -50,7 +50,7 @@ eventsForRepo = eventsForRepo' Nothing
 
 -- | All the events for all issues in a repo, using authentication.
 --
--- > eventsForRepo' (User (user, password)) "thoughtbot" "paperclip"
+-- > eventsForRepo' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip"
 eventsForRepo' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector IssueEvent))
 eventsForRepo' auth user repo =
     executeRequestMaybe auth $ eventsForRepoR user repo FetchAll
@@ -69,7 +69,7 @@ event = event' Nothing
 
 -- | Details on a specific event, by the event's ID, using authentication.
 --
--- > event' (User (user, password)) "thoughtbot" "paperclip" 5335772
+-- > event' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" 5335772
 event' :: Maybe Auth -> Name Owner -> Name Repo -> Id IssueEvent -> IO (Either Error IssueEvent)
 event' auth user repo eid =
     executeRequestMaybe auth $ eventR user repo eid

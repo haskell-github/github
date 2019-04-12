@@ -48,7 +48,7 @@ commitsFor = commitsFor' Nothing
 -- | The commit history for a repo.
 -- With authentication.
 --
--- > commitsFor' (Just (BasicAuth (user, password))) "mike-burns" "github"
+-- > commitsFor' (Just $ BasicAuth "github-username" "github-password") "mike-burns" "github"
 commitsFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Commit))
 commitsFor' auth user repo =
     commitsWithOptionsFor' auth user repo []
@@ -65,7 +65,7 @@ commitsWithOptionsFor = commitsWithOptionsFor' Nothing
 -- query options.
 -- With authentication.
 --
--- > commitsWithOptionsFor' (Just (BasicAuth (user, password))) "mike-burns" "github" [CommitQueryAuthor "djeik"]
+-- > commitsWithOptionsFor' (Just $ BasicAuth "github-username" "github-password") "mike-burns" "github" [CommitQueryAuthor "djeik"]
 commitsWithOptionsFor' :: Maybe Auth -> Name Owner -> Name Repo -> [CommitQueryOption] -> IO (Either Error (Vector Commit))
 commitsWithOptionsFor' auth user repo opts =
     executeRequestMaybe auth $ commitsWithOptionsForR user repo FetchAll opts
@@ -88,7 +88,7 @@ commit = commit' Nothing
 -- | Details on a specific SHA1 for a repo.
 -- With authentication.
 --
--- > commit (Just $ BasicAuth (username, password)) "mike-burns" "github" "9d1a9a361266c3c890b1108ad2fdf52f824b1b81"
+-- > commit (Just $ BasicAuth "github-username" "github-password") "mike-burns" "github" "9d1a9a361266c3c890b1108ad2fdf52f824b1b81"
 commit' :: Maybe Auth -> Name Owner -> Name Repo -> Name Commit -> IO (Either Error Commit)
 commit' auth user repo sha =
     executeRequestMaybe auth $ commitR user repo sha

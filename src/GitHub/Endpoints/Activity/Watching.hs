@@ -30,7 +30,7 @@ watchersFor = watchersFor' Nothing
 -- | The list of users that are watching the specified Github repo.
 -- With authentication
 --
--- > watchersFor' (Just (User (user, password))) "thoughtbot" "paperclip"
+-- > watchersFor' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip"
 watchersFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector SimpleUser))
 watchersFor' auth user repo =
     executeRequestMaybe auth $ watchersForR user repo FetchAll
@@ -50,7 +50,7 @@ reposWatchedBy = reposWatchedBy' Nothing
 -- | All the public repos watched by the specified user.
 -- With authentication
 --
--- > reposWatchedBy' (Just (User (user, password))) "croaky"
+-- > reposWatchedBy' (Just $ BasicAuth "github-username" "github-password") "croaky"
 reposWatchedBy' :: Maybe Auth -> Name Owner -> IO (Either Error (Vector Repo))
 reposWatchedBy' auth user =
     executeRequestMaybe auth $ reposWatchedByR user FetchAll

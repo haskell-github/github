@@ -48,7 +48,7 @@ pullRequestCommentR user repo cid =
 
 -- | Create a new comment.
 --
--- > createPullComment (User (user, password)) user repo issue commit path position
+-- > createPullComment (BasicAuth "github-username" "github-password") user repo issue commit path position
 -- >  "some words"
 createPullComment :: Auth -> Name Owner -> Name Repo -> IssueNumber -> Text -> Text -> Int -> Text
             -> IO (Either Error Comment)
