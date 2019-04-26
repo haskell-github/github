@@ -59,7 +59,7 @@ instance FromJSON InvitationRole where
         _                 -> fail $ "Invalid role " ++ show t
 
 data RepoInvitation = RepoInvitation
-    { repoInvitationId         :: !(Id Invitation)
+    { repoInvitationId         :: !(Id RepoInvitation)
     , repoInvitationInvitee    :: !SimpleUser
     , repoInvitationInviter    :: !SimpleUser
     , repoInvitationRepo       :: !Repo
