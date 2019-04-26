@@ -4,7 +4,7 @@
 -- License     :  BSD-3-Clause
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
--- This module re-exports the @GitHub.Data.@ and "Github.Auth" submodules.
+-- This module re-exports the @GitHub.Data.@ and "GitHub.Auth" submodules.
 module GitHub.Data (
     -- * Tagged types
     -- ** Name
@@ -30,6 +30,8 @@ module GitHub.Data (
     mkRepoId,
     fromUserId,
     fromOrganizationId,
+    -- * IssueNumber
+    IssueNumber (..),
     -- * Module re-exports
     module GitHub.Auth,
     module GitHub.Data.Activities,

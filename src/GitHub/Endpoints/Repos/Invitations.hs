@@ -22,4 +22,4 @@ listInvitationsOnR user repo =
 
 acceptInvitationFromR :: Id RepoInvitation -> Request 'RW ()
 acceptInvitationFromR invId =
-    command Patch' ["user", "repository_invitations", toPathPart invId] mempty
+    Command Patch ["user", "repository_invitations", toPathPart invId] mempty

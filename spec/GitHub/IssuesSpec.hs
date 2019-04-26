@@ -10,7 +10,8 @@ import Data.Either.Compat (isRight)
 import Data.Foldable      (for_)
 import Data.String        (fromString)
 import System.Environment (lookupEnv)
-import Test.Hspec         (Spec, describe, it, pendingWith, shouldSatisfy)
+import Test.Hspec
+       (Spec, describe, expectationFailure, it, pendingWith, shouldSatisfy)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -28,11 +29,17 @@ spec = do
     describe "issuesForRepoR" $ do
         it "works" $ withAuth $ \auth -> for_ repos $ \(owner, repo) -> do
             cs <- GitHub.executeRequest auth $
-                GitHub.issuesForRepoR owner repo mempty GitHub.FetchAll 
-            cs `shouldSatisfy` isRight
+                GitHub.issuesForRepoR owner repo mempty GitHub.FetchAll
+            case cs of
+              Left e ->
+                expectationFailure . show $ e
+              Right cs' -> do
+                for_ cs' $ \i -> do
+                  cms <- GitHub.executeRequest auth $
+                    GitHub.commentsR owner repo (GitHub.issueNumber i) 1
+                  cms `shouldSatisfy` isRight
   where
     repos =
       [ ("thoughtbot", "paperclip")
       , ("phadej", "github")
-      , ("haskell", "cabal")
       ]

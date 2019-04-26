@@ -184,9 +184,9 @@ instance NFData GitUser where rnf = genericRnf
 instance Binary GitUser
 
 data File = File
-    { fileBlobUrl   :: !URL
+    { fileBlobUrl   :: !(Maybe URL)
     , fileStatus    :: !Text
-    , fileRawUrl    :: !URL
+    , fileRawUrl    :: !(Maybe URL)
     , fileAdditions :: !Int
     , fileSha       :: !Text
     , fileChanges   :: !Int
@@ -251,9 +251,9 @@ instance FromJSON GitUser where
 
 instance FromJSON File where
     parseJSON = withObject "File" $ \o -> File
-        <$> o .: "blob_url"
+        <$> o .:? "blob_url"
         <*> o .: "status"
-        <*> o .: "raw_url"
+        <*> o .:? "raw_url"
         <*> o .: "additions"
         <*> o .: "sha"
         <*> o .: "changes"

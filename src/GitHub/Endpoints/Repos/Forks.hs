@@ -26,7 +26,7 @@ forksFor = forksFor' Nothing
 -- | All the repos that are forked off the given repo.
 -- | With authentication
 --
--- > forksFor' (Just (User (user, password))) "thoughtbot" "paperclip"
+-- > forksFor' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip"
 forksFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error  (Vector Repo))
 forksFor' auth user repo =
     executeRequestMaybe auth $ forksForR user repo FetchAll

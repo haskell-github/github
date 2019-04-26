@@ -7,7 +7,7 @@
 -- this package.
 --
 -- See "GitHub.Request" module for executing 'Request', or other modules
--- of this package (e.g. "GitHub.Users") for already composed versions.
+-- of this package (e.g. "GitHub.Endpoints.Users") for already composed versions.
 --
 -- The missing endpoints lists show which endpoints we know are missing, there
 -- might be more.
@@ -137,14 +137,14 @@ module GitHub (
     -- ** Milestone
     -- | See <https://developer.github.com/v3/issues/milestones/>
     --
-    -- Missing endpoints:
-    --
-    -- * Update a milestone
-    -- * Delete a milestone
     milestonesR,
     milestoneR,
     createMilestone,
     createMilestoneR,
+    updateMilestone,
+    updateMilestoneR,
+    deleteMilestone,
+    deleteMilestoneR,
 
     -- * Organizations
     -- | See <https://developer.github.com/v3/orgs/>
@@ -156,6 +156,7 @@ module GitHub (
     -- * Edit an organization
     publicOrganizationsForR,
     publicOrganizationR,
+    organizationsR,
     -- ** Members
     -- | See <https://developer.github.com/v3/orgs/members/>
     --
@@ -192,6 +193,8 @@ module GitHub (
     -- | See <https://developer.github.com/v3/pulls/>
     pullRequestsForR,
     pullRequestR,
+    pullRequestPatchR,
+    pullRequestDiffR,
     createPullRequestR,
     updatePullRequestR,
     pullRequestCommitsR,
@@ -205,11 +208,11 @@ module GitHub (
     -- Missing endpoints:
     --
     -- * List comments in a repository
-    -- * Create a comment
     -- * Edit a comment
     -- * Delete a comment
     pullRequestCommentsR,
     pullRequestCommentR,
+    createPullCommentR,
 
     -- ** Pull request reviews
     -- | See <https://developer.github.com/v3/pulls/reviews/>
@@ -252,6 +255,7 @@ module GitHub (
     -- | See <https://developer.github.com/v3/repos/collaborators/>
     collaboratorsOnR,
     isCollaboratorOnR,
+    addCollaboratorR,
 
     -- ** Comments
     -- | See <https://developer.github.com/v3/repos/comments/>

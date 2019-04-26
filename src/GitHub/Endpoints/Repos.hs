@@ -38,6 +38,7 @@ module GitHub.Endpoints.Repos (
     createRepoR,
     createOrganizationRepo',
     createOrganizationRepoR,
+    forkExistingRepo',
     forkExistingRepoR,
 
     -- ** Edit
@@ -87,7 +88,7 @@ userRepos = userRepos' Nothing
 -- | The repos for a user, by their login.
 -- With authentication.
 --
--- > userRepos' (Just (BasicAuth (user, password))) "mike-burns" All
+-- > userRepos' (Just $ BasicAuth "github-username" "github-password") "mike-burns" All
 userRepos'
     :: Maybe Auth
     -> Name Owner
@@ -113,7 +114,7 @@ organizationRepos org = organizationRepos' Nothing org RepoPublicityAll
 -- | The repos for an organization, by the organization name.
 -- With authentication.
 --
--- > organizationRepos (Just (BasicAuth (user, password))) "thoughtbot" All
+-- > organizationRepos (Just $ BasicAuth "github-username" "github-password") "thoughtbot" All
 organizationRepos'
     :: Maybe Auth
     -> Name Organization
@@ -143,7 +144,7 @@ repository = repository' Nothing
 -- | Details on a specific repo, given the owner and repo name.
 -- With authentication.
 --
--- > repository' (Just (BasicAuth (user, password))) "mike-burns" "github"
+-- > repository' (Just $ BasicAuth "github-username" "github-password") "mike-burns" "github"
 repository' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error Repo)
 repository' auth user repo =
     executeRequestMaybe auth $ repositoryR user repo
@@ -166,6 +167,11 @@ createRepo' auth nrepo =
 createRepoR :: NewRepo -> Request 'RW Repo
 createRepoR nrepo =
     command Post ["user", "repos"] (encode nrepo)
+
+-- | Fork an existing repository.
+forkExistingRepo' :: Auth -> Name Owner -> Name Repo -> Maybe (Name Owner) -> IO (Either Error Repo)
+forkExistingRepo' auth owner repo morg =
+    executeRequest auth $ forkExistingRepoR owner repo morg
 
 -- | Fork an existing repository.
 -- See <https://developer.github.com/v3/repos/forks/#create-a-fork>
@@ -218,7 +224,7 @@ contributors = contributors' Nothing
 -- | The contributors to a repo, given the owner and repo name.
 -- With authentication.
 --
--- > contributors' (Just (BasicAuth (user, password))) "thoughtbot" "paperclip"
+-- > contributors' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip"
 contributors' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Contributor))
 contributors' auth user repo =
     executeRequestMaybe auth $ contributorsR user repo False FetchAll
@@ -250,7 +256,7 @@ contributorsWithAnonymous = contributorsWithAnonymous' Nothing
 -- and repo name.
 -- With authentication.
 --
--- > contributorsWithAnonymous' (Just (BasicAuth (user, password))) "thoughtbot" "paperclip"
+-- > contributorsWithAnonymous' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip"
 contributorsWithAnonymous' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Contributor))
 contributorsWithAnonymous' auth user repo =
     executeRequestMaybe auth $ contributorsR user repo True FetchAll
@@ -266,7 +272,7 @@ languagesFor = languagesFor' Nothing
 -- characters written in that language. Takes the repo owner and name.
 -- With authentication.
 --
--- > languagesFor' (Just (BasicAuth (user, password))) "mike-burns" "ohlaunch"
+-- > languagesFor' (Just $ BasicAuth "github-username" "github-password") "mike-burns" "ohlaunch"
 languagesFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error Languages)
 languagesFor' auth user repo =
     executeRequestMaybe auth $ languagesForR user repo
@@ -286,7 +292,7 @@ tagsFor = tagsFor' Nothing
 -- | The git tags on a repo, given the repo owner and name.
 -- With authentication.
 --
--- > tagsFor' (Just (BasicAuth (user, password))) "thoughtbot" "paperclip"
+-- > tagsFor' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip"
 tagsFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Tag))
 tagsFor' auth user repo =
     executeRequestMaybe auth $ tagsForR user repo FetchAll
@@ -306,7 +312,7 @@ branchesFor = branchesFor' Nothing
 -- | The git branches on a repo, given the repo owner and name.
 -- With authentication.
 --
--- > branchesFor' (Just (BasicAuth (user, password))) "thoughtbot" "paperclip"
+-- > branchesFor' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip"
 branchesFor' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Branch))
 branchesFor' auth user repo =
     executeRequestMaybe auth $ branchesForR user repo FetchAll

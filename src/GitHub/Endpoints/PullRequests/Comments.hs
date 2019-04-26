@@ -10,6 +10,8 @@ module GitHub.Endpoints.PullRequests.Comments (
     pullRequestCommentsR,
     pullRequestComment,
     pullRequestCommentR,
+    createPullComment,
+    createPullCommentR,
     module GitHub.Data,
     ) where
 
@@ -21,13 +23,13 @@ import Prelude ()
 -- | All the comments on a pull request with the given ID.
 --
 -- > pullRequestComments "thoughtbot" "factory_girl" (Id 256)
-pullRequestCommentsIO :: Name Owner -> Name Repo -> Id PullRequest -> IO (Either Error (Vector Comment))
+pullRequestCommentsIO :: Name Owner -> Name Repo -> IssueNumber -> IO (Either Error (Vector Comment))
 pullRequestCommentsIO user repo prid =
     executeRequest' $ pullRequestCommentsR user repo prid FetchAll
 
 -- | List comments on a pull request.
 -- See <https://developer.github.com/v3/pulls/comments/#list-comments-on-a-pull-request>
-pullRequestCommentsR :: Name Owner -> Name Repo -> Id PullRequest -> FetchCount -> Request k (Vector Comment)
+pullRequestCommentsR :: Name Owner -> Name Repo -> IssueNumber -> FetchCount -> Request k (Vector Comment)
 pullRequestCommentsR user repo prid =
     pagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "comments"] []
 
@@ -43,3 +45,21 @@ pullRequestComment user repo cid =
 pullRequestCommentR :: Name Owner -> Name Repo -> Id Comment -> Request k Comment
 pullRequestCommentR user repo cid =
     query ["repos", toPathPart user, toPathPart repo, "pulls", "comments", toPathPart cid] []
+
+-- | Create a new comment.
+--
+-- > createPullComment (BasicAuth "github-username" "github-password") user repo issue commit path position
+-- >  "some words"
+createPullComment :: Auth -> Name Owner -> Name Repo -> IssueNumber -> Text -> Text -> Int -> Text
+            -> IO (Either Error Comment)
+createPullComment auth user repo iss commit path position body =
+    executeRequest auth $ createPullCommentR user repo iss commit path position body
+
+-- | Create a comment.
+--
+-- See <https://developer.github.com/v3/pulls/comments/#create-a-comment>
+createPullCommentR :: Name Owner -> Name Repo -> IssueNumber -> Text -> Text -> Int -> Text -> Request 'RW Comment
+createPullCommentR user repo iss commit path position body =
+    command Post parts (encode $ NewPullComment commit path position body)
+  where
+    parts = ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart iss, "comments"]

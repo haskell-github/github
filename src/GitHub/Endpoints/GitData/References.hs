@@ -26,7 +26,7 @@ import Prelude ()
 
 -- | A single reference by the ref name.
 --
--- > reference' (Just ("github-username", "github-password")) "mike-burns" "github" "heads/master"
+-- > reference' (Just $ BasicAuth "github-username" "github-password") "mike-burns" "github" "heads/master"
 reference' :: Maybe Auth -> Name Owner -> Name Repo -> Name GitReference -> IO (Either Error GitReference)
 reference' auth user repo ref =
     executeRequestMaybe auth $ referenceR user repo ref

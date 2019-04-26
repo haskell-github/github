@@ -22,7 +22,7 @@ import Prelude ()
 
 -- | A tree for a SHA1.
 --
--- > tree (Just ("github-username", "github-password")) "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
+-- > tree (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
 tree' :: Maybe Auth -> Name Owner -> Name Repo -> Name Tree -> IO (Either Error Tree)
 tree' auth user repo sha =
     executeRequestMaybe auth $ treeR user repo sha
@@ -41,7 +41,7 @@ treeR user repo sha =
 
 -- | A recursively-nested tree for a SHA1.
 --
--- > nestedTree' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
+-- > nestedTree' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" "fe114451f7d066d367a1646ca7ac10e689b46844"
 nestedTree' :: Maybe Auth -> Name Owner -> Name Repo -> Name Tree -> IO (Either Error Tree)
 nestedTree' auth user repo sha =
     executeRequestMaybe auth $ nestedTreeR user repo sha

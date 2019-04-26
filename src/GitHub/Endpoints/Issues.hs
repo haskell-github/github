@@ -41,7 +41,7 @@ organizationIssuesR org opts =
 -- | Details on a specific issue, given the repo owner and name, and the issue
 -- number.'
 --
--- > issue' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" "462"
+-- > issue' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" "462"
 issue' :: Maybe Auth -> Name Owner -> Name Repo -> Id Issue -> IO (Either Error Issue)
 issue' auth user reqRepoName reqIssueNumber =
     executeRequestMaybe auth $ issueR user reqRepoName reqIssueNumber
@@ -62,7 +62,7 @@ issueR user reqRepoName reqIssueNumber =
 -- | All issues for a repo (given the repo owner and name), with optional
 -- restrictions as described in the 'IssueRepoMod' data type.
 --
--- > issuesForRepo' (Just ("github-username", "github-password")) "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
+-- > issuesForRepo' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
 issuesForRepo' :: Maybe Auth -> Name Owner -> Name Repo -> IssueRepoMod -> IO (Either Error (Vector Issue))
 issuesForRepo' auth user reqRepoName opts =
     executeRequestMaybe auth $ issuesForRepoR user reqRepoName opts FetchAll
@@ -85,12 +85,12 @@ issuesForRepoR user reqRepoName opts =
 -- Creating new issues.
 
 newIssue :: Text -> NewIssue
-newIssue title = NewIssue title Nothing Nothing Nothing Nothing
+newIssue title = NewIssue title Nothing mempty Nothing Nothing
 
 
 -- | Create a new issue.
 --
--- > createIssue (User (user, password)) user repo
+-- > createIssue (BasicAuth "github-username" "github-password") user repo
 -- >  (newIssue "some_repo") {...}
 createIssue :: Auth -> Name Owner -> Name Repo -> NewIssue
             -> IO (Either Error Issue)
@@ -110,7 +110,7 @@ editOfIssue = EditIssue Nothing Nothing Nothing Nothing Nothing Nothing
 
 -- | Edit an issue.
 --
--- > editIssue (User (user, password)) user repo issue
+-- > editIssue (BasicAuth "github-username" "github-password") user repo issue
 -- >  editOfIssue {...}
 editIssue :: Auth -> Name Owner -> Name Repo -> Id Issue -> EditIssue
             -> IO (Either Error Issue)

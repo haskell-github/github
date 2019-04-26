@@ -41,34 +41,34 @@ commentR user repo cid =
 -- | All comments on an issue, by the issue's number.
 --
 -- > comments "thoughtbot" "paperclip" 635
-comments :: Name Owner -> Name Repo -> Id Issue -> IO (Either Error (Vector IssueComment))
+comments :: Name Owner -> Name Repo -> IssueNumber -> IO (Either Error (Vector IssueComment))
 comments = comments' Nothing
 
 -- | All comments on an issue, by the issue's number, using authentication.
 --
--- > comments' (User (user, password)) "thoughtbot" "paperclip" 635
-comments' :: Maybe Auth -> Name Owner -> Name Repo -> Id Issue -> IO (Either Error (Vector IssueComment))
+-- > comments' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" 635
+comments' :: Maybe Auth -> Name Owner -> Name Repo -> IssueNumber -> IO (Either Error (Vector IssueComment))
 comments' auth user repo iid =
     executeRequestMaybe auth $ commentsR user repo iid FetchAll
 
 -- | List comments on an issue.
 -- See <https://developer.github.com/v3/issues/comments/#list-comments-on-an-issue>
-commentsR :: Name Owner -> Name Repo -> Id Issue -> FetchCount -> Request k (Vector IssueComment)
+commentsR :: Name Owner -> Name Repo -> IssueNumber -> FetchCount -> Request k (Vector IssueComment)
 commentsR user repo iid =
     pagedQuery ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "comments"] []
 
 -- | Create a new comment.
 --
--- > createComment (User (user, password)) user repo issue
+-- > createComment (BasicAuth "github-username" "github-password") user repo issue
 -- >  "some words"
-createComment :: Auth -> Name Owner -> Name Repo -> Id Issue -> Text
+createComment :: Auth -> Name Owner -> Name Repo -> IssueNumber -> Text
             -> IO (Either Error Comment)
 createComment auth user repo iss body =
     executeRequest auth $ createCommentR user repo iss body
 
 -- | Create a comment.
 -- See <https://developer.github.com/v3/issues/comments/#create-a-comment>
-createCommentR :: Name Owner -> Name Repo -> Id Issue -> Text -> Request 'RW Comment
+createCommentR :: Name Owner -> Name Repo -> IssueNumber -> Text -> Request 'RW Comment
 createCommentR user repo iss body =
     command Post parts (encode $ NewComment body)
   where
@@ -76,7 +76,7 @@ createCommentR user repo iss body =
 
 -- | Edit a comment.
 --
--- > editComment (User (user, password)) user repo commentid
+-- > editComment (BasicAuth "github-username" "github-password") user repo commentid
 -- >  "new words"
 editComment :: Auth -> Name Owner -> Name Repo -> Id Comment -> Text
             -> IO (Either Error Comment)
@@ -93,7 +93,7 @@ editCommentR user repo commid body =
 
 -- | Delete a comment.
 --
--- > deleteComment (User (user, password)) user repo commentid
+-- > deleteComment (BasicAuth "github-username" "github-password") user repo commentid
 deleteComment :: Auth -> Name Owner -> Name Repo -> Id Comment
               -> IO (Either Error ())
 deleteComment auth user repo commid =
