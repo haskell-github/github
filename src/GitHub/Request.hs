@@ -215,6 +215,12 @@ instance Accept 'MtStar where
 instance FromJSON a => ParseResponse 'MtStar a where
     parseResponse _ res = Tagged (parseResponseJSON res)
 
+instance Accept 'MtMachineManPreview where
+    contentType = Tagged "application/vnd.github.machine-man-preview+json"
+
+instance FromJSON a => ParseResponse 'MtMachineManPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
 -------------------------------------------------------------------------------
 -- Raw / Diff / Patch / Sha
 -------------------------------------------------------------------------------

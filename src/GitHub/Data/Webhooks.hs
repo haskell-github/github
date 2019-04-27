@@ -5,6 +5,7 @@
 --
 module GitHub.Data.Webhooks where
 
+import GitHub.Data.Apps        (Installation)
 import GitHub.Data.Id          (Id)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
@@ -100,6 +101,14 @@ data EditRepoWebhook = EditRepoWebhook
 
 instance NFData EditRepoWebhook where rnf = genericRnf
 instance Binary EditRepoWebhook
+
+data AppInstallation = AppInstallation
+    { appInstallationId :: !(Id Installation)
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData AppInstallation where rnf = genericRnf
+instance Binary AppInstallation
 
 -- JSON instances
 
@@ -205,3 +214,7 @@ instance FromJSON PingEvent where
         <$> o .: "zen"
         <*> o .: "hook"
         <*> o .: "hook_id"
+
+instance FromJSON AppInstallation where
+    parseJSON = withObject "AppInstallation" $ \o -> AppInstallation
+        <$> o .: "id"

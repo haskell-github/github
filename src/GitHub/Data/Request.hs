@@ -106,15 +106,16 @@ instance NFData FetchCount where rnf = genericRnf
 -------------------------------------------------------------------------------
 
 data MediaType
-    = MtJSON     -- ^ @application/vnd.github.v3+json@
-    | MtRaw      -- ^ @application/vnd.github.v3.raw@ <https://developer.github.com/v3/media/#raw-1>
-    | MtDiff     -- ^ @application/vnd.github.v3.diff@ <https://developer.github.com/v3/media/#diff>
-    | MtPatch    -- ^ @application/vnd.github.v3.patch@ <https://developer.github.com/v3/media/#patch>
-    | MtSha      -- ^ @application/vnd.github.v3.sha@ <https://developer.github.com/v3/media/#sha>
-    | MtStar     -- ^ @application/vnd.github.v3.star+json@ <https://developer.github.com/v3/activity/starring/#alternative-response-with-star-creation-timestamps-1>
-    | MtRedirect -- ^ <https://developer.github.com/v3/repos/contents/#get-archive-link>
-    | MtStatus   -- ^ Parse status
-    | MtUnit     -- ^ Always succeeds
+    = MtJSON               -- ^ @application/vnd.github.v3+json@
+    | MtRaw                -- ^ @application/vnd.github.v3.raw@ <https://developer.github.com/v3/media/#raw-1>
+    | MtDiff               -- ^ @application/vnd.github.v3.diff@ <https://developer.github.com/v3/media/#diff>
+    | MtPatch              -- ^ @application/vnd.github.v3.patch@ <https://developer.github.com/v3/media/#patch>
+    | MtSha                -- ^ @application/vnd.github.v3.sha@ <https://developer.github.com/v3/media/#sha>
+    | MtStar               -- ^ @application/vnd.github.v3.star+json@ <https://developer.github.com/v3/activity/starring/#alternative-response-with-star-creation-timestamps-1>
+    | MtMachineManPreview  -- ^ @application/vnd.github.machine-man-preview+json@ <https://developer.github.com/v3/previews/#integrations>
+    | MtRedirect           -- ^ <https://developer.github.com/v3/repos/contents/#get-archive-link>
+    | MtStatus             -- ^ Parse status
+    | MtUnit               -- ^ Always succeeds
   deriving (Eq, Ord, Read, Show, Enum, Bounded, Typeable, Data, Generic)
 
 ------------------------------------------------------------------------------

@@ -35,6 +35,7 @@ module GitHub.Data (
     -- * Module re-exports
     module GitHub.Auth,
     module GitHub.Data.Activities,
+    module GitHub.Data.Apps,
     module GitHub.Data.Comments,
     module GitHub.Data.Content,
     module GitHub.Data.Definitions,
@@ -66,6 +67,7 @@ import Prelude ()
 
 import GitHub.Auth
 import GitHub.Data.Activities
+import GitHub.Data.Apps
 import GitHub.Data.Comments
 import GitHub.Data.Content
 import GitHub.Data.Definitions
@@ -125,6 +127,9 @@ mkRepoName = N
 
 mkCommitName :: Text -> Name Commit
 mkCommitName = N
+
+mkInstallationId :: Int -> Id Installation
+mkInstallationId = Id
 
 fromOrganizationName :: Name Organization -> Name Owner
 fromOrganizationName = N . untagName
