@@ -7,6 +7,7 @@
 -- <https://developer.github.com/v3/repos/invitations/>.
 module GitHub.Endpoints.Repos.Invitations (
     listInvitationsOnR,
+    listInvitationsForR,
     acceptInvitationFromR
     ) where
 
@@ -19,6 +20,13 @@ import Prelude ()
 listInvitationsOnR :: Name Owner -> Name Repo -> FetchCount -> GenRequest 'MtJSON k (Vector RepoInvitation)
 listInvitationsOnR user repo =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "invitations"] []
+
+-- | List a user's repository invitations
+-- See <https://developer.github.com/v3/repos/invitations/#list-a-users-repository-invitations>
+listInvitationsForR :: FetchCount -> Request k (Vector RepoInvitation)
+listInvitationsForR =
+    pagedQuery ["user", "repository_invitations"] []
+
 
 -- | Accept a repository invitation
 -- See <https://developer.github.com/v3/repos/invitations/#accept-a-repository-invitation>

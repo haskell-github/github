@@ -318,11 +318,11 @@ module GitHub (
 
     -- * Delete a repository invitation
     -- * Update a repository invitation
-    -- * List a user's repository invitations
     -- * Decline a repository invitation
 
     listInvitationsOnR,
     acceptInvitationFromR,
+    listInvitationsForR,
 
 
     -- * Search
