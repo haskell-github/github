@@ -20,6 +20,8 @@ listInvitationsOnR :: Name Owner -> Name Repo -> FetchCount -> GenRequest 'MtJSO
 listInvitationsOnR user repo =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "invitations"] []
 
+-- | Accept a repository invitation
+-- See <https://developer.github.com/v3/repos/invitations/#accept-a-repository-invitation>
 acceptInvitationFromR :: Id RepoInvitation -> GenRequest 'MtUnit 'RW ()
 acceptInvitationFromR invId =
     Command Patch ["user", "repository_invitations", toPathPart invId] mempty
