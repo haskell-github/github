@@ -269,3 +269,56 @@ executable github-teaminfo-for
     , text
     , github-samples
   default-language: Haskell2010
+
+executable github-create-public-ssh-key
+  main-is: CreatePublicSSHKey.hs
+  hs-source-dirs:
+      Users/PublicSSHKeys
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  default-language: Haskell2010
+
+executable github-delete-public-ssh-key
+  main-is: DeletePublicSSHKey.hs
+  hs-source-dirs:
+      Users/PublicSSHKeys
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  default-language: Haskell2010
+
+executable github-list-public-ssh-keys
+  main-is: ListPublicSSHKeys.hs
+  hs-source-dirs:
+      Users/PublicSSHKeys
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+    , vector
+  default-language: Haskell2010
+
+executable github-get-public-ssh-key
+  main-is: ShowPublicSSHKey.hs
+  hs-source-dirs:
+      Users/PublicSSHKeys
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  default-language: Haskell2010
