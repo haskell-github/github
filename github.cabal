@@ -87,6 +87,7 @@ library
     GitHub.Data.Milestone
     GitHub.Data.Name
     GitHub.Data.Options
+    GitHub.Data.PublicSSHKeys
     GitHub.Data.PullRequests
     GitHub.Data.RateLimit
     GitHub.Data.Releases
@@ -137,6 +138,7 @@ library
     GitHub.Endpoints.Users
     GitHub.Endpoints.Users.Emails
     GitHub.Endpoints.Users.Followers
+    GitHub.Endpoints.Users.PublicSSHKeys
     GitHub.Internal.Prelude
     GitHub.Request
 
@@ -194,6 +196,7 @@ test-suite github-test
     GitHub.IssuesSpec
     GitHub.OrganizationsSpec
     GitHub.PullRequestReviewsSpec
+    GitHub.PublicSSHKeysSpec
     GitHub.PullRequestsSpec
     GitHub.RateLimitSpec
     GitHub.ReleasesSpec
