@@ -84,13 +84,17 @@ import qualified Data.Vector                  as V
 import qualified Network.HTTP.Client          as HTTP
 import qualified Network.HTTP.Client.Internal as HTTP
 
-import GitHub.Auth              (Auth (..))
+import GitHub.Auth              (Auth, AuthMethod, endpoint, setAuthRequest)
 import GitHub.Data              (Error (..))
 import GitHub.Data.PullRequests (MergeResult (..))
 import GitHub.Data.Request
 
 -- | Execute 'Request' in 'IO'
-executeRequest :: ParseResponse mt a => Auth -> GenRequest mt rw a -> IO (Either Error a)
+executeRequest
+    :: (AuthMethod am, ParseResponse mt a)
+    => am
+    -> GenRequest mt rw a
+    -> IO (Either Error a)
 executeRequest auth req = do
     manager <- newManager tlsManagerSettings
     executeRequestWithMgr manager auth req
@@ -101,9 +105,9 @@ lessFetchCount i (FetchAtLeast j) = i < fromIntegral j
 
 -- | Like 'executeRequest' but with provided 'Manager'.
 executeRequestWithMgr
-    :: ParseResponse mt a
+    :: (AuthMethod am, ParseResponse mt a)
     => Manager
-    -> Auth
+    -> am
     -> GenRequest mt rw a
     -> IO (Either Error a)
 executeRequestWithMgr mgr auth req = runExceptT $ do
@@ -140,7 +144,7 @@ executeRequestWithMgr'
     -> GenRequest mt 'RO a
     -> IO (Either Error a)
 executeRequestWithMgr' mgr req = runExceptT $ do
-    httpReq <- makeHttpRequest Nothing req
+    httpReq <- makeHttpRequest (Nothing :: Maybe Auth) req
     performHttpReq httpReq req
   where
     httpLbs' :: HTTP.Request -> ExceptT Error IO (Response LBS.ByteString)
@@ -158,7 +162,11 @@ executeRequestWithMgr' mgr req = runExceptT $ do
 -- | Helper for picking between 'executeRequest' and 'executeRequest''.
 --
 -- The use is discouraged.
-executeRequestMaybe :: ParseResponse mt a => Maybe Auth -> GenRequest mt 'RO a -> IO (Either Error a)
+executeRequestMaybe
+    :: (AuthMethod am, ParseResponse mt a)
+    => Maybe am
+    -> GenRequest mt 'RO a
+    -> IO (Either Error a)
 executeRequestMaybe = maybe executeRequest' executeRequest
 
 -- | Partial function to drop authentication need.
@@ -308,8 +316,8 @@ instance a ~ () => ParseResponse 'MtUnit a where
 --   status checking is modifying accordingly.
 --
 makeHttpRequest
-    :: forall mt rw a m. (MonadThrow m, Accept mt)
-    => Maybe Auth
+    :: forall am mt rw a m. (AuthMethod am, MonadThrow m, Accept mt)
+    => Maybe am
     -> GenRequest mt rw a
     -> m HTTP.Request
 makeHttpRequest auth r = case r of
@@ -318,7 +326,7 @@ makeHttpRequest auth r = case r of
         return
             $ setReqHeaders
             . unTagged (modifyRequest :: Tagged mt (HTTP.Request -> HTTP.Request))
-            . setAuthRequest auth
+            . maybe id setAuthRequest auth
             . setQueryString qs
             $ req
     PagedQuery paths qs _ -> do
@@ -326,7 +334,7 @@ makeHttpRequest auth r = case r of
         return
             $ setReqHeaders
             . unTagged (modifyRequest :: Tagged mt (HTTP.Request -> HTTP.Request))
-            . setAuthRequest auth
+            . maybe id setAuthRequest auth
             . setQueryString qs
             $ req
     Command m paths body -> do
@@ -334,7 +342,7 @@ makeHttpRequest auth r = case r of
         return
             $ setReqHeaders
             . unTagged (modifyRequest :: Tagged mt (HTTP.Request -> HTTP.Request))
-            . setAuthRequest auth
+            . maybe id setAuthRequest auth
             . setBody body
             . setMethod (toMethod m)
             $ req
@@ -343,12 +351,7 @@ makeHttpRequest auth r = case r of
     parseUrl' = HTTP.parseRequest . T.unpack
 
     url :: Paths -> Text
-    url paths = baseUrl <> "/" <> T.intercalate "/" paths
-
-    baseUrl :: Text
-    baseUrl = case auth of
-        Just (EnterpriseOAuth endpoint _)  -> endpoint
-        _                                  -> "https://api.github.com"
+    url paths = maybe "https://api.github.com" id (endpoint =<< auth) <> "/" <> T.intercalate "/" paths
 
     setReqHeaders :: HTTP.Request -> HTTP.Request
     setReqHeaders req = req { requestHeaders = reqHeaders <> requestHeaders req }
@@ -357,21 +360,11 @@ makeHttpRequest auth r = case r of
     setMethod m req = req { method = m }
 
     reqHeaders :: RequestHeaders
-    reqHeaders = maybe [] getOAuthHeader auth
-        <> [("User-Agent", "github.hs/0.21")] -- Version
+    reqHeaders = [("User-Agent", "github.hs/0.21")] -- Version
         <> [("Accept", unTagged (contentType :: Tagged mt BS.ByteString))]
 
     setBody :: LBS.ByteString -> HTTP.Request -> HTTP.Request
     setBody body req = req { requestBody = RequestBodyLBS body }
-
-    setAuthRequest :: Maybe Auth -> HTTP.Request -> HTTP.Request
-    setAuthRequest (Just (BasicAuth user pass)) = applyBasicAuth user pass
-    setAuthRequest _                            = id
-
-    getOAuthHeader :: Auth -> RequestHeaders
-    getOAuthHeader (OAuth token)             = [("Authorization", "token " <> token)]
-    getOAuthHeader (EnterpriseOAuth _ token) = [("Authorization", "token " <> token)]
-    getOAuthHeader _                         = []
 
 -- | Query @Link@ header with @rel=next@ from the request headers.
 getNextUrl :: Response a -> Maybe URI
