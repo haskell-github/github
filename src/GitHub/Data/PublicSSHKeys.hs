@@ -27,7 +27,7 @@ data PublicSSHKey = PublicSSHKey
     , publicSSHKeyUrl       :: !URL
     , publicSSHKeyTitle     :: !Text
     , publicSSHKeyVerified  :: !Bool
-    , publicSSHKeyCreatedAt :: !UTCTime
+    , publicSSHKeyCreatedAt :: !(Maybe UTCTime)
     , publicSSHKeyReadOnly  :: !Bool
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -39,7 +39,7 @@ instance FromJSON PublicSSHKey where
         <*> o .: "url"
         <*> o .: "title"
         <*> o .: "verified"
-        <*> o .: "created_at"
+        <*> o .:? "created_at"
         <*> o .: "read_only"
 
 data NewPublicSSHKey = NewPublicSSHKey
