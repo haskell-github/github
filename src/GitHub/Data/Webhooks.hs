@@ -174,6 +174,8 @@ instance FromJSON RepoWebhookEvent where
     parseJSON v = fail ("Unknown invalid Webhook event: " ++ show v)
 
 instance ToJSON RepoWebhookEvent where
+    toJSON WebhookCheckRunEvent                     = String "check_run"
+    toJSON WebhookCheckSuiteEvent                   = String "check_suite"
     toJSON WebhookCommitCommentEvent                = String "commit_comment"
     toJSON WebhookContentReferenceEvent             = String "content_reference"
     toJSON WebhookCreateEvent                       = String "create"
