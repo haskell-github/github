@@ -106,6 +106,7 @@ instance NFData FetchCount where rnf = genericRnf
 -------------------------------------------------------------------------------
 
 data MediaType
+    -- Standard media types
     = MtJSON     -- ^ @application/vnd.github.v3+json@
     | MtRaw      -- ^ @application/vnd.github.v3.raw@ <https://developer.github.com/v3/media/#raw-1>
     | MtDiff     -- ^ @application/vnd.github.v3.diff@ <https://developer.github.com/v3/media/#diff>
@@ -115,6 +116,41 @@ data MediaType
     | MtRedirect -- ^ <https://developer.github.com/v3/repos/contents/#get-archive-link>
     | MtStatus   -- ^ Parse status
     | MtUnit     -- ^ Always succeeds
+    -- Media types for GitHub API previews
+    | MtWyandottePreview       -- ^ @application/vnd.github.wyandotte-preview+json@ <https://developer.github.com/v3/previews/#migrations>
+    | MtBarredRockPreview      -- ^ @application/vnd.github.barred-rock-preview+json@ <https://developer.github.com/v3/previews/#source-import>
+    | MtAntManPreview          -- ^ @application/vnd.github.ant-man-preview+json@ <https://developer.github.com/v3/previews/#enhanced-deployments>
+    | MtSquirrelGirlPreview    -- ^ @application/vnd.github.squirrel-girl-preview+json@ <https://developer.github.com/v3/previews/#reactions>
+    | MtMockingbirdPreview     -- ^ @application/vnd.github.mockingbird-preview+json@ <https://developer.github.com/v3/previews/#timeline>
+    | MtMisterFantasticPreview -- ^ @application/vnd.github.mister-fantastic-preview+json@ <https://developer.github.com/v3/previews/#pages>
+    | MtMachineManPreview      -- ^ @application/vnd.github.machine-man-preview+json@ <https://developer.github.com/v3/previews/#integrations>
+    | MtInertiaPreview         -- ^ @application/vnd.github.inertia-preview+json@ <https://developer.github.com/v3/previews/#projects>
+    | MtCloakPreview           -- ^ @application/vnd.github.cloak-preview+json@ <https://developer.github.com/v3/previews/#commit-search>
+    | MtBlackPantherPreview    -- ^ @application/vnd.github.black-panther-preview+json@ <https://developer.github.com/v3/previews/#community-profile-metrics>
+    | MtGiantSentryFistPreview -- ^ @application/vnd.github.giant-sentry-fist-preview+json@ <https://developer.github.com/v3/previews/#user-blocking>
+    | MtMercyPreview           -- ^ @application/vnd.github.mercy-preview+json@ <https://developer.github.com/v3/previews/#repository-topics>
+    | MtScarletWitchPreview    -- ^ @application/vnd.github.scarlet-witch-preview+json@ <https://developer.github.com/v3/previews/#codes-of-conduct>
+    | MtHellcatPreview         -- ^ @application/vnd.github.hellcat-preview+json@ <https://developer.github.com/v3/previews/#nested-teams>
+    | MtNightshadePreview      -- ^ @application/vnd.github.nightshade-preview+json@ <https://developer.github.com/v3/previews/#repository-transfer>
+    | MtSailorVPreview         -- ^ @application/vnd.github.sailor-v-preview+json@ <https://developer.github.com/v3/previews/#add-lock-reason>
+    | MtDazzlerPreview         -- ^ @application/vnd.github.dazzler-preview+json@ <https://developer.github.com/v3/previews/#organization-invitations>
+    | MtEchoPreview            -- ^ @application/vnd.github.echo-preview+json@ <https://developer.github.com/v3/previews/#team-discussions>
+    | MtSymmetraPreview        -- ^ @application/vnd.github.symmetra-preview+json@ <https://developer.github.com/v3/previews/#label-emoji-search-and-descriptions>
+    | MtZzzaxPreview           -- ^ @application/vnd.github.zzzax-preview+json@ <https://developer.github.com/v3/previews/#require-signed-commits>
+    | MtLukeCagePreview        -- ^ @application/vnd.github.luke-cage-preview+json@ <https://developer.github.com/v3/previews/#require-multiple-approving-reviews>
+    | MtHagarPreview           -- ^ @application/vnd.github.hagar-preview+json@ <https://developer.github.com/v3/previews/#retrieve-hovercard-information>
+    | MtAntiopePreview         -- ^ @application/vnd.github.antiope-preview+json@ <https://developer.github.com/v3/previews/#check-runs-and-check-suites-api>
+    | MtStarfoxPreview         -- ^ @application/vnd.github.starfox-preview+json@ <https://developer.github.com/v3/previews/#project-card-details>
+    | MtFuryPreview            -- ^ @application/vnd.github.fury-preview+json@ <https://developer.github.com/v3/previews/#github-app-manifests>
+    | MtFlashPreview           -- ^ @application/vnd.github.flash-preview+json@ <https://developer.github.com/v3/previews/#deployment-statuses>
+    | MtSurturPreview          -- ^ @application/vnd.github.surtur-preview+json@ <https://developer.github.com/v3/previews/#repository-creation-permissions>
+    | MtCorsairPreview         -- ^ @application/vnd.github.corsair-preview+json@ <https://developer.github.com/v3/previews/#content-attachments>
+    | MtSombraPreview          -- ^ @application/vnd.github.sombra-preview+json@ <https://developer.github.com/v3/previews/#interaction-restrictions-for-repositories-and-organizations>
+    | MtShadowCatPreview       -- ^ @application/vnd.github.shadow-cat-preview+json@ <https://developer.github.com/v3/previews/#draft-pull-requests>
+    | MtSwitcherooPreview      -- ^ @application/vnd.github.switcheroo-preview+json@ <https://developer.github.com/v3/previews/#enable-and-disable-pages>
+    | MtGrootPreview           -- ^ @application/vnd.github.groot-preview+json@ <https://developer.github.com/v3/previews/#list-branches-or-pull-requests-for-a-commit>
+    | MtGambitPreview          -- ^ @application/vnd.github.gambit-preview+json@ <https://developer.github.com/v3/previews/#uninstall-a-github-app>
+    | MtDorianPreview          -- ^ @application/vnd.github.dorian-preview+json@ <https://developer.github.com/v3/previews/#enable-or-disable-vulnerability-alerts-for-a-repository>
   deriving (Eq, Ord, Read, Show, Enum, Bounded, Typeable, Data, Generic)
 
 ------------------------------------------------------------------------------

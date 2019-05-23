@@ -182,7 +182,7 @@ class Accept mt => ParseResponse (mt :: MediaType) a where
     parseResponse :: MonadError Error m => HTTP.Request -> HTTP.Response LBS.ByteString -> Tagged mt (m a)
 
 -------------------------------------------------------------------------------
--- JSON (+ star)
+-- JSON instances
 -------------------------------------------------------------------------------
 
 -- | Parse API response.
@@ -205,6 +205,210 @@ instance Accept 'MtStar where
     contentType = Tagged "application/vnd.github.v3.star+json"
 
 instance FromJSON a => ParseResponse 'MtStar a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtWyandottePreview where
+    contentType = Tagged "application/vnd.github.wyandotte-preview+json"
+
+instance FromJSON a => ParseResponse 'MtWyandottePreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtBarredRockPreview where
+    contentType = Tagged "application/vnd.github.barred-rock-preview+json"
+
+instance FromJSON a => ParseResponse 'MtBarredRockPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtAntManPreview where
+    contentType = Tagged "application/vnd.github.ant-man-preview+json"
+
+instance FromJSON a => ParseResponse 'MtAntManPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtSquirrelGirlPreview where
+    contentType = Tagged "application/vnd.github.squirrel-girl-preview+json"
+
+instance FromJSON a => ParseResponse 'MtSquirrelGirlPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtMockingbirdPreview where
+    contentType = Tagged "application/vnd.github.mockingbird-preview+json"
+
+instance FromJSON a => ParseResponse 'MtMockingbirdPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtMisterFantasticPreview where
+    contentType = Tagged "application/vnd.github.mister-fantastic-preview+json"
+
+instance FromJSON a => ParseResponse 'MtMisterFantasticPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtMachineManPreview where
+    contentType = Tagged "application/vnd.github.machine-man-preview+json"
+
+instance FromJSON a => ParseResponse 'MtMachineManPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtInertiaPreview where
+    contentType = Tagged "application/vnd.github.inertia-preview+json"
+
+instance FromJSON a => ParseResponse 'MtInertiaPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtCloakPreview where
+    contentType = Tagged "application/vnd.github.cloak-preview+json"
+
+instance FromJSON a => ParseResponse 'MtCloakPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtBlackPantherPreview where
+    contentType = Tagged "application/vnd.github.black-panther-preview+json"
+
+instance FromJSON a => ParseResponse 'MtBlackPantherPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtGiantSentryFistPreview where
+    contentType = Tagged "application/vnd.github.giant-sentry-fist-preview+json"
+
+instance FromJSON a => ParseResponse 'MtGiantSentryFistPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtMercyPreview where
+    contentType = Tagged "application/vnd.github.mercy-preview+json"
+
+instance FromJSON a => ParseResponse 'MtMercyPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtScarletWitchPreview where
+    contentType = Tagged "application/vnd.github.scarlet-witch-preview+json"
+
+instance FromJSON a => ParseResponse 'MtScarletWitchPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtHellcatPreview where
+    contentType = Tagged "application/vnd.github.hellcat-preview+json"
+
+instance FromJSON a => ParseResponse 'MtHellcatPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtNightshadePreview where
+    contentType = Tagged "application/vnd.github.nightshade-preview+json"
+
+instance FromJSON a => ParseResponse 'MtNightshadePreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtSailorVPreview where
+    contentType = Tagged "application/vnd.github.sailor-v-preview+json"
+
+instance FromJSON a => ParseResponse 'MtSailorVPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtDazzlerPreview where
+    contentType = Tagged "application/vnd.github.dazzler-preview+json"
+
+instance FromJSON a => ParseResponse 'MtDazzlerPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtEchoPreview where
+    contentType = Tagged "application/vnd.github.echo-preview+json"
+
+instance FromJSON a => ParseResponse 'MtEchoPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtSymmetraPreview where
+    contentType = Tagged "application/vnd.github.symmetra-preview+json"
+
+instance FromJSON a => ParseResponse 'MtSymmetraPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtZzzaxPreview where
+    contentType = Tagged "application/vnd.github.zzzax-preview+json"
+
+instance FromJSON a => ParseResponse 'MtZzzaxPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtLukeCagePreview where
+    contentType = Tagged "application/vnd.github.luke-cage-preview+json"
+
+instance FromJSON a => ParseResponse 'MtLukeCagePreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtHagarPreview where
+    contentType = Tagged "application/vnd.github.hagar-preview+json"
+
+instance FromJSON a => ParseResponse 'MtHagarPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtAntiopePreview where
+    contentType = Tagged "application/vnd.github.antiope-preview+json"
+
+instance FromJSON a => ParseResponse 'MtAntiopePreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtStarfoxPreview where
+    contentType = Tagged "application/vnd.github.starfox-preview+json"
+
+instance FromJSON a => ParseResponse 'MtStarfoxPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtFuryPreview where
+    contentType = Tagged "application/vnd.github.fury-preview+json"
+
+instance FromJSON a => ParseResponse 'MtFuryPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtFlashPreview where
+    contentType = Tagged "application/vnd.github.flash-preview+json"
+
+instance FromJSON a => ParseResponse 'MtFlashPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtSurturPreview where
+    contentType = Tagged "application/vnd.github.surtur-preview+json"
+
+instance FromJSON a => ParseResponse 'MtSurturPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtCorsairPreview where
+    contentType = Tagged "application/vnd.github.corsair-preview+json"
+
+instance FromJSON a => ParseResponse 'MtCorsairPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtSombraPreview where
+    contentType = Tagged "application/vnd.github.sombra-preview+json"
+
+instance FromJSON a => ParseResponse 'MtSombraPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtShadowCatPreview where
+    contentType = Tagged "application/vnd.github.shadow-cat-preview+json"
+
+instance FromJSON a => ParseResponse 'MtShadowCatPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtSwitcherooPreview where
+    contentType = Tagged "application/vnd.github.switcheroo-preview+json"
+
+instance FromJSON a => ParseResponse 'MtSwitcherooPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtGrootPreview where
+    contentType = Tagged "application/vnd.github.groot-preview+json"
+
+instance FromJSON a => ParseResponse 'MtGrootPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtGambitPreview where
+    contentType = Tagged "application/vnd.github.gambit-preview+json"
+
+instance FromJSON a => ParseResponse 'MtGambitPreview a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
+instance Accept 'MtDorianPreview where
+    contentType = Tagged "application/vnd.github.dorian-preview+json"
+
+instance FromJSON a => ParseResponse 'MtDorianPreview a where
     parseResponse _ res = Tagged (parseResponseJSON res)
 
 -------------------------------------------------------------------------------
