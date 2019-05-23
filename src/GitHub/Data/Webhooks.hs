@@ -29,6 +29,7 @@ data RepoWebhook = RepoWebhook
 instance NFData RepoWebhook where rnf = genericRnf
 instance Binary RepoWebhook
 
+-- | See <https://developer.github.com/webhooks/#events>.
 data RepoWebhookEvent
     = WebhookWildcardEvent
     | WebhookCheckRunEvent
