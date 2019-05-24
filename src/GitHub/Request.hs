@@ -240,6 +240,9 @@ instance Accept 'MtJSON where
 instance FromJSON a => ParseResponse 'MtJSON a where
     parseResponse _ res = Tagged (parseResponseJSON res)
 
+instance FromJSON a => ParseResponse 'MtReactions a where
+    parseResponse _ res = Tagged (parseResponseJSON res)
+
 instance Accept 'MtStar where
     contentType = Tagged "application/vnd.github.v3.star+json"
 
@@ -254,6 +257,7 @@ instance Accept 'MtRaw   where contentType = Tagged "application/vnd.github.v3.r
 instance Accept 'MtDiff  where contentType = Tagged "application/vnd.github.v3.diff"
 instance Accept 'MtPatch where contentType = Tagged "application/vnd.github.v3.patch"
 instance Accept 'MtSha   where contentType = Tagged "application/vnd.github.v3.sha"
+instance Accept 'MtReactions where contentType = Tagged "application/vnd.github.squirrel-girl-preview+json"
 
 instance a ~ LBS.ByteString => ParseResponse 'MtRaw   a where parseResponse _ = Tagged . return . responseBody
 instance a ~ LBS.ByteString => ParseResponse 'MtDiff  a where parseResponse _ = Tagged . return . responseBody

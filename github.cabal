@@ -95,6 +95,7 @@ library
     GitHub.Data.PublicSSHKeys
     GitHub.Data.PullRequests
     GitHub.Data.RateLimit
+    GitHub.Data.Reactions
     GitHub.Data.Releases
     GitHub.Data.Repos
     GitHub.Data.Request

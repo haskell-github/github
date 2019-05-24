@@ -8,6 +8,8 @@
 module GitHub.Endpoints.PullRequests.Comments (
     pullRequestCommentsIO,
     pullRequestCommentsR,
+    pullRequestCommentsWithReactionsIO,
+    pullRequestCommentsWithReactionsR,
     pullRequestComment,
     pullRequestCommentR,
     createPullComment,
@@ -22,7 +24,7 @@ import Prelude ()
 
 -- | All the comments on a pull request with the given ID.
 --
--- > pullRequestComments "thoughtbot" "factory_girl" (Id 256)
+-- > pullRequestCommentsIO "thoughtbot" "factory_girl" (IssueNumber 256)
 pullRequestCommentsIO :: Name Owner -> Name Repo -> IssueNumber -> IO (Either Error (Vector Comment))
 pullRequestCommentsIO user repo prid =
     executeRequest' $ pullRequestCommentsR user repo prid FetchAll
@@ -32,6 +34,19 @@ pullRequestCommentsIO user repo prid =
 pullRequestCommentsR :: Name Owner -> Name Repo -> IssueNumber -> FetchCount -> Request k (Vector Comment)
 pullRequestCommentsR user repo prid =
     pagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "comments"] []
+
+-- | All the comments and their reactions in a pull request with a given ID.
+--
+-- > pullRequestCommentsWithReactionsIO "thoughtbot" "factory_girl" (IssueNumber 256)
+pullRequestCommentsWithReactionsIO :: Name Owner -> Name Repo -> IssueNumber -> IO (Either Error (Vector Comment))
+pullRequestCommentsWithReactionsIO user repo prid =
+    executeRequest' $ pullRequestCommentsWithReactionsR user repo prid FetchAll
+
+-- | List comments on a pull request as well as the reactions.
+-- See <https://developer.github.com/v3/reactions>
+pullRequestCommentsWithReactionsR :: Name Owner -> Name Repo -> IssueNumber -> FetchCount -> GenRequest 'MtReactions k (Vector Comment)
+pullRequestCommentsWithReactionsR user repo prid =
+    PagedQuery ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart prid, "comments"] []
 
 -- | One comment on a pull request, by the comment's ID.
 --

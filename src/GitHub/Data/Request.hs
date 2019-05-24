@@ -116,6 +116,7 @@ data MediaType a
     | MtStatus     -- ^ Parse status
     | MtUnit       -- ^ Always succeeds
     | MtPreview  a -- ^ Some other (preview) type; this is an extension point.
+    | MtReactions  -- ^ application/vnd.github.squirrel-girl-preview+json
   deriving (Eq, Ord, Read, Show, Typeable, Data, Generic)
 
 ------------------------------------------------------------------------------
@@ -147,8 +148,8 @@ instance IReadOnly 'RA        where iro = ROA
 
 -- | Github request data type.
 --
--- * @rw@ describes whether authentication is required. It's required for non-@GET@ requests.
 -- * @mt@ describes the media type, i.e. how the response should be interpreted.
+-- * @rw@ describes whether authentication is required. It's required for non-@GET@ requests.
 -- * @a@ is the result type
 --
 -- /Note:/ 'Request' is not 'Functor' on purpose.
@@ -174,7 +175,7 @@ type Request = GenRequest 'MtJSON
 query :: Paths -> QueryString -> Request mt a
 query ps qs = Query ps qs
 
-pagedQuery :: FromJSON a => Paths -> QueryString -> FetchCount -> Request mt (Vector a)
+pagedQuery :: FromJSON a => Paths -> QueryString -> FetchCount -> Request rw (Vector a)
 pagedQuery ps qs fc = PagedQuery ps qs fc
 
 command :: CommandMethod -> Paths -> LBS.ByteString -> Request 'RW a
@@ -184,11 +185,11 @@ command m ps body = Command m ps body
 -- Instances
 -------------------------------------------------------------------------------
 
-deriving instance Eq (GenRequest rw mt a)
-deriving instance Ord (GenRequest rw mt a)
-deriving instance Show (GenRequest rw mt a)
+deriving instance Eq (GenRequest mt rw a)
+deriving instance Ord (GenRequest mt rw a)
+deriving instance Show (GenRequest mt rw a)
 
-instance Hashable (GenRequest rw mt a) where
+instance Hashable (GenRequest mt rw a) where
     hashWithSalt salt (Query ps qs) =
         salt `hashWithSalt` (0 :: Int)
              `hashWithSalt` ps

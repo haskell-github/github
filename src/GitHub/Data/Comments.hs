@@ -7,6 +7,7 @@ module GitHub.Data.Comments where
 
 import GitHub.Data.Definitions
 import GitHub.Data.Id          (Id)
+import GitHub.Data.Reactions   (Reactions)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
@@ -23,6 +24,7 @@ data Comment = Comment
     , commentPath      :: !(Maybe Text)
     , commentUser      :: !SimpleUser
     , commentId        :: !(Id Comment)
+    , commentReactions :: !(Maybe Reactions)
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -42,6 +44,7 @@ instance FromJSON Comment where
         <*> o .:? "path"
         <*> o .: "user"
         <*> o .: "id"
+        <*> o .:? "reactions"
 
 data NewComment = NewComment
     { newCommentBody :: !Text
