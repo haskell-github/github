@@ -42,7 +42,7 @@ import Data.Aeson
        withObject, withText, (.!=), (.:), (.:?), (.=))
 import Data.Aeson.Types         (typeMismatch)
 import Data.Binary              (Binary)
-import Data.Binary.Orphans ()
+import Data.Binary.Instances ()
 import Data.Data                (Data, Typeable)
 import Data.Foldable            (toList)
 import Data.Hashable            (Hashable (..))
