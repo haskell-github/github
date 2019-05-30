@@ -26,7 +26,7 @@ module GitHub.Data.Request (
     Count,
     ) where
 
-import GitHub.Data.Definitions (Count, QueryString, IssueNumber, unIssueNumber)
+import GitHub.Data.Definitions (Count, IssueNumber, QueryString, unIssueNumber)
 import GitHub.Data.Id          (Id, untagId)
 import GitHub.Data.Name        (Name, untagName)
 import GitHub.Internal.Prelude

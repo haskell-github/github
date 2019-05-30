@@ -132,6 +132,7 @@ library
     GitHub.Endpoints.Repos.Releases
     GitHub.Endpoints.Repos.Statuses
     GitHub.Endpoints.Repos.Webhooks
+    GitHub.Endpoints.Repos.Invitations
     GitHub.Endpoints.Search
     GitHub.Endpoints.Users
     GitHub.Endpoints.Users.Emails
