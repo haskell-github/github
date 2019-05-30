@@ -4,7 +4,7 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.3.20190327
+# version: 0.3.20190521
 #
 language: c
 dist: xenial
@@ -29,8 +29,8 @@ before_cache:
   - rm -rfv $CABALHOME/packages/head.hackage
 matrix:
   include:
-    - compiler: ghc-8.6.3
-      addons: {"apt":{"sources":["hvr-ghc"],"packages":["ghc-8.6.3","cabal-install-2.4"]}}
+    - compiler: ghc-8.6.5
+      addons: {"apt":{"sources":["hvr-ghc"],"packages":["ghc-8.6.5","cabal-install-2.4"]}}
     - compiler: ghc-8.4.3
       addons: {"apt":{"sources":["hvr-ghc"],"packages":["ghc-8.4.3","cabal-install-2.4"]}}
     - compiler: ghc-8.2.2
@@ -86,6 +86,7 @@ install:
     echo "world-file:        $CABALHOME/world"          >> $CABALHOME/config
     echo "extra-prog-path:   $CABALHOME/bin"            >> $CABALHOME/config
     echo "symlink-bindir:    $CABALHOME/bin"            >> $CABALHOME/config
+    echo "installdir:        $CABALHOME/bin"            >> $CABALHOME/config
     echo "build-summary:     $CABALHOME/logs/build.log" >> $CABALHOME/config
     echo "store-dir:         $CABALHOME/store"          >> $CABALHOME/config
     echo "install-dirs user"                            >> $CABALHOME/config
@@ -102,7 +103,7 @@ install:
     echo 'packages: "."' >> cabal.project
   - |
     echo "write-ghc-environment-files: always" >> cabal.project
-  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | grep -vE -- '^(github)$' | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
+  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(github)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
   - cat cabal.project.local || true
   - if [ -f "./configure.ac" ]; then (cd "." && autoreconf -i); fi
@@ -126,7 +127,7 @@ script:
     echo 'packages: "github-*/*.cabal"' >> cabal.project
   - |
     echo "write-ghc-environment-files: always" >> cabal.project
-  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | grep -vE -- '^(github)$' | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
+  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(github)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
   - cat cabal.project.local || true
   # Building...
