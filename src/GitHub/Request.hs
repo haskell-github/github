@@ -51,6 +51,10 @@ module GitHub.Request (
     StatusMap,
     getNextUrl,
     performPagedRequest,
+    parseResponseJSON,
+    -- ** Preview
+    PreviewAccept (..),
+    PreviewParseResponse (..),
     ) where
 
 import GitHub.Internal.Prelude
@@ -67,9 +71,9 @@ import Data.List                  (find)
 import Data.Tagged                (Tagged (..))
 
 import Network.HTTP.Client
-       (HttpException (..), Manager, RequestBody (..), Response (..),
-       applyBasicAuth, getUri, httpLbs, method, newManager, redirectCount,
-       requestBody, requestHeaders, setQueryString, setRequestIgnoreStatus)
+       (HttpException (..), Manager, RequestBody (..), Response (..), getUri,
+       httpLbs, method, newManager, redirectCount, requestBody, requestHeaders,
+       setQueryString, setRequestIgnoreStatus)
 import Network.HTTP.Client.TLS  (tlsManagerSettings)
 import Network.HTTP.Link.Parser (parseLinkHeaderBS)
 import Network.HTTP.Link.Types  (Link (..), LinkParam (..), href, linkParams)
@@ -179,15 +183,18 @@ unsafeDropAuthRequirements r             =
 -- Parse response
 -------------------------------------------------------------------------------
 
-class Accept (mt :: MediaType) where
+class Accept (mt :: MediaType *) where
     contentType :: Tagged mt BS.ByteString
     contentType = Tagged "application/json" -- default is JSON
 
     modifyRequest :: Tagged mt (HTTP.Request -> HTTP.Request)
     modifyRequest = Tagged id
 
-class Accept mt => ParseResponse (mt :: MediaType) a where
-    parseResponse :: MonadError Error m => HTTP.Request -> HTTP.Response LBS.ByteString -> Tagged mt (m a)
+class Accept mt => ParseResponse (mt :: MediaType *) a where
+    parseResponse
+        :: MonadError Error m
+        => HTTP.Request -> HTTP.Response LBS.ByteString
+        -> Tagged mt (m a)
 
 -------------------------------------------------------------------------------
 -- JSON (+ star)
@@ -257,6 +264,29 @@ parseRedirect originalUri rsp = do
         Just uri -> return $ uri `relativeTo` originalUri
   where
     noLocation = throwError $ ParseError "no location header in response"
+
+-------------------------------------------------------------------------------
+-- Extension point
+-------------------------------------------------------------------------------
+
+class PreviewAccept p where
+    previewContentType :: Tagged ('MtPreview p) BS.ByteString
+
+    previewModifyRequest :: Tagged ('MtPreview p) (HTTP.Request -> HTTP.Request)
+    previewModifyRequest = Tagged id
+
+class PreviewAccept p => PreviewParseResponse p a where
+    previewParseResponse
+        :: MonadError Error m
+        => HTTP.Request -> HTTP.Response LBS.ByteString
+        -> Tagged ('MtPreview p) (m a)
+
+instance PreviewAccept p => Accept ('MtPreview p) where
+    contentType   = previewContentType
+    modifyRequest = previewModifyRequest
+
+instance PreviewParseResponse p a => ParseResponse ('MtPreview p) a where
+    parseResponse = previewParseResponse
 
 -------------------------------------------------------------------------------
 -- Status

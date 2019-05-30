@@ -206,6 +206,8 @@ test-suite github-test
     , bytestring
     , file-embed
     , github
+    , tagged
+    , text
     , hspec                 >=2.6.1 && <2.8
     , unordered-containers
     , vector
