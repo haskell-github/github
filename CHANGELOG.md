@@ -14,6 +14,8 @@
   [#360](https://github.com/phadej/github/pull/360)
 - Add notifications endpoints
   [#324](https://github.com/phadej/github/pull/324)
+- Add ssh keys endpoints
+  [#363](https://github.com/phadej/github/pull/365)
 - Case insensitive enum parsing
   [#373](https://github.com/phadej/github/pull/373)
 - Update dependencies
