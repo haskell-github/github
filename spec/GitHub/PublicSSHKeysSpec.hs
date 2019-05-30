@@ -2,18 +2,16 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module GitHub.PublicSSHKeysSpec where
 
-import GitHub                 (Auth (..), PublicSSHKeyBasic (..), PublicSSHKey (..),
-                               executeRequest, repositoryR)
-import GitHub.Endpoints.Users.PublicSSHKeys (publicSSHKeysFor', publicSSHKeys',
-                               publicSSHKey')
+import GitHub
+       (Auth (..), FetchCount (..), PublicSSHKey (..), executeRequest)
+import GitHub.Endpoints.Users.PublicSSHKeys
+       (publicSSHKey', publicSSHKeys', publicSSHKeysForR)
 
 import Data.Either.Compat (isRight)
 import Data.String        (fromString)
 import System.Environment (lookupEnv)
-import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe,
-                           shouldSatisfy)
+import Test.Hspec         (Spec, describe, it, pendingWith, shouldSatisfy)
 
-import qualified Data.HashMap.Strict as HM
 import qualified Data.Vector as V
 
 fromRightS :: Show a => Either a b -> b
@@ -30,8 +28,8 @@ withAuth action = do
 spec :: Spec
 spec = do
   describe "publicSSHKeysFor'" $ do
-    it "works" $ do
-      keys <- publicSSHKeysFor' "phadej"
+    it "works" $ withAuth $ \auth -> do
+      keys <- executeRequest auth $ publicSSHKeysForR "phadej" FetchAll
       V.length (fromRightS keys) `shouldSatisfy` (> 1)
 
   describe "publicSSHKeys' and publicSSHKey'" $ do
