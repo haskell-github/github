@@ -70,6 +70,7 @@ data RepoWebhookEvent
     | WebhookPullRequestReviewEvent
     | WebhookPullRequestReviewCommentEvent
     | WebhookPushEvent
+    | WebhookRegistryPackageEvent
     | WebhookReleaseEvent
     | WebhookRepositoryEvent
     | WebhookRepositoryImportEvent
@@ -131,55 +132,56 @@ instance Binary EditRepoWebhook
 -- JSON instances
 
 instance FromJSON RepoWebhookEvent where
-    parseJSON (String "*") = pure WebhookWildcardEvent
-    parseJSON (String "check_run") = pure WebhookCheckRunEvent
-    parseJSON (String "check_suite") = pure WebhookCheckSuiteEvent
-    parseJSON (String "commit_comment") = pure WebhookCommitCommentEvent
-    parseJSON (String "content_reference") = pure WebhookContentReferenceEvent
-    parseJSON (String "create") = pure WebhookCreateEvent
-    parseJSON (String "delete") = pure WebhookDeleteEvent
-    parseJSON (String "deploy_key") = pure WebhookDeployKeyEvent
-    parseJSON (String "deployment") = pure WebhookDeploymentEvent
-    parseJSON (String "deployment_status") = pure WebhookDeploymentStatusEvent
-    parseJSON (String "download") = pure WebhookDownloadEvent
-    parseJSON (String "follow") = pure WebhookFollowEvent
-    parseJSON (String "fork") = pure WebhookForkEvent
-    parseJSON (String "fork_apply") = pure WebhookForkApplyEvent
-    parseJSON (String "github_app_authorization") = pure WebhookGitHubAppAuthorizationEvent
-    parseJSON (String "gist") = pure WebhookGistEvent
-    parseJSON (String "gollum") = pure WebhookGollumEvent
-    parseJSON (String "installation") = pure WebhookInstallationEvent
-    parseJSON (String "installation_repositories") = pure WebhookInstallationRepositoriesEvent
-    parseJSON (String "issue_comment") = pure WebhookIssueCommentEvent
-    parseJSON (String "issues") = pure WebhookIssuesEvent
-    parseJSON (String "label") = pure WebhookLabelEvent
-    parseJSON (String "marketplace_purchase") = pure WebhookMarketplacePurchaseEvent
-    parseJSON (String "member") = pure WebhookMemberEvent
-    parseJSON (String "membership") = pure WebhookMembershipEvent
-    parseJSON (String "meta") = pure WebhookMetaEvent
-    parseJSON (String "milestone") = pure WebhookMilestoneEvent
-    parseJSON (String "organization") = pure WebhookOrganizationEvent
-    parseJSON (String "org_block") = pure WebhookOrgBlockEvent
-    parseJSON (String "page_build") = pure WebhookPageBuildEvent
-    parseJSON (String "ping") = pure WebhookPingEvent
-    parseJSON (String "project_card") = pure WebhookProjectCardEvent
-    parseJSON (String "project_column") = pure WebhookProjectColumnEvent
-    parseJSON (String "project") = pure WebhookProjectEvent
-    parseJSON (String "public") = pure WebhookPublicEvent
-    parseJSON (String "pull_request") = pure WebhookPullRequestEvent
-    parseJSON (String "pull_request_review") = pure WebhookPullRequestReviewEvent
-    parseJSON (String "pull_request_review_comment") = pure WebhookPullRequestReviewCommentEvent
-    parseJSON (String "push") = pure WebhookPushEvent
-    parseJSON (String "release") = pure WebhookReleaseEvent
-    parseJSON (String "repository") = pure WebhookRepositoryEvent
-    parseJSON (String "repository_import") = pure WebhookRepositoryImportEvent
+    parseJSON (String "*")                              = pure WebhookWildcardEvent
+    parseJSON (String "check_run")                      = pure WebhookCheckRunEvent
+    parseJSON (String "check_suite")                    = pure WebhookCheckSuiteEvent
+    parseJSON (String "commit_comment")                 = pure WebhookCommitCommentEvent
+    parseJSON (String "content_reference")              = pure WebhookContentReferenceEvent
+    parseJSON (String "create")                         = pure WebhookCreateEvent
+    parseJSON (String "delete")                         = pure WebhookDeleteEvent
+    parseJSON (String "deploy_key")                     = pure WebhookDeployKeyEvent
+    parseJSON (String "deployment")                     = pure WebhookDeploymentEvent
+    parseJSON (String "deployment_status")              = pure WebhookDeploymentStatusEvent
+    parseJSON (String "download")                       = pure WebhookDownloadEvent
+    parseJSON (String "follow")                         = pure WebhookFollowEvent
+    parseJSON (String "fork")                           = pure WebhookForkEvent
+    parseJSON (String "fork_apply")                     = pure WebhookForkApplyEvent
+    parseJSON (String "github_app_authorization")       = pure WebhookGitHubAppAuthorizationEvent
+    parseJSON (String "gist")                           = pure WebhookGistEvent
+    parseJSON (String "gollum")                         = pure WebhookGollumEvent
+    parseJSON (String "installation")                   = pure WebhookInstallationEvent
+    parseJSON (String "installation_repositories")      = pure WebhookInstallationRepositoriesEvent
+    parseJSON (String "issue_comment")                  = pure WebhookIssueCommentEvent
+    parseJSON (String "issues")                         = pure WebhookIssuesEvent
+    parseJSON (String "label")                          = pure WebhookLabelEvent
+    parseJSON (String "marketplace_purchase")           = pure WebhookMarketplacePurchaseEvent
+    parseJSON (String "member")                         = pure WebhookMemberEvent
+    parseJSON (String "membership")                     = pure WebhookMembershipEvent
+    parseJSON (String "meta")                           = pure WebhookMetaEvent
+    parseJSON (String "milestone")                      = pure WebhookMilestoneEvent
+    parseJSON (String "organization")                   = pure WebhookOrganizationEvent
+    parseJSON (String "org_block")                      = pure WebhookOrgBlockEvent
+    parseJSON (String "page_build")                     = pure WebhookPageBuildEvent
+    parseJSON (String "ping")                           = pure WebhookPingEvent
+    parseJSON (String "project_card")                   = pure WebhookProjectCardEvent
+    parseJSON (String "project_column")                 = pure WebhookProjectColumnEvent
+    parseJSON (String "project")                        = pure WebhookProjectEvent
+    parseJSON (String "public")                         = pure WebhookPublicEvent
+    parseJSON (String "pull_request")                   = pure WebhookPullRequestEvent
+    parseJSON (String "pull_request_review")            = pure WebhookPullRequestReviewEvent
+    parseJSON (String "pull_request_review_comment")    = pure WebhookPullRequestReviewCommentEvent
+    parseJSON (String "push")                           = pure WebhookPushEvent
+    parseJSON (String "registry_package")               = pure WebhookRegistryPackageEvent
+    parseJSON (String "release")                        = pure WebhookReleaseEvent
+    parseJSON (String "repository")                     = pure WebhookRepositoryEvent
+    parseJSON (String "repository_import")              = pure WebhookRepositoryImportEvent
     parseJSON (String "repository_vulnerability_alert") = pure WebhookRepositoryVulnerabilityAlertEvent
-    parseJSON (String "security_advisory") = pure WebhookSecurityAdvisoryEvent
-    parseJSON (String "star") = pure WebhookStarEvent
-    parseJSON (String "status") = pure WebhookStatusEvent
-    parseJSON (String "team") = pure WebhookTeamEvent
-    parseJSON (String "team_add") = pure WebhookTeamAddEvent
-    parseJSON (String "watch") = pure WebhookWatchEvent
+    parseJSON (String "security_advisory")              = pure WebhookSecurityAdvisoryEvent
+    parseJSON (String "star")                           = pure WebhookStarEvent
+    parseJSON (String "status")                         = pure WebhookStatusEvent
+    parseJSON (String "team")                           = pure WebhookTeamEvent
+    parseJSON (String "team_add")                       = pure WebhookTeamAddEvent
+    parseJSON (String "watch")                          = pure WebhookWatchEvent
     parseJSON _ = fail "Could not build a Webhook event"
 
 instance ToJSON RepoWebhookEvent where
@@ -222,6 +224,7 @@ instance ToJSON RepoWebhookEvent where
     toJSON WebhookPullRequestReviewEvent            = String "pull_request_review"
     toJSON WebhookPullRequestReviewCommentEvent     = String "pull_request_review_comment"
     toJSON WebhookPushEvent                         = String "push"
+    toJSON WebhookRegistryPackageEvent              = String "registry_package"
     toJSON WebhookReleaseEvent                      = String "release"
     toJSON WebhookRepositoryEvent                   = String "repository"
     toJSON WebhookRepositoryImportEvent             = String "repository_import"
