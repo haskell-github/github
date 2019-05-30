@@ -1,5 +1,22 @@
 ## Changes for next
 
+## Changes for 0.22
+
+  [#370](https://github.com/phadej/github/pull/370)
+- Type-class for various auth methods
+  [#365](https://github.com/phadej/github/pull/365)
+- Throw on non-200 responses
+  [#350](https://github.com/phadej/github/pull/350)
+- Add extension point for (preview) media types
+- Add missing webhook event types
+  [#359](https://github.com/phadej/github/pull/359)
+- Update dependencies
+  [#364](https://github.com/phadej/github/pull/364)
+  [#368](https://github.com/phadej/github/pull/368)
+  [#369](https://github.com/phadej/github/pull/369)
+- Documentation improvements
+  [#357](https://github.com/phadej/github/pull/357)
+
 ## Changes for 0.21
 
 - Refactor `Request` type.
