@@ -1,6 +1,6 @@
 cabal-version:      >=1.10
 name:               github
-version:            0.21
+version:            0.22
 synopsis:           Access to the GitHub API, v3.
 category:           Network
 description:
@@ -101,6 +101,7 @@ library
     GitHub.Data.Webhooks.Validate
     GitHub.Endpoints.Activity.Events
     GitHub.Endpoints.Activity.Starring
+    GitHub.Endpoints.Activity.Notifications
     GitHub.Endpoints.Activity.Watching
     GitHub.Endpoints.Gists
     GitHub.Endpoints.Gists.Comments
@@ -206,6 +207,8 @@ test-suite github-test
     , bytestring
     , file-embed
     , github
+    , tagged
+    , text
     , hspec                 >=2.6.1 && <2.8
     , unordered-containers
     , vector
