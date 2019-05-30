@@ -6,12 +6,14 @@
 --
 module GitHub.Data.Content where
 
-import Data.Aeson.Types        (Pair)
-import Data.Maybe              (maybe)
 import GitHub.Data.GitData
 import GitHub.Data.URL
 import GitHub.Internal.Prelude
 import Prelude ()
+
+import Data.Aeson.Types (Pair)
+import Data.Maybe (maybe)
+import qualified Data.Text as T
 
 data Content
   = ContentFile !ContentFileData
@@ -142,11 +144,10 @@ instance FromJSON ContentItem where
                 <*> parseJSON (Object o)
 
 instance FromJSON ContentItemType where
-  parseJSON = withText "ContentItemType" $ \t ->
-      case t of
-          "file" -> return ItemFile
-          "dir"  -> return ItemDir
-          _      -> fail $ "Invalid ContentItemType: " ++ unpack t
+  parseJSON = withText "ContentItemType" $ \t -> case T.toLower t of
+    "file" -> pure ItemFile
+    "dir"  -> pure ItemDir
+    _      -> fail $ "Unknown ContentItemType: " <> T.unpack t
 
 instance FromJSON ContentInfo where
   parseJSON = withObject "ContentInfo" $ \o ->

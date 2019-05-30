@@ -134,11 +134,10 @@ fromOwner (Owner owner) = owner
 -- JSON instances
 
 instance FromJSON OwnerType where
-    parseJSON = withText "Owner type" $ \t ->
-        case t of
-            "User"          -> pure $ OwnerUser
-            "Organization"  -> pure $ OwnerOrganization
-            _               -> fail $ "Unknown owner type: " ++ T.unpack t
+    parseJSON = withText "OwnerType" $ \t -> case T.toLower t of
+        "user"         -> pure $ OwnerUser
+        "organization" -> pure $ OwnerOrganization
+        _              -> fail $ "Unknown OwnerType: " <> T.unpack t
 
 instance FromJSON SimpleUser where
     parseJSON = withObject "SimpleUser" $ \obj -> do

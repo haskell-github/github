@@ -1,11 +1,13 @@
 module GitHub.Data.Reviews where
 
-import Data.Text (Text)
 import GitHub.Data.Definitions (SimpleUser)
 import GitHub.Data.Id (Id)
 import GitHub.Data.URL (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
+
+import Data.Text (Text)
+import qualified Data.Text as T
 
 data ReviewState
     = ReviewStatePending
@@ -21,12 +23,13 @@ instance NFData ReviewState where
 instance Binary ReviewState
 
 instance FromJSON ReviewState where
-    parseJSON (String "APPROVED") = pure ReviewStateApproved
-    parseJSON (String "PENDING") = pure ReviewStatePending
-    parseJSON (String "DISMISSED") = pure ReviewStateDismissed
-    parseJSON (String "COMMENTED") = pure ReviewStateCommented
-    parseJSON (String "CHANGES_REQUESTED") = pure ReviewStateChangesRequested
-    parseJSON _ = fail "Unexpected ReviewState"
+    parseJSON = withText "ReviewState" $ \t -> case T.toLower t of
+        "approved"          -> pure ReviewStateApproved
+        "pending"           -> pure ReviewStatePending
+        "dismissed"         -> pure ReviewStateDismissed
+        "commented"         -> pure ReviewStateCommented
+        "changes_requested" -> pure ReviewStateChangesRequested
+        _                   -> fail $ "Unknown ReviewState: " <> T.unpack t
 
 data Review = Review
     { reviewBody :: !Text

@@ -11,6 +11,7 @@ import GitHub.Internal.Prelude
 import Prelude ()
 
 import qualified Data.Map as M
+import qualified Data.Text as T
 
 data RepoWebhook = RepoWebhook
     { repoWebhookUrl          :: !URL
@@ -132,57 +133,58 @@ instance Binary EditRepoWebhook
 -- JSON instances
 
 instance FromJSON RepoWebhookEvent where
-    parseJSON (String "*")                              = pure WebhookWildcardEvent
-    parseJSON (String "check_run")                      = pure WebhookCheckRunEvent
-    parseJSON (String "check_suite")                    = pure WebhookCheckSuiteEvent
-    parseJSON (String "commit_comment")                 = pure WebhookCommitCommentEvent
-    parseJSON (String "content_reference")              = pure WebhookContentReferenceEvent
-    parseJSON (String "create")                         = pure WebhookCreateEvent
-    parseJSON (String "delete")                         = pure WebhookDeleteEvent
-    parseJSON (String "deploy_key")                     = pure WebhookDeployKeyEvent
-    parseJSON (String "deployment")                     = pure WebhookDeploymentEvent
-    parseJSON (String "deployment_status")              = pure WebhookDeploymentStatusEvent
-    parseJSON (String "download")                       = pure WebhookDownloadEvent
-    parseJSON (String "follow")                         = pure WebhookFollowEvent
-    parseJSON (String "fork")                           = pure WebhookForkEvent
-    parseJSON (String "fork_apply")                     = pure WebhookForkApplyEvent
-    parseJSON (String "github_app_authorization")       = pure WebhookGitHubAppAuthorizationEvent
-    parseJSON (String "gist")                           = pure WebhookGistEvent
-    parseJSON (String "gollum")                         = pure WebhookGollumEvent
-    parseJSON (String "installation")                   = pure WebhookInstallationEvent
-    parseJSON (String "installation_repositories")      = pure WebhookInstallationRepositoriesEvent
-    parseJSON (String "issue_comment")                  = pure WebhookIssueCommentEvent
-    parseJSON (String "issues")                         = pure WebhookIssuesEvent
-    parseJSON (String "label")                          = pure WebhookLabelEvent
-    parseJSON (String "marketplace_purchase")           = pure WebhookMarketplacePurchaseEvent
-    parseJSON (String "member")                         = pure WebhookMemberEvent
-    parseJSON (String "membership")                     = pure WebhookMembershipEvent
-    parseJSON (String "meta")                           = pure WebhookMetaEvent
-    parseJSON (String "milestone")                      = pure WebhookMilestoneEvent
-    parseJSON (String "organization")                   = pure WebhookOrganizationEvent
-    parseJSON (String "org_block")                      = pure WebhookOrgBlockEvent
-    parseJSON (String "page_build")                     = pure WebhookPageBuildEvent
-    parseJSON (String "ping")                           = pure WebhookPingEvent
-    parseJSON (String "project_card")                   = pure WebhookProjectCardEvent
-    parseJSON (String "project_column")                 = pure WebhookProjectColumnEvent
-    parseJSON (String "project")                        = pure WebhookProjectEvent
-    parseJSON (String "public")                         = pure WebhookPublicEvent
-    parseJSON (String "pull_request")                   = pure WebhookPullRequestEvent
-    parseJSON (String "pull_request_review")            = pure WebhookPullRequestReviewEvent
-    parseJSON (String "pull_request_review_comment")    = pure WebhookPullRequestReviewCommentEvent
-    parseJSON (String "push")                           = pure WebhookPushEvent
-    parseJSON (String "registry_package")               = pure WebhookRegistryPackageEvent
-    parseJSON (String "release")                        = pure WebhookReleaseEvent
-    parseJSON (String "repository")                     = pure WebhookRepositoryEvent
-    parseJSON (String "repository_import")              = pure WebhookRepositoryImportEvent
-    parseJSON (String "repository_vulnerability_alert") = pure WebhookRepositoryVulnerabilityAlertEvent
-    parseJSON (String "security_advisory")              = pure WebhookSecurityAdvisoryEvent
-    parseJSON (String "star")                           = pure WebhookStarEvent
-    parseJSON (String "status")                         = pure WebhookStatusEvent
-    parseJSON (String "team")                           = pure WebhookTeamEvent
-    parseJSON (String "team_add")                       = pure WebhookTeamAddEvent
-    parseJSON (String "watch")                          = pure WebhookWatchEvent
-    parseJSON _ = fail "Could not build a Webhook event"
+    parseJSON = withText "RepoWebhookEvent" $ \t -> case T.toLower t of
+        "*"                              -> pure WebhookWildcardEvent
+        "check_run"                      -> pure WebhookCheckRunEvent
+        "check_suite"                    -> pure WebhookCheckSuiteEvent
+        "commit_comment"                 -> pure WebhookCommitCommentEvent
+        "content_reference"              -> pure WebhookContentReferenceEvent
+        "create"                         -> pure WebhookCreateEvent
+        "delete"                         -> pure WebhookDeleteEvent
+        "deploy_key"                     -> pure WebhookDeployKeyEvent
+        "deployment"                     -> pure WebhookDeploymentEvent
+        "deployment_status"              -> pure WebhookDeploymentStatusEvent
+        "download"                       -> pure WebhookDownloadEvent
+        "follow"                         -> pure WebhookFollowEvent
+        "fork"                           -> pure WebhookForkEvent
+        "fork_apply"                     -> pure WebhookForkApplyEvent
+        "github_app_authorization"       -> pure WebhookGitHubAppAuthorizationEvent
+        "gist"                           -> pure WebhookGistEvent
+        "gollum"                         -> pure WebhookGollumEvent
+        "installation"                   -> pure WebhookInstallationEvent
+        "installation_repositories"      -> pure WebhookInstallationRepositoriesEvent
+        "issue_comment"                  -> pure WebhookIssueCommentEvent
+        "issues"                         -> pure WebhookIssuesEvent
+        "label"                          -> pure WebhookLabelEvent
+        "marketplace_purchase"           -> pure WebhookMarketplacePurchaseEvent
+        "member"                         -> pure WebhookMemberEvent
+        "membership"                     -> pure WebhookMembershipEvent
+        "meta"                           -> pure WebhookMetaEvent
+        "milestone"                      -> pure WebhookMilestoneEvent
+        "organization"                   -> pure WebhookOrganizationEvent
+        "org_block"                      -> pure WebhookOrgBlockEvent
+        "page_build"                     -> pure WebhookPageBuildEvent
+        "ping"                           -> pure WebhookPingEvent
+        "project_card"                   -> pure WebhookProjectCardEvent
+        "project_column"                 -> pure WebhookProjectColumnEvent
+        "project"                        -> pure WebhookProjectEvent
+        "public"                         -> pure WebhookPublicEvent
+        "pull_request"                   -> pure WebhookPullRequestEvent
+        "pull_request_review"            -> pure WebhookPullRequestReviewEvent
+        "pull_request_review_comment"    -> pure WebhookPullRequestReviewCommentEvent
+        "push"                           -> pure WebhookPushEvent
+        "registry_package"               -> pure WebhookRegistryPackageEvent
+        "release"                        -> pure WebhookReleaseEvent
+        "repository"                     -> pure WebhookRepositoryEvent
+        "repository_import"              -> pure WebhookRepositoryImportEvent
+        "repository_vulnerability_alert" -> pure WebhookRepositoryVulnerabilityAlertEvent
+        "security_advisory"              -> pure WebhookSecurityAdvisoryEvent
+        "star"                           -> pure WebhookStarEvent
+        "status"                         -> pure WebhookStatusEvent
+        "team"                           -> pure WebhookTeamEvent
+        "team_add"                       -> pure WebhookTeamAddEvent
+        "watch"                          -> pure WebhookWatchEvent
+        _                                -> fail $ "Unknown RepoWebhookEvent: " <> T.unpack t
 
 instance ToJSON RepoWebhookEvent where
     toJSON WebhookWildcardEvent                     = String "*"

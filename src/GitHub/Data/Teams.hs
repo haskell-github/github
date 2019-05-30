@@ -17,6 +17,8 @@ import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
 
+import qualified Data.Text as T
+
 data Privacy
     = PrivacyClosed
     | PrivacySecret
@@ -200,42 +202,42 @@ instance ToJSON AddTeamRepoPermission where
         object [ "permission" .= permission ]
 
 instance FromJSON Role where
-    parseJSON = withText "Attribute" $ \attr -> case attr of
-        "maintainer" -> return RoleMaintainer
-        "member"     -> return RoleMember
-        _            -> fail $ "Unknown Role: " ++ show attr
+    parseJSON = withText "Role" $ \t -> case T.toLower t of
+        "maintainer" -> pure RoleMaintainer
+        "member"     -> pure RoleMember
+        _            -> fail $ "Unknown Role: " <> T.unpack t
 
 instance ToJSON Role where
     toJSON RoleMaintainer = String "maintainer"
     toJSON RoleMember     = String "member"
+
+instance FromJSON Permission where
+    parseJSON = withText "Permission" $ \t -> case T.toLower t of
+        "pull"  -> pure PermissionPull
+        "push"  -> pure PermissionPush
+        "admin" -> pure PermissionAdmin
+        _       -> fail $ "Unknown Permission: " <> T.unpack t
 
 instance ToJSON Permission where
     toJSON PermissionPull  = "pull"
     toJSON PermissionPush  = "push"
     toJSON PermissionAdmin = "admin"
 
-instance FromJSON Permission where
-    parseJSON = withText "Permission Attribute" $ \attr -> case attr of 
-        "pull"  -> return PermissionPull
-        "push"  -> return PermissionPush
-        "admin" -> return PermissionAdmin
-        _       -> fail $ "Unknown Permission Attribute: " ++ show attr
-
 instance FromJSON Privacy where
-    parseJSON  = withText "Privacy Attribute" $ \attr -> case attr of
-        "secret" -> return PrivacySecret
-        "closed" -> return PrivacyClosed
-        _        -> fail $ "Unknown Privacy Attribute: " ++ show attr
+    parseJSON = withText "Privacy" $ \t -> case T.toLower t of
+        "secret" -> pure PrivacySecret
+        "closed" -> pure PrivacyClosed
+        _        -> fail $ "Unknown Privacy: " <> T.unpack t
 
 instance ToJSON Privacy where
     toJSON PrivacySecret = String "secret"
     toJSON PrivacyClosed = String "closed"
 
 instance FromJSON ReqState where
-    parseJSON = withText "ReqState" $ \attr -> case attr of
-        "active"  -> return StateActive
-        "pending" -> return StatePending
-        _         -> fail $ "Unknown ReqState: " ++ show attr
+    parseJSON = withText "ReqState" $ \t -> case T.toLower t of
+        "active"  -> pure StateActive
+        "pending" -> pure StatePending
+        _         -> fail $ "Unknown ReqState: " <> T.unpack t
 
 instance ToJSON ReqState where
     toJSON StateActive  = String "active"

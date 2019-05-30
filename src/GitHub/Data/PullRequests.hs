@@ -283,19 +283,19 @@ instance FromJSON PullRequestEvent where
         <*> o .: "sender"
 
 instance FromJSON PullRequestEventType where
-    parseJSON (String "opened") = pure PullRequestOpened
-    parseJSON (String "closed") = pure PullRequestClosed
-    parseJSON (String "synchronize") = pure PullRequestSynchronized
-    parseJSON (String "reopened") = pure PullRequestReopened
-    parseJSON (String "assigned") = pure PullRequestAssigned
-    parseJSON (String "unassigned") = pure PullRequestUnassigned
-    parseJSON (String "labeled") = pure PullRequestLabeled
-    parseJSON (String "unlabeled") = pure PullRequestUnlabeled
-    parseJSON (String "review_requested") = pure PullRequestReviewRequested
-    parseJSON (String "review_request_removed") = pure PullRequestReviewRequestRemoved
-    parseJSON (String "edited") = pure PullRequestEdited
-    parseJSON (String s) = fail $ "Unknown action type " <> T.unpack s
-    parseJSON v = typeMismatch "Could not build a PullRequestEventType" v
+    parseJSON = withText "PullRequestEventType" $ \t -> case T.toLower t of
+        "opened"                 -> pure PullRequestOpened
+        "closed"                 -> pure PullRequestClosed
+        "synchronize"            -> pure PullRequestSynchronized
+        "reopened"               -> pure PullRequestReopened
+        "assigned"               -> pure PullRequestAssigned
+        "unassigned"             -> pure PullRequestUnassigned
+        "labeled"                -> pure PullRequestLabeled
+        "unlabeled"              -> pure PullRequestUnlabeled
+        "review_requested"       -> pure PullRequestReviewRequested
+        "review_request_removed" -> pure PullRequestReviewRequestRemoved
+        "edited"                 -> pure PullRequestEdited
+        _                        -> fail $ "Unknown PullRequestEventType: " <> T.unpack t
 
 instance FromJSON PullRequestReference where
     parseJSON = withObject "PullRequestReference" $ \o -> PullRequestReference

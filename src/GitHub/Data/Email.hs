@@ -8,6 +8,8 @@ module GitHub.Data.Email where
 import GitHub.Internal.Prelude
 import Prelude ()
 
+import qualified Data.Text as T
+
 data EmailVisibility
     = EmailVisibilityPrivate
     | EmailVisibilityPublic
@@ -17,9 +19,10 @@ instance NFData EmailVisibility where rnf = genericRnf
 instance Binary EmailVisibility
 
 instance FromJSON EmailVisibility where
-    parseJSON (String "private") = pure EmailVisibilityPrivate
-    parseJSON (String "public")  = pure EmailVisibilityPublic
-    parseJSON _ = fail "Could not build an EmailVisibility"
+    parseJSON = withText "EmailVisibility" $ \t -> case T.toLower t of
+        "private" -> pure EmailVisibilityPrivate
+        "public"  -> pure EmailVisibilityPublic
+        _         -> fail $ "Unknown EmailVisibility: " <> T.unpack t
 
 data Email = Email
     { emailAddress    :: !Text
