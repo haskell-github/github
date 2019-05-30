@@ -11,6 +11,8 @@ import GitHub.Data.Name        (Name)
 import GitHub.Internal.Prelude
 import Prelude ()
 
+import qualified Data.Text as T
+
 data Invitation = Invitation
     { invitationId        :: !(Id Invitation)
     -- TODO: technically either one should be, maybe both. use `these` ?
@@ -48,10 +50,10 @@ instance NFData InvitationRole where rnf = genericRnf
 instance Binary InvitationRole
 
 instance FromJSON InvitationRole where
-    parseJSON = withText "InvirationRole" $ \t -> case t of
+    parseJSON = withText "InvitationRole" $ \t -> case T.toLower t of
         "direct_member"   -> pure InvitationRoleDirectMember
         "admin"           -> pure InvitationRoleAdmin
         "billing_manager" -> pure InvitationRoleBillingManager
         "hiring_manager"  -> pure InvitationRoleHiringManager
         "reinstate"       -> pure InvitationRoleReinstate
-        _                 -> fail $ "Invalid role " ++ show t
+        _                 -> fail $ "Unknown InvitationRole: " <> T.unpack t

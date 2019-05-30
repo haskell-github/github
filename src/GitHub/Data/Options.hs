@@ -82,9 +82,10 @@ instance ToJSON IssueState where
     toJSON StateClosed  = String "closed"
 
 instance FromJSON IssueState where
-    parseJSON (String "open")   = pure StateOpen
-    parseJSON (String "closed") = pure StateClosed
-    parseJSON v                 = typeMismatch "IssueState" v
+    parseJSON = withText "IssueState" $ \t -> case T.toLower t of
+        "open"   -> pure StateOpen
+        "closed" -> pure StateClosed
+        _        -> fail $ "Unknown IssueState: " <> T.unpack t
 
 instance NFData IssueState where rnf = genericRnf
 instance Binary IssueState
@@ -109,13 +110,14 @@ instance ToJSON MergeableState where
     toJSON StateBehind   = String "behind"
 
 instance FromJSON MergeableState where
-    parseJSON (String "unknown")  = pure StateUnknown
-    parseJSON (String "clean")    = pure StateClean
-    parseJSON (String "dirty")    = pure StateDirty
-    parseJSON (String "unstable") = pure StateUnstable
-    parseJSON (String "blocked")  = pure StateBlocked
-    parseJSON (String "behind")   = pure StateBehind
-    parseJSON v                   = typeMismatch "MergeableState" v
+    parseJSON = withText "MergeableState" $ \t -> case T.toLower t of
+        "unknown"  -> pure StateUnknown
+        "clean"    -> pure StateClean
+        "dirty"    -> pure StateDirty
+        "unstable" -> pure StateUnstable
+        "blocked"  -> pure StateBlocked
+        "behind"   -> pure StateBehind
+        _          -> fail $ "Unknown MergeableState: " <> T.unpack t
 
 instance NFData MergeableState where rnf = genericRnf
 instance Binary MergeableState

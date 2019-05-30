@@ -15,6 +15,8 @@ import GitHub.Data.URL          (URL)
 import GitHub.Internal.Prelude
 import Prelude                  ()
 
+import qualified Data.Text as T
+
 data Issue = Issue
     { issueClosedAt    :: !(Maybe UTCTime)
     , issueUpdatedAt   :: !UTCTime
@@ -141,7 +143,7 @@ instance FromJSON IssueEvent where
         <*> o .:? "label"
 
 instance FromJSON EventType where
-    parseJSON = withText "EventType" $ \t -> case t of
+    parseJSON = withText "EventType" $ \t -> case T.toLower t of
         "closed"                   -> pure Closed
         "reopened"                 -> pure Reopened
         "subscribed"               -> pure Subscribed
@@ -169,7 +171,7 @@ instance FromJSON EventType where
         "removed_from_project"     -> pure RemovedFromProject
         "converted_note_to_issue"  -> pure ConvertedNoteToIssue
         "unsubscribed"             -> pure Unsubscribed -- not in api docs list
-        _                          -> fail $ "Unknown EventType " ++ show t
+        _                          -> fail $ "Unknown EventType: " <> T.unpack t
 
 instance FromJSON IssueComment where
     parseJSON = withObject "IssueComment" $ \o -> IssueComment
