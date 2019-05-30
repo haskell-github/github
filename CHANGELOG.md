@@ -10,6 +10,8 @@
 - Add extension point for (preview) media types
 - Add missing webhook event types
   [#359](https://github.com/phadej/github/pull/359)
+- Add notifications endpoints
+  [#324](https://github.com/phadej/github/pull/324)
 - Update dependencies
   [#364](https://github.com/phadej/github/pull/364)
   [#368](https://github.com/phadej/github/pull/368)
