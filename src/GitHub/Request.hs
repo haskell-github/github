@@ -331,7 +331,9 @@ parseStatus m (Status sci _) =
 -- Unit
 -------------------------------------------------------------------------------
 
-instance Accept 'MtUnit
+instance Accept 'MtUnit where
+    modifyRequest = Tagged setRequestIgnoreStatus
+
 instance a ~ () => ParseResponse 'MtUnit a where
     parseResponse _ _ = Tagged (return ())
 
@@ -378,7 +380,7 @@ makeHttpRequest auth r = case r of
             $ req
   where
     parseUrl' :: MonadThrow m => Text -> m HTTP.Request
-    parseUrl' = HTTP.parseRequest . T.unpack
+    parseUrl' = HTTP.parseUrlThrow . T.unpack
 
     url :: Paths -> Text
     url paths = maybe "https://api.github.com" id (endpoint =<< auth) <> "/" <> T.intercalate "/" paths
