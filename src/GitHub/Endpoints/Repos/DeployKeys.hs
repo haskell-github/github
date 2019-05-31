@@ -65,6 +65,6 @@ deleteRepoDeployKey' auth user repo keyId =
 
 -- | Delete a deploy key.
 -- See <https://developer.github.com/v3/repos/keys/#remove-a-deploy-key>
-deleteRepoDeployKeyR :: Name Owner -> Name Repo -> Id RepoDeployKey -> Request 'RW ()
+deleteRepoDeployKeyR :: Name Owner -> Name Repo -> Id RepoDeployKey -> GenRequest 'MtUnit 'RW ()
 deleteRepoDeployKeyR user repo keyId =
-    command Delete ["repos", toPathPart user, toPathPart repo, "keys", toPathPart keyId] mempty
+    Command Delete ["repos", toPathPart user, toPathPart repo, "keys", toPathPart keyId] mempty

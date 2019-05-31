@@ -101,8 +101,8 @@ deleteComment auth user repo commid =
 
 -- | Delete a comment.
 -- See <https://developer.github.com/v3/issues/comments/#delete-a-comment>
-deleteCommentR :: Name Owner -> Name Repo -> Id Comment -> Request 'RW ()
+deleteCommentR :: Name Owner -> Name Repo -> Id Comment -> GenRequest 'MtUnit 'RW ()
 deleteCommentR user repo commid =
-    command Delete parts mempty
+    Command Delete parts mempty
   where
     parts = ["repos", toPathPart user, toPathPart repo, "issues", "comments", toPathPart commid]

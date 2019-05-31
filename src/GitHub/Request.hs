@@ -331,8 +331,10 @@ parseStatus m (Status sci _) =
 -- Unit
 -------------------------------------------------------------------------------
 
+-- | Note: we don't ignore response status.
+--
+-- We only accept any response body.
 instance Accept 'MtUnit where
-    modifyRequest = Tagged setRequestIgnoreStatus
 
 instance a ~ () => ParseResponse 'MtUnit a where
     parseResponse _ _ = Tagged (return ())

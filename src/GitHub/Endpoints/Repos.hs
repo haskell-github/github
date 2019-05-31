@@ -330,6 +330,8 @@ deleteRepo :: Auth -> Name Owner -> Name Repo -> IO (Either Error ())
 deleteRepo auth user repo =
     executeRequest auth $ deleteRepoR user repo
 
-deleteRepoR :: Name Owner -> Name Repo -> Request 'RW ()
+-- | Delete a repository,.
+-- See <https://developer.github.com/v3/repos/#delete-a-repository>
+deleteRepoR :: Name Owner -> Name Repo -> GenRequest 'MtUnit 'RW ()
 deleteRepoR user repo =
-    command Delete ["repos", toPathPart user, toPathPart repo] mempty
+    Command Delete ["repos", toPathPart user, toPathPart repo] mempty

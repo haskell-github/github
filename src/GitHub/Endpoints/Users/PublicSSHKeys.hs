@@ -78,6 +78,6 @@ deleteUserPublicSSHKey' auth keyId =
 
 -- | Delete a public SSH key.
 -- See <https://developer.github.com/v3/users/keys/#delete-a-public-key>
-deleteUserPublicSSHKeyR :: Id PublicSSHKey -> Request 'RW ()
+deleteUserPublicSSHKeyR :: Id PublicSSHKey -> GenRequest 'MtUnit 'RW ()
 deleteUserPublicSSHKeyR keyId =
-    command Delete ["user", "keys", toPathPart keyId] mempty
+    Command Delete ["user", "keys", toPathPart keyId] mempty

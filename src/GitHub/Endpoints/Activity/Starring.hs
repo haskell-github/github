@@ -91,7 +91,7 @@ unstarRepo auth user repo = executeRequest auth $ unstarRepoR user repo
 
 -- | Unstar a repo by the authenticated user.
 -- See <https://developer.github.com/v3/activity/starring/#unstar-a-repository>
-unstarRepoR :: Name Owner -> Name Repo -> Request 'RW ()
-unstarRepoR user repo = command Delete paths mempty
+unstarRepoR :: Name Owner -> Name Repo -> GenRequest 'MtUnit 'RW ()
+unstarRepoR user repo = Command Delete paths mempty
   where
     paths = ["user", "starred", toPathPart user, toPathPart repo]

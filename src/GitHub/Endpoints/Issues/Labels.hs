@@ -130,9 +130,9 @@ deleteLabel auth user repo lbl =
 
 -- | Delete a label.
 -- See <https://developer.github.com/v3/issues/labels/#delete-a-label>
-deleteLabelR :: Name Owner -> Name Repo -> Name IssueLabel -> Request 'RW ()
+deleteLabelR :: Name Owner -> Name Repo -> Name IssueLabel -> GenRequest 'MtUnit 'RW ()
 deleteLabelR user repo lbl =
-    command Delete ["repos", toPathPart user, toPathPart repo, "labels", toPathPart lbl] mempty
+    Command Delete ["repos", toPathPart user, toPathPart repo, "labels", toPathPart lbl] mempty
 
 -- | The labels on an issue in a repo.
 --
@@ -188,9 +188,9 @@ removeLabelFromIssue auth user repo iid lbl =
 
 -- | Remove a label from an issue.
 -- See <https://developer.github.com/v3/issues/labels/#remove-a-label-from-an-issue>
-removeLabelFromIssueR :: Name Owner -> Name Repo -> Id Issue -> Name IssueLabel -> Request 'RW ()
+removeLabelFromIssueR :: Name Owner -> Name Repo -> Id Issue -> Name IssueLabel -> GenRequest 'MtUnit 'RW ()
 removeLabelFromIssueR user repo iid lbl =
-    command Delete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels", toPathPart lbl] mempty
+    Command Delete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels", toPathPart lbl] mempty
 
 -- | Replace all labels on an issue. Sending an empty list will remove all labels from the issue.
 --
@@ -229,9 +229,9 @@ removeAllLabelsFromIssue auth user repo iid =
 
 -- | Remove all labels from an issue.
 -- See <https://developer.github.com/v3/issues/labels/#remove-all-labels-from-an-issue>
-removeAllLabelsFromIssueR :: Name Owner -> Name Repo -> Id Issue -> Request 'RW ()
+removeAllLabelsFromIssueR :: Name Owner -> Name Repo -> Id Issue -> GenRequest 'MtUnit 'RW ()
 removeAllLabelsFromIssueR user repo iid =
-    command Delete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"] mempty
+    Command Delete ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iid, "labels"] mempty
 
 -- | All the labels on a repo's milestone given the milestone ID.
 --

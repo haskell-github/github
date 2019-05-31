@@ -166,6 +166,6 @@ deleteFileR
     :: Name Owner
     -> Name Repo
     -> DeleteFile
-    -> Request 'RW ()
+    -> GenRequest 'MtUnit 'RW ()
 deleteFileR user repo body =
-    command Delete ["repos", toPathPart user, toPathPart repo, "contents", deleteFilePath body] (encode body)
+    Command Delete ["repos", toPathPart user, toPathPart repo, "contents", deleteFilePath body] (encode body)

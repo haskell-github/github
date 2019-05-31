@@ -124,9 +124,9 @@ deleteTeam' auth tid =
 -- | Delete team.
 --
 -- See <https://developer.github.com/v3/orgs/teams/#delete-team>
-deleteTeamR :: Id Team -> Request 'RW ()
+deleteTeamR :: Id Team -> GenRequest 'MtUnit 'RW ()
 deleteTeamR tid =
-    command Delete ["teams", toPathPart tid] mempty
+    Command Delete ["teams", toPathPart tid] mempty
 
 -- | List team members.
 --
@@ -214,9 +214,9 @@ deleteTeamMembershipFor' auth tid user =
 
 -- | Remove team membership.
 -- See <https://developer.github.com/v3/orgs/teams/#remove-team-membership>
-deleteTeamMembershipForR :: Id Team -> Name Owner -> Request 'RW ()
+deleteTeamMembershipForR :: Id Team -> Name Owner -> GenRequest 'MtUnit 'RW ()
 deleteTeamMembershipForR tid user =
-    command Delete ["teams", toPathPart tid, "memberships", toPathPart user] mempty
+    Command Delete ["teams", toPathPart tid, "memberships", toPathPart user] mempty
 
 -- | List teams for current authenticated user
 --

@@ -103,9 +103,9 @@ deleteRepoWebhook' auth user repo hookId =
 
 -- | Delete a hook.
 -- See <https://developer.github.com/v3/repos/hooks/#delete-a-hook>
-deleteRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> Request 'RW ()
+deleteRepoWebhookR :: Name Owner -> Name Repo -> Id RepoWebhook -> GenRequest 'MtUnit 'RW ()
 deleteRepoWebhookR user repo hookId =
-    command Delete (createWebhookOpPath user repo hookId Nothing) mempty
+    Command Delete (createWebhookOpPath user repo hookId Nothing) mempty
 
 createBaseWebhookPath :: Name Owner -> Name Repo -> Id RepoWebhook -> Paths
 createBaseWebhookPath user repo hookId =

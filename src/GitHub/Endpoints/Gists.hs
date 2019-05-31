@@ -81,8 +81,8 @@ unstarGist auth gid = executeRequest auth $ unstarGistR gid
 
 -- | Unstar a gist by the authenticated user.
 -- See <https://developer.github.com/v3/gists/#unstar-a-gist>
-unstarGistR :: Name Gist -> Request 'RW ()
-unstarGistR gid = command Delete ["gists", toPathPart gid, "star"] mempty
+unstarGistR :: Name Gist -> GenRequest 'MtUnit 'RW ()
+unstarGistR gid = Command Delete ["gists", toPathPart gid, "star"] mempty
 
 -- | Delete a gist by the authenticated user.
 --
@@ -92,5 +92,5 @@ deleteGist auth gid = executeRequest auth $ deleteGistR gid
 
 -- | Delete a gist by the authenticated user.
 -- See <https://developer.github.com/v3/gists/#delete-a-gist>
-deleteGistR :: Name Gist -> Request 'RW ()
-deleteGistR gid = command Delete ["gists", toPathPart gid] mempty
+deleteGistR :: Name Gist -> GenRequest 'MtUnit 'RW ()
+deleteGistR gid = Command Delete ["gists", toPathPart gid] mempty

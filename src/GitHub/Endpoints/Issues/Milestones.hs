@@ -80,7 +80,7 @@ deleteMilestone auth user repo mid = executeRequest auth $ deleteMilestoneR user
 
 -- | Delete a milestone.
 -- See <https://developer.github.com/v3/issues/milestones/#delete-a-milestone>
-deleteMilestoneR :: Name Owner -> Name Repo -> Id Milestone -> Request 'RW ()
+deleteMilestoneR :: Name Owner -> Name Repo -> Id Milestone -> GenRequest 'MtUnit 'RW ()
 deleteMilestoneR user repo mid =
-    command Delete
+    Command Delete
         ["repos", toPathPart user, toPathPart repo, "milestones", toPathPart mid] mempty

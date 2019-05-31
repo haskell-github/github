@@ -18,6 +18,8 @@
   [#363](https://github.com/phadej/github/pull/365)
 - Case insensitive enum parsing
   [#373](https://github.com/phadej/github/pull/373)
+- Don't try parse unitary responses
+  [#377](https://github.com/phadej/github/issues/377)
 - Update dependencies
   [#364](https://github.com/phadej/github/pull/364)
   [#368](https://github.com/phadej/github/pull/368)
