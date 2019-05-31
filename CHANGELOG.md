@@ -2,16 +2,22 @@
 
 ## Changes for 0.22
 
-  [#370](https://github.com/phadej/github/pull/370)
 - Type-class for various auth methods
   [#365](https://github.com/phadej/github/pull/365)
 - Throw on non-200 responses
   [#350](https://github.com/phadej/github/pull/350)
 - Add extension point for (preview) media types
+  [#370](https://github.com/phadej/github/pull/370)
 - Add missing webhook event types
   [#359](https://github.com/phadej/github/pull/359)
+- Add invitation endpoint
+  [#360](https://github.com/phadej/github/pull/360)
 - Add notifications endpoints
   [#324](https://github.com/phadej/github/pull/324)
+- Add ssh keys endpoints
+  [#363](https://github.com/phadej/github/pull/365)
+- Case insensitive enum parsing
+  [#373](https://github.com/phadej/github/pull/373)
 - Update dependencies
   [#364](https://github.com/phadej/github/pull/364)
   [#368](https://github.com/phadej/github/pull/368)

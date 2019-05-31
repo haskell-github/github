@@ -12,6 +12,8 @@ import GitHub.Internal.Prelude
 
 import Prelude ()
 
+import qualified Data.Text as T
+
 data RepoStarred = RepoStarred
     { repoStarredStarredAt :: !UTCTime
     , repoStarredRepo      :: !Repo
@@ -65,18 +67,18 @@ instance NFData NotificationReason where rnf = genericRnf
 instance Binary NotificationReason
 
 instance FromJSON NotificationReason where
-    parseJSON = withText "NotificationReason" $ \t -> case t of
-        "assign" -> pure AssignReason
-        "author" -> pure AuthorReason
-        "comment" -> pure CommentReason
-        "invitation" -> pure InvitationReason
-        "manual" -> pure ManualReason
-        "mention" -> pure MentionReason
+    parseJSON = withText "NotificationReason" $ \t -> case T.toLower t of
+        "assign"           -> pure AssignReason
+        "author"           -> pure AuthorReason
+        "comment"          -> pure CommentReason
+        "invitation"       -> pure InvitationReason
+        "manual"           -> pure ManualReason
+        "mention"          -> pure MentionReason
         "review_requested" -> pure ReviewRequestedReason
-        "state_change" -> pure StateChangeReason
-        "subscribed" -> pure SubscribedReason
-        "team_mention" -> pure TeamMentionReason
-        _ -> fail $ "Unknown NotificationReason " ++ show t
+        "state_change"     -> pure StateChangeReason
+        "subscribed"       -> pure SubscribedReason
+        "team_mention"     -> pure TeamMentionReason
+        _                  -> fail $ "Unknown NotificationReason " ++ show t
 
 data Notification = Notification
     -- XXX: The notification id field type IS in fact string. Not sure why gh
