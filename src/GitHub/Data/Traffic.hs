@@ -33,6 +33,14 @@ data Path = Path
     }
     deriving (Eq, Show)
 
+instance FromJSON Path where
+  parseJSON = withObject "Path" $ \o ->
+    Path
+    <$> o .: "path"
+    <*> o .: "title"
+    <*> o .: "count"
+    <*> o .: "uniques"
+
 data Period =
       Day
     | Week

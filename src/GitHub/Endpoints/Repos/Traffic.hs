@@ -2,7 +2,10 @@
 module GitHub.Endpoints.Repos.Traffic (
     popularReferrers,
     popularReferrers',
-    popularReferrersR
+    popularReferrersR,
+    popularPaths,
+    popularPaths',
+    popularPathsR,
     ) where
 
 import Data.Vector (Vector)
@@ -23,8 +26,8 @@ popularReferrers =
 --
 -- > popularReferrers' (Just $ BasicAuth "github-username" "github-password") "qfpl" "tasty-hedgehog"
 popularReferrers' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Referrer))
-popularReferrers' auth user repo =
-  executeRequestMaybe auth $ popularReferrersR user repo
+popularReferrers' auth user =
+  executeRequestMaybe auth . popularReferrersR user
 
 popularReferrersR :: Name Owner -> Name Repo -> Request k (Vector Referrer)
 popularReferrersR user repo =
@@ -32,11 +35,15 @@ popularReferrersR user repo =
 
 popularPaths :: Name Owner -> Name Repo -> IO (Either Error (Vector Path))
 popularPaths =
-  undefined
+  popularPaths' Nothing
 
 popularPaths' :: Maybe Auth -> Name Owner -> Name Repo -> IO (Either Error (Vector Path))
-popularPaths' =
-  undefined
+popularPaths' auth user =
+  executeRequestMaybe auth . popularPathsR user
+
+popularPathsR :: Name Owner -> Name Repo -> Request k (Vector Path)
+popularPathsR user repo =
+  query ["repos", toPathPart user, toPathPart repo, "traffic", "popular", "paths"] []
 
 views :: Name Owner -> Name Repo -> Period -> IO (Either Error Views)
 views =
