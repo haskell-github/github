@@ -1,9 +1,15 @@
 -- | The traffic API, as described at <https://developer.github.com/v3/repos/traffic/>
-module GitHub.Endpoints.Repos.Traffic () where
+module GitHub.Endpoints.Repos.Traffic (
+    popularReferrers,
+    popularReferrers',
+    popularReferrersR
+    ) where
 
 import Data.Vector (Vector)
 
-import GitHub.Data (Referrer, Name, Repo)
+import GitHub.Data (Referrer, Name, Repo, Owner, Auth, Error, Clones, Path, Period, Views)
+import GitHub.Data.Request (query, toPathPart)
+import GitHub.Request (Request, executeRequestMaybe)
 
 -- | The top 10 referrers for the past 14 days.
 --

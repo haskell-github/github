@@ -8,13 +8,22 @@ import Data.Time (UTCTime)
 import Data.Vector (Vector)
 
 import GitHub.Data.Name (Name)
+import GitHub.Internal.Prelude
+import Prelude ()
 
 data Referrer = Referrer
     { referrer        :: !(Name Referrer)
     , referrerCount   :: !Int
     , referrerUniques :: !Int
     }
-    deriving (Eq, Show)
+    deriving (Eq, Show, Generic)
+
+instance FromJSON Referrer where
+  parseJSON = withObject "Referrer" $ \o ->
+    Referrer
+    <$> o .: "referrer"
+    <*> o .: "count"
+    <*> o .: "uniques"
 
 data Path = Path
     { path :: !Text
