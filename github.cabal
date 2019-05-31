@@ -96,6 +96,7 @@ library
     GitHub.Data.Search
     GitHub.Data.Statuses
     GitHub.Data.Teams
+    GitHub.Data.Traffic
     GitHub.Data.URL
     GitHub.Data.Webhooks
     GitHub.Data.Webhooks.Validate
@@ -131,6 +132,7 @@ library
     GitHub.Endpoints.Repos.Forks
     GitHub.Endpoints.Repos.Releases
     GitHub.Endpoints.Repos.Statuses
+    GitHub.Endpoints.Repos.Traffic
     GitHub.Endpoints.Repos.Webhooks
     GitHub.Endpoints.Search
     GitHub.Endpoints.Users
