@@ -6,11 +6,17 @@ module GitHub.Endpoints.Repos.Traffic (
     popularPaths,
     popularPaths',
     popularPathsR,
+    views,
+    views',
+    viewsR,
+    clones,
+    clones',
+    clonesR
     ) where
 
 import Data.Vector (Vector)
 
-import GitHub.Data (Referrer, Name, Repo, Owner, Auth, Error, Clones, Path, Period, Views)
+import GitHub.Data (Referrer, Name, Repo, Owner, Auth, Error, Clones, Path, Period, Views, prettyPeriod)
 import GitHub.Data.Request (query, toPathPart)
 import GitHub.Request (Request, executeRequestMaybe)
 
@@ -45,18 +51,26 @@ popularPathsR :: Name Owner -> Name Repo -> Request k (Vector Path)
 popularPathsR user repo =
   query ["repos", toPathPart user, toPathPart repo, "traffic", "popular", "paths"] []
 
-views :: Name Owner -> Name Repo -> Period -> IO (Either Error Views)
+views :: Name Owner -> Name Repo -> Period p -> IO (Either Error (Views p))
 views =
-  undefined
+  views' Nothing
 
-views' :: Maybe Auth -> Name Owner -> Name Repo -> Period -> IO (Either Error Views)
-views' =
-  undefined
+views' :: Maybe Auth -> Name Owner -> Name Repo -> Period p -> IO (Either Error (Views p))
+views' auth user repo =
+  executeRequestMaybe auth . viewsR user repo
 
-clones :: Name Owner -> Name Repo -> Period -> IO (Either Error Clones)
+viewsR :: Name Owner -> Name Repo -> Period p -> Request k (Views p)
+viewsR user repo period =
+  query ["repos", toPathPart user, toPathPart repo, "traffic", "views"] [("per", Just $ prettyPeriod period)]
+
+clones :: Name Owner -> Name Repo -> Period p -> IO (Either Error (Clones p))
 clones =
-  undefined
+  clones' Nothing
 
-clones' :: Maybe Auth -> Name Owner -> Name Repo -> Period -> IO (Either Error Clones)
-clones' =
-  undefined
+clones' :: Maybe Auth -> Name Owner -> Name Repo -> Period p -> IO (Either Error (Clones p))
+clones' auth user repo =
+  executeRequestMaybe auth . clonesR user repo
+
+clonesR :: Name Owner -> Name Repo -> Period p -> Request k (Clones p)
+clonesR user repo period =
+  query ["repos", toPathPart user, toPathPart repo, "traffic", "clones"] [("per", Just $ prettyPeriod period)]
