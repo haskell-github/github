@@ -74,7 +74,6 @@ import Network.HTTP.Client
        (HttpException (..), Manager, RequestBody (..), Response (..), getUri,
        httpLbs, method, newManager, redirectCount, requestBody, requestHeaders,
        setQueryString, setRequestIgnoreStatus)
-import Network.HTTP.Client.TLS  (tlsManagerSettings)
 import Network.HTTP.Link.Parser (parseLinkHeaderBS)
 import Network.HTTP.Link.Types  (Link (..), LinkParam (..), href, linkParams)
 import Network.HTTP.Types       (Method, RequestHeaders, Status (..))
@@ -88,10 +87,35 @@ import qualified Data.Vector                  as V
 import qualified Network.HTTP.Client          as HTTP
 import qualified Network.HTTP.Client.Internal as HTTP
 
+#ifdef MIN_VERSION_http_client_tls
+import Network.HTTP.Client.TLS  (tlsManagerSettings)
+#else
+import Network.HTTP.Client.OpenSSL (opensslManagerSettings, withOpenSSL)
+
+import qualified OpenSSL.Session as SSL
+import qualified OpenSSL.X509.SystemStore as SSL
+#endif
+
 import GitHub.Auth              (Auth, AuthMethod, endpoint, setAuthRequest)
 import GitHub.Data              (Error (..))
 import GitHub.Data.PullRequests (MergeResult (..))
 import GitHub.Data.Request
+
+#ifdef MIN_VERSION_http_client_tls
+withOpenSSL :: IO a -> IO a
+withOpenSSL = id
+#else
+tlsManagerSettings :: HTTP.ManagerSettings
+tlsManagerSettings = opensslManagerSettings $ do
+    ctx <- SSL.context
+    SSL.contextAddOption ctx SSL.SSL_OP_NO_SSLv2
+    SSL.contextAddOption ctx SSL.SSL_OP_NO_SSLv3
+    SSL.contextAddOption ctx SSL.SSL_OP_NO_TLSv1
+    SSL.contextSetCiphers ctx "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256"
+    SSL.contextLoadSystemCerts ctx
+    SSL.contextSetVerificationMode ctx $ SSL.VerifyPeer True True Nothing
+    return ctx
+#endif
 
 -- | Execute 'Request' in 'IO'
 executeRequest
@@ -99,7 +123,7 @@ executeRequest
     => am
     -> GenRequest mt rw a
     -> IO (Either Error a)
-executeRequest auth req = do
+executeRequest auth req = withOpenSSL $ withOpenSSL $ do
     manager <- newManager tlsManagerSettings
     executeRequestWithMgr manager auth req
 
@@ -137,7 +161,7 @@ executeRequestWithMgr mgr auth req = runExceptT $ do
 
 -- | Like 'executeRequest' but without authentication.
 executeRequest' :: ParseResponse mt a => GenRequest mt 'RO a -> IO (Either Error a)
-executeRequest' req = do
+executeRequest' req = withOpenSSL $ do
     manager <- newManager tlsManagerSettings
     executeRequestWithMgr' manager req
 

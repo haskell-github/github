@@ -10,3 +10,5 @@ constraints: semigroups ^>=0.19
 
 allow-newer: aeson-1.4.3.0:hashable
 allow-newer: aeson-1.4.3.0:semigroups
+
+constraints: github +openssl
