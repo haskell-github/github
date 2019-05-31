@@ -29,17 +29,17 @@ instance FromJSON Referrer where
     <*> o .: "count"
     <*> o .: "uniques"
 
-data Path = Path
-    { path :: !Text
-    , pathTitle :: !Text
-    , pathCount :: !Int
-    , pathUniques :: !Int
+data PopularPath = PopularPath
+    { popularPath :: !Text
+    , popularPathTitle :: !Text
+    , popularPathCount :: !Int
+    , popularPathUniques :: !Int
     }
     deriving (Eq, Show)
 
-instance FromJSON Path where
+instance FromJSON PopularPath where
   parseJSON = withObject "Path" $ \o ->
-    Path
+    PopularPath
     <$> o .: "path"
     <*> o .: "title"
     <*> o .: "count"
