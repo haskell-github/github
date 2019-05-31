@@ -7,7 +7,7 @@ import Data.Text (Text)
 import Data.Time (UTCTime)
 import Data.Vector (Vector)
 
-import GitHub (Name)
+import GitHub.Data.Name (Name)
 
 data Referrer = Referrer
     { referrer        :: !(Name Referrer)
@@ -29,25 +29,25 @@ data Period =
     | Week
     deriving (Eq, Show)
 
-data Event =
+data TrafficEvent =
       View
     | Clone
     deriving (Eq, Show)
 
-data Count (e :: Event) (p :: Period) = Count
-    { countTimestamp :: !UTCTime
-    , count :: !Int
-    , countUniques :: !Int
+data TrafficCount (e :: TrafficEvent) (p :: Period) = TrafficCount
+    { trafficCountTimestamp :: !UTCTime
+    , trafficCount :: !Int
+    , trafficCountUniques :: !Int
     }
 
 data Views p = Views
     { viewsCount :: !Int
     , viewsUniques :: !Int
-    , viewsPer :: Vector (Count 'View p)
+    , viewsPer :: Vector (TrafficCount 'View p)
     }
 
 data Clones p = Clones
     { clonesCount :: !Int
     , clonesUniques :: !Int
-    , clonesPer :: Vector (Count 'Clone p)
+    , clonesPer :: Vector (TrafficCount 'Clone p)
     }
