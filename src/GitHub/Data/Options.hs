@@ -21,6 +21,8 @@ module GitHub.Data.Options (
     optionsNoBase,
     optionsHead,
     optionsNoHead,
+    filterAll,
+    filterClosed,
     sortByPopularity,
     sortByLongRunning,
     -- * Issues
@@ -335,6 +337,14 @@ optionsHead x = PRMod $ \opts ->
 optionsNoHead :: PullRequestMod
 optionsNoHead = PRMod $ \opts ->
     opts { pullRequestOptionsHead = Nothing }
+
+filterAll :: PullRequestMod
+filterAll = PRMod $ \opts ->
+    opts { pullRequestOptionsState = Nothing }
+
+filterClosed :: PullRequestMod
+filterClosed = PRMod $ \opts ->
+    opts { pullRequestOptionsState = Just StateClosed }
 
 sortByPopularity :: PullRequestMod
 sortByPopularity = PRMod $ \opts ->
