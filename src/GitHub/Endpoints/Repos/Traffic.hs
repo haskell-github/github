@@ -55,7 +55,8 @@ views' auth user repo =
 -- See <https://developer.github.com/v3/repos/traffic/#views>
 viewsR :: Name Owner -> Name Repo -> Period -> Request k Views
 viewsR user repo period =
-    query ["repos", toPathPart user, toPathPart repo, "traffic", "views"] [("per", Just $ prettyPeriod period)]
+    query ["repos", toPathPart user, toPathPart repo, "traffic", "views"]
+          [("per", Just $ prettyPeriod period)]
 
 -- | The total number of clones over the last 14 days, and a daily or weekly breakdown.
 --
@@ -68,4 +69,5 @@ clones' auth user repo =
 -- See <https://developer.github.com/v3/repos/traffic/#clones>
 clonesR :: Name Owner -> Name Repo -> Period -> Request k Clones
 clonesR user repo period =
-    query ["repos", toPathPart user, toPathPart repo, "traffic", "clones"] [("per", Just $ prettyPeriod period)]
+    query ["repos", toPathPart user, toPathPart repo, "traffic", "clones"]
+          [("per", Just $ prettyPeriod period)]
