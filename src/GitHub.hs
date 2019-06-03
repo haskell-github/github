@@ -31,6 +31,7 @@ module GitHub (
     getNotificationsR,
     markNotificationAsReadR,
     markAllNotificationsAsReadR,
+    deleteThreadSubscriptionR,
 
     -- ** Starring
     -- | See <https://developer.github.com/v3/activity/starring/>

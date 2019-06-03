@@ -34,3 +34,15 @@ markNotificationAsReadR nid = Command
 markAllNotificationsAsReadR :: GenRequest 'MtUnit 'RW ()
 markAllNotificationsAsReadR =
     Command Put ["notifications"] $ encode emptyObject
+
+deleteThreadSubscription :: Auth -> Id Notification -> IO (Either Error ())
+deleteThreadSubscription auth nid =
+    executeRequest auth $ deleteThreadSubscriptionR nid
+
+-- | Delete a thread subscription.
+-- See <https://developer.github.com/v3/activity/notifications/#delete-a-thread-subscription>
+deleteThreadSubscriptionR :: Id Notification -> GenRequest 'MtUnit 'RW ()
+deleteThreadSubscriptionR nid = Command
+    Delete
+    ["notifications", "threads", toPathPart nid, "subscription"]
+    mempty
