@@ -1,6 +1,6 @@
-{-# LANGUAGE FlexibleInstances  #-}
-{-# LANGUAGE KindSignatures     #-}
-{-# LANGUAGE LambdaCase         #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE KindSignatures    #-}
+{-# LANGUAGE LambdaCase        #-}
 
 -- | Data types used in the traffic API
 module GitHub.Data.Traffic where
@@ -28,9 +28,9 @@ instance FromJSON Referrer where
       <*> o .: "uniques"
 
 data PopularPath = PopularPath
-    { popularPath :: !Text
-    , popularPathTitle :: !Text
-    , popularPathCount :: !Int
+    { popularPath        :: !Text
+    , popularPathTitle   :: !Text
+    , popularPathCount   :: !Int
     , popularPathUniques :: !Int
     }
     deriving (Eq, Show)
@@ -60,8 +60,8 @@ data TrafficEvent =
 
 data TrafficCount (e :: TrafficEvent) = TrafficCount
     { trafficCountTimestamp :: !UTCTime
-    , trafficCount :: !Int
-    , trafficCountUniques :: !Int
+    , trafficCount          :: !Int
+    , trafficCountUniques   :: !Int
     }
     deriving (Eq, Show)
 
@@ -73,9 +73,9 @@ instance FromJSON (TrafficCount e) where
       <*> o .: "uniques"
 
 data Views = Views
-    { viewsCount :: !Int
+    { viewsCount   :: !Int
     , viewsUniques :: !Int
-    , views :: !(Vector (TrafficCount 'View))
+    , views        :: !(Vector (TrafficCount 'View))
     }
     deriving (Eq, Show)
 
@@ -87,9 +87,9 @@ instance FromJSON Views where
       <*> o .: "views"
 
 data Clones = Clones
-    { clonesCount :: !Int
+    { clonesCount   :: !Int
     , clonesUniques :: !Int
-    , clones :: !(Vector (TrafficCount 'Clone))
+    , clones        :: !(Vector (TrafficCount 'Clone))
     }
     deriving (Eq, Show)
 
