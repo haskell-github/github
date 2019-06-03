@@ -313,6 +313,13 @@ module GitHub (
     pingRepoWebhookR,
     deleteRepoWebhookR,
 
+    -- ** Traffic
+    -- | See <https://developer.github.com/v3/repos/traffic/>
+    popularReferrersR,
+    popularPathsR,
+    viewsR,
+    clonesR,
+
     -- * Releases
     releasesR,
     releaseR,
@@ -410,6 +417,7 @@ import GitHub.Endpoints.Repos.Deployments
 import GitHub.Endpoints.Repos.Forks
 import GitHub.Endpoints.Repos.Releases
 import GitHub.Endpoints.Repos.Statuses
+import GitHub.Endpoints.Repos.Traffic
 import GitHub.Endpoints.Repos.Webhooks
 import GitHub.Endpoints.Search
 import GitHub.Endpoints.Users
