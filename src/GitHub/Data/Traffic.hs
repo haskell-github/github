@@ -21,11 +21,10 @@ data Referrer = Referrer
     deriving (Eq, Show, Generic)
 
 instance FromJSON Referrer where
-    parseJSON = withObject "Referrer" $ \o ->
-      Referrer
-      <$> o .: "referrer"
-      <*> o .: "count"
-      <*> o .: "uniques"
+    parseJSON = withObject "Referrer" $ \o -> Referrer
+        <$> o .: "referrer"
+        <*> o .: "count"
+        <*> o .: "uniques"
 
 data PopularPath = PopularPath
     { popularPath        :: !Text
@@ -36,12 +35,11 @@ data PopularPath = PopularPath
     deriving (Eq, Show)
 
 instance FromJSON PopularPath where
-    parseJSON = withObject "Path" $ \o ->
-      PopularPath
-      <$> o .: "path"
-      <*> o .: "title"
-      <*> o .: "count"
-      <*> o .: "uniques"
+    parseJSON = withObject "Path" $ \o -> PopularPath
+        <$> o .: "path"
+        <*> o .: "title"
+        <*> o .: "count"
+        <*> o .: "uniques"
 
 data Period =
     Day
@@ -53,8 +51,8 @@ prettyPeriod = \case
     Day -> "day"
     Week -> "week"
 
-data TrafficEvent =
-      View
+data TrafficEvent
+    = View
     | Clone
     deriving (Eq, Show)
 
@@ -66,11 +64,10 @@ data TrafficCount (e :: TrafficEvent) = TrafficCount
     deriving (Eq, Show)
 
 instance FromJSON (TrafficCount e) where
-    parseJSON = withObject "TrafficCount" $ \o ->
-      TrafficCount
-      <$> o .: "timestamp"
-      <*> o .: "count"
-      <*> o .: "uniques"
+    parseJSON = withObject "TrafficCount" $ \o -> TrafficCount
+        <$> o .: "timestamp"
+        <*> o .: "count"
+        <*> o .: "uniques"
 
 data Views = Views
     { viewsCount   :: !Int
@@ -80,11 +77,10 @@ data Views = Views
     deriving (Eq, Show)
 
 instance FromJSON Views where
-    parseJSON = withObject "Views" $ \o ->
-      Views
-      <$> o .: "count"
-      <*> o .: "uniques"
-      <*> o .: "views"
+    parseJSON = withObject "Views" $ \o -> Views
+        <$> o .: "count"
+        <*> o .: "uniques"
+        <*> o .: "views"
 
 data Clones = Clones
     { clonesCount   :: !Int
@@ -94,8 +90,7 @@ data Clones = Clones
     deriving (Eq, Show)
 
 instance FromJSON Clones where
-    parseJSON = withObject "Clones" $ \o ->
-      Clones
-      <$> o .: "count"
-      <*> o .: "uniques"
-      <*> o .: "clones"
+    parseJSON = withObject "Clones" $ \o -> Clones
+        <$> o .: "count"
+        <*> o .: "uniques"
+        <*> o .: "clones"
