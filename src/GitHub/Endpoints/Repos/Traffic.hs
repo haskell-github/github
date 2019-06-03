@@ -47,25 +47,25 @@ popularPathsR user repo =
 -- | The total number of views over the last 14 days, and a daily or weekly breakdown.
 --
 -- > views' (OAuth "supersecrettoken") "qfpl" "tasty-hedgehog" Day
-views' :: Auth -> Name Owner -> Name Repo -> Period p -> IO (Either Error (Views p))
+views' :: Auth -> Name Owner -> Name Repo -> Period -> IO (Either Error Views)
 views' auth user repo =
     executeRequest auth . viewsR user repo
 
 -- | The total number of views over the last 14 days, and a daily or weekly breakdown.
 -- See <https://developer.github.com/v3/repos/traffic/#views>
-viewsR :: Name Owner -> Name Repo -> Period p -> Request k (Views p)
+viewsR :: Name Owner -> Name Repo -> Period -> Request k Views
 viewsR user repo period =
     query ["repos", toPathPart user, toPathPart repo, "traffic", "views"] [("per", Just $ prettyPeriod period)]
 
 -- | The total number of clones over the last 14 days, and a daily or weekly breakdown.
 --
 -- > clones' (OAuth "supersecrettoken") "qfpl" "tasty-hedgehog" Week
-clones' :: Auth -> Name Owner -> Name Repo -> Period p -> IO (Either Error (Clones p))
+clones' :: Auth -> Name Owner -> Name Repo -> Period -> IO (Either Error Clones)
 clones' auth user repo =
     executeRequest auth . clonesR user repo
 
 -- | The total number of clones over the last 14 days, and a daily or weekly breakdown.
 -- See <https://developer.github.com/v3/repos/traffic/#clones>
-clonesR :: Name Owner -> Name Repo -> Period p -> Request k (Clones p)
+clonesR :: Name Owner -> Name Repo -> Period -> Request k Clones
 clonesR user repo period =
     query ["repos", toPathPart user, toPathPart repo, "traffic", "clones"] [("per", Just $ prettyPeriod period)]

@@ -1,8 +1,6 @@
 {-# LANGUAGE FlexibleInstances  #-}
-{-# LANGUAGE GADTs              #-}
 {-# LANGUAGE KindSignatures     #-}
 {-# LANGUAGE LambdaCase         #-}
-{-# LANGUAGE StandaloneDeriving #-}
 
 -- | Data types used in the traffic API
 module GitHub.Data.Traffic where
@@ -23,11 +21,11 @@ data Referrer = Referrer
     deriving (Eq, Show, Generic)
 
 instance FromJSON Referrer where
-  parseJSON = withObject "Referrer" $ \o ->
-    Referrer
-    <$> o .: "referrer"
-    <*> o .: "count"
-    <*> o .: "uniques"
+    parseJSON = withObject "Referrer" $ \o ->
+      Referrer
+      <$> o .: "referrer"
+      <*> o .: "count"
+      <*> o .: "uniques"
 
 data PopularPath = PopularPath
     { popularPath :: !Text
@@ -38,73 +36,66 @@ data PopularPath = PopularPath
     deriving (Eq, Show)
 
 instance FromJSON PopularPath where
-  parseJSON = withObject "Path" $ \o ->
-    PopularPath
-    <$> o .: "path"
-    <*> o .: "title"
-    <*> o .: "count"
-    <*> o .: "uniques"
+    parseJSON = withObject "Path" $ \o ->
+      PopularPath
+      <$> o .: "path"
+      <*> o .: "title"
+      <*> o .: "count"
+      <*> o .: "uniques"
 
-data Period' =
-  Day'
-  | Week'
-  deriving (Eq, Show)
+data Period =
+    Day
+    | Week
+    deriving (Eq, Show)
 
-data Period p where
-    Day :: Period 'Day'
-    Week :: Period 'Week'
-
-deriving instance Eq (Period p)
-deriving instance Show (Period p)
-
-prettyPeriod :: IsString a => Period p -> a
+prettyPeriod :: IsString a => Period -> a
 prettyPeriod = \case
-  Day -> "day"
-  Week -> "week"
+    Day -> "day"
+    Week -> "week"
 
 data TrafficEvent =
       View
     | Clone
     deriving (Eq, Show)
 
-data TrafficCount (e :: TrafficEvent) (p :: Period') = TrafficCount
+data TrafficCount (e :: TrafficEvent) = TrafficCount
     { trafficCountTimestamp :: !UTCTime
     , trafficCount :: !Int
     , trafficCountUniques :: !Int
     }
     deriving (Eq, Show)
 
-instance FromJSON (TrafficCount e p) where
-  parseJSON = withObject "TrafficCount" $ \o ->
-    TrafficCount
-    <$> o .: "timestamp"
-    <*> o .: "count"
-    <*> o .: "uniques"
+instance FromJSON (TrafficCount e) where
+    parseJSON = withObject "TrafficCount" $ \o ->
+      TrafficCount
+      <$> o .: "timestamp"
+      <*> o .: "count"
+      <*> o .: "uniques"
 
-data Views p = Views
+data Views = Views
     { viewsCount :: !Int
     , viewsUniques :: !Int
-    , views :: !(Vector (TrafficCount 'View p))
+    , views :: !(Vector (TrafficCount 'View))
     }
     deriving (Eq, Show)
 
-instance FromJSON (Views p) where
-  parseJSON = withObject "Views" $ \o ->
-    Views
-    <$> o .: "count"
-    <*> o .: "uniques"
-    <*> o .: "views"
+instance FromJSON Views where
+    parseJSON = withObject "Views" $ \o ->
+      Views
+      <$> o .: "count"
+      <*> o .: "uniques"
+      <*> o .: "views"
 
-data Clones p = Clones
+data Clones = Clones
     { clonesCount :: !Int
     , clonesUniques :: !Int
-    , clones :: !(Vector (TrafficCount 'Clone p))
+    , clones :: !(Vector (TrafficCount 'Clone))
     }
     deriving (Eq, Show)
 
-instance FromJSON (Clones p) where
-  parseJSON = withObject "Clones" $ \o ->
-    Clones
-    <$> o .: "count"
-    <*> o .: "uniques"
-    <*> o .: "clones"
+instance FromJSON Clones where
+    parseJSON = withObject "Clones" $ \o ->
+      Clones
+      <$> o .: "count"
+      <*> o .: "uniques"
+      <*> o .: "clones"
