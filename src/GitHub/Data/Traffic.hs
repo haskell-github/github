@@ -1,6 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE KindSignatures    #-}
-{-# LANGUAGE LambdaCase        #-}
 
 -- | Data types used in the traffic API
 module GitHub.Data.Traffic where
@@ -45,11 +44,6 @@ data Period =
     Day
     | Week
     deriving (Eq, Show)
-
-prettyPeriod :: IsString a => Period -> a
-prettyPeriod = \case
-    Day -> "day"
-    Week -> "week"
 
 data TrafficEvent
     = View

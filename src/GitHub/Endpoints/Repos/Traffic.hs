@@ -1,3 +1,5 @@
+{-# LANGUAGE LambdaCase #-}
+
 -- | The traffic API, as described at <https://developer.github.com/v3/repos/traffic/>
 module GitHub.Endpoints.Repos.Traffic (
     popularReferrers',
@@ -13,10 +15,12 @@ module GitHub.Endpoints.Repos.Traffic (
 import Data.Vector (Vector)
 
 import GitHub.Data
-       (Auth, Clones, Error, Name, Owner, Period, PopularPath, Referrer, Repo,
-       Views, prettyPeriod)
-import GitHub.Data.Request (query, toPathPart)
-import GitHub.Request      (Request, executeRequest)
+       (Auth, Clones, Error, Name, Owner, Period (Day, Week), PopularPath,
+       Referrer, Repo, Views)
+import GitHub.Data.Request     (query, toPathPart)
+import GitHub.Internal.Prelude
+import GitHub.Request          (Request, executeRequest)
+import Prelude ()
 
 -- | The top 10 referrers for the past 14 days.
 --
@@ -56,7 +60,7 @@ views' auth user repo =
 viewsR :: Name Owner -> Name Repo -> Period -> Request k Views
 viewsR user repo period =
     query ["repos", toPathPart user, toPathPart repo, "traffic", "views"]
-          [("per", Just $ prettyPeriod period)]
+          [("per", Just $ serializePeriod period)]
 
 -- | The total number of clones over the last 14 days, and a daily or weekly breakdown.
 --
@@ -70,4 +74,9 @@ clones' auth user repo =
 clonesR :: Name Owner -> Name Repo -> Period -> Request k Clones
 clonesR user repo period =
     query ["repos", toPathPart user, toPathPart repo, "traffic", "clones"]
-          [("per", Just $ prettyPeriod period)]
+          [("per", Just $ serializePeriod period)]
+
+serializePeriod :: IsString a => Period -> a
+serializePeriod = \case
+    Day -> "day"
+    Week -> "week"
