@@ -1,5 +1,3 @@
-{-# LANGUAGE LambdaCase #-}
-
 -- | The traffic API, as described at <https://developer.github.com/v3/repos/traffic/>
 module GitHub.Endpoints.Repos.Traffic (
     popularReferrers',
@@ -77,6 +75,6 @@ clonesR user repo period =
           [("per", Just $ serializePeriod period)]
 
 serializePeriod :: IsString a => Period -> a
-serializePeriod = \case
+serializePeriod p = case p of
     Day -> "day"
     Week -> "week"
