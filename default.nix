@@ -1,26 +1,16 @@
-{ mkDerivation, aeson, attoparsec, base, base16-bytestring
-, byteable, bytestring, case-insensitive, conduit, containers
-, cryptohash, data-default, failure, hashable, hspec, HTTP
-, http-conduit, http-types, network, old-locale, stdenv, text, time
-, unordered-containers, vector
+{ nixpkgs ? import ./nix/nixpkgs.nix
+, dev ? false
 }:
-mkDerivation {
-  pname = "github";
-  version = "0.14.0";
-  src = ./.;
-  buildDepends = [
-    aeson attoparsec base base16-bytestring byteable bytestring
-    case-insensitive conduit containers cryptohash data-default failure
-    hashable HTTP http-conduit http-types network old-locale text time
-    unordered-containers vector
-  ];
-  testDepends = [
-    aeson attoparsec base base16-bytestring byteable bytestring
-    case-insensitive conduit containers cryptohash data-default failure
-    hashable hspec HTTP http-conduit http-types network old-locale text
-    time unordered-containers vector
-  ];
-  homepage = "https://github.com/fpco/github";
-  description = "Access to the Github API, v3";
-  license = stdenv.lib.licenses.bsd3;
-}
+let
+  pkgs = import nixpkgs { config.allowBroken = true; };
+  hp = pkgs.haskellPackages.override (old: {
+    overrides = pkgs.lib.composeExtensions (old.overrides or (_: _: {})) (self: super: with pkgs.haskell.lib; {
+      binary-instances-1 = doJailbreak self.binary-instances-1;
+      QuickCheck = self.QuickCheck_2_13_1;
+      quickcheck-instances = super.quickcheck-instances_0_3_21;
+      binary-orphans = self.binary-orphans_1_0_1;
+      github = super.callCabal2nix "github" ./github.cabal {};
+    });
+  });
+in
+  hp.github
