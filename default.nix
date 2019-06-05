@@ -1,8 +1,19 @@
 { nixpkgs ? import ./nix/nixpkgs.nix
-, dev ? false
+, cabal-v2 ? true
 }:
 let
   pkgs = import nixpkgs {};
+
+  # Newer versions to meet `constraints` in `cabal.project` for v2 builds
+  v2-overrides = super: if cabal-v2 then
+    {
+      hashable = super.hashable_1_3_0_0;
+      semigroups = super.semigroups_0_19;
+    }
+    else
+    {
+    };
+
   hp = pkgs.haskellPackages.override (with pkgs.haskell.lib; {
     overrides = self: super: {
       # Newer versions of things we need
@@ -29,7 +40,7 @@ let
       # Break infinite recursion through QuickCheck test dep
       splitmix = dontCheck super.splitmix;
 
-    };
+    } // (v2-overrides super);
   });
   github = hp.callCabal2nix "github" ./. {};
 in
