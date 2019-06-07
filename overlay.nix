@@ -8,13 +8,13 @@ _: pkgs: {
       });
 
       # Newer versions of things.
-      # -------------------------
       ansi-terminal = super.ansi-terminal_0_9_1;
       binary-orphans = super.binary-orphans_1_0_1;
-      # hashable is here because it's constrained in the cabal.project file.
+      # hashable is here because of the constraint in the cabal.project file.
       hashable = super.hashable_1_3_0_0;
       QuickCheck = super.QuickCheck_2_13_1;
       quickcheck-instances = super.quickcheck-instances_0_3_21;
+      # semigroups is here because of the constraint in the cabal.project file.
       semigroups = super.semigroups_0_19;
       tasty = super.tasty_1_2_2;
       time-compat = super.time-compat_1_9_2_2;
