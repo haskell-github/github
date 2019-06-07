@@ -1,31 +1,32 @@
 _: pkgs: {
   haskellPackages = pkgs.haskellPackages.override (old: {
-    overrides = pkgs.lib.composeExtensions (old.overrides or (_: _: {})) (self: super: {
-      unordered-containers = pkgs.haskell.lib.overrideCabal super.unordered-containers (_: {
-        version = "0.2.10.0";
-        sha256 = "0wy5hfrs880hh8hvp648bl07ws777n3kkmczzdszr7papnyigwb5";
-      });
-      binary-instances = pkgs.haskell.lib.dontCheck (pkgs.haskell.lib.overrideCabal super.binary-instances (old: {
-        libraryHaskellDepends = old.libraryHaskellDepends ++ [
-          self.binary-orphans_1_0_1
-        ];
+    overrides = pkgs.lib.composeExtensions (old.overrides or (_: _: {})) (self: super: with pkgs.haskell.lib; {
+
+      # binary-instances gets the versions it needs thanks to this overlay, so is no longer broken.
+      binary-instances = overrideCabal super.binary-instances (drv: {
         broken = false;
-      }));
-      binary-orphans_1_0_1 = pkgs.haskell.lib.dontCheck super.binary-orphans_1_0_1;
-      github = pkgs.haskell.lib.overrideCabal super.github (old: {
-        version = "0.22";
-        sha256 = "15py79qcpj0k331i42njgwkirwyiacbc5razmxnm4672dvvip2qk";
-        libraryHaskellDepends = old.libraryHaskellDepends ++ [
-          self.binary-instances self.exceptions self.transformers-compat
-        ];
       });
-      time-compat = pkgs.haskell.lib.dontCheck (pkgs.haskell.lib.overrideCabal super.time-compat (old: {
-        version = "1.9.2.2";
-        sha256 = "05va0rqs759vbridbcl6hksp967j9anjvys8vx72fnfkhlrn2s52";
-        libraryHaskellDepends = old.libraryHaskellDepends ++ [
-          self.base-orphans
-        ];
-      }));
+
+      # Newer versions of things.
+      # -------------------------
+      ansi-terminal = super.ansi-terminal_0_9_1;
+      binary-orphans = super.binary-orphans_1_0_1;
+      # hashable is here because it's constrained in the cabal.project file.
+      hashable = super.hashable_1_3_0_0;
+      QuickCheck = super.QuickCheck_2_13_1;
+      quickcheck-instances = super.quickcheck-instances_0_3_21;
+      semigroups = super.semigroups_0_19;
+      tasty = super.tasty_1_2_2;
+      time-compat = super.time-compat_1_9_2_2;
+      unordered-containers = super.unordered-containers_0_2_10_0;
+
+      # Things that work with newer versions of dependencies but don't know it yet.
+      ChasingBottoms = doJailbreak super.ChasingBottoms;
+      hspec-core = dontCheck (doJailbreak super.hspec-core);
+      optparse-applicative = doJailbreak super.optparse-applicative;
+
+      # Break infinite recursion through QuickCheck test dep
+      splitmix = dontCheck super.splitmix;
     });
   });
 }
