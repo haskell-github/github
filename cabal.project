@@ -8,6 +8,9 @@ tests: True
 constraints: hashable ^>=1.3
 constraints: semigroups ^>=0.19
 
+allow-newer: aeson-1.4.2.0:hashable
+allow-newer: aeson-1.4.2.0:semigroups
+
 allow-newer: aeson-1.4.3.0:hashable
 allow-newer: aeson-1.4.3.0:semigroups
 
