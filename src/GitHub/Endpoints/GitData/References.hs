@@ -15,6 +15,8 @@ module GitHub.Endpoints.GitData.References (
     referencesR,
     createReference,
     createReferenceR,
+    deleteReference,
+    deleteReferenceR,
     namespacedReferences,
     module GitHub.Data,
     ) where
@@ -72,6 +74,17 @@ createReference auth user repo newRef =
 createReferenceR :: Name Owner -> Name Repo -> NewGitReference -> Request 'RW GitReference
 createReferenceR user repo newRef =
      command Post  ["repos", toPathPart user, toPathPart repo , "git", "refs"] (encode newRef)
+
+-- | Delete a reference.
+deleteReference :: Auth -> Name Owner -> Name Repo -> Name GitReference -> IO (Either Error ())
+deleteReference auth user repo ref =
+    executeRequest auth $ deleteReferenceR user repo ref
+
+-- | Delete a reference.
+-- See <https://developer.github.com/v3/git/refs/#delete-a-reference>
+deleteReferenceR :: Name Owner -> Name Repo -> Name GitReference -> GenRequest 'MtUnit 'RW ()
+deleteReferenceR user repo ref =
+    Command Delete ["repos", toPathPart user, toPathPart repo , "git", "refs", toPathPart ref] mempty
 
 -- | Limited references by a namespace.
 --
