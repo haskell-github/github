@@ -100,6 +100,8 @@ module GitHub (
     referenceR,
     referencesR,
     createReferenceR,
+    deleteReferenceR,
+    namespacedReferencesR,
 
     -- ** Trees
     -- | See <https://developer.github.com/v3/git/trees/>

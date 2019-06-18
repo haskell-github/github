@@ -10,7 +10,8 @@
   [#436](https://github.com/phadej/github/pull/436)
 - Teams improvements
   [#417](https://github.com/phadej/github/pull/417)
-
+- Add deleteReference endpoint
+  [#388](https://github.com/phadej/github/pull/388)
 	
 ## Changes for 0.25
 
