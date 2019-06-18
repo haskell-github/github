@@ -156,7 +156,7 @@ instance Binary NewGitReference
 data GitReference = GitReference
     { gitReferenceObject :: !GitObject
     , gitReferenceUrl    :: !URL
-    , gitReferenceRef    :: !Text
+    , gitReferenceRef    :: !(Name GitReference)
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
