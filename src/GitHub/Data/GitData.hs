@@ -188,7 +188,7 @@ data File = File
     , fileStatus    :: !Text
     , fileRawUrl    :: !(Maybe URL)
     , fileAdditions :: !Int
-    , fileSha       :: !Text
+    , fileSha       :: !(Maybe Text)
     , fileChanges   :: !Int
     , filePatch     :: !(Maybe Text)
     , fileFilename  :: !Text

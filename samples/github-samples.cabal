@@ -322,3 +322,16 @@ executable github-get-public-ssh-key
     , text
     , github-samples
   default-language: Haskell2010
+
+executable github-repos-commits-diff
+  main-is: GitDiff.hs
+  hs-source-dirs:
+      Repos/Commits
+  ghc-options: -Wall -threaded
+  build-depends:
+      base
+    , base-compat
+    , github
+    , text
+    , github-samples
+  default-language: Haskell2010
