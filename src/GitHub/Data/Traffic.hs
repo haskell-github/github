@@ -25,6 +25,13 @@ instance FromJSON Referrer where
         <*> o .: "count"
         <*> o .: "uniques"
 
+instance ToJSON Referrer where
+    toJSON (Referrer r c u) = object
+        [ "referrer" .= r
+        , "count" .= c
+        , "uniques" .= u
+        ]
+
 data PopularPath = PopularPath
     { popularPath        :: !Text
     , popularPathTitle   :: !Text
@@ -39,6 +46,14 @@ instance FromJSON PopularPath where
         <*> o .: "title"
         <*> o .: "count"
         <*> o .: "uniques"
+
+instance ToJSON PopularPath where
+    toJSON (PopularPath p t c u) = object
+        [ "path" .= p
+        , "title" .= t
+        , "count" .= c
+        , "uniques" .= u
+        ]
 
 data Period =
     Day
@@ -63,6 +78,13 @@ instance FromJSON (TrafficCount e) where
         <*> o .: "count"
         <*> o .: "uniques"
 
+instance ToJSON (TrafficCount e) where
+    toJSON (TrafficCount t c u) = object
+        [ "timestamp" .= t
+        , "count" .= c
+        , "uniques" .= u
+        ]
+
 data Views = Views
     { viewsCount   :: !Int
     , viewsUniques :: !Int
@@ -76,6 +98,13 @@ instance FromJSON Views where
         <*> o .: "uniques"
         <*> o .: "views"
 
+instance ToJSON Views where
+    toJSON (Views c u v) = object
+        [ "count" .= c
+        , "uniques" .= u
+        , "views" .= v
+        ]
+
 data Clones = Clones
     { clonesCount   :: !Int
     , clonesUniques :: !Int
@@ -88,3 +117,10 @@ instance FromJSON Clones where
         <$> o .: "count"
         <*> o .: "uniques"
         <*> o .: "clones"
+
+instance ToJSON Clones where
+    toJSON (Clones c u cs) = object
+        [ "count" .= c
+        , "uniques" .= u
+        , "clones" .= cs
+        ]
