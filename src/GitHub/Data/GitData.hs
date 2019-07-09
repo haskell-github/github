@@ -255,7 +255,7 @@ instance FromJSON File where
         <*> o .: "status"
         <*> o .:? "raw_url"
         <*> o .: "additions"
-        <*> o .: "sha"
+        <*> o .:? "sha"
         <*> o .: "changes"
         <*> o .:? "patch"
         <*> o .: "filename"
