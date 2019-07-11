@@ -418,7 +418,7 @@ makeHttpRequest auth r = case r of
     setMethod m req = req { method = m }
 
     reqHeaders :: RequestHeaders
-    reqHeaders = [("User-Agent", "github.hs/0.21")] -- Version
+    reqHeaders = [("User-Agent", "github.hs/0.22")] -- Version
         <> [("Accept", unTagged (contentType :: Tagged mt BS.ByteString))]
 
     setBody :: LBS.ByteString -> HTTP.Request -> HTTP.Request
