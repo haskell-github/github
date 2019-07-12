@@ -13,21 +13,23 @@ import Prelude ()
 --
 -- /TODO:/
 --
--- * missing repo, org, payload, id
+-- * missing org, payload, id
 data Event = Event
     -- { eventId        :: !(Id Event) -- id can be encoded as string.
     { eventActor     :: !SimpleUser
     , eventCreatedAt :: !UTCTime
     , eventPublic    :: !Bool
+    , eventRepo      :: !SimpleRepo
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Event where rnf = genericRnf
-instance Binary Event 
+instance Binary Event
 
 instance FromJSON Event where
-    parseJSON = withObject "Event" $ \obj -> Event 
+    parseJSON = withObject "Event" $ \obj -> Event
         -- <$> obj .: "id"
         <$> obj .: "actor"
         <*> obj .: "created_at"
         <*> obj .: "public"
+        <*> obj .: "repo"

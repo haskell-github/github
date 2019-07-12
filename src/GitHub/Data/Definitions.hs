@@ -38,6 +38,15 @@ data OwnerType = OwnerUser | OwnerOrganization
 instance NFData OwnerType
 instance Binary OwnerType
 
+data SimpleRepo = SimpleRepo
+    { simpleRepoId   :: !(Id SimpleRepo)
+    , simpleRepoName :: !(Name SimpleRepo)
+    , simpleRepoUrl  :: !URL
+    } deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData SimpleRepo where rnf = genericRnf
+instance Binary SimpleRepo
+
 data SimpleUser = SimpleUser
     { simpleUserId        :: !(Id User)
     , simpleUserLogin     :: !(Name User)
@@ -138,6 +147,13 @@ instance FromJSON OwnerType where
         "user"         -> pure $ OwnerUser
         "organization" -> pure $ OwnerOrganization
         _              -> fail $ "Unknown OwnerType: " <> T.unpack t
+
+instance FromJSON SimpleRepo where
+    parseJSON = withObject "SimpleRepo" $ \obj -> do
+        SimpleRepo
+            <$> obj .: "id"
+            <*> obj .: "name"
+            <*> obj .: "url"
 
 instance FromJSON SimpleUser where
     parseJSON = withObject "SimpleUser" $ \obj -> do
