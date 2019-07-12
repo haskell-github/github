@@ -20,6 +20,7 @@ data Event = Event
     , eventPublic    :: !Bool
     , eventRepo      :: !SimpleRepo
     , eventId        :: !Text
+    , eventType      :: !ActivityEvent
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -33,3 +34,60 @@ instance FromJSON Event where
         <*> obj .: "public"
         <*> obj .: "repo"
         <*> obj .: "id"
+        <*> obj .: "type"
+
+-- See <https://developer.github.com/v3/activity/events/types/>
+data ActivityEvent =
+      CheckRunEvent
+    | CheckSuiteEvent
+    | CommitCommentEvent
+    | ContentReferenceEvent
+    | CreateEvent
+    | DeleteEvent
+    | DeployKeyEvent
+    | DeploymentEvent
+    | DeploymentStatusEvent
+    | DownloadEvent
+    | FollowEvent
+    | ForkEvent
+    | ForkApplyEvent
+    | GitHubAppAuthorizationEvent
+    | GistEvent
+    | GollumEvent
+    | InstallationEvent
+    | InstallationRepositoriesEvent
+    | IssueCommentEvent
+    | IssuesEvent
+    | LabelEvent
+    | MarketplacePurchaseEvent
+    | MemberEvent
+    | MembershipEvent
+    | MetaEvent
+    | MilestoneEvent
+    | OrganizationEvent
+    | OrgBlockEvent
+    | PageBuildEvent
+    | ProjectCardEvent
+    | ProjectColumnEvent
+    | ProjectEvent
+    | PublicEvent
+    | PullRequestEvent'
+    | PullRequestReviewEvent
+    | PullRequestReviewCommentEvent
+    | PushEvent
+    | RegistryPackageEvent
+    | ReleaseEvent
+    | RepositoryEvent
+    | RepositoryImportEvent
+    | RepositoryVulnerabilityAlertEvent
+    | SecurityAdvisoryEvent
+    | StarEvent
+    | StatusEvent
+    | TeamEvent
+    | TeamAddEvent
+    | WatchEvent
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance FromJSON ActivityEvent
+instance NFData ActivityEvent where rnf = genericRnf
+instance Binary ActivityEvent
