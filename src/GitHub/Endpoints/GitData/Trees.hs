@@ -65,7 +65,7 @@ createTree :: Auth -> Name Owner -> Name Repo -> NewTree -> IO (Either Error Tre
 createTree auth user repo newTree =
     executeRequest auth $ createTreeR user repo newTree
 
--- | Create a teference.
+-- | Create a tree.
 -- See <https://developer.github.com/v3/git/refs/#create-a-reference>
 createTreeR :: Name Owner -> Name Repo -> NewTree -> Request 'RW Tree
 createTreeR user repo newTree =

@@ -9,6 +9,8 @@ module GitHub.Endpoints.GitData.Commits (
     commit,
     commit',
     gitCommitR,
+    createCommit,
+    createCommitR,
     module GitHub.Data,
 ) where
 
@@ -35,3 +37,14 @@ commit =
 gitCommitR :: Name Owner -> Name Repo -> Name GitCommit -> Request k GitCommit
 gitCommitR user repo sha =
     query ["repos", toPathPart user, toPathPart repo, "git", "commits", toPathPart sha] []
+
+-- | Create a tree.
+createCommit :: Auth -> Name Owner -> Name Repo -> NewGitCommit -> IO (Either Error GitCommit)
+createCommit auth user repo newTree =
+    executeRequest auth $ createCommitR user repo newTree
+
+-- | Create a commit.
+-- See <https://developer.github.com/v3/git/refs/#create-a-reference>
+createCommitR :: Name Owner -> Name Repo -> NewGitCommit -> Request 'RW GitCommit
+createCommitR user repo newCommit =
+     command Post  ["repos", toPathPart user, toPathPart repo , "git", "commits"] (encode newCommit)

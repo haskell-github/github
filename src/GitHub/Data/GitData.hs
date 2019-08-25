@@ -104,6 +104,16 @@ data GitCommit = GitCommit
 instance NFData GitCommit where rnf = genericRnf
 instance Binary GitCommit
 
+data NewGitCommit = NewGitCommit
+    { newGitCommitMessage   :: !Text
+    , newGitCommitTree      :: !(Name Tree)
+    , newGitCommitParents   :: !(Vector (Name GitCommit))
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData NewGitCommit where rnf = genericRnf
+instance Binary NewGitCommit
+
 data Blob = Blob
     { blobUrl      :: !URL
     , blobEncoding :: !Text
@@ -237,6 +247,9 @@ instance FromJSON Commit where
         <*> o .:? "files" .!= V.empty
         <*> o .:? "stats"
 
+instance ToJSON NewGitCommit where
+    toJSON (NewGitCommit message tree parents) = object [ "message" .= message, "tree" .= tree, "parents" .= parents  ]
+
 instance FromJSON Tree where
     parseJSON = withObject "Tree" $ \o -> Tree
         <$> o .: "sha"
@@ -251,7 +264,6 @@ instance FromJSON GitTree where
         <*> o .:? "size"
         <*> o .: "path"
         <*> o .: "mode"
-
 
 instance ToJSON NewTree where
     toJSON (NewTree b tree) = object [ "base_tree" .= b, "tree" .= tree  ]
