@@ -32,7 +32,7 @@ data Error
 instance E.Exception Error
 
 -- | Type of the repository owners.
-data OwnerType = OwnerUser | OwnerOrganization
+data OwnerType = OwnerUser | OwnerOrganization | OwnerBot
     deriving (Eq, Ord, Enum, Bounded, Show, Read, Generic, Typeable, Data)
 
 instance NFData OwnerType
@@ -77,7 +77,7 @@ data User = User
     { userId          :: !(Id User)
     , userLogin       :: !(Name User)
     , userName        :: !(Maybe Text)
-    , userType        :: !OwnerType  -- ^ Should always be 'OwnerUser'
+    , userType        :: !OwnerType  -- ^ Should always be 'OwnerUser' or 'OwnerBot'
     , userCreatedAt   :: !UTCTime
     , userPublicGists :: !Int
     , userAvatarUrl   :: !URL
@@ -137,6 +137,7 @@ instance FromJSON OwnerType where
     parseJSON = withText "OwnerType" $ \t -> case T.toLower t of
         "user"         -> pure $ OwnerUser
         "organization" -> pure $ OwnerOrganization
+        "bot"          -> pure $ OwnerBot
         _              -> fail $ "Unknown OwnerType: " <> T.unpack t
 
 instance FromJSON SimpleUser where
@@ -205,7 +206,7 @@ parseOrganization obj = Organization
     <*> obj .: "created_at"
 
 instance FromJSON User where
-    parseJSON = mfilter ((== OwnerUser) . userType) . withObject "User" parseUser
+    parseJSON = mfilter ((/= OwnerOrganization) . userType) . withObject "User" parseUser
 
 instance FromJSON Organization where
     parseJSON = withObject "Organization" parseOrganization
@@ -215,6 +216,7 @@ instance FromJSON Owner where
         t <- obj .: "type"
         case t of
             OwnerUser         -> Owner . Left <$> parseUser obj
+            OwnerBot          -> Owner . Left <$> parseUser obj
             OwnerOrganization -> Owner . Right <$> parseOrganization obj
 
 -- | Filter members returned in the list.

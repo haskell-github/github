@@ -42,6 +42,7 @@ extra-source-files:
   fixtures/pull-request-review-requested.json
   fixtures/user-organizations.json
   fixtures/user.json
+  fixtures/user-bot.json
 
 source-repository head
   type:     git
