@@ -12,6 +12,10 @@ module GitHub.Data.Deployments
     , CreateDeploymentStatus (..)
     ) where
 
+
+import GitHub.Internal.Prelude
+import Prelude ()
+
 import Control.Arrow (second)
 
 import Data.ByteString (ByteString)
@@ -24,7 +28,6 @@ import GitHub.Data.Definitions (SimpleUser)
 import GitHub.Data.Id          (Id)
 import GitHub.Data.Name        (Name)
 import GitHub.Data.URL         (URL)
-import GitHub.Internal.Prelude
 
 import qualified Data.Aeson         as JSON
 import qualified Data.Text          as T

@@ -1,6 +1,6 @@
 cabal-version:      >=1.10
 name:               github
-version:            0.22
+version:            0.23
 synopsis:           Access to the GitHub API, v3.
 category:           Network
 description:
@@ -30,7 +30,13 @@ copyright:
   Copyright 2012-2013 Mike Burns, Copyright 2013-2015 John Wiegley, Copyright 2016-2019 Oleg Grenrus
 
 tested-with:
-  GHC ==7.8.4 || ==7.10.3 || ==8.0.2 || ==8.2.2 || ==8.4.4 || ==8.6.5 || ==8.8.1
+  GHC ==7.8.4
+   || ==7.10.3
+   || ==8.0.2
+   || ==8.2.2
+   || ==8.4.4
+   || ==8.6.5
+   || ==8.8.1
 
 extra-source-files:
   README.md
@@ -49,8 +55,8 @@ source-repository head
 
 flag openssl
   description: "Use http-client-openssl"
-  manual:  True
-  default: False
+  manual:      True
+  default:     False
 
 library
   default-language:   Haskell2010
@@ -106,8 +112,8 @@ library
     GitHub.Data.Webhooks
     GitHub.Data.Webhooks.Validate
     GitHub.Endpoints.Activity.Events
-    GitHub.Endpoints.Activity.Starring
     GitHub.Endpoints.Activity.Notifications
+    GitHub.Endpoints.Activity.Starring
     GitHub.Endpoints.Activity.Watching
     GitHub.Endpoints.Gists
     GitHub.Endpoints.Gists.Comments
@@ -135,10 +141,10 @@ library
     GitHub.Endpoints.Repos.DeployKeys
     GitHub.Endpoints.Repos.Deployments
     GitHub.Endpoints.Repos.Forks
+    GitHub.Endpoints.Repos.Invitations
     GitHub.Endpoints.Repos.Releases
     GitHub.Endpoints.Repos.Statuses
     GitHub.Endpoints.Repos.Webhooks
-    GitHub.Endpoints.Repos.Invitations
     GitHub.Endpoints.Search
     GitHub.Endpoints.Users
     GitHub.Endpoints.Users.Emails
@@ -149,7 +155,7 @@ library
 
   -- Packages bundles with GHC, mtl and text are also here
   build-depends:
-      base          >=4.7      && <4.13
+      base          >=4.7      && <4.14
     , binary        >=0.7.1.0  && <0.11
     , bytestring    >=0.10.4.0 && <0.11
     , containers    >=0.5.5.1  && <0.7
@@ -162,7 +168,7 @@ library
   -- other packages
   build-depends:
       aeson                 >=1.4.0.0    && <1.5
-    , base-compat           >=0.10.4     && <0.11
+    , base-compat           >=0.10.4     && <0.12
     , base16-bytestring     >=0.1.1.6    && <0.2
     , binary-instances      >=1          && <1.1
     , cryptohash-sha1       >=0.11.100.1 && <0.12
@@ -182,17 +188,17 @@ library
 
   if flag(openssl)
     build-depends:
-        http-client-openssl   >=0.3.0.0   && <0.4
-      , HsOpenSSL             >=0.11.4.16 && <0.12
-      , HsOpenSSL-x509-system >=0.1.0.3   && <0.2
+        HsOpenSSL              >=0.11.4.16 && <0.12
+      , HsOpenSSL-x509-system  >=0.1.0.3   && <0.2
+      , http-client-openssl    >=0.2.2.0   && <0.4
+
   else
     build-depends:
-        http-client-tls     >=0.3.5.3   && <0.4
-      , tls                 >=1.4.1
+        http-client-tls  >=0.3.5.3 && <0.4
+      , tls              >=1.4.1
 
-  if !impl(ghc >= 8.0)
-    build-depends:
-      semigroups            >=0.18.5     && <0.20
+  if !impl(ghc >=8.0)
+    build-depends: semigroups >=0.18.5 && <0.20
 
 test-suite github-test
   default-language:   Haskell2010
@@ -208,8 +214,8 @@ test-suite github-test
     GitHub.EventsSpec
     GitHub.IssuesSpec
     GitHub.OrganizationsSpec
-    GitHub.PullRequestReviewsSpec
     GitHub.PublicSSHKeysSpec
+    GitHub.PullRequestReviewsSpec
     GitHub.PullRequestsSpec
     GitHub.RateLimitSpec
     GitHub.ReleasesSpec
@@ -224,8 +230,8 @@ test-suite github-test
     , bytestring
     , file-embed
     , github
+    , hspec                 >=2.6.1 && <2.8
     , tagged
     , text
-    , hspec                 >=2.6.1 && <2.8
     , unordered-containers
     , vector
