@@ -1,11 +1,11 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
+import Prelude ()
 import Prelude.Compat
 
 import Data.Text         (Text, pack)
 import Data.Text.IO as T (putStrLn)
-import Data.Monoid       ((<>))
 
 import qualified GitHub.Endpoints.Users.Followers as GitHub
 

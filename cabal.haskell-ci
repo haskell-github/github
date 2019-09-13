@@ -1,0 +1,2 @@
+branches: master
+haddock: >=8.6
