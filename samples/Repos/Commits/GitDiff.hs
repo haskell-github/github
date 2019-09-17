@@ -1,7 +1,9 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Main where
 
+import           Common
 import qualified GitHub.Endpoints.Repos.Commits as Github
 import qualified Data.Text.IO as Text
 
