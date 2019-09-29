@@ -154,6 +154,8 @@ library
     GitHub.Internal.Prelude
     GitHub.Request
 
+  other-modules: Paths_github
+
   -- Packages bundles with GHC, mtl and text are also here
   build-depends:
       base          >=4.7      && <4.14
