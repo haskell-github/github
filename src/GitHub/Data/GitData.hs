@@ -188,7 +188,7 @@ data File = File
     , fileStatus    :: !Text
     , fileRawUrl    :: !(Maybe URL)
     , fileAdditions :: !Int
-    , fileSha       :: !Text
+    , fileSha       :: !(Maybe Text)
     , fileChanges   :: !Int
     , filePatch     :: !(Maybe Text)
     , fileFilename  :: !Text
@@ -255,7 +255,7 @@ instance FromJSON File where
         <*> o .: "status"
         <*> o .:? "raw_url"
         <*> o .: "additions"
-        <*> o .: "sha"
+        <*> o .:? "sha"
         <*> o .: "changes"
         <*> o .:? "patch"
         <*> o .: "filename"

@@ -168,3 +168,8 @@ executable github-get-public-ssh-key
   import:         deps
   main-is:        ShowPublicSSHKey.hs
   hs-source-dirs: Users/PublicSSHKeys
+
+executable github-repos-commits-diff
+  import:         deps
+  main-is:        GitDiff.hs
+  hs-source-dirs: Repos/Commits
