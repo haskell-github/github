@@ -41,6 +41,10 @@ spec = do
       let userInfo = eitherDecodeStrict $(embedFile "fixtures/user.json")
       userLogin (fromRightS userInfo) `shouldBe` "mike-burns"
 
+    it "decodes user-bot json" $ do
+      let userInfo = eitherDecodeStrict $(embedFile "fixtures/user-bot.json")
+      userLogin (fromRightS userInfo) `shouldBe` "mike-burns"
+
     it "returns information about the user" $ withAuth $ \auth -> do
       userInfo <- userInfoFor' (Just auth) "mike-burns"
       userLogin (fromRightS userInfo) `shouldBe` "mike-burns"
