@@ -411,11 +411,11 @@ makeHttpRequest auth r = case r of
             . setMethod (toMethod m)
             $ req
   where
-    parseUrl' :: MonadThrow m => Text -> m HTTP.Request
-    parseUrl' = HTTP.parseUrlThrow . T.unpack
+    parseUrl' :: MonadThrow m => String -> m HTTP.Request
+    parseUrl' = HTTP.parseUrlThrow
 
-    url :: Paths -> Text
-    url paths = maybe "https://api.github.com" id (endpoint =<< auth) <> "/" <> T.pack (intercalate "/" paths') where
+    url :: Paths -> String
+    url paths = maybe "https://api.github.com" T.unpack (endpoint =<< auth) ++ "/" ++ intercalate "/" paths' where
         paths' = map (escapeURIString isUnescapedInURIComponent . T.unpack) paths
 
     setReqHeaders :: HTTP.Request -> HTTP.Request
