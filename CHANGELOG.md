@@ -1,4 +1,9 @@
-## Changes for next
+## Changes for 0.23
+
+- Add OwnerBot to OwnerType
+  [#399](https://github.com/phadej/github/pull/399)
+- Make File.fileSha optional
+  [#392](https://github.com/phadej/github/pull/392)
 
 ## Changes for 0.22
 
