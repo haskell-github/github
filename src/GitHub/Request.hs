@@ -67,7 +67,7 @@ import Control.Monad.Catch        (MonadCatch (..), MonadThrow)
 import Control.Monad.Trans.Class  (lift)
 import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
 import Data.Aeson                 (eitherDecode)
-import Data.List                  (find)
+import Data.List                  (find, intercalate)
 import Data.String                (fromString)
 import Data.Tagged                (Tagged (..))
 import Data.Version               (showVersion)
@@ -79,7 +79,9 @@ import Network.HTTP.Client
 import Network.HTTP.Link.Parser (parseLinkHeaderBS)
 import Network.HTTP.Link.Types  (Link (..), LinkParam (..), href, linkParams)
 import Network.HTTP.Types       (Method, RequestHeaders, Status (..))
-import Network.URI              (URI, parseURIReference, relativeTo)
+import Network.URI
+       (URI, escapeURIString, isUnescapedInURIComponent, parseURIReference,
+       relativeTo)
 
 import qualified Data.ByteString              as BS
 import qualified Data.ByteString.Lazy         as LBS
@@ -413,7 +415,8 @@ makeHttpRequest auth r = case r of
     parseUrl' = HTTP.parseUrlThrow . T.unpack
 
     url :: Paths -> Text
-    url paths = maybe "https://api.github.com" id (endpoint =<< auth) <> "/" <> T.intercalate "/" paths
+    url paths = maybe "https://api.github.com" id (endpoint =<< auth) <> "/" <> T.pack (intercalate "/" paths') where
+        paths' = map (escapeURIString isUnescapedInURIComponent . T.unpack) paths
 
     setReqHeaders :: HTTP.Request -> HTTP.Request
     setReqHeaders req = req { requestHeaders = reqHeaders <> requestHeaders req }

@@ -1,5 +1,7 @@
 ## Changes for 0.23
 
+- Escape URI paths
+  [#404](https://github.com/phadej/github/pull/404)
 - Add OwnerBot to OwnerType
   [#399](https://github.com/phadej/github/pull/399)
 - Make File.fileSha optional
