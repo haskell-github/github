@@ -67,7 +67,7 @@ import Control.Monad.Catch        (MonadCatch (..), MonadThrow)
 import Control.Monad.Trans.Class  (lift)
 import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
 import Data.Aeson                 (eitherDecode)
-import Data.List                  (find)
+import Data.List                  (find, intercalate)
 import Data.String                (fromString)
 import Data.Tagged                (Tagged (..))
 import Data.Version               (showVersion)
@@ -79,7 +79,9 @@ import Network.HTTP.Client
 import Network.HTTP.Link.Parser (parseLinkHeaderBS)
 import Network.HTTP.Link.Types  (Link (..), LinkParam (..), href, linkParams)
 import Network.HTTP.Types       (Method, RequestHeaders, Status (..))
-import Network.URI              (URI, parseURIReference, relativeTo)
+import Network.URI
+       (URI, escapeURIString, isUnescapedInURIComponent, parseURIReference,
+       relativeTo)
 
 import qualified Data.ByteString              as BS
 import qualified Data.ByteString.Lazy         as LBS
@@ -409,11 +411,12 @@ makeHttpRequest auth r = case r of
             . setMethod (toMethod m)
             $ req
   where
-    parseUrl' :: MonadThrow m => Text -> m HTTP.Request
-    parseUrl' = HTTP.parseUrlThrow . T.unpack
+    parseUrl' :: MonadThrow m => String -> m HTTP.Request
+    parseUrl' = HTTP.parseUrlThrow
 
-    url :: Paths -> Text
-    url paths = maybe "https://api.github.com" id (endpoint =<< auth) <> "/" <> T.intercalate "/" paths
+    url :: Paths -> String
+    url paths = maybe "https://api.github.com" T.unpack (endpoint =<< auth) ++ "/" ++ intercalate "/" paths' where
+        paths' = map (escapeURIString isUnescapedInURIComponent . T.unpack) paths
 
     setReqHeaders :: HTTP.Request -> HTTP.Request
     setReqHeaders req = req { requestHeaders = reqHeaders <> requestHeaders req }
