@@ -4,6 +4,9 @@
   [#399](https://github.com/phadej/github/pull/399)
 - Make File.fileSha optional
   [#392](https://github.com/phadej/github/pull/392)
+- Update User-Agent to contain up to date version
+  [#403](https://github.com/phadej/github/pull/403)
+  [#394](https://github.com/phadej/github/pull/394)
 
 ## Changes for 0.22
 

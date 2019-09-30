@@ -68,7 +68,9 @@ import Control.Monad.Trans.Class  (lift)
 import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
 import Data.Aeson                 (eitherDecode)
 import Data.List                  (find)
+import Data.String                (fromString)
 import Data.Tagged                (Tagged (..))
+import Data.Version               (showVersion)
 
 import Network.HTTP.Client
        (HttpException (..), Manager, RequestBody (..), Response (..), getUri,
@@ -88,11 +90,11 @@ import qualified Network.HTTP.Client          as HTTP
 import qualified Network.HTTP.Client.Internal as HTTP
 
 #ifdef MIN_VERSION_http_client_tls
-import Network.HTTP.Client.TLS  (tlsManagerSettings)
+import Network.HTTP.Client.TLS (tlsManagerSettings)
 #else
 import Network.HTTP.Client.OpenSSL (opensslManagerSettings, withOpenSSL)
 
-import qualified OpenSSL.Session as SSL
+import qualified OpenSSL.Session          as SSL
 import qualified OpenSSL.X509.SystemStore as SSL
 #endif
 
@@ -100,6 +102,8 @@ import GitHub.Auth              (Auth, AuthMethod, endpoint, setAuthRequest)
 import GitHub.Data              (Error (..))
 import GitHub.Data.PullRequests (MergeResult (..))
 import GitHub.Data.Request
+
+import Paths_github (version)
 
 #ifdef MIN_VERSION_http_client_tls
 withOpenSSL :: IO a -> IO a
@@ -418,7 +422,7 @@ makeHttpRequest auth r = case r of
     setMethod m req = req { method = m }
 
     reqHeaders :: RequestHeaders
-    reqHeaders = [("User-Agent", "github.hs/0.21")] -- Version
+    reqHeaders = [("User-Agent", "github.hs/" <> fromString (showVersion version))] -- Version
         <> [("Accept", unTagged (contentType :: Tagged mt BS.ByteString))]
 
     setBody :: LBS.ByteString -> HTTP.Request -> HTTP.Request
