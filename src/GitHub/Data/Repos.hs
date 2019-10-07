@@ -91,13 +91,18 @@ newRepo :: Name Repo -> NewRepo
 newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing
 
 data EditRepo = EditRepo
-    { editName         :: !(Maybe (Name Repo))
-    , editDescription  :: !(Maybe Text)
-    , editHomepage     :: !(Maybe Text)
-    , editPublic       :: !(Maybe Bool)
-    , editHasIssues    :: !(Maybe Bool)
-    , editHasWiki      :: !(Maybe Bool)
-    , editHasDownloads :: !(Maybe Bool)
+    { editName             :: !(Maybe (Name Repo))
+    , editDescription      :: !(Maybe Text)
+    , editHomepage         :: !(Maybe Text)
+    , editPrivate          :: !(Maybe Bool)
+    , editHasIssues        :: !(Maybe Bool)
+    , editHasProjects      :: !(Maybe Bool)
+    , editHasWiki          :: !(Maybe Bool)
+    , editDefaultBranch    :: !(Maybe Text)
+    , editAllowSquashMerge :: !(Maybe Bool)
+    , editAllowMergeCommit :: !(Maybe Bool)
+    , editAllowRebaseMerge :: !(Maybe Bool)
+    , editArchived         :: !(Maybe Bool)
     }
     deriving (Eq, Ord, Show, Data, Typeable, Generic)
 
@@ -199,21 +204,31 @@ instance ToJSON NewRepo where
                   ]
 
 instance ToJSON EditRepo where
-  toJSON (EditRepo { editName         = name
-                   , editDescription  = description
-                   , editHomepage     = homepage
-                   , editPublic       = public
-                   , editHasIssues    = hasIssues
-                   , editHasWiki      = hasWiki
-                   , editHasDownloads = hasDownloads
+  toJSON (EditRepo { editName             = name
+                   , editDescription      = description
+                   , editHomepage         = homepage
+                   , editPrivate          = private
+                   , editHasIssues        = hasIssues
+                   , editHasProjects      = hasProjects
+                   , editHasWiki          = hasWiki
+                   , editDefaultBranch    = defaultBranch
+                   , editAllowSquashMerge = allowSquashMerge
+                   , editAllowMergeCommit = allowMergeCommit
+                   , editAllowRebaseMerge = allowRebaseMerge
+                   , editArchived         = archived
                    }) = object
-                   [ "name"          .= name
-                   , "description"   .= description
-                   , "homepage"      .= homepage
-                   , "public"        .= public
-                   , "has_issues"    .= hasIssues
-                   , "has_wiki"      .= hasWiki
-                   , "has_downloads" .= hasDownloads
+                   [ "name"               .= name
+                   , "description"        .= description
+                   , "homepage"           .= homepage
+                   , "private"            .= private
+                   , "has_issues"         .= hasIssues
+                   , "has_projects"       .= hasProjects
+                   , "has_wiki"           .= hasWiki
+                   , "default_branch"     .= defaultBranch
+                   , "allow_squash_merge" .= allowSquashMerge
+                   , "allow_merge_commit" .= allowMergeCommit
+                   , "allow_rebase_merge" .= allowRebaseMerge
+                   , "archived"           .= archived
                    ]
 
 instance FromJSON RepoRef where
