@@ -29,7 +29,7 @@ import Prelude ()
 pullRequestReviewsR
     :: Name Owner
     -> Name Repo
-    -> Id PullRequest
+    -> IssueNumber
     -> FetchCount
     -> Request k (Vector Review)
 pullRequestReviewsR owner repo prid =
@@ -50,7 +50,7 @@ pullRequestReviewsR owner repo prid =
 pullRequestReviews
     :: Name Owner
     -> Name Repo
-    -> Id PullRequest
+    -> IssueNumber
     -> IO (Either Error (Vector Review))
 pullRequestReviews owner repo prid =
     executeRequest' $ pullRequestReviewsR owner repo prid FetchAll
@@ -63,7 +63,7 @@ pullRequestReviews'
     :: Maybe Auth
     -> Name Owner
     -> Name Repo
-    -> Id PullRequest
+    -> IssueNumber
     -> IO (Either Error (Vector Review))
 pullRequestReviews' auth owner repo pr =
     executeRequestMaybe auth $ pullRequestReviewsR owner repo pr FetchAll
@@ -73,7 +73,7 @@ pullRequestReviews' auth owner repo pr =
 pullRequestReviewR
     :: Name Owner
     -> Name Repo
-    -> Id PullRequest
+    -> IssueNumber
     -> Id Review
     -> Request k Review
 pullRequestReviewR owner repo prid rid =
@@ -95,7 +95,7 @@ pullRequestReviewR owner repo prid rid =
 pullRequestReview
     :: Name Owner
     -> Name Repo
-    -> Id PullRequest
+    -> IssueNumber
     -> Id Review
     -> IO (Either Error Review)
 pullRequestReview owner repo prid rid =
@@ -110,7 +110,7 @@ pullRequestReview'
     :: Maybe Auth
     -> Name Owner
     -> Name Repo
-    -> Id PullRequest
+    -> IssueNumber
     -> Id Review
     -> IO (Either Error Review)
 pullRequestReview' auth owner repo prid rid =
@@ -121,7 +121,7 @@ pullRequestReview' auth owner repo prid rid =
 pullRequestReviewCommentsR
     :: Name Owner
     -> Name Repo
-    -> Id PullRequest
+    -> IssueNumber
     -> Id Review
     -> Request k [ReviewComment]
 pullRequestReviewCommentsR owner repo prid rid =
@@ -144,7 +144,7 @@ pullRequestReviewCommentsR owner repo prid rid =
 pullRequestReviewCommentsIO
     :: Name Owner
     -> Name Repo
-    -> Id PullRequest
+    -> IssueNumber
     -> Id Review
     -> IO (Either Error [ReviewComment])
 pullRequestReviewCommentsIO owner repo prid rid =
@@ -158,7 +158,7 @@ pullRequestReviewCommentsIO'
     :: Maybe Auth
     -> Name Owner
     -> Name Repo
-    -> Id PullRequest
+    -> IssueNumber
     -> Id Review
     -> IO (Either Error [ReviewComment])
 pullRequestReviewCommentsIO' auth owner repo prid rid =
