@@ -76,20 +76,26 @@ instance NFData RepoRef where rnf = genericRnf
 instance Binary RepoRef
 
 data NewRepo = NewRepo
-    { newRepoName        :: !(Name Repo)
-    , newRepoDescription :: !(Maybe Text)
-    , newRepoHomepage    :: !(Maybe Text)
-    , newRepoPrivate     :: !(Maybe Bool)
-    , newRepoHasIssues   :: !(Maybe Bool)
-    , newRepoHasWiki     :: !(Maybe Bool)
-    , newRepoAutoInit    :: !(Maybe Bool)
+    { newRepoName              :: !(Name Repo)
+    , newRepoDescription       :: !(Maybe Text)
+    , newRepoHomepage          :: !(Maybe Text)
+    , newRepoPrivate           :: !(Maybe Bool)
+    , newRepoHasIssues         :: !(Maybe Bool)
+    , newRepoHasProjects       :: !(Maybe Bool)
+    , newRepoHasWiki           :: !(Maybe Bool)
+    , newRepoAutoInit          :: !(Maybe Bool)
+    , newRepoGitignoreTemplate :: !(Maybe Text)
+    , newRepoLicenseTemplate   :: !(Maybe Text)
+    , newRepoAllowSquashMerge  :: !(Maybe Bool)
+    , newRepoAllowMergeCommit  :: !(Maybe Bool)
+    , newRepoAllowRebaseMerge  :: !(Maybe Bool)
     } deriving (Eq, Ord, Show, Data, Typeable, Generic)
 
 instance NFData NewRepo where rnf = genericRnf
 instance Binary NewRepo
 
 newRepo :: Name Repo -> NewRepo
-newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing
+newRepo name = NewRepo name Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing
 
 data EditRepo = EditRepo
     { editName             :: !(Maybe (Name Repo))
@@ -188,21 +194,33 @@ instance FromJSON Repo where
         <*> o .:? "updated_at"
 
 instance ToJSON NewRepo where
-  toJSON (NewRepo { newRepoName         = name
-                  , newRepoDescription  = description
-                  , newRepoHomepage     = homepage
-                  , newRepoPrivate      = private
-                  , newRepoHasIssues    = hasIssues
-                  , newRepoHasWiki      = hasWiki
-                  , newRepoAutoInit     = autoInit
+  toJSON (NewRepo { newRepoName              = name
+                  , newRepoDescription       = description
+                  , newRepoHomepage          = homepage
+                  , newRepoPrivate           = private
+                  , newRepoHasIssues         = hasIssues
+                  , newRepoHasProjects       = hasProjects
+                  , newRepoHasWiki           = hasWiki
+                  , newRepoAutoInit          = autoInit
+                  , newRepoGitignoreTemplate = gitignoreTemplate
+                  , newRepoLicenseTemplate   = licenseTemplate
+                  , newRepoAllowSquashMerge  = allowSquashMerge
+                  , newRepoAllowMergeCommit  = allowMergeCommit
+                  , newRepoAllowRebaseMerge  = allowRebaseMerge
                   }) = object
                   [ "name"                .= name
                   , "description"         .= description
                   , "homepage"            .= homepage
                   , "private"             .= private
                   , "has_issues"          .= hasIssues
+                  , "has_projects"        .= hasProjects
                   , "has_wiki"            .= hasWiki
                   , "auto_init"           .= autoInit
+                  , "gitignore_template"  .= gitignoreTemplate
+                  , "license_template"    .= licenseTemplate
+                  , "allow_squash_merge"  .= allowSquashMerge
+                  , "allow_merge_commit"  .= allowMergeCommit
+                  , "allow_rebase_merge"  .= allowRebaseMerge
                   ]
 
 instance ToJSON EditRepo where
