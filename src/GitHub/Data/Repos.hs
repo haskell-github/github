@@ -29,36 +29,37 @@ import Unsafe.Coerce (unsafeCoerce)
 #endif
 
 data Repo = Repo
-    { repoSshUrl          :: !(Maybe URL)
-    , repoDescription     :: !(Maybe Text)
-    , repoCreatedAt       :: !(Maybe UTCTime)
-    , repoHtmlUrl         :: !URL
-    , repoSvnUrl          :: !(Maybe URL)
-    , repoForks           :: !(Maybe Int)
-    , repoHomepage        :: !(Maybe Text)
-    , repoFork            :: !(Maybe Bool)
-    , repoGitUrl          :: !(Maybe URL)
-    , repoPrivate         :: !Bool
-    , repoArchived        :: !Bool
-    , repoCloneUrl        :: !(Maybe URL)
-    , repoSize            :: !(Maybe Int)
-    , repoUpdatedAt       :: !(Maybe UTCTime)
-    , repoWatchers        :: !(Maybe Int)
-    , repoOwner           :: !SimpleOwner
+    { repoId              :: !(Id Repo)
     , repoName            :: !(Name Repo)
-    , repoLanguage        :: !(Maybe Language)
-    , repoDefaultBranch   :: !(Maybe Text)
-    , repoPushedAt        :: !(Maybe UTCTime)   -- ^ this is Nothing for new repositories
-    , repoId              :: !(Id Repo)
+    , repoOwner           :: !SimpleOwner
+    , repoPrivate         :: !Bool
+    , repoHtmlUrl         :: !URL
+    , repoDescription     :: !(Maybe Text)
+    , repoFork            :: !(Maybe Bool)
     , repoUrl             :: !URL
-    , repoOpenIssues      :: !(Maybe Int)
-    , repoHasWiki         :: !(Maybe Bool)
-    , repoHasIssues       :: !(Maybe Bool)
-    , repoHasDownloads    :: !(Maybe Bool)
-    , repoParent          :: !(Maybe RepoRef)
-    , repoSource          :: !(Maybe RepoRef)
+    , repoGitUrl          :: !(Maybe URL)
+    , repoSshUrl          :: !(Maybe URL)
+    , repoCloneUrl        :: !(Maybe URL)
     , repoHooksUrl        :: !URL
+    , repoSvnUrl          :: !(Maybe URL)
+    , repoHomepage        :: !(Maybe Text)
+    , repoLanguage        :: !(Maybe Language)
+    , repoForksCount      :: !Int
     , repoStargazersCount :: !Int
+    , repoWatchersCount   :: !Int
+    , repoSize            :: !(Maybe Int)
+    , repoDefaultBranch   :: !(Maybe Text)
+    , repoOpenIssuesCount :: !Int
+    , repoHasIssues       :: !(Maybe Bool)
+    , repoHasProjects     :: !(Maybe Bool)
+    , repoHasWiki         :: !(Maybe Bool)
+    , repoHasPages        :: !(Maybe Bool)
+    , repoHasDownloads    :: !(Maybe Bool)
+    , repoArchived        :: !Bool
+    , repoDisabled        :: !Bool
+    , repoPushedAt        :: !(Maybe UTCTime)   -- ^ this is Nothing for new repositories
+    , repoCreatedAt       :: !(Maybe UTCTime)
+    , repoUpdatedAt       :: !(Maybe UTCTime)
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -154,36 +155,37 @@ contributorToSimpleUser (KnownContributor _contributions avatarUrl name url uid 
 -- JSON instances
 
 instance FromJSON Repo where
-    parseJSON = withObject "Repo" $ \o -> Repo <$> o .:? "ssh_url"
-        <*> o .: "description"
-        <*> o .:? "created_at"
-        <*> o .: "html_url"
-        <*> o .:? "svn_url"
-        <*> o .:? "forks"
-        <*> o .:? "homepage"
-        <*> o .: "fork"
-        <*> o .:? "git_url"
-        <*> o .: "private"
-        <*> o .:? "archived" .!= False
-        <*> o .:? "clone_url"
-        <*> o .:? "size"
-        <*> o .:? "updated_at"
-        <*> o .:? "watchers"
-        <*> o .: "owner"
+    parseJSON = withObject "Repo" $ \o -> Repo <$> o .: "id"
         <*> o .: "name"
-        <*> o .:? "language"
-        <*> o .:? "default_branch"
-        <*> o .:? "pushed_at"
-        <*> o .: "id"
+        <*> o .: "owner"
+        <*> o .: "private"
+        <*> o .: "html_url"
+        <*> o .:? "description"
+        <*> o .: "fork"
         <*> o .: "url"
-        <*> o .:? "open_issues"
-        <*> o .:? "has_wiki"
-        <*> o .:? "has_issues"
-        <*> o .:? "has_downloads"
-        <*> o .:? "parent"
-        <*> o .:? "source"
+        <*> o .:? "git_url"
+        <*> o .:? "ssh_url"
+        <*> o .:? "clone_url"
         <*> o .: "hooks_url"
+        <*> o .:? "svn_url"
+        <*> o .:? "homepage"
+        <*> o .:? "language"
+        <*> o .: "forks_count"
         <*> o .: "stargazers_count"
+        <*> o .: "watchers_count"
+        <*> o .:? "size"
+        <*> o .:? "default_branch"
+        <*> o .: "open_issues_count"
+        <*> o .:? "has_issues"
+        <*> o .:? "has_projects"
+        <*> o .:? "has_wiki"
+        <*> o .:? "has_pages"
+        <*> o .:? "has_downloads"
+        <*> o .:? "archived" .!= False
+        <*> o .:? "disabled" .!= False
+        <*> o .:? "pushed_at"
+        <*> o .:? "created_at"
+        <*> o .:? "updated_at"
 
 instance ToJSON NewRepo where
   toJSON (NewRepo { newRepoName         = name
