@@ -2,7 +2,7 @@
 module GitHub.PullRequestReviewsSpec where
 
 import qualified GitHub
-import           GitHub.Data.Id (Id (Id))
+import           GitHub.Data (IssueNumber (IssueNumber))
 
 import Prelude ()
 import Prelude.Compat
@@ -29,4 +29,4 @@ spec = do
             cs `shouldSatisfy` isRight
   where
     prs =
-      [("phadej", "github", Id 268)]
+      [("phadej", "github", IssueNumber 268)]
