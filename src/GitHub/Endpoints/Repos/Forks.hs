@@ -9,10 +9,13 @@ module GitHub.Endpoints.Repos.Forks (
     forksFor,
     forksFor',
     forksForR,
+    forkRepo,
+    forkRepo',
     module GitHub.Data,
     ) where
 
 import GitHub.Data
+import GitHub.Data.Name
 import GitHub.Internal.Prelude
 import GitHub.Request
 import Prelude ()
@@ -36,3 +39,15 @@ forksFor' auth user repo =
 forksForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Repo)
 forksForR user repo =
     pagedQuery ["repos", toPathPart user, toPathPart repo, "forks"] []
+
+forkRepo :: Auth -> Name Owner -> Name Repo -> Maybe (Name Organization) -> IO (Either Error Repo)
+forkRepo auth user repo mOrg =
+	executeRequest auth $ forkRepo' user repo mOrg
+
+forkRepo' :: Name Owner -> Name Repo -> Maybe (Name Organization) -> Request 'RW Repo
+forkRepo' user repo mOrg =
+    let
+      makeOrg :: Maybe (Name Organization) -> Value
+      makeOrg Nothing = object []
+      makeOrg (Just (N org)) = object ["organization" .= org ]
+    in command Post ["repos", toPathPart user, toPathPart repo, "forks"] (encode $ makeOrg mOrg)
