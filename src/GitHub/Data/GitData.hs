@@ -71,6 +71,25 @@ data GitTree = GitTree
 instance NFData GitTree where rnf = genericRnf
 instance Binary GitTree
 
+data NewTree = NewTree
+    { newBaseTree :: !(Name Tree)
+    , newTreeGitTrees :: !(Vector NewGitTree)
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData NewTree where rnf = genericRnf
+instance Binary NewTree
+
+data NewGitTree = NewGitTree
+    { newGitTreePath :: !Text
+    , newGitTreeMode :: !Text
+    , newGitTreeContent :: !Text
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData NewGitTree where rnf = genericRnf
+instance Binary NewGitTree
+
 data GitCommit = GitCommit
     { gitCommitMessage   :: !Text
     , gitCommitUrl       :: !URL
@@ -84,6 +103,16 @@ data GitCommit = GitCommit
 
 instance NFData GitCommit where rnf = genericRnf
 instance Binary GitCommit
+
+data NewGitCommit = NewGitCommit
+    { newGitCommitMessage   :: !Text
+    , newGitCommitTree      :: !(Name Tree)
+    , newGitCommitParents   :: !(Vector (Name GitCommit))
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData NewGitCommit where rnf = genericRnf
+instance Binary NewGitCommit
 
 data Blob = Blob
     { blobUrl      :: !URL
@@ -218,6 +247,9 @@ instance FromJSON Commit where
         <*> o .:? "files" .!= V.empty
         <*> o .:? "stats"
 
+instance ToJSON NewGitCommit where
+    toJSON (NewGitCommit message tree parents) = object [ "message" .= message, "tree" .= tree, "parents" .= parents  ]
+
 instance FromJSON Tree where
     parseJSON = withObject "Tree" $ \o -> Tree
         <$> o .: "sha"
@@ -232,6 +264,12 @@ instance FromJSON GitTree where
         <*> o .:? "size"
         <*> o .: "path"
         <*> o .: "mode"
+
+instance ToJSON NewTree where
+    toJSON (NewTree b tree) = object [ "base_tree" .= b, "tree" .= tree  ]
+
+instance ToJSON NewGitTree where
+    toJSON (NewGitTree path mode content) = object [ "path" .= path, "mode" .= mode, "content" .= content  ]
 
 instance FromJSON GitCommit where
     parseJSON = withObject "GitCommit" $ \o -> GitCommit
