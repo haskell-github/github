@@ -129,7 +129,7 @@ executeRequest
     => am
     -> GenRequest mt rw a
     -> IO (Either Error a)
-executeRequest auth req = withOpenSSL $ withOpenSSL $ do
+executeRequest auth req = withOpenSSL $ do
     manager <- newManager tlsManagerSettings
     executeRequestWithMgr manager auth req
 
