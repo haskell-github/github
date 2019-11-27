@@ -1,3 +1,20 @@
+## Changes for 0.24
+
+**Major change**:
+Introduce `github` n-ary combinator to hoist `... -> Request rw res`
+into `... -> IO (Either Error res)` (i.e. n-ary `executeRequest`).
+With that in place drop `.. -> IO (Either Error res)` functions.
+
+This reduces symbol bloat in the library.
+[#415](https://github.com/phadej/github/pull/415)
+
+- Remove double `withOpenSSL`
+  [#414](https://github.com/phadej/github/pull/414)
+- Pull requests reviews API uses issue number
+  [#409](https://github.com/phadej/github/pull/409)
+- Update `Repo`, `NewRepo` and `EditRepo` data types
+  [#407](https://github.com/phadej/github/pull/407)
+
 ## Changes for 0.23
 
 - Escape URI paths
@@ -93,7 +110,7 @@
 
 ## Changes for 0.18
 
-- Endpoints for deleting issue comments. 
+- Endpoints for deleting issue comments.
   [#294](https://github.com/phadej/github/pull/294)
 - Endpoints for (un)starring gists.
   [#296](https://github.com/phadej/github/pull/296)
