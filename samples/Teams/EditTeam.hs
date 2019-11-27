@@ -5,15 +5,15 @@ module Main (main) where
 import Common
 
 import qualified GitHub
-import qualified GitHub.Endpoints.Organizations.Teams as GitHub
 
 main :: IO ()
 main = do
   args <- getArgs
   result <- case args of
               [token, team_id, team_name, desc] ->
-                GitHub.editTeam'
+                GitHub.github
                   (GitHub.OAuth $ fromString token)
+                  GitHub.editTeamR
                   (GitHub.mkTeamId $ read team_id)
                   (GitHub.EditTeam (GitHub.mkTeamName $ fromString team_name) (Just $ fromString desc) GitHub.PermissionPull)
               _                                 ->

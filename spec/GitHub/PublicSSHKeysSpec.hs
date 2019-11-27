@@ -1,11 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell   #-}
 module GitHub.PublicSSHKeysSpec where
 
 import GitHub
-       (Auth (..), FetchCount (..), PublicSSHKey (..), executeRequest)
+       (Auth (..), FetchCount (..), PublicSSHKey (..),github)
 import GitHub.Endpoints.Users.PublicSSHKeys
-       (publicSSHKey', publicSSHKeys', publicSSHKeysForR)
+       (publicSSHKeyR, publicSSHKeysR, publicSSHKeysForR)
 
 import Data.Either.Compat (isRight)
 import Data.String        (fromString)
@@ -29,13 +28,13 @@ spec :: Spec
 spec = do
   describe "publicSSHKeysFor'" $ do
     it "works" $ withAuth $ \auth -> do
-      keys <- executeRequest auth $ publicSSHKeysForR "phadej" FetchAll
+      keys <- github auth publicSSHKeysForR "phadej" FetchAll
       V.length (fromRightS keys) `shouldSatisfy` (> 1)
 
   describe "publicSSHKeys' and publicSSHKey'" $ do
     it "works" $ withAuth $ \auth -> do
-      keys <- publicSSHKeys' auth
+      keys <- github auth publicSSHKeysR
       V.length (fromRightS keys) `shouldSatisfy` (> 1)
 
-      key <- publicSSHKey' auth (publicSSHKeyId $ V.head (fromRightS keys))
+      key <- github auth publicSSHKeyR (publicSSHKeyId $ V.head (fromRightS keys))
       key `shouldSatisfy` isRight

@@ -6,12 +6,8 @@
 -- The organization members API as described on
 -- <http://developer.github.com/v3/orgs/members/>.
 module GitHub.Endpoints.Organizations.Members (
-    membersOf,
-    membersOf',
     membersOfR,
     membersOfWithR,
-    isMemberOf,
-    isMemberOf',
     isMemberOfR,
     orgInvitationsR,
     module GitHub.Data,
@@ -19,23 +15,7 @@ module GitHub.Endpoints.Organizations.Members (
 
 import GitHub.Data
 import GitHub.Internal.Prelude
-import GitHub.Request
 import Prelude ()
-
--- | All the users who are members of the specified organization,
--- | with or without authentication.
---
--- > membersOf' (Just $ OAuth "token") "thoughtbot"
-membersOf' :: Maybe Auth -> Name Organization -> IO (Either Error (Vector SimpleUser))
-membersOf' auth org =
-    executeRequestMaybe auth $ membersOfR org FetchAll
-
--- | All the users who are members of the specified organization,
--- | without authentication.
---
--- > membersOf "thoughtbot"
-membersOf :: Name Organization -> IO (Either Error (Vector SimpleUser))
-membersOf = membersOf' Nothing
 
 -- | All the users who are members of the specified organization.
 --
@@ -58,21 +38,6 @@ membersOfWithR org f r =
         OrgMemberRoleAll    -> "all"
         OrgMemberRoleAdmin  -> "admin"
         OrgMemberRoleMember -> "member"
-
--- | Check if a user is a member of an organization,
--- | with or without authentication.
---
--- > isMemberOf' (Just $ OAuth "token") "phadej" "haskell-infra"
-isMemberOf' :: Maybe Auth -> Name User -> Name Organization -> IO (Either Error Bool)
-isMemberOf' auth user org =
-    executeRequestMaybe auth $ isMemberOfR user org
-
--- | Check if a user is a member of an organization,
--- | without authentication.
---
--- > isMemberOf "phadej" "haskell-infra"
-isMemberOf :: Name User -> Name Organization -> IO (Either Error Bool)
-isMemberOf = isMemberOf' Nothing
 
 -- | Check if a user is a member of an organization.
 --

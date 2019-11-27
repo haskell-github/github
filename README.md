@@ -63,11 +63,12 @@ import Data.Text         (Text, pack)
 import Data.Text.IO as T (putStrLn)
 import Data.Monoid       ((<>))
 
-import qualified GitHub.Endpoints.Users.Followers as GitHub
+import GitHub (github')
+import qualified GitHub
 
 main :: IO ()
 main = do
-    possibleUsers <- GitHub.usersFollowing "mike-burns"
+    possibleUsers <- github GitHub.usersFollowingR "phadej"
     T.putStrLn $ either (("Error: " <>) . pack . show)
                         (foldMap ((<> "\n") . formatUser))
                         possibleUsers
@@ -98,7 +99,7 @@ Copyright
 
 Copyright 2011-2012 Mike Burns.
 Copyright 2013-2015 John Wiegley.
-Copyright 2016 Oleg Grenrus.
+Copyright 2016-2019 Oleg Grenrus.
 
 Available under the BSD 3-clause license.
 

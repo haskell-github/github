@@ -8,16 +8,10 @@
 module GitHub.Endpoints.Issues (
     currentUserIssuesR,
     organizationIssuesR,
-    issue,
-    issue',
     issueR,
-    issuesForRepo,
-    issuesForRepo',
     issuesForRepoR,
-    createIssue,
     createIssueR,
     newIssue,
-    editIssue,
     editIssueR,
     editOfIssue,
     module GitHub.Data,
@@ -25,7 +19,6 @@ module GitHub.Endpoints.Issues (
 
 import GitHub.Data
 import GitHub.Internal.Prelude
-import GitHub.Request
 import Prelude ()
 
 -- | See <https://developer.github.com/v3/issues/#list-issues>.
@@ -38,41 +31,11 @@ organizationIssuesR :: Name Organization -> IssueMod -> FetchCount -> Request k 
 organizationIssuesR org opts =
     pagedQuery ["orgs", toPathPart org, "issues"] (issueModToQueryString opts)
 
--- | Details on a specific issue, given the repo owner and name, and the issue
--- number.'
---
--- > issue' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" "462"
-issue' :: Maybe Auth -> Name Owner -> Name Repo -> Id Issue -> IO (Either Error Issue)
-issue' auth user reqRepoName reqIssueNumber =
-    executeRequestMaybe auth $ issueR user reqRepoName reqIssueNumber
-
--- | Details on a specific issue, given the repo owner and name, and the issue
--- number.
---
--- > issue "thoughtbot" "paperclip" (Id "462")
-issue :: Name Owner -> Name Repo -> Id Issue -> IO (Either Error Issue)
-issue = issue' Nothing
-
 -- | Query a single issue.
 -- See <https://developer.github.com/v3/issues/#get-a-single-issue>
 issueR :: Name Owner -> Name Repo -> Id Issue -> Request k Issue
 issueR user reqRepoName reqIssueNumber =
     query ["repos", toPathPart user, toPathPart reqRepoName, "issues", toPathPart reqIssueNumber] []
-
--- | All issues for a repo (given the repo owner and name), with optional
--- restrictions as described in the 'IssueRepoMod' data type.
---
--- > issuesForRepo' (Just $ BasicAuth "github-username" "github-password") "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
-issuesForRepo' :: Maybe Auth -> Name Owner -> Name Repo -> IssueRepoMod -> IO (Either Error (Vector Issue))
-issuesForRepo' auth user reqRepoName opts =
-    executeRequestMaybe auth $ issuesForRepoR user reqRepoName opts FetchAll
-
--- | All issues for a repo (given the repo owner and name), with optional
--- restrictions as described in the 'IssueRepoMod' data type.
---
--- > issuesForRepo "thoughtbot" "paperclip" [NoMilestone, OnlyClosed, Mentions "jyurek", Ascending]
-issuesForRepo :: Name Owner -> Name Repo -> IssueRepoMod -> IO (Either Error (Vector Issue))
-issuesForRepo = issuesForRepo' Nothing
 
 -- | List issues for a repository.
 -- See <https://developer.github.com/v3/issues/#list-issues-for-a-repository>
@@ -87,16 +50,6 @@ issuesForRepoR user reqRepoName opts =
 newIssue :: Text -> NewIssue
 newIssue title = NewIssue title Nothing mempty Nothing Nothing
 
-
--- | Create a new issue.
---
--- > createIssue (BasicAuth "github-username" "github-password") user repo
--- >  (newIssue "some_repo") {...}
-createIssue :: Auth -> Name Owner -> Name Repo -> NewIssue
-            -> IO (Either Error Issue)
-createIssue auth user repo ni =
-     executeRequest auth $ createIssueR user repo ni
-
 -- | Create an issue.
 -- See <https://developer.github.com/v3/issues/#create-an-issue>
 createIssueR :: Name Owner -> Name Repo -> NewIssue -> Request 'RW Issue
@@ -107,15 +60,6 @@ createIssueR user repo =
 
 editOfIssue :: EditIssue
 editOfIssue = EditIssue Nothing Nothing Nothing Nothing Nothing Nothing
-
--- | Edit an issue.
---
--- > editIssue (BasicAuth "github-username" "github-password") user repo issue
--- >  editOfIssue {...}
-editIssue :: Auth -> Name Owner -> Name Repo -> Id Issue -> EditIssue
-            -> IO (Either Error Issue)
-editIssue auth user repo iss edit =
-     executeRequest auth $ editIssueR user repo iss edit
 
 -- | Edit an issue.
 -- See <https://developer.github.com/v3/issues/#edit-an-issue>

@@ -1,9 +1,11 @@
-{-# LANGUAGE CPP                   #-}
-{-# LANGUAGE FlexibleContexts      #-}
-{-# LANGUAGE FlexibleInstances     #-}
-{-# LANGUAGE GADTs                 #-}
-{-# LANGUAGE KindSignatures        #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE CPP                    #-}
+{-# LANGUAGE FlexibleContexts       #-}
+{-# LANGUAGE FlexibleInstances      #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE GADTs                  #-}
+{-# LANGUAGE KindSignatures         #-}
+{-# LANGUAGE ScopedTypeVariables    #-}
+{-# LANGUAGE UndecidableInstances   #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -29,6 +31,11 @@
 -- > githubRequest :: GH.Request 'False a -> GithubMonad a
 -- > githubRequest = singleton
 module GitHub.Request (
+    -- * A convinient execution of requests
+    github,
+    github',
+    GitHubRW,
+    GitHubRO,
     -- * Types
     Request,
     GenRequest (..),
@@ -106,6 +113,63 @@ import GitHub.Data.PullRequests (MergeResult (..))
 import GitHub.Data.Request
 
 import Paths_github (version)
+
+-------------------------------------------------------------------------------
+-- Convinience
+-------------------------------------------------------------------------------
+
+-- | A convinience function to turn functions returning @'Request' rw x@,
+-- into functions returning @IO (Either 'Error' x)@.
+--
+-- >>> :t \auth -> github auth userInfoForR
+-- \auth -> github auth userInfoForR
+--   :: AuthMethod am => am -> Name User -> IO (Either Error User)
+--
+-- >>> :t github pullRequestsForR
+-- \auth -> github auth pullRequestsForR
+--   :: AuthMethod am =>
+--      am
+--      -> Name Owner
+--      -> Name Repo
+--      -> PullRequestMod
+--      -> FetchCount
+--      -> IO (Either Error (Data.Vector.Vector SimplePullRequest))
+--
+github :: (AuthMethod am, GitHubRW req res) => am -> req -> res
+github = githubImpl
+
+-- | Like 'github'' but for 'RO' i.e. read-only requests.
+-- Note that GitHub has low request limit for non-authenticated requests.
+--
+-- >>> :t github' userInfoForR
+-- github' userInfoForR :: Name User -> IO (Either Error User)
+--
+github' :: GitHubRO req res => req -> res
+github' = githubImpl'
+
+-- | A type-class implementing 'github'.
+class GitHubRW req res | req -> res where
+    githubImpl :: AuthMethod am => am -> req -> res
+
+-- | A type-class implementing 'github''.
+class GitHubRO req res | req -> res where
+    githubImpl' :: req -> res
+
+instance (ParseResponse mt req, res ~ Either Error req) => GitHubRW (GenRequest mt rw req) (IO res) where
+    githubImpl = executeRequest
+
+instance (ParseResponse mt req, res ~ Either Error req, rw ~ 'RO) => GitHubRO (GenRequest mt rw req) (IO res) where
+    githubImpl' = executeRequest'
+
+instance GitHubRW req res => GitHubRW (a -> req) (a -> res) where
+    githubImpl am req x = githubImpl am (req x)
+
+instance GitHubRO req res => GitHubRO (a -> req) (a -> res) where
+    githubImpl' req x = githubImpl' (req x)
+
+-------------------------------------------------------------------------------
+-- Execution
+-------------------------------------------------------------------------------
 
 #ifdef MIN_VERSION_http_client_tls
 withOpenSSL :: IO a -> IO a
