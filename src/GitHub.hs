@@ -152,11 +152,8 @@ module GitHub (
     --
     milestonesR,
     milestoneR,
-    createMilestone,
     createMilestoneR,
-    updateMilestone,
     updateMilestoneR,
-    deleteMilestone,
     deleteMilestoneR,
 
     -- * Organizations
@@ -237,14 +234,8 @@ module GitHub (
     -- * Submit a pull request review
     -- * Dismiss a pull request review
     pullRequestReviewsR,
-    pullRequestReviews,
-    pullRequestReviews',
     pullRequestReviewR,
-    pullRequestReview,
-    pullRequestReview',
     pullRequestReviewCommentsR,
-    pullRequestReviewCommentsIO,
-    pullRequestReviewCommentsIO',
 
     -- * Repositories
     -- | See <https://developer.github.com/v3/repos/>

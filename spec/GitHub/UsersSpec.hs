@@ -15,9 +15,9 @@ import qualified GitHub
 import GitHub.Data
        (Auth (..), Organization (..), User (..), fromOwner)
 import GitHub.Endpoints.Users
-       (ownerInfoForR, userInfoCurrent', userInfoFor')
+       (ownerInfoForR, userInfoCurrentR, userInfoForR)
 import GitHub.Endpoints.Users.Followers (usersFollowedByR, usersFollowingR)
-import GitHub.Request                   (executeRequest)
+import GitHub.Request                   (github)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -46,37 +46,37 @@ spec = do
       userLogin (fromRightS userInfo) `shouldBe` "mike-burns"
 
     it "returns information about the user" $ withAuth $ \auth -> do
-      userInfo <- userInfoFor' (Just auth) "mike-burns"
+      userInfo <- github auth userInfoForR "mike-burns"
       userLogin (fromRightS userInfo) `shouldBe` "mike-burns"
 
     it "catches http exceptions" $ withAuth $ \auth -> do
-      userInfo <- userInfoFor' (Just auth) "i-hope-this-user-will-never-exist"
+      userInfo <- github auth userInfoForR "i-hope-this-user-will-never-exist"
       userInfo `shouldSatisfy` isLeft
 
     it "should fail for organization" $ withAuth $ \auth -> do
-      userInfo <- userInfoFor' (Just auth) "haskell"
+      userInfo <- github auth userInfoForR "haskell"
       userInfo `shouldSatisfy` isLeft
 
   describe "ownerInfoFor" $ do
     it "works for users and organizations" $ withAuth $ \auth -> do
-      a <- executeRequest auth $ ownerInfoForR "haskell"
-      b <- executeRequest auth $ ownerInfoForR "phadej"
+      a <- github auth ownerInfoForR "haskell"
+      b <- github auth ownerInfoForR "phadej"
       a `shouldSatisfy` isRight
       b `shouldSatisfy` isRight
       (organizationLogin . fromRightS . fromOwner . fromRightS $ a) `shouldBe` "haskell"
       (userLogin . fromLeftS . fromOwner . fromRightS $ b) `shouldBe` "phadej"
 
-  describe "userInfoCurrent'" $ do
+  describe "userInfoCurrentR" $ do
     it "returns information about the autenticated user" $ withAuth $ \auth -> do
-      userInfo <- userInfoCurrent' auth
+      userInfo <- github auth userInfoCurrentR
       userInfo `shouldSatisfy` isRight
 
   describe "usersFollowing" $ do
     it "works" $ withAuth $ \auth -> do
-      us <- executeRequest auth $ usersFollowingR "phadej" (GitHub.FetchAtLeast 10)
+      us <- github auth usersFollowingR "phadej" (GitHub.FetchAtLeast 10)
       us `shouldSatisfy` isRight
 
   describe "usersFollowedBy" $ do
     it "works" $ withAuth $ \auth -> do
-      us <- executeRequest auth $ usersFollowedByR "phadej" (GitHub.FetchAtLeast 10)
+      us <- github auth usersFollowedByR "phadej" (GitHub.FetchAtLeast 10)
       us `shouldSatisfy` isRight

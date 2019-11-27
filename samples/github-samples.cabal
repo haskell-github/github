@@ -1,6 +1,6 @@
 cabal-version: 2.2
 name:          github-samples
-version:       0.0.0
+version:       0
 category:      Examples
 synopsis:      Samples for github package
 license:       BSD-3-Clause
@@ -71,40 +71,40 @@ executable github-create-deploy-key
   main-is:        CreateDeployKey.hs
   hs-source-dirs: Repos/DeployKeys
 
-executable github-delete-deploy-key
-  import:         deps
-  main-is:        DeleteDeployKey.hs
-  hs-source-dirs: Repos/DeployKeys
+-- executable github-delete-deploy-key
+--   import:         deps
+--   main-is:        DeleteDeployKey.hs
+--   hs-source-dirs: Repos/DeployKeys
 
-executable github-delete-team
-  import:         deps
-  main-is:        DeleteTeam.hs
-  hs-source-dirs: Teams
+-- executable github-delete-team
+--   import:         deps
+--   main-is:        DeleteTeam.hs
+--   hs-source-dirs: Teams
 
-executable github-delete-team-membership-for
-  import:         deps
-  main-is:        DeleteTeamMembershipFor.hs
-  hs-source-dirs: Teams/Memberships
+-- executable github-delete-team-membership-for
+--   import:         deps
+--   main-is:        DeleteTeamMembershipFor.hs
+--   hs-source-dirs: Teams/Memberships
 
 executable github-edit-team
   import:         deps
   main-is:        EditTeam.hs
   hs-source-dirs: Teams
 
-executable github-list-deploy-keys-for
-  import:         deps
-  main-is:        ListDeployKeys.hs
-  hs-source-dirs: Repos/DeployKeys
+-- executable github-list-deploy-keys-for
+--   import:         deps
+--   main-is:        ListDeployKeys.hs
+--   hs-source-dirs: Repos/DeployKeys
 
 executable github-list-followers
   import:         deps
   main-is:        ListFollowers.hs
   hs-source-dirs: Users/Followers
 
-executable github-list-followers-example
-  import:         deps
-  main-is:        Example.hs
-  hs-source-dirs: Users/Followers
+-- executable github-list-followers-example
+--   import:         deps
+--   main-is:        Example.hs
+--   hs-source-dirs: Users/Followers
 
 executable github-list-following
   import:         deps
@@ -116,20 +116,20 @@ executable github-list-team-current
   main-is:        ListTeamsCurrent.hs
   hs-source-dirs: Teams
 
-executable github-list-team-repos
-  import:         deps
-  main-is:        ListRepos.hs
-  hs-source-dirs: Teams
+-- executable github-list-team-repos
+--   import:         deps
+--   main-is:        ListRepos.hs
+--   hs-source-dirs: Teams
 
-executable github-repos-contents-example
-  import:         deps
-  main-is:        Contents.hs
-  hs-source-dirs: Repos
+-- executable github-repos-contents-example
+--   import:         deps
+--   main-is:        Contents.hs
+--   hs-source-dirs: Repos
 
-executable github-show-deploy-key
-  import:         deps
-  main-is:        ShowDeployKey.hs
-  hs-source-dirs: Repos/DeployKeys
+-- executable github-show-deploy-key
+--   import:         deps
+--   main-is:        ShowDeployKey.hs
+--   hs-source-dirs: Repos/DeployKeys
 
 executable github-show-user
   import:         deps
@@ -141,37 +141,37 @@ executable github-show-user-2
   main-is:        ShowUser2.hs
   hs-source-dirs: Users
 
-executable github-team-membership-info-for
-  import:         deps
-  main-is:        TeamMembershipInfoFor.hs
-  hs-source-dirs: Teams/Memberships
+-- executable github-team-membership-info-for
+--   import:         deps
+--   main-is:        TeamMembershipInfoFor.hs
+--   hs-source-dirs: Teams/Memberships
 
 executable github-teaminfo-for
   import:         deps
   main-is:        TeamInfoFor.hs
   hs-source-dirs: Teams
 
-executable github-create-public-ssh-key
-  import:         deps
-  main-is:        CreatePublicSSHKey.hs
-  hs-source-dirs: Users/PublicSSHKeys
+-- executable github-create-public-ssh-key
+--   import:         deps
+--   main-is:        CreatePublicSSHKey.hs
+--   hs-source-dirs: Users/PublicSSHKeys
 
-executable github-delete-public-ssh-key
-  import:         deps
-  main-is:        DeletePublicSSHKey.hs
-  hs-source-dirs: Users/PublicSSHKeys
+-- executable github-delete-public-ssh-key
+--   import:         deps
+--   main-is:        DeletePublicSSHKey.hs
+--   hs-source-dirs: Users/PublicSSHKeys
 
-executable github-list-public-ssh-keys
-  import:         deps
-  main-is:        ListPublicSSHKeys.hs
-  hs-source-dirs: Users/PublicSSHKeys
+-- executable github-list-public-ssh-keys
+--   import:         deps
+--   main-is:        ListPublicSSHKeys.hs
+--   hs-source-dirs: Users/PublicSSHKeys
 
-executable github-get-public-ssh-key
-  import:         deps
-  main-is:        ShowPublicSSHKey.hs
-  hs-source-dirs: Users/PublicSSHKeys
+-- executable github-get-public-ssh-key
+--   import:         deps
+--   main-is:        ShowPublicSSHKey.hs
+--   hs-source-dirs: Users/PublicSSHKeys
 
-executable github-repos-commits-diff
-  import:         deps
-  main-is:        GitDiff.hs
-  hs-source-dirs: Repos/Commits
+-- executable github-repos-commits-diff
+--   import:         deps
+--   main-is:        GitDiff.hs
+--   hs-source-dirs: Repos/Commits

@@ -14,9 +14,10 @@ import Test.Hspec         (Spec, describe, it, pendingWith, shouldBe)
 
 import qualified Data.Vector as V
 
+import GitHub (github)
 import GitHub.Data
        (Auth (..), Issue (..), IssueNumber (..), IssueState (..), mkId)
-import GitHub.Endpoints.Search (SearchResult (..), searchIssues')
+import GitHub.Endpoints.Search (SearchResult (..), searchIssuesR)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -53,6 +54,6 @@ spec = do
 
     it "performs an issue search via the API" $ withAuth $ \auth -> do
       let query = "Decouple in:title repo:phadej/github created:<=2015-12-01"
-      issues <- searchResultResults . fromRightS <$> searchIssues' (Just auth) query
+      issues <- searchResultResults . fromRightS <$> github auth searchIssuesR query
       length issues `shouldBe` 1
       issueId (V.head issues) `shouldBe` mkId (Proxy :: Proxy Issue) 119694665

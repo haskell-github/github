@@ -2,11 +2,12 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module GitHub.OrganizationsSpec where
 
+import GitHub                                 (FetchCount (..), github)
 import GitHub.Auth                            (Auth (..))
 import GitHub.Data
        (SimpleOrganization (..), SimpleOwner (..), SimpleTeam (..))
-import GitHub.Endpoints.Organizations         (publicOrganizationsFor')
-import GitHub.Endpoints.Organizations.Members (membersOf')
+import GitHub.Endpoints.Organizations         (publicOrganizationsForR)
+import GitHub.Endpoints.Organizations.Members (membersOfR)
 
 import Data.Aeson         (eitherDecodeStrict)
 import Data.Either.Compat (isRight)
@@ -35,7 +36,7 @@ spec = do
       simpleOrganizationLogin (head $ fromRightS orgs) `shouldBe` "github"
 
     it "returns information about the user's organizations" $ withAuth $ \auth -> do
-      orgs <- publicOrganizationsFor' (Just auth) "mike-burns"
+      orgs <- github auth publicOrganizationsForR "mike-burns" FetchAll
       orgs  `shouldSatisfy` isRight
 
   describe "teamsOf" $ do
@@ -49,5 +50,5 @@ spec = do
       simpleOwnerLogin (head $ fromRightS ms) `shouldBe` "octocat"
 
     it "works" $ withAuth $ \auth -> do
-      ms <- membersOf' (Just auth) "haskell"
+      ms <- github auth membersOfR "haskell" FetchAll
       ms `shouldSatisfy` isRight
