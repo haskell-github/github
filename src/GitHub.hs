@@ -283,6 +283,13 @@ module GitHub (
     commitR,
     diffR,
 
+    -- ** Deploy Keys
+    -- | See <https://developer.github.com/v3/repos/keys/>
+    deployKeysForR,
+    deployKeyForR,
+    createRepoDeployKeyR,
+    deleteRepoDeployKeyR,
+
     -- ** Deployments
     -- | See <https://developer.github.com/v3/repos/deployments/#deployments>
     --
@@ -419,6 +426,7 @@ import GitHub.Endpoints.Repos
 import GitHub.Endpoints.Repos.Collaborators
 import GitHub.Endpoints.Repos.Comments
 import GitHub.Endpoints.Repos.Commits
+import GitHub.Endpoints.Repos.DeployKeys
 import GitHub.Endpoints.Repos.Deployments
 import GitHub.Endpoints.Repos.Forks
 import GitHub.Endpoints.Repos.Invitations
