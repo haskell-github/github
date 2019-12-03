@@ -8,6 +8,8 @@
   [#444](https://github.com/phadej/github/pull/444)
 - Make repoWebhookResponseStatus optional
   [#436](https://github.com/phadej/github/pull/436)
+- Teams improvements
+  [#417](https://github.com/phadej/github/pull/417)
 
 	
 ## Changes for 0.25

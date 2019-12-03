@@ -50,7 +50,7 @@ data SimpleTeam = SimpleTeam
     , simpleTeamName            :: !Text  -- TODO (0.15.0): unify this and 'simpleTeamSlug' as in 'Team'.
     , simpleTeamSlug            :: !(Name Team)
     , simpleTeamDescription     :: !(Maybe Text)
-    , simpleTeamPrivacy         :: !(Maybe Privacy)
+    , simpleTeamPrivacy         :: !Privacy
     , simpleTeamPermission      :: !Permission
     , simpleTeamMembersUrl      :: !URL
     , simpleTeamRepositoriesUrl :: !URL
@@ -66,7 +66,7 @@ data Team = Team
     , teamName            :: !Text
     , teamSlug            :: !(Name Team)
     , teamDescription     :: !(Maybe Text)
-    , teamPrivacy         :: !(Maybe Privacy)
+    , teamPrivacy         :: !Privacy
     , teamPermission      :: !Permission
     , teamMembersUrl      :: !URL
     , teamRepositoriesUrl :: !URL
@@ -83,8 +83,8 @@ data CreateTeam = CreateTeam
     { createTeamName        :: !(Name Team)
     , createTeamDescription :: !(Maybe Text)
     , createTeamRepoNames   :: !(Vector (Name Repo))
-    -- , createTeamPrivacy    :: Privacy
-    , createTeamPermission  :: Permission
+    , createTeamPrivacy     :: !Privacy
+    , createTeamPermission  :: !Permission
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -94,8 +94,8 @@ instance Binary CreateTeam
 data EditTeam = EditTeam
     { editTeamName        :: !(Name Team)
     , editTeamDescription :: !(Maybe Text)
-    -- , editTeamPrivacy :: Privacy
-    , editTeamPermission  :: !Permission
+    , editTeamPrivacy     :: !(Maybe Privacy)
+    , editTeamPermission  :: !(Maybe Permission)
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -144,7 +144,7 @@ instance FromJSON SimpleTeam where
         <*> o .: "name"
         <*> o .: "slug"
         <*> o .:?"description" .!= Nothing
-        <*> o .:?"privacy" .!= Nothing
+        <*> o .: "privacy"
         <*> o .: "permission"
         <*> o .: "members_url"
         <*> o .: "repositories_url"
@@ -156,7 +156,7 @@ instance FromJSON Team where
         <*> o .: "name"
         <*> o .: "slug"
         <*> o .:?"description" .!= Nothing
-        <*> o .:?"privacy" .!= Nothing
+        <*> o .: "privacy"
         <*> o .: "permission"
         <*> o .: "members_url"
         <*> o .: "repositories_url"
@@ -165,19 +165,29 @@ instance FromJSON Team where
         <*> o .: "organization"
 
 instance ToJSON CreateTeam where
-  toJSON (CreateTeam name desc repo_names {-privacy-} permissions) =
-    object [ "name"        .= name
-           , "description" .= desc
-           , "repo_names"  .= repo_names
-           {-, "privacy" .= privacy-}
-           , "permissions" .= permissions ]
+    toJSON (CreateTeam name desc repo_names privacy permission) =
+        object $ filter notNull
+            [ "name"        .= name
+            , "description" .= desc
+            , "repo_names"  .= repo_names
+            , "privacy"     .= privacy
+            , "permission"  .= permission
+            ]
+      where
+        notNull (_, Null) = False
+        notNull (_, _) = True
 
 instance ToJSON EditTeam where
-  toJSON (EditTeam name desc {-privacy-} permissions) =
-    object [ "name"        .= name
-           , "description" .= desc
-           {-, "privacy" .= privacy-}
-           , "permissions" .= permissions ]
+    toJSON (EditTeam name desc privacy permission) =
+        object $ filter notNull
+            [ "name"        .= name
+            , "description" .= desc
+            , "privacy"     .= privacy
+            , "permission"  .= permission
+            ]
+      where
+        notNull (_, Null) = False
+        notNull (_, _) = True
 
 instance FromJSON TeamMembership where
     parseJSON = withObject "TeamMembership" $ \o -> TeamMembership
