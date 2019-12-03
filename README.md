@@ -3,8 +3,6 @@ Github
 
 [![Build Status](https://travis-ci.org/phadej/github.svg?branch=master)](https://travis-ci.org/phadej/github)
 [![Hackage](https://img.shields.io/hackage/v/github.svg)][hackage]
-[![Stackage LTS 5](http://stackage.org/package/github/badge/lts-5)](http://stackage.org/lts-5/package/github)
-[![Stackage Nightly](http://stackage.org/package/github/badge/nightly)](http://stackage.org/nightly/package/github)
 
 The Github API v3 for Haskell.
 
@@ -33,6 +31,8 @@ Example Usage
 
 See the samples in the
 [samples/](https://github.com/fpco/github/tree/master/samples) directory.
+
+Note: some samples might be outdated.
 
 Documentation
 =============
