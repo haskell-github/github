@@ -13,7 +13,7 @@ main = do
                 Github.createTeamFor'
                   (Github.OAuth token)
                   org
-                  (Github.CreateTeam team (Just desc) (read repos :: [String]) Github.PermissionPull)
+                  (Github.CreateTeam team (Just desc) (read repos :: [String]) Nothing Github.PermissionPull)
               _                               ->
                 error "usage: CreateTeamFor <token> <org> <team_name> <description> <[\"repos\"]>"
   case result of
