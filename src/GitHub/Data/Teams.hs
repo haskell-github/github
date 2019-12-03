@@ -84,7 +84,7 @@ data CreateTeam = CreateTeam
     , createTeamDescription :: !(Maybe Text)
     , createTeamRepoNames   :: !(Vector (Name Repo))
     -- , createTeamPrivacy    :: Privacy
-    , createTeamPermission  :: Permission
+    , createTeamPermission  :: !Permission
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -165,19 +165,21 @@ instance FromJSON Team where
         <*> o .: "organization"
 
 instance ToJSON CreateTeam where
-  toJSON (CreateTeam name desc repo_names {-privacy-} permissions) =
+  toJSON (CreateTeam name desc repo_names {-privacy-} permission) =
     object [ "name"        .= name
            , "description" .= desc
            , "repo_names"  .= repo_names
            {-, "privacy" .= privacy-}
-           , "permissions" .= permissions ]
+           , "permission"  .= permission
+           ]
 
 instance ToJSON EditTeam where
-  toJSON (EditTeam name desc {-privacy-} permissions) =
+  toJSON (EditTeam name desc {-privacy-} permission) =
     object [ "name"        .= name
            , "description" .= desc
            {-, "privacy" .= privacy-}
-           , "permissions" .= permissions ]
+           , "permission"  .= permission
+           ]
 
 instance FromJSON TeamMembership where
     parseJSON = withObject "TeamMembership" $ \o -> TeamMembership
