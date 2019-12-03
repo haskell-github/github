@@ -50,7 +50,7 @@ data SimpleTeam = SimpleTeam
     , simpleTeamName            :: !Text  -- TODO (0.15.0): unify this and 'simpleTeamSlug' as in 'Team'.
     , simpleTeamSlug            :: !(Name Team)
     , simpleTeamDescription     :: !(Maybe Text)
-    , simpleTeamPrivacy         :: !(Maybe Privacy)
+    , simpleTeamPrivacy         :: !Privacy
     , simpleTeamPermission      :: !Permission
     , simpleTeamMembersUrl      :: !URL
     , simpleTeamRepositoriesUrl :: !URL
@@ -66,7 +66,7 @@ data Team = Team
     , teamName            :: !Text
     , teamSlug            :: !(Name Team)
     , teamDescription     :: !(Maybe Text)
-    , teamPrivacy         :: !(Maybe Privacy)
+    , teamPrivacy         :: !Privacy
     , teamPermission      :: !Permission
     , teamMembersUrl      :: !URL
     , teamRepositoriesUrl :: !URL
@@ -144,7 +144,7 @@ instance FromJSON SimpleTeam where
         <*> o .: "name"
         <*> o .: "slug"
         <*> o .:?"description" .!= Nothing
-        <*> o .:?"privacy" .!= Nothing
+        <*> o .: "privacy"
         <*> o .: "permission"
         <*> o .: "members_url"
         <*> o .: "repositories_url"
@@ -156,7 +156,7 @@ instance FromJSON Team where
         <*> o .: "name"
         <*> o .: "slug"
         <*> o .:?"description" .!= Nothing
-        <*> o .:?"privacy" .!= Nothing
+        <*> o .: "privacy"
         <*> o .: "permission"
         <*> o .: "members_url"
         <*> o .: "repositories_url"
