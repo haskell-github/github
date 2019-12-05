@@ -280,3 +280,57 @@ instance FromJSON IssueLabel where
         <$> o .: "color"
         <*> o .:? "url" .!= URL "" -- in events there aren't URL
         <*> o .: "name"
+        <*> o .:? "description"
+
+
+-------------------------------------------------------------------------------
+-- NewIssueLabel
+-------------------------------------------------------------------------------
+
+data NewIssueLabel = NewIssueLabel
+    { newLabelColor :: !Text
+    , newLabelName  :: !(Name NewIssueLabel)
+    , newLabelDesc  :: !(Maybe Text)
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData NewIssueLabel where rnf = genericRnf
+instance Binary NewIssueLabel
+
+
+instance ToJSON NewIssueLabel where
+    toJSON (NewIssueLabel color lblName lblDesc) = object $ filter notNull
+        [ "name" .= lblName
+        , "color" .= color
+        , "description" .= lblDesc
+        ]
+        where
+            notNull (_, Null) = False
+            notNull (_, _)    = True
+
+
+
+-------------------------------------------------------------------------------
+-- UpdateIssueLabel
+-------------------------------------------------------------------------------
+
+data UpdateIssueLabel = UpdateIssueLabel
+    { updateLabelColor :: !Text
+    , updateLabelName  :: !(Name UpdateIssueLabel)
+    , updateLabelDesc  :: !(Maybe Text)
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData UpdateIssueLabel where rnf = genericRnf
+instance Binary UpdateIssueLabel
+
+
+instance ToJSON UpdateIssueLabel where
+    toJSON (UpdateIssueLabel color lblName lblDesc) = object $ filter notNull
+        [ "new_name" .= lblName
+        , "color" .= color
+        , "description" .= lblDesc
+        ]
+        where
+            notNull (_, Null) = False
+            notNull (_, _)    = True
