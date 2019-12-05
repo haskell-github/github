@@ -268,6 +268,7 @@ data IssueLabel = IssueLabel
     { labelColor :: !Text
     , labelUrl   :: !URL
     , labelName  :: !(Name IssueLabel)
+    , labelDesc  :: !(Maybe Text)
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
