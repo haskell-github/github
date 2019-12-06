@@ -165,21 +165,29 @@ instance FromJSON Team where
         <*> o .: "organization"
 
 instance ToJSON CreateTeam where
-  toJSON (CreateTeam name desc repo_names privacy permission) =
-    object [ "name"        .= name
-           , "description" .= desc
-           , "repo_names"  .= repo_names
-           , "privacy"     .= privacy
-           , "permission"  .= permission
-           ]
+    toJSON (CreateTeam name desc repo_names privacy permission) =
+        object $ filter notNull
+            [ "name"        .= name
+            , "description" .= desc
+            , "repo_names"  .= repo_names
+            , "privacy"     .= privacy
+            , "permission"  .= permission
+            ]
+      where
+        notNull (_, Null) = False
+        notNull (_, _) = True
 
 instance ToJSON EditTeam where
-  toJSON (EditTeam name desc privacy permission) =
-    object [ "name"        .= name
-           , "description" .= desc
-           , "privacy"     .= privacy
-           , "permission"  .= permission
-           ]
+    toJSON (EditTeam name desc privacy permission) =
+        object $ filter notNull
+            [ "name"        .= name
+            , "description" .= desc
+            , "privacy"     .= privacy
+            , "permission"  .= permission
+            ]
+      where
+        notNull (_, Null) = False
+        notNull (_, _) = True
 
 instance FromJSON TeamMembership where
     parseJSON = withObject "TeamMembership" $ \o -> TeamMembership
