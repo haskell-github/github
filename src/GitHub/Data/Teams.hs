@@ -83,7 +83,7 @@ data CreateTeam = CreateTeam
     { createTeamName        :: !(Name Team)
     , createTeamDescription :: !(Maybe Text)
     , createTeamRepoNames   :: !(Vector (Name Repo))
-    , createTeamPrivacy     :: !(Maybe Privacy)
+    , createTeamPrivacy     :: !Privacy
     , createTeamPermission  :: !Permission
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -95,7 +95,7 @@ data EditTeam = EditTeam
     { editTeamName        :: !(Name Team)
     , editTeamDescription :: !(Maybe Text)
     , editTeamPrivacy     :: !(Maybe Privacy)
-    , editTeamPermission  :: !Permission
+    , editTeamPermission  :: !(Maybe Permission)
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
