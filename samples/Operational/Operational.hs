@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP               #-}
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE GADTs             #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -9,11 +10,17 @@ import Prelude ()
 import Control.Monad.Operational
 import Control.Monad.Trans.Except  (ExceptT (..), runExceptT)
 import Network.HTTP.Client         (Manager, newManager, ManagerSettings)
+
+#ifdef MIN_VERSION_http_client_tls
+import Network.HTTP.Client.TLS (tlsManagerSettings)
+#else
 import Network.HTTP.Client.OpenSSL (opensslManagerSettings, withOpenSSL)
 
-import qualified GitHub                   as GH
 import qualified OpenSSL.Session          as SSL
 import qualified OpenSSL.X509.SystemStore as SSL
+#endif
+
+import qualified GitHub                   as GH
 
 data R a where
     R :: FromJSON a => GH.Request 'GH.RA a -> R a
@@ -42,6 +49,10 @@ main = withOpenSSL $ do
                 githubRequest $ GH.ownerInfoForR (GH.simpleOwnerLogin . GH.repoOwner $ repo)
             print owner
 
+#ifdef MIN_VERSION_http_client_tls
+withOpenSSL :: IO a -> IO a
+withOpenSSL = id
+#else
 tlsManagerSettings :: ManagerSettings
 tlsManagerSettings = opensslManagerSettings $ do
     ctx <- SSL.context
@@ -52,3 +63,4 @@ tlsManagerSettings = opensslManagerSettings $ do
     SSL.contextLoadSystemCerts ctx
     SSL.contextSetVerificationMode ctx $ SSL.VerifyPeer True True Nothing
     return ctx
+#endif
