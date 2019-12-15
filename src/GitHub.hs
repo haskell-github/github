@@ -56,6 +56,14 @@ module GitHub (
     watchersForR,
     reposWatchedByR,
 
+    -- * Enterprise
+    -- | See <https://developer.github.com/enterprise/v3/enterprise-admin/>
+
+    -- ** Organizations
+    -- | See <https://developer.github.com/enterprise/v3/enterprise-admin/orgs/>
+    createOrganizationR,
+    renameOrganizationR,
+
     -- * Gists
     -- | See <https://developer.github.com/v3/gists/>
     --
@@ -401,6 +409,7 @@ import GitHub.Endpoints.Activity.Events
 import GitHub.Endpoints.Activity.Notifications
 import GitHub.Endpoints.Activity.Starring
 import GitHub.Endpoints.Activity.Watching
+import GitHub.Endpoints.Enterprise.Organizations
 import GitHub.Endpoints.Gists
 import GitHub.Endpoints.Gists.Comments
 import GitHub.Endpoints.GitData.Blobs

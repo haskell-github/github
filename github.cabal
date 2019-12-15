@@ -90,6 +90,7 @@ library
     GitHub.Data.DeployKeys
     GitHub.Data.Deployments
     GitHub.Data.Email
+    GitHub.Data.Enterprise.Organizations
     GitHub.Data.Events
     GitHub.Data.Gists
     GitHub.Data.GitData
@@ -116,6 +117,7 @@ library
     GitHub.Endpoints.Activity.Notifications
     GitHub.Endpoints.Activity.Starring
     GitHub.Endpoints.Activity.Watching
+    GitHub.Endpoints.Enterprise.Organizations
     GitHub.Endpoints.Gists
     GitHub.Endpoints.Gists.Comments
     GitHub.Endpoints.GitData.Blobs

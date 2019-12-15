@@ -41,6 +41,7 @@ module GitHub.Data (
     module GitHub.Data.DeployKeys,
     module GitHub.Data.Deployments,
     module GitHub.Data.Email,
+    module GitHub.Data.Enterprise.Organizations,
     module GitHub.Data.Events,
     module GitHub.Data.Gists,
     module GitHub.Data.GitData,
@@ -73,6 +74,7 @@ import GitHub.Data.Definitions
 import GitHub.Data.DeployKeys
 import GitHub.Data.Deployments
 import GitHub.Data.Email
+import GitHub.Data.Enterprise.Organizations
 import GitHub.Data.Events
 import GitHub.Data.Gists
 import GitHub.Data.GitData
