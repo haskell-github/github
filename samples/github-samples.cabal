@@ -98,6 +98,16 @@ executable github-create-deploy-key
 --   main-is:        DeleteTeamMembershipFor.hs
 --   hs-source-dirs: Teams/Memberships
 
+executable github-enterprise-create-organization
+  import:         deps
+  main-is:        CreateOrganization.hs
+  hs-source-dirs: Enterprise
+
+executable github-enterprise-rename-organization
+  import:         deps
+  main-is:        RenameOrganization.hs
+  hs-source-dirs: Enterprise
+
 executable github-edit-team
   import:         deps
   main-is:        EditTeam.hs
