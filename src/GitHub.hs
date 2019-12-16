@@ -3,7 +3,7 @@
 -- License     :  BSD-3-Clause
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
--- This module re-exports all request constructrors and data definitions from
+-- This module re-exports all request constructors and data definitions from
 -- this package.
 --
 -- See "GitHub.Request" module for executing 'Request', in short

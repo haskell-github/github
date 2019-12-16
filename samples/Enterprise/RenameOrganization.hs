@@ -5,6 +5,7 @@ module Main (main) where
 import Common
 
 import qualified GitHub
+import qualified GitHub.Enterprise as GitHub
 
 main :: IO ()
 main = do

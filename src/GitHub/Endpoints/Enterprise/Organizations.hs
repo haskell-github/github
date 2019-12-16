@@ -11,6 +11,7 @@ module GitHub.Endpoints.Enterprise.Organizations (
     ) where
 
 import GitHub.Data
+import GitHub.Data.Enterprise
 import GitHub.Internal.Prelude
 import Prelude ()
 
