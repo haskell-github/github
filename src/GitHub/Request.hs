@@ -62,6 +62,11 @@ module GitHub.Request (
     -- ** Preview
     PreviewAccept (..),
     PreviewParseResponse (..),
+    -- * SSL
+    -- | This always exist, independently of @openssl@ configuration flag.
+    -- They change accordingly, to make use of the library simpler.
+    withOpenSSL,
+    tlsManagerSettings, 
     ) where
 
 import GitHub.Internal.Prelude

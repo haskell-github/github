@@ -9,16 +9,7 @@ import Prelude ()
 
 import Control.Monad.Operational
 import Control.Monad.Trans.Except  (ExceptT (..), runExceptT)
-import Network.HTTP.Client         (Manager, newManager, ManagerSettings)
-
-#ifdef MIN_VERSION_http_client_tls
-import Network.HTTP.Client.TLS (tlsManagerSettings)
-#else
-import Network.HTTP.Client.OpenSSL (opensslManagerSettings, withOpenSSL)
-
-import qualified OpenSSL.Session          as SSL
-import qualified OpenSSL.X509.SystemStore as SSL
-#endif
+import Network.HTTP.Client         (Manager, newManager)
 
 import qualified GitHub                   as GH
 
@@ -38,8 +29,8 @@ githubRequest :: FromJSON a => GH.Request 'GH.RA a -> GithubMonad a
 githubRequest = singleton . R
 
 main :: IO ()
-main = withOpenSSL $ do
-    manager <- newManager tlsManagerSettings
+main = GH.withOpenSSL $ do
+    manager <- newManager GH.tlsManagerSettings
     auth' <- getAuth
     case auth' of
         Nothing -> return ()
@@ -48,19 +39,3 @@ main = withOpenSSL $ do
                 repo <- githubRequest $ GH.repositoryR "phadej" "github"
                 githubRequest $ GH.ownerInfoForR (GH.simpleOwnerLogin . GH.repoOwner $ repo)
             print owner
-
-#ifdef MIN_VERSION_http_client_tls
-withOpenSSL :: IO a -> IO a
-withOpenSSL = id
-#else
-tlsManagerSettings :: ManagerSettings
-tlsManagerSettings = opensslManagerSettings $ do
-    ctx <- SSL.context
-    SSL.contextAddOption ctx SSL.SSL_OP_NO_SSLv2
-    SSL.contextAddOption ctx SSL.SSL_OP_NO_SSLv3
-    SSL.contextAddOption ctx SSL.SSL_OP_NO_TLSv1
-    SSL.contextSetCiphers ctx "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256"
-    SSL.contextLoadSystemCerts ctx
-    SSL.contextSetVerificationMode ctx $ SSL.VerifyPeer True True Nothing
-    return ctx
-#endif
