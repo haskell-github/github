@@ -8,3 +8,4 @@ constraints: hashable ^>=1.3
 constraints: semigroups ^>=0.19
 
 constraints: github +openssl
+constraints: github-samples +openssl

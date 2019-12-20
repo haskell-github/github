@@ -30,6 +30,7 @@ library
   default-language: Haskell2010
 
 executable github-operational
+  default-language: Haskell2010
   main-is:          Operational.hs
   hs-source-dirs:   Operational
   ghc-options:      -Wall -threaded
@@ -38,16 +39,11 @@ executable github-operational
     , base-compat-batteries
     , github
     , github-samples
-    , HsOpenSSL
-    , HsOpenSSL-x509-system
     , http-client
-    , http-client-openssl
     , operational
     , text
     , transformers
     , transformers-compat
-
-  default-language: Haskell2010
 
 common deps
   default-language: Haskell2010
