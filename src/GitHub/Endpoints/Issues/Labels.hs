@@ -38,26 +38,19 @@ labelR user repo lbl =
 
 -- | Create a label.
 -- See <https://developer.github.com/v3/issues/labels/#create-a-label>
-createLabelR :: Name Owner -> Name Repo -> Name IssueLabel -> String -> Request 'RW IssueLabel
-createLabelR user repo lbl color =
-    command Post paths $ encode body
-  where
-    paths = ["repos", toPathPart user, toPathPart repo, "labels"]
-    body = object ["name" .= untagName lbl, "color" .= color]
+createLabelR :: Name Owner -> Name Repo -> NewIssueLabel -> Request 'RW IssueLabel
+createLabelR user repo =
+    command Post ["repos", toPathPart user, toPathPart repo, "labels"] . encode
 
 -- | Update a label.
 -- See <https://developer.github.com/v3/issues/labels/#update-a-label>
 updateLabelR :: Name Owner
              -> Name Repo
              -> Name IssueLabel   -- ^ old label name
-             -> Name IssueLabel   -- ^ new label name
-             -> String            -- ^ new color
+             -> UpdateIssueLabel   -- ^ new label
              -> Request 'RW IssueLabel
-updateLabelR user repo oldLbl newLbl color =
-    command Patch paths (encode body)
-  where
-    paths = ["repos", toPathPart user, toPathPart repo, "labels", toPathPart oldLbl]
-    body = object ["name" .= untagName newLbl, "color" .= color]
+updateLabelR user repo oldLbl =
+    command Patch ["repos", toPathPart user, toPathPart repo, "labels", toPathPart oldLbl] . encode
 
 -- | Delete a label.
 -- See <https://developer.github.com/v3/issues/labels/#delete-a-label>
