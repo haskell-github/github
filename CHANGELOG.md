@@ -14,6 +14,12 @@ This reduces symbol bloat in the library.
   [#409](https://github.com/phadej/github/pull/409)
 - Update `Repo`, `NewRepo` and `EditRepo` data types
   [#407](https://github.com/phadej/github/pull/407)
+- Add `executeRequestWithMgrAndRes`
+  [#421](https://github.com/phadej/github/pull/421)
+- Add `limitsFromHttpResponse`
+  [#421](https://github.com/phadej/github/pull/421)
+- Add label descriptions
+  [#418](https://github.com/phadej/github/pull/418)
 
 ## Changes for 0.23
 

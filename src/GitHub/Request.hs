@@ -46,6 +46,7 @@ module GitHub.Request (
     -- * Request execution in IO
     executeRequest,
     executeRequestWithMgr,
+    executeRequestWithMgrAndRes,
     executeRequest',
     executeRequestWithMgr',
     executeRequestMaybe,
@@ -66,7 +67,7 @@ module GitHub.Request (
     -- | This always exist, independently of @openssl@ configuration flag.
     -- They change accordingly, to make use of the library simpler.
     withOpenSSL,
-    tlsManagerSettings, 
+    tlsManagerSettings,
     ) where
 
 import GitHub.Internal.Prelude
@@ -112,7 +113,7 @@ import qualified OpenSSL.Session          as SSL
 import qualified OpenSSL.X509.SystemStore as SSL
 #endif
 
-import GitHub.Auth              (Auth, AuthMethod, endpoint, setAuthRequest)
+import GitHub.Auth              (AuthMethod, endpoint, setAuthRequest)
 import GitHub.Data              (Error (..))
 import GitHub.Data.PullRequests (MergeResult (..))
 import GitHub.Data.Request
@@ -206,6 +207,7 @@ lessFetchCount :: Int -> FetchCount -> Bool
 lessFetchCount _ FetchAll         = True
 lessFetchCount i (FetchAtLeast j) = i < fromIntegral j
 
+
 -- | Like 'executeRequest' but with provided 'Manager'.
 executeRequestWithMgr
     :: (AuthMethod am, ParseResponse mt a)
@@ -213,26 +215,38 @@ executeRequestWithMgr
     -> am
     -> GenRequest mt rw a
     -> IO (Either Error a)
-executeRequestWithMgr mgr auth req = runExceptT $ do
+executeRequestWithMgr mgr auth req =
+    fmap (fmap responseBody) (executeRequestWithMgrAndRes mgr auth req)
+
+-- | Execute request and return the last received 'HTTP.Response'.
+--
+-- @since 0.24
+executeRequestWithMgrAndRes
+    :: (AuthMethod am, ParseResponse mt a)
+    => Manager
+    -> am
+    -> GenRequest mt rw a
+    -> IO (Either Error (HTTP.Response a))
+executeRequestWithMgrAndRes mgr auth req = runExceptT $ do
     httpReq <- makeHttpRequest (Just auth) req
     performHttpReq httpReq req
   where
-    httpLbs' :: HTTP.Request -> ExceptT Error IO (Response LBS.ByteString)
+    httpLbs' :: HTTP.Request -> ExceptT Error IO (HTTP.Response LBS.ByteString)
     httpLbs' req' = lift (httpLbs req' mgr) `catch` onHttpException
 
-    performHttpReq :: forall rw mt b. ParseResponse mt b => HTTP.Request -> GenRequest mt rw b -> ExceptT Error IO b
+    performHttpReq :: forall rw mt b. ParseResponse mt b => HTTP.Request -> GenRequest mt rw b -> ExceptT Error IO (HTTP.Response b)
     performHttpReq httpReq Query {} = do
         res <- httpLbs' httpReq
-        unTagged (parseResponse httpReq res :: Tagged mt (ExceptT Error IO b))
+        (<$ res) <$> unTagged (parseResponse httpReq res :: Tagged mt (ExceptT Error IO b))
 
     performHttpReq httpReq (PagedQuery _ _ l) =
-        unTagged (performPagedRequest httpLbs' predicate httpReq :: Tagged mt (ExceptT Error IO b))
+        unTagged (performPagedRequest httpLbs' predicate httpReq :: Tagged mt (ExceptT Error IO (HTTP.Response b)))
       where
         predicate v = lessFetchCount (V.length v) l
 
     performHttpReq httpReq (Command _ _ _) = do
         res <- httpLbs' httpReq
-        unTagged (parseResponse httpReq res :: Tagged mt (ExceptT Error IO b))
+        (<$ res) <$> unTagged (parseResponse httpReq res :: Tagged mt (ExceptT Error IO b))
 
 -- | Like 'executeRequest' but without authentication.
 executeRequest' :: ParseResponse mt a => GenRequest mt 'RO a -> IO (Either Error a)
@@ -246,21 +260,7 @@ executeRequestWithMgr'
     => Manager
     -> GenRequest mt 'RO a
     -> IO (Either Error a)
-executeRequestWithMgr' mgr req = runExceptT $ do
-    httpReq <- makeHttpRequest (Nothing :: Maybe Auth) req
-    performHttpReq httpReq req
-  where
-    httpLbs' :: HTTP.Request -> ExceptT Error IO (Response LBS.ByteString)
-    httpLbs' req' = lift (httpLbs req' mgr) `catch` onHttpException
-
-    performHttpReq :: forall mt b. ParseResponse mt b => HTTP.Request -> GenRequest mt 'RO b -> ExceptT Error IO b
-    performHttpReq httpReq Query {} = do
-        res <- httpLbs' httpReq
-        unTagged (parseResponse httpReq res :: Tagged mt (ExceptT Error IO b))
-    performHttpReq httpReq (PagedQuery _ _ l) =
-        unTagged (performPagedRequest httpLbs' predicate httpReq :: Tagged mt (ExceptT Error IO b))
-      where
-        predicate v = lessFetchCount (V.length v) l
+executeRequestWithMgr' mgr = executeRequestWithMgr mgr ()
 
 -- | Helper for picking between 'executeRequest' and 'executeRequest''.
 --
@@ -302,9 +302,9 @@ class Accept mt => ParseResponse (mt :: MediaType *) a where
 -- | Parse API response.
 --
 -- @
--- parseResponse :: 'FromJSON' a => 'Response' 'LBS.ByteString' -> 'Either' 'Error' a
+-- parseResponse :: 'FromJSON' a => 'HTTP.Response' 'LBS.ByteString' -> 'Either' 'Error' a
 -- @
-parseResponseJSON :: (FromJSON a, MonadError Error m) => Response LBS.ByteString -> m a
+parseResponseJSON :: (FromJSON a, MonadError Error m) => HTTP.Response LBS.ByteString -> m a
 parseResponseJSON res = case eitherDecode (responseBody res) of
     Right x  -> return x
     Left err -> throwError . ParseError . T.pack $ err
@@ -349,9 +349,9 @@ instance b ~ URI => ParseResponse 'MtRedirect b where
 -- | Helper for handling of 'RequestRedirect'.
 --
 -- @
--- parseRedirect :: 'Response' 'LBS.ByteString' -> 'Either' 'Error' a
+-- parseRedirect :: 'HTTP.Response' 'LBS.ByteString' -> 'Either' 'Error' a
 -- @
-parseRedirect :: MonadError Error m => URI -> Response LBS.ByteString -> m URI
+parseRedirect :: MonadError Error m => URI -> HTTP.Response LBS.ByteString -> m URI
 parseRedirect originalUri rsp = do
     let status = responseStatus rsp
     when (statusCode status /= 302) $
@@ -501,7 +501,7 @@ makeHttpRequest auth r = case r of
     setBody body req = req { requestBody = RequestBodyLBS body }
 
 -- | Query @Link@ header with @rel=next@ from the request headers.
-getNextUrl :: Response a -> Maybe URI
+getNextUrl :: HTTP.Response a -> Maybe URI
 getNextUrl req = do
     linkHeader <- lookup "Link" (responseHeaders req)
     links <- parseLinkHeaderBS linkHeader
@@ -516,25 +516,27 @@ getNextUrl req = do
 
 -- | Helper for making paginated requests. Responses, @a@ are combined monoidally.
 --
+-- The result is wrapped in the last received 'HTTP.Response'.
+--
 -- @
 -- performPagedRequest :: ('FromJSON' a, 'Semigroup' a)
---                     => ('HTTP.Request' -> 'ExceptT' 'Error' 'IO' ('Response' 'LBS.ByteString'))
+--                     => ('HTTP.Request' -> 'ExceptT' 'Error' 'IO' ('HTTP.Response' 'LBS.ByteString'))
 --                     -> (a -> 'Bool')
 --                     -> 'HTTP.Request'
---                     -> 'ExceptT' 'Error' 'IO' a
+--                     -> 'ExceptT' 'Error' 'IO' ('HTTP.Response' a)
 -- @
 performPagedRequest
     :: forall a m mt. (ParseResponse mt a, Semigroup a, MonadCatch m, MonadError Error m)
-    => (HTTP.Request -> m (Response LBS.ByteString))  -- ^ `httpLbs` analogue
-    -> (a -> Bool)                                    -- ^ predicate to continue iteration
-    -> HTTP.Request                                   -- ^ initial request
-    -> Tagged mt (m a)
+    => (HTTP.Request -> m (HTTP.Response LBS.ByteString))  -- ^ `httpLbs` analogue
+    -> (a -> Bool)                                         -- ^ predicate to continue iteration
+    -> HTTP.Request                                        -- ^ initial request
+    -> Tagged mt (m (HTTP.Response a))
 performPagedRequest httpLbs' predicate initReq = Tagged $ do
     res <- httpLbs' initReq
     m <- unTagged (parseResponse initReq res :: Tagged mt (m a))
     go m res initReq
   where
-    go :: a -> Response LBS.ByteString -> HTTP.Request -> m a
+    go :: a -> HTTP.Response LBS.ByteString -> HTTP.Request -> m (HTTP.Response a)
     go acc res req =
         case (predicate acc, getNextUrl res) of
             (True, Just uri) -> do
@@ -542,7 +544,7 @@ performPagedRequest httpLbs' predicate initReq = Tagged $ do
                 res' <- httpLbs' req'
                 m <- unTagged (parseResponse req' res' :: Tagged mt (m a))
                 go (acc <> m) res' req'
-            (_, _)           -> return acc
+            (_, _)           -> return (acc <$ res)
 
 -------------------------------------------------------------------------------
 -- Internal

@@ -21,7 +21,6 @@ import Control.Arrow (second)
 import Data.ByteString (ByteString)
 import Data.Maybe      (catMaybes)
 import Data.Text       (Text)
-import Data.Time.Clock (UTCTime)
 import Data.Vector     (Vector)
 
 import GitHub.Data.Definitions (SimpleUser)
