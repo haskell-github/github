@@ -30,11 +30,17 @@ instance Binary Auth
 instance Hashable Auth
 
 -- | A type class for different authentication methods
+--
+-- Note the '()' intance, which doee nothing, i.e. is unauthenticated.
 class AuthMethod a where
     -- | Custom API endpoint without trailing slash
     endpoint       :: a -> Maybe Text
     -- | A function which sets authorisation on an HTTP request
     setAuthRequest :: a -> HTTP.Request -> HTTP.Request
+
+instance AuthMethod () where
+    endpoint _ = Nothing
+    setAuthRequest _ = id
 
 instance AuthMethod Auth where
     endpoint (BasicAuth _ _)       = Nothing

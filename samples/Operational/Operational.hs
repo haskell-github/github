@@ -7,23 +7,26 @@ module Main (main) where
 import Common
 import Prelude ()
 
-import Control.Monad.Operational
-import Control.Monad.Trans.Except  (ExceptT (..), runExceptT)
-import Network.HTTP.Client         (Manager, newManager)
+import Control.Exception          (throw)
+import Control.Monad.IO.Class     (liftIO)
+import Control.Monad.Operational  (Program, ProgramViewT (..), singleton, view)
+import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
+import Network.HTTP.Client        (Manager, newManager, responseBody)
 
-import qualified GitHub                   as GH
+import qualified GitHub as GH
 
 data R a where
     R :: FromJSON a => GH.Request 'GH.RA a -> R a
 
 type GithubMonad a = Program R a
 
-runMonad :: Manager -> GH.Auth -> GithubMonad a -> ExceptT GH.Error IO a
+runMonad :: GH.AuthMethod auth => Manager -> auth -> GithubMonad a -> ExceptT GH.Error IO a
 runMonad mgr auth m = case view m of
     Return a   -> return a
     R req :>>= k -> do
-        b <- ExceptT $ GH.executeRequestWithMgr mgr auth req
-        runMonad mgr auth (k b)
+        res <- ExceptT $ GH.executeRequestWithMgrAndRes mgr auth req
+        liftIO $ print $ GH.limitsFromHttpResponse res
+        runMonad mgr auth (k (responseBody res))
 
 githubRequest :: FromJSON a => GH.Request 'GH.RA a -> GithubMonad a
 githubRequest = singleton . R
@@ -33,9 +36,18 @@ main = GH.withOpenSSL $ do
     manager <- newManager GH.tlsManagerSettings
     auth' <- getAuth
     case auth' of
-        Nothing -> return ()
-        Just auth -> do
-            owner <- runExceptT $ runMonad manager auth $ do
-                repo <- githubRequest $ GH.repositoryR "phadej" "github"
-                githubRequest $ GH.ownerInfoForR (GH.simpleOwnerLogin . GH.repoOwner $ repo)
+        Nothing -> do
+            (owner, rl) <- runExceptT (runMonad manager () script) >>= either throw return
             print owner
+            print rl
+        Just auth -> do
+            (owner, rl) <- runExceptT (runMonad manager auth script) >>= either throw return
+            print owner
+            print rl
+
+script :: Program R (GH.Owner, GH.Limits)
+script = do
+    repo <- githubRequest $ GH.repositoryR "phadej" "github"
+    owner <- githubRequest $ GH.ownerInfoForR (GH.simpleOwnerLogin . GH.repoOwner $ repo)
+    rl <- githubRequest GH.rateLimitR
+    return (owner, GH.rateLimitCore rl)
