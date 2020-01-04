@@ -83,3 +83,15 @@ instance ToJSON NewPullComment where
                , "path" .= path
                , "position" .= pos
                ]
+
+data PullCommentReply = PullCommentReply
+    { pullCommentReplyBody     :: Text
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData PullCommentReply where rnf = genericRnf
+
+instance ToJSON PullCommentReply where
+    toJSON (PullCommentReply b) =
+        object [ "body" .= b
+               ]

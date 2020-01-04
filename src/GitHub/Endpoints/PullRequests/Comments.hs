@@ -9,6 +9,7 @@ module GitHub.Endpoints.PullRequests.Comments (
     pullRequestCommentsR,
     pullRequestCommentR,
     createPullCommentR,
+    createPullCommentReplyR,
     module GitHub.Data,
     ) where
 
@@ -36,3 +37,13 @@ createPullCommentR user repo iss commit path position body =
     command Post parts (encode $ NewPullComment commit path position body)
   where
     parts = ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart iss, "comments"]
+
+-- | Create a comment reply.
+--
+-- See <https://developer.github.com/v3/pulls/comments/#create-a-review-comment-reply>
+createPullCommentReplyR :: Name Owner -> Name Repo -> IssueNumber -> Id Comment -> Text -> Request 'RW Comment
+createPullCommentReplyR user repo iss cid body =
+    command Post parts (encode $ PullCommentReply body)
+  where
+    parts = ["repos", toPathPart user, toPathPart repo, "pulls", toPathPart iss
+            , "comments", toPathPart cid, "replies"]
