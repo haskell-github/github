@@ -258,6 +258,7 @@ module GitHub (
     -- ** Collaborators
     -- | See <https://developer.github.com/v3/repos/collaborators/>
     collaboratorsOnR,
+    collaboratorPermissionOnR,
     isCollaboratorOnR,
     addCollaboratorR,
 

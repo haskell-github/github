@@ -7,6 +7,7 @@
 -- <http://developer.github.com/v3/repos/collaborators/>.
 module GitHub.Endpoints.Repos.Collaborators (
     collaboratorsOnR,
+    collaboratorPermissionOnR,
     isCollaboratorOnR,
     addCollaboratorR,
     module GitHub.Data,
@@ -21,6 +22,16 @@ import Prelude ()
 collaboratorsOnR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector SimpleUser)
 collaboratorsOnR user repo =
     pagedQuery ["repos", toPathPart user, toPathPart repo, "collaborators"] []
+
+-- | Review a user's permission level.
+-- <https://developer.github.com/v3/repos/collaborators/#review-a-users-permission-level>
+collaboratorPermissionOnR
+    :: Name Owner        -- ^ Repository owner
+    -> Name Repo         -- ^ Repository name
+    -> Name User         -- ^ Collaborator to check permissions of.
+    -> GenRequest 'MtJSON rw CollaboratorWithPermission
+collaboratorPermissionOnR owner repo coll =
+    query ["repos", toPathPart owner, toPathPart repo, "collaborators", toPathPart coll, "permission"] []
 
 -- | Check if a user is a collaborator.
 -- See <https://developer.github.com/v3/repos/collaborators/#check-if-a-user-is-a-collaborator>

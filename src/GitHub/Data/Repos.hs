@@ -20,6 +20,7 @@ import GitHub.Internal.Prelude
 import Prelude ()
 
 import qualified Data.HashMap.Strict as HM
+import qualified Data.Text as T
 #if MIN_VERSION_aeson(1,0,0)
 import Data.Aeson.Types (FromJSONKey (..), fromJSONKeyCoerce)
 #else
@@ -157,6 +158,27 @@ contributorToSimpleUser :: Contributor -> Maybe SimpleUser
 contributorToSimpleUser (AnonymousContributor _ _) = Nothing
 contributorToSimpleUser (KnownContributor _contributions avatarUrl name url uid _gravatarid) =
     Just $ SimpleUser uid name avatarUrl url
+
+-- | The permission of a collaborator on a repository.
+-- See <https://developer.github.com/v3/repos/collaborators/#review-a-users-permission-level>
+data CollaboratorPermission
+    = CollaboratorPermissionAdmin
+    | CollaboratorPermissionWrite
+    | CollaboratorPermissionRead
+    | CollaboratorPermissionNone
+    deriving (Show, Data, Enum, Bounded, Typeable, Eq, Ord, Generic)
+
+instance NFData CollaboratorPermission where rnf = genericRnf
+instance Binary CollaboratorPermission
+
+-- | A collaborator and its permission on a repository.
+-- See <https://developer.github.com/v3/repos/collaborators/#review-a-users-permission-level>
+data CollaboratorWithPermission
+    = CollaboratorWithPermission SimpleUser CollaboratorPermission
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData CollaboratorWithPermission where rnf = genericRnf
+instance Binary CollaboratorWithPermission
 
 -- JSON instances
 
@@ -303,3 +325,22 @@ instance IsPathPart ArchiveFormat where
     toPathPart af = case af of
         ArchiveFormatTarball -> "tarball"
         ArchiveFormatZipball -> "zipball"
+
+instance FromJSON CollaboratorPermission where
+    parseJSON = withText "CollaboratorPermission" $ \t -> case T.toLower t of
+        "admin" -> pure CollaboratorPermissionAdmin
+        "write" -> pure CollaboratorPermissionWrite
+        "read"  -> pure CollaboratorPermissionRead
+        "none"  -> pure CollaboratorPermissionNone
+        _       -> fail $ "Unknown CollaboratorPermission: " <> T.unpack t
+
+instance ToJSON CollaboratorPermission where
+    toJSON CollaboratorPermissionAdmin = "admin"
+    toJSON CollaboratorPermissionWrite = "write"
+    toJSON CollaboratorPermissionRead  = "read"
+    toJSON CollaboratorPermissionNone  = "none"
+
+instance FromJSON CollaboratorWithPermission where
+    parseJSON = withObject "CollaboratorWithPermission" $ \o -> CollaboratorWithPermission
+        <$> o .: "user"
+        <*> o .: "permission"
