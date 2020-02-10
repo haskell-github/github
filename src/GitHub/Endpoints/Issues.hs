@@ -33,7 +33,7 @@ organizationIssuesR org opts =
 
 -- | Query a single issue.
 -- See <https://developer.github.com/v3/issues/#get-a-single-issue>
-issueR :: Name Owner -> Name Repo -> Id Issue -> Request k Issue
+issueR :: Name Owner -> Name Repo -> IssueNumber -> Request k Issue
 issueR user reqRepoName reqIssueNumber =
     query ["repos", toPathPart user, toPathPart reqRepoName, "issues", toPathPart reqIssueNumber] []
 
@@ -63,6 +63,6 @@ editOfIssue = EditIssue Nothing Nothing Nothing Nothing Nothing Nothing
 
 -- | Edit an issue.
 -- See <https://developer.github.com/v3/issues/#edit-an-issue>
-editIssueR :: Name Owner -> Name Repo -> Id Issue -> EditIssue -> Request 'RW Issue
+editIssueR :: Name Owner -> Name Repo -> IssueNumber -> EditIssue -> Request 'RW Issue
 editIssueR user repo iss =
     command Patch ["repos", toPathPart user, toPathPart repo, "issues", toPathPart iss] . encode

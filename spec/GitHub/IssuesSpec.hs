@@ -38,6 +38,11 @@ spec = do
                   cms <- GitHub.executeRequest auth $
                     GitHub.commentsR owner repo (GitHub.issueNumber i) 1
                   cms `shouldSatisfy` isRight
+    describe "issueR" $ do
+        it "fetches issue #428" $ withAuth $ \auth -> do
+            resIss <- GitHub.executeRequest auth $
+                GitHub.issueR "phadej" "github" (GitHub.IssueNumber 428)
+            resIss `shouldSatisfy` isRight
   where
     repos =
       [ ("thoughtbot", "paperclip")
