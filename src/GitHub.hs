@@ -56,14 +56,6 @@ module GitHub (
     watchersForR,
     reposWatchedByR,
 
-    -- * Enterprise
-    -- | See <https://developer.github.com/enterprise/v3/enterprise-admin/>
-
-    -- ** Organizations
-    -- | See <https://developer.github.com/enterprise/v3/enterprise-admin/orgs/>
-    createOrganizationR,
-    renameOrganizationR,
-
     -- * Gists
     -- | See <https://developer.github.com/v3/gists/>
     --
@@ -289,6 +281,15 @@ module GitHub (
     commitR,
     diffR,
 
+    -- ** Contents
+    -- | See <https://developer.github.com/v3/repos/contents/>
+    contentsForR,
+    readmeForR,
+    archiveForR,
+    createFileR,
+    updateFileR,
+    deleteFileR,
+
     -- ** Deploy Keys
     -- | See <https://developer.github.com/v3/repos/keys/>
     deployKeysForR,
@@ -315,6 +316,12 @@ module GitHub (
     --
     -- * Create a fork
     forksForR,
+
+    -- ** Statuses
+    -- | See <https://developer.github.com/v3/repos/statuses/>
+    createStatusR,
+    statusesForR,
+    statusForR,
 
     -- ** Webhooks
     -- | See <https://developer.github.com/v3/repos/hooks/>
@@ -389,11 +396,13 @@ module GitHub (
     usersFollowingR,
     usersFollowedByR,
 
-    -- ** Statuses
-    -- | See <https://developer.github.com/v3/repos/statuses/>
-    createStatusR,
-    statusesForR,
-    statusForR,
+    -- ** Git SSH Keys
+    -- | See <https://developer.github.com/v3/users/keys/>
+    publicSSHKeysR,
+    publicSSHKeysForR,
+    publicSSHKeyR,
+    createUserPublicSSHKeyR,
+    deleteUserPublicSSHKeyR,
 
     -- ** Rate Limit
     -- | See <https://developer.github.com/v3/rate_limit/>
@@ -410,7 +419,6 @@ import GitHub.Endpoints.Activity.Events
 import GitHub.Endpoints.Activity.Notifications
 import GitHub.Endpoints.Activity.Starring
 import GitHub.Endpoints.Activity.Watching
-import GitHub.Endpoints.Enterprise.Organizations
 import GitHub.Endpoints.Gists
 import GitHub.Endpoints.Gists.Comments
 import GitHub.Endpoints.GitData.Blobs
@@ -433,6 +441,7 @@ import GitHub.Endpoints.Repos
 import GitHub.Endpoints.Repos.Collaborators
 import GitHub.Endpoints.Repos.Comments
 import GitHub.Endpoints.Repos.Commits
+import GitHub.Endpoints.Repos.Contents
 import GitHub.Endpoints.Repos.DeployKeys
 import GitHub.Endpoints.Repos.Deployments
 import GitHub.Endpoints.Repos.Forks
@@ -444,4 +453,5 @@ import GitHub.Endpoints.Search
 import GitHub.Endpoints.Users
 import GitHub.Endpoints.Users.Emails
 import GitHub.Endpoints.Users.Followers
+import GitHub.Endpoints.Users.PublicSSHKeys
 import GitHub.Request
