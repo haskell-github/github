@@ -3,7 +3,7 @@
 -- License     :  BSD-3-Clause
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
--- This module re-exports all request constructrors and data definitions from
+-- This module re-exports all request constructors and data definitions from
 -- this package.
 --
 -- See "GitHub.Request" module for executing 'Request', in short
@@ -55,6 +55,14 @@ module GitHub (
     -- * Delete a Repository Subscription
     watchersForR,
     reposWatchedByR,
+
+    -- * Enterprise
+    -- | See <https://developer.github.com/enterprise/v3/enterprise-admin/>
+
+    -- ** Organizations
+    -- | See <https://developer.github.com/enterprise/v3/enterprise-admin/orgs/>
+    createOrganizationR,
+    renameOrganizationR,
 
     -- * Gists
     -- | See <https://developer.github.com/v3/gists/>
@@ -402,6 +410,7 @@ import GitHub.Endpoints.Activity.Events
 import GitHub.Endpoints.Activity.Notifications
 import GitHub.Endpoints.Activity.Starring
 import GitHub.Endpoints.Activity.Watching
+import GitHub.Endpoints.Enterprise.Organizations
 import GitHub.Endpoints.Gists
 import GitHub.Endpoints.Gists.Comments
 import GitHub.Endpoints.GitData.Blobs
