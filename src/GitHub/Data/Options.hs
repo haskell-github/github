@@ -98,6 +98,7 @@ data MergeableState
     | StateUnstable
     | StateBlocked
     | StateBehind
+    | StateDraft
   deriving
     (Eq, Ord, Show, Enum, Bounded, Generic, Typeable, Data)
 
@@ -108,6 +109,7 @@ instance ToJSON MergeableState where
     toJSON StateUnstable = String "unstable"
     toJSON StateBlocked  = String "blocked"
     toJSON StateBehind   = String "behind"
+    toJSON StateDraft    = String "draft"
 
 instance FromJSON MergeableState where
     parseJSON = withText "MergeableState" $ \t -> case T.toLower t of
@@ -117,6 +119,7 @@ instance FromJSON MergeableState where
         "unstable" -> pure StateUnstable
         "blocked"  -> pure StateBlocked
         "behind"   -> pure StateBehind
+        "draft"    -> pure StateDraft
         _          -> fail $ "Unknown MergeableState: " <> T.unpack t
 
 instance NFData MergeableState where rnf = genericRnf
