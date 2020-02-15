@@ -68,7 +68,7 @@ import qualified GitHub
 
 main :: IO ()
 main = do
-    possibleUsers <- github GitHub.usersFollowingR "phadej"
+    possibleUsers <- github' GitHub.usersFollowingR "phadej"
     T.putStrLn $ either (("Error: " <>) . pack . show)
                         (foldMap ((<> "\n") . formatUser))
                         possibleUsers
