@@ -223,6 +223,7 @@ module GitHub (
     pullRequestCommentsR,
     pullRequestCommentR,
     createPullCommentR,
+    createPullCommentReplyR,
 
     -- ** Pull request reviews
     -- | See <https://developer.github.com/v3/pulls/reviews/>
