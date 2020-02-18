@@ -20,6 +20,18 @@ This reduces symbol bloat in the library.
   [#421](https://github.com/phadej/github/pull/421)
 - Add label descriptions
   [#418](https://github.com/phadej/github/pull/418)
+- Add "draft" option to mergeable state
+  [#431](https://github.com/phadej/github/pull/431)
+- Use IssueNumber in editIssueR and issueR
+  [#429](https://github.com/phadej/github/pull/429)
+- Manage orgs in GitHub Enterprise
+  [#420](https://github.com/phadej/github/pull/420)
+- Add support for collaborator permission endpoint
+  [#425](https://github.com/phadej/github/pull/425)
+- Add support for the comment reply endpoint
+  [#424](Add support for the comment reply endpoint)
+- Organise exports in `GitHub`
+  [#430](https://github.com/phadej/github/pull/430)
 
 ## Changes for 0.23
 
