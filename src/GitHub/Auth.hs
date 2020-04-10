@@ -23,6 +23,8 @@ data Auth
     = BasicAuth BS.ByteString BS.ByteString  -- ^ Username and password
     | OAuth Token                            -- ^ OAuth token
     | EnterpriseOAuth Text Token             -- ^ Custom endpoint and OAuth token
+    | Bearer Token                           -- ^ Bearer token used by apps
+    | EnterpriseBearer Text Token             -- ^ Custom endpoint and Bearer token
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Auth where rnf = genericRnf
@@ -46,10 +48,14 @@ instance AuthMethod Auth where
     endpoint (BasicAuth _ _)       = Nothing
     endpoint (OAuth _)             = Nothing
     endpoint (EnterpriseOAuth e _) = Just e
+    endpoint (Bearer _)            = Nothing
+    endpoint (EnterpriseBearer e _) = Just e
 
     setAuthRequest (BasicAuth u p)       = HTTP.applyBasicAuth u p
     setAuthRequest (OAuth t)             = setAuthHeader $ "token " <> t
     setAuthRequest (EnterpriseOAuth _ t) = setAuthHeader $ "token " <> t
+    setAuthRequest (Bearer t)            = setAuthHeader $ "Bearer " <> t
+    setAuthRequest (EnterpriseBearer _ t) = setAuthHeader $ "Bearer " <> t
 
 setAuthHeader :: BS.ByteString -> HTTP.Request -> HTTP.Request
 setAuthHeader auth req =
