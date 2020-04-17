@@ -6,6 +6,9 @@
   [#445](https://github.com/phadej/github/pull/445)
 - Add endpoint for users search
   [#444](https://github.com/phadej/github/pull/444)
+- Make repoWebhookResponseStatus optional
+  [#436](https://github.com/phadej/github/pull/436)
+
 	
 ## Changes for 0.25
 
