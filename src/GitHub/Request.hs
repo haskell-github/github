@@ -31,7 +31,7 @@
 -- > githubRequest :: GH.Request 'False a -> GithubMonad a
 -- > githubRequest = singleton
 module GitHub.Request (
-    -- * A convinient execution of requests
+    -- * A convenient execution of requests
     github,
     github',
     GitHubRW,
@@ -121,10 +121,10 @@ import GitHub.Data.Request
 import Paths_github (version)
 
 -------------------------------------------------------------------------------
--- Convinience
+-- Convenience
 -------------------------------------------------------------------------------
 
--- | A convinience function to turn functions returning @'Request' rw x@,
+-- | A convenience function to turn functions returning @'Request' rw x@,
 -- into functions returning @IO (Either 'Error' x)@.
 --
 -- >>> :t \auth -> github auth userInfoForR
