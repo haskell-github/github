@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE PackageImports #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -58,4 +59,4 @@ import Data.Time.ISO8601        (formatISO8601)
 import Data.Vector              (Vector)
 import Data.Vector.Instances ()
 import GHC.Generics             (Generic)
-import Prelude.Compat
+import "base-compat" Prelude.Compat

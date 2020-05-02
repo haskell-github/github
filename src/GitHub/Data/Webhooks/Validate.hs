@@ -1,3 +1,4 @@
+{-# LANGUAGE PackageImports #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -12,7 +13,7 @@ module GitHub.Data.Webhooks.Validate (
 import GitHub.Internal.Prelude
 import Prelude ()
 
-import Crypto.Hash.SHA1 (hmac)
+import "cryptohash-sha1" Crypto.Hash.SHA1 (hmac)
 import Data.ByteString  (ByteString)
 
 import qualified Data.ByteString.Base16 as Hex
