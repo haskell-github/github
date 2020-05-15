@@ -355,13 +355,10 @@ module GitHub (
 
     -- * Search
     -- | See <https://developer.github.com/v3/search/>
-    --
-    -- Missing endpoints:
-    --
-    -- * Search users
     searchReposR,
     searchCodeR,
     searchIssuesR,
+    searchUsersR,
 
     -- * Users
     -- | See <https://developer.github.com/v3/users/>
