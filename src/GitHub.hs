@@ -175,6 +175,11 @@ module GitHub (
     membersOfWithR,
     isMemberOfR,
     orgInvitationsR,
+    -- ** Outside Collaborators
+    -- | See <https://developer.github.com/v3/orgs/outside_collaborators/>
+    --
+    -- Missing endpoints: All except /Outside Collaborator List/
+    outsideCollaboratorsR,
 
     -- ** Teams
     -- | See <https://developer.github.com/v3/orgs/teams/>
@@ -433,6 +438,7 @@ import GitHub.Endpoints.Issues.Labels
 import GitHub.Endpoints.Issues.Milestones
 import GitHub.Endpoints.Organizations
 import GitHub.Endpoints.Organizations.Members
+import GitHub.Endpoints.Organizations.OutsideCollaborators
 import GitHub.Endpoints.Organizations.Teams
 import GitHub.Endpoints.PullRequests
 import GitHub.Endpoints.PullRequests.Comments
