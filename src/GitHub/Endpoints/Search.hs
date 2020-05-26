@@ -9,6 +9,7 @@ module GitHub.Endpoints.Search(
     searchReposR,
     searchCodeR,
     searchIssuesR,
+    searchUsersR,
     module GitHub.Data,
     ) where
 
@@ -35,3 +36,9 @@ searchCodeR searchString =
 searchIssuesR :: Text -> Request k (SearchResult Issue)
 searchIssuesR searchString =
     query ["search", "issues"] [("q", Just $ TE.encodeUtf8 searchString)]
+
+-- | Search users.
+-- See <https://developer.github.com/v3/search/#search-code>
+searchUsersR :: Text -> Request k (SearchResult SimpleUser)
+searchUsersR searchString =
+  query ["search", "users"] [("q", Just $ TE.encodeUtf8 searchString)]
