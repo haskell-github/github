@@ -154,7 +154,7 @@ instance IReadOnly 'RA        where iro = ROA
 -- /Note:/ 'Request' is not 'Functor' on purpose.
 data GenRequest (mt :: MediaType *) (rw :: RW) a where
     Query        :: Paths -> QueryString -> GenRequest mt rw a
-    PagedQuery   :: Paths -> QueryString -> FetchCount -> GenRequest mt rw (Vector a)
+    PagedQuery   :: (a ~ t b, Foldable t, Semigroup a) => Paths -> QueryString -> FetchCount -> GenRequest mt rw a
 
     -- | Command
     Command
