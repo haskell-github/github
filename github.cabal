@@ -132,6 +132,7 @@ library
     GitHub.Endpoints.Issues.Milestones
     GitHub.Endpoints.Organizations
     GitHub.Endpoints.Organizations.Members
+    GitHub.Endpoints.Organizations.OutsideCollaborators
     GitHub.Endpoints.Organizations.Teams
     GitHub.Endpoints.PullRequests
     GitHub.Endpoints.PullRequests.Comments
