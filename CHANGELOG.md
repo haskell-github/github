@@ -1,3 +1,39 @@
+## Changes for 0.26
+
+- Generalize PagedQuery to allow its reuse by preview github APIs
+  [#439](https://github.com/phadej/github/pull/439)
+- Add endpoint for listing organizations outside collaborators
+  [#445](https://github.com/phadej/github/pull/445)
+- Add endpoint for users search
+  [#444](https://github.com/phadej/github/pull/444)
+- Make repoWebhookResponseStatus optional
+  [#436](https://github.com/phadej/github/pull/436)
+- Teams improvements
+  [#417](https://github.com/phadej/github/pull/417)
+- Add deleteReference endpoint
+  [#388](https://github.com/phadej/github/pull/388)
+	
+## Changes for 0.25
+
+- Add `executeRequestWithMgrAndRes`
+  [#421](https://github.com/phadej/github/pull/421)
+- Add `limitsFromHttpResponse`
+  [#421](https://github.com/phadej/github/pull/421)
+- Add label descriptions
+  [#418](https://github.com/phadej/github/pull/418)
+- Add "draft" option to mergeable state
+  [#431](https://github.com/phadej/github/pull/431)
+- Use IssueNumber in editIssueR and issueR
+  [#429](https://github.com/phadej/github/pull/429)
+- Manage orgs in GitHub Enterprise
+  [#420](https://github.com/phadej/github/pull/420)
+- Add support for collaborator permission endpoint
+  [#425](https://github.com/phadej/github/pull/425)
+- Add support for the comment reply endpoint
+  [#424](https://github.com/phadej/github/pull/424)
+- Organise exports in `GitHub`
+  [#430](https://github.com/phadej/github/pull/430)
+
 ## Changes for 0.24
 
 **Major change**:
@@ -14,24 +50,6 @@ This reduces symbol bloat in the library.
   [#409](https://github.com/phadej/github/pull/409)
 - Update `Repo`, `NewRepo` and `EditRepo` data types
   [#407](https://github.com/phadej/github/pull/407)
-- Add `executeRequestWithMgrAndRes`
-  [#421](https://github.com/phadej/github/pull/421)
-- Add `limitsFromHttpResponse`
-  [#421](https://github.com/phadej/github/pull/421)
-- Add label descriptions
-  [#418](https://github.com/phadej/github/pull/418)
-- Add "draft" option to mergeable state
-  [#431](https://github.com/phadej/github/pull/431)
-- Use IssueNumber in editIssueR and issueR
-  [#429](https://github.com/phadej/github/pull/429)
-- Manage orgs in GitHub Enterprise
-  [#420](https://github.com/phadej/github/pull/420)
-- Add support for collaborator permission endpoint
-  [#425](https://github.com/phadej/github/pull/425)
-- Add support for the comment reply endpoint
-  [#424](Add support for the comment reply endpoint)
-- Organise exports in `GitHub`
-  [#430](https://github.com/phadej/github/pull/430)
 
 ## Changes for 0.23
 

@@ -1,6 +1,6 @@
 cabal-version:      >=1.10
 name:               github
-version:            0.24
+version:            0.26
 synopsis:           Access to the GitHub API, v3.
 category:           Network
 description:
@@ -36,7 +36,8 @@ tested-with:
    || ==8.2.2
    || ==8.4.4
    || ==8.6.5
-   || ==8.8.1
+   || ==8.8.3
+   || ==8.10.1
 
 extra-source-files:
   README.md
@@ -163,7 +164,7 @@ library
 
   -- Packages bundles with GHC, mtl and text are also here
   build-depends:
-      base          >=4.7      && <4.14
+      base          >=4.7      && <4.15
     , binary        >=0.7.1.0  && <0.11
     , bytestring    >=0.10.4.0 && <0.11
     , containers    >=0.5.5.1  && <0.7
@@ -175,15 +176,15 @@ library
 
   -- other packages
   build-depends:
-      aeson                 >=1.4.0.0    && <1.5
-    , base-compat           >=0.10.4     && <0.12
+      aeson                 >=1.4.0.0    && <1.6
+    , base-compat           >=0.11.1     && <0.12
     , base16-bytestring     >=0.1.1.6    && <0.2
     , binary-instances      >=1          && <1.1
     , cryptohash-sha1       >=0.11.100.1 && <0.12
     , deepseq-generics      >=0.2.0.0    && <0.3
     , exceptions            >=0.10.2     && <0.11
     , hashable              >=1.2.7.0    && <1.4
-    , http-client           >=0.5.12     && <0.7
+    , http-client           >=0.5.12     && <0.8
     , http-link-header      >=1.0.3.1    && <1.1
     , http-types            >=0.12.3     && <0.13
     , iso8601-time          >=0.1.5      && <0.2

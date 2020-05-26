@@ -89,7 +89,7 @@ instance Binary RepoWebhookEvent
 
 data RepoWebhookResponse = RepoWebhookResponse
     { repoWebhookResponseCode    :: !(Maybe Int)
-    , repoWebhookResponseStatus  :: !Text
+    , repoWebhookResponseStatus  :: !(Maybe Text)
     , repoWebhookResponseMessage :: !(Maybe Text)
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -254,8 +254,8 @@ instance FromJSON RepoWebhook where
 instance FromJSON RepoWebhookResponse where
     parseJSON = withObject "RepoWebhookResponse" $ \o -> RepoWebhookResponse
         <$> o .: "code"
-        <*> o .: "status"
-        <*> o .: "message"
+        <*> o .:? "status"
+        <*> o .:? "message"
 
 instance ToJSON NewRepoWebhook where
   toJSON (NewRepoWebhook { newRepoWebhookName = name
