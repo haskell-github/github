@@ -121,7 +121,7 @@ data Organization = Organization
 instance NFData Organization where rnf = genericRnf
 instance Binary Organization
 
--- | In practic, you cam't have concrete values of 'Owner'.
+-- | In practice you can't have concrete values of 'Owner'.
 newtype Owner = Owner (Either User Organization)
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
