@@ -46,6 +46,8 @@ extra-source-files:
   fixtures/list-teams.json
   fixtures/members-list.json
   fixtures/pull-request-opened.json
+  fixtures/pull-request-approved-review.json
+  fixtures/pull-request-pending-review.json
   fixtures/pull-request-review-requested.json
   fixtures/user-organizations.json
   fixtures/user.json
@@ -229,6 +231,7 @@ test-suite github-test
     GitHub.RateLimitSpec
     GitHub.ReleasesSpec
     GitHub.ReposSpec
+    GitHub.ReviewDecodeSpec
     GitHub.SearchSpec
     GitHub.UsersSpec
 
