@@ -178,14 +178,14 @@ library
   build-depends:
       aeson                 >=1.4.0.0    && <1.6
     , base-compat           >=0.11.1     && <0.12
-    , base16-bytestring     >=0.1.1.6    && <0.2
+    , base16-bytestring     >=0.1.1.6    && <1.1
     , binary-instances      >=1          && <1.1
     , cryptohash-sha1       >=0.11.100.1 && <0.12
     , deepseq-generics      >=0.2.0.0    && <0.3
     , exceptions            >=0.10.2     && <0.11
     , hashable              >=1.2.7.0    && <1.4
     , http-client           >=0.5.12     && <0.8
-    , http-link-header      >=1.0.3.1    && <1.1
+    , http-link-header      >=1.0.3.1    && <1.3
     , http-types            >=0.12.3     && <0.13
     , iso8601-time          >=0.1.5      && <0.2
     , network-uri           >=2.6.1.0    && <2.7
