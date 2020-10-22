@@ -90,7 +90,7 @@ import Network.HTTP.Client
        httpLbs, method, newManager, redirectCount, requestBody, requestHeaders,
        setQueryString, setRequestIgnoreStatus)
 import Network.HTTP.Link.Parser (parseLinkHeaderBS)
-import Network.HTTP.Link.Types  (Link (..), LinkParam (..), href, linkParams)
+import Network.HTTP.Link.Types  (LinkParam (..), href, linkParams)
 import Network.HTTP.Types       (Method, RequestHeaders, Status (..))
 import Network.URI
        (URI, escapeURIString, isUnescapedInURIComponent, parseURIReference,
@@ -507,7 +507,7 @@ getNextUrl req = do
     nextURI <- find isRelNext links
     return $ href nextURI
   where
-    isRelNext :: Link -> Bool
+    -- isRelNext :: Link -> Bool or Link uri -> Bool
     isRelNext = any (== relNextLinkParam) . linkParams
 
     relNextLinkParam :: (LinkParam, Text)
