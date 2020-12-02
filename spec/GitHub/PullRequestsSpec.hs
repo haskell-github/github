@@ -65,6 +65,13 @@ spec = do
             V.length (GH.pullRequestRequestedReviewers pullRequestReviewRequested)
                 `shouldBe` 1
 
+        it "decodes a pull request 'team_requested' payload" $ do
+          V.length (GH.simplePullRequestRequestedTeamReviewers simplePullRequestTeamReviewRequested)
+                `shouldBe` 1
+
+          V.length (GH.pullRequestRequestedTeamReviewers pullRequestTeamReviewRequested)
+                `shouldBe` 1
+
     describe "checking if a pull request is merged" $ do
         it "works" $ withAuth $ \auth -> do
             b <- GH.executeRequest auth $ GH.isPullRequestMergedR "phadej" "github" (GH.IssueNumber 14)
@@ -97,15 +104,26 @@ spec = do
     simplePullRequestReviewRequested =
         fromRightS (eitherDecodeStrict prReviewRequestedPayload)
 
+    simplePullRequestTeamReviewRequested :: GH.SimplePullRequest
+    simplePullRequestTeamReviewRequested =
+        fromRightS (eitherDecodeStrict prTeamReviewRequestedPayload)
+
     pullRequestReviewRequested :: GH.PullRequest
     pullRequestReviewRequested =
         fromRightS (eitherDecodeStrict prReviewRequestedPayload)
+
+    pullRequestTeamReviewRequested :: GH.PullRequest
+    pullRequestTeamReviewRequested =
+        fromRightS (eitherDecodeStrict prTeamReviewRequestedPayload)
 
     prOpenedPayload :: ByteString
     prOpenedPayload = $(embedFile "fixtures/pull-request-opened.json")
 
     prReviewRequestedPayload :: ByteString
     prReviewRequestedPayload = $(embedFile "fixtures/pull-request-review-requested.json")
+
+    prTeamReviewRequestedPayload :: ByteString
+    prTeamReviewRequestedPayload = $(embedFile "fixtures/pull-request-team-review-requested.json")
 
 -------------------------------------------------------------------------------
 -- Draft Pull Requests
