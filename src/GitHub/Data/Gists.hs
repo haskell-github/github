@@ -89,3 +89,32 @@ instance FromJSON GistComment where
         <*> o .: "body"
         <*> o .: "updated_at"
         <*> o .: "id"
+
+data NewGist = NewGist
+    { newGistDescription :: !Text
+    , newGistFiles       :: !(HashMap Text NewGistFile)
+    , newGistPublic      :: !Bool
+    } deriving (Show, Data, Typeable, Eq, Generic)
+
+instance NFData NewGist where rnf = genericRnf
+instance Binary NewGist
+
+instance ToJSON NewGist where
+    toJSON (NewGist { newGistDescription = description
+                    , newGistFiles       = files
+                    , newGistPublic      = public
+                    }) = object
+                    [ "description"      .= description
+                    , "files"            .= files
+                    , "public"           .= public
+                    ]
+
+data NewGistFile = NewGistFile
+    { newGistFileContent :: !Text
+    } deriving (Show, Data, Typeable, Eq, Generic)
+
+instance NFData NewGistFile where rnf = genericRnf
+instance Binary NewGistFile
+
+instance ToJSON NewGistFile where
+    toJSON (NewGistFile c) = object ["content" .= c]
