@@ -91,9 +91,9 @@ instance FromJSON GistComment where
         <*> o .: "id"
 
 data NewGist = NewGist
-    { newGistDescription :: !Text
+    { newGistDescription :: !(Maybe Text)
     , newGistFiles       :: !(HashMap Text NewGistFile)
-    , newGistPublic      :: !Bool
+    , newGistPublic      :: !(Maybe Bool)
     } deriving (Show, Data, Typeable, Eq, Generic)
 
 instance NFData NewGist where rnf = genericRnf
@@ -103,11 +103,14 @@ instance ToJSON NewGist where
     toJSON NewGist { newGistDescription = description
                    , newGistFiles       = files
                    , newGistPublic      = public
-                   } = object
+                   } = object $ filter notNull
                    [ "description"      .= description
                    , "files"            .= files
                    , "public"           .= public
                    ]
+      where
+        notNull (_, Null) = False
+        notNull (_, _)    = True
 
 data NewGistFile = NewGistFile
     { newGistFileContent :: !Text
