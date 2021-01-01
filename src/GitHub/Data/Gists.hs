@@ -100,14 +100,14 @@ instance NFData NewGist where rnf = genericRnf
 instance Binary NewGist
 
 instance ToJSON NewGist where
-    toJSON (NewGist { newGistDescription = description
-                    , newGistFiles       = files
-                    , newGistPublic      = public
-                    }) = object
-                    [ "description"      .= description
-                    , "files"            .= files
-                    , "public"           .= public
-                    ]
+    toJSON NewGist { newGistDescription = description
+                   , newGistFiles       = files
+                   , newGistPublic      = public
+                   } = object
+                   [ "description"      .= description
+                   , "files"            .= files
+                   , "public"           .= public
+                   ]
 
 data NewGistFile = NewGistFile
     { newGistFileContent :: !Text
