@@ -1,4 +1,6 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -15,9 +17,20 @@ import GitHub.Data.Request
 import GitHub.Data.Projects
 import GitHub.Internal.Prelude
 import Prelude ()
+import qualified GitHub as GH
+import Data.Tagged (Tagged (..))
+
+data Inertia
+
+instance GH.PreviewAccept Inertia where
+  previewContentType = Tagged "application/vnd.github.inertia-preview+json"
+
+instance FromJSON a => GH.PreviewParseResponse Inertia a where
+  previewParseResponse _ res = Tagged (GH.parseResponseJSON res)
+
 
 -- | List projects for a repository
 -- See <https ://docs.github.com/en/rest/reference/projects#list-repository-projects
-projectsForR :: Name Owner -> Name Repo -> FetchCount -> Request k (Vector Project)
+projectsForR :: Name Owner -> Name Repo -> FetchCount -> GenRequest ('MtPreview Inertia) k (Vector Project)
 projectsForR user repo =
-    pagedQuery ["repos", toPathPart user, toPathPart repo, "projects"] []
+    PagedQuery ["repos", toPathPart user, toPathPart repo, "projects"] []
