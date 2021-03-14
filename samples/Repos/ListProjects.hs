@@ -14,7 +14,7 @@ import Prelude ()
 main = do
     auth <- getAuth
     possibleProjects <- GitHub.executeRequestMaybe auth $ P.repoProjectsForR "lambda-coast" "infinite-turtles"  GitHub.FetchAll
-    putStrLn $ either (("Error: " <>) . tshow)
+    putStrLn $ either n(("Error: " <>) . tshow)
                       (foldMap ((<> "\n") . tshow))
                       possibleProjects
 
@@ -29,3 +29,8 @@ main = do
     putStrLn $ either (("Error: " <>) . tshow)
                       (foldMap ((<> "\n") . tshow))
                       possibleColumns
+
+    possibleCards <- GitHub.executeRequestMaybe auth $ P.columnCardsForR (Id 13371133) GitHub.FetchAll
+    putStrLn $ either (("Error: " <>) . tshow)
+                      (foldMap ((<> "\n") . tshow))
+                      possibleCards

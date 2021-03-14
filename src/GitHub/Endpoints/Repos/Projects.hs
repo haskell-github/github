@@ -11,6 +11,7 @@ module GitHub.Endpoints.Repos.Projects (
     repoProjectsForR
   , orgProjectsForR
   , projectColumnsForR
+  , columnCardsForR
   ) where
 
 import GitHub.Data
@@ -34,3 +35,8 @@ orgProjectsForR user =
 projectColumnsForR :: (Id Project) -> FetchCount -> GenRequest ( 'MtPreview Inertia) k (Vector Column)
 projectColumnsForR project_id =
   PagedQuery ["projects", toPathPart project_id, "columns"] []
+
+
+columnCardsForR :: (Id Column) -> FetchCount -> GenRequest ( 'MtPreview Inertia) k (Vector Card)
+columnCardsForR column_id =
+  PagedQuery ["projects", "columns", toPathPart column_id, "cards"] []

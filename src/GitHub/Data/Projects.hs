@@ -96,6 +96,39 @@ instance FromJSON Column where
       <*> o .: "created_at"
       <*> o .: "updated_at"
 
+
+data Card = Card
+  { cardUrl :: !URL,
+    cardId :: !(Id Column),
+    cardNote:: !(Maybe T.Text),
+    cardCreator:: !(SimpleUser),
+    cardCreatedAt :: !UTCTime,
+    cardUpdatedAt :: !UTCTime,
+    archived:: !Bool,
+    cardColumnUrl:: !URL,
+    cardContenttUrl:: !(Maybe URL),
+    cardProjectUrl:: !URL
+  }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Card where rnf = genericRnf
+
+instance Binary Card
+
+instance FromJSON Card where
+  parseJSON = withObject "Card" $ \o ->
+    Card
+      <$> o .: "url"
+      <*> o .: "id"
+      <*> o .:? "note"
+      <*> o .: "creator"
+      <*> o .: "created_at"
+      <*> o .: "updated_at"
+      <*> o .: "archived"
+      <*> o .: "column_url"
+      <*> o .:? "content_url"
+      <*> o .: "project_url"
+
 data Inertia
 
 instance GH.PreviewAccept Inertia where
