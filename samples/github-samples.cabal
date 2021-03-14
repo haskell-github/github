@@ -183,3 +183,10 @@ executable github-teaminfo-for
 --   import:         deps
 --   main-is:        GitDiff.hs
 --   hs-source-dirs: Repos/Commits
+
+executable github-list-projects
+  import:         deps
+  main-is:        ListProjects.hs
+  hs-source-dirs: Repos
+  
+                
