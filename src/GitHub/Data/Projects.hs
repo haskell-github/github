@@ -14,21 +14,6 @@ import Prelude ()
 
 import qualified Data.Text as T
 
--- data Project = Project
---     { commentPosition  :: !(Maybe Int)
---     , commentLine      :: !(Maybe Int)
---     , commentBody      :: !Text
---     , commentCommitId  :: !(Maybe Text)
---     , commentUpdatedAt :: !UTCTime
---     , commentHtmlUrl   :: !(Maybe URL)
---     , commentUrl       :: !URL
---     , commentCreatedAt :: !(Maybe UTCTime)
---     , commentPath      :: !(Maybe Text)
---     , commentUser      :: !SimpleUser
---     , commentId        :: !(Id Comment)
---     }
---   deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
 data ProjectState = StateOpen | StateClosed
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 

@@ -150,6 +150,7 @@ library
     GitHub.Endpoints.Repos.Deployments
     GitHub.Endpoints.Repos.Forks
     GitHub.Endpoints.Repos.Invitations
+    GitHub.Endpoints.Repos.Projects
     GitHub.Endpoints.Repos.Releases
     GitHub.Endpoints.Repos.Statuses
     GitHub.Endpoints.Repos.Webhooks
