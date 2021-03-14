@@ -12,7 +12,13 @@ import Prelude ()
 
 main = do
     auth <- getAuth
-    possibleProjects <- GitHub.executeRequestMaybe auth $ P.projectsForR "ResearchAffiliates" "invsys"  GitHub.FetchAll
+    possibleProjects <- GitHub.executeRequestMaybe auth $ P.repoProjectsForR "lambda-coast" "infinite-turtles"  GitHub.FetchAll
+    putStrLn $ either (("Error: " <>) . tshow)
+                      (foldMap ((<> "\n") . tshow))
+                      possibleProjects
+
+
+    possibleProjects <- GitHub.executeRequestMaybe auth $ P.orgProjectsForR "lambda-coast" GitHub.FetchAll
     putStrLn $ either (("Error: " <>) . tshow)
                       (foldMap ((<> "\n") . tshow))
                       possibleProjects
