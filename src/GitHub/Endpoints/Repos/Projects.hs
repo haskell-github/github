@@ -40,3 +40,8 @@ repoProjectsForR user repo =
 orgProjectsForR :: Name Owner -> FetchCount -> GenRequest ( 'MtPreview Inertia) k (Vector Project)
 orgProjectsForR user =
   PagedQuery ["orgs", toPathPart user, "projects"] []
+
+
+projectColumnsForR :: (Id Project) -> FetchCount -> GenRequest ( 'MtPreview Inertia) k (Vector Column)
+projectColumnsForR project_id =
+  PagedQuery ["projects", toPathPart project_id, "columns"] []
