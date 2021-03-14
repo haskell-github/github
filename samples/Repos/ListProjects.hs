@@ -5,6 +5,7 @@ import qualified GitHub.Endpoints.Repos.Projects as P
 import Data.List
 import GitHub.Data
 import GitHub.Data.Name
+import GitHub.Data.Id
 import GitHub.Data.Request
 import Common
 import qualified GitHub
@@ -22,3 +23,9 @@ main = do
     putStrLn $ either (("Error: " <>) . tshow)
                       (foldMap ((<> "\n") . tshow))
                       possibleProjects
+
+
+    possibleColumns <- GitHub.executeRequestMaybe auth $ P.projectColumnsForR (Id 11963370) GitHub.FetchAll
+    putStrLn $ either (("Error: " <>) . tshow)
+                      (foldMap ((<> "\n") . tshow))
+                      possibleColumns
