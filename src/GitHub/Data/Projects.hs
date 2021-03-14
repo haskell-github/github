@@ -3,6 +3,10 @@
 -- License     :  BSD-3-Clause
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
+
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+
 module GitHub.Data.Projects where
 
 import GitHub.Data.Definitions
@@ -11,6 +15,9 @@ import GitHub.Data.Id          (Id)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
+
+import Data.Tagged (Tagged (..))
+import qualified GitHub as GH
 
 import qualified Data.Text as T
 
@@ -89,3 +96,10 @@ instance FromJSON Column where
       <*> o .: "created_at"
       <*> o .: "updated_at"
 
+data Inertia
+
+instance GH.PreviewAccept Inertia where
+  previewContentType = Tagged "application/vnd.github.inertia-preview+json"
+
+instance FromJSON a => GH.PreviewParseResponse Inertia a where
+  previewParseResponse _ res = Tagged (GH.parseResponseJSON res)
