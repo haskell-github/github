@@ -37,7 +37,7 @@ data Project = Project
   , projectBody :: !(Maybe Text)
   , projectNumber :: !Int
   , projectState :: !ProjectState
-  , projectCreator :: !User
+  , projectCreator :: !SimpleUser
   , projectCreatedAt :: !UTCTime
   , projectUpdatedAt :: !UTCTime
   }
