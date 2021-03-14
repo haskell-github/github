@@ -60,3 +60,32 @@ instance FromJSON Project where
         <*> o .: "creator"
         <*> o .: "created_at"
         <*> o .: "updated_at"
+
+
+data Column = Column
+  {
+    columnUrl :: !URL,
+    columnProjectUrl :: !URL,
+    columnCardsUrl :: !URL,
+    columnId :: !(Id Column),
+    columnName :: !(Name Column),
+    columnCreatedAt :: !UTCTime,
+    columntUpdatedAt :: !UTCTime
+  }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Column where rnf = genericRnf
+
+instance Binary Column
+
+instance FromJSON Column where
+  parseJSON = withObject "Column" $ \o ->
+    Column
+      <$> o .: "url"
+      <*> o .: "project_url"
+      <*> o .: "cards_url"
+      <*> o .: "id"
+      <*> o .: "name"
+      <*> o .: "created_at"
+      <*> o .: "updated_at"
+
