@@ -9,8 +9,9 @@
 -- The repo commits API as described on
 -- <https://docs.github.com/en/rest/reference/projects>
 module GitHub.Endpoints.Repos.Projects (
-    projectsForR
-    ) where
+  repoProjectsForR
+   , orgProjectsForR
+  ) where
 
 import GitHub.Data
 import GitHub.Data.Request
@@ -31,6 +32,11 @@ instance FromJSON a => GH.PreviewParseResponse Inertia a where
 
 -- | List projects for a repository
 -- See <https ://docs.github.com/en/rest/reference/projects#list-repository-projects
-projectsForR :: Name Owner -> Name Repo -> FetchCount -> GenRequest ('MtPreview Inertia) k (Vector Project)
-projectsForR user repo =
+repoProjectsForR :: Name Owner -> Name Repo -> FetchCount -> GenRequest ('MtPreview Inertia) k (Vector Project)
+repoProjectsForR user repo =
     PagedQuery ["repos", toPathPart user, toPathPart repo, "projects"] []
+
+
+orgProjectsForR :: Name Owner -> FetchCount -> GenRequest ( 'MtPreview Inertia) k (Vector Project)
+orgProjectsForR user =
+  PagedQuery ["orgs", toPathPart user, "projects"] []
