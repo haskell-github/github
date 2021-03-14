@@ -5,7 +5,7 @@
 -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
 --
 -- The repo commits API as described on
--- <http://developer.github.com/v3/repos/comments/>.
+-- <https://docs.github.com/en/rest/reference/projects>
 module GitHub.Endpoints.Repos.Projects (
     projectsForR
     ) where
