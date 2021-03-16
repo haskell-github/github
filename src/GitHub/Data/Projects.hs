@@ -17,11 +17,11 @@ import GitHub.Internal.Prelude
 import Prelude ()
 
 import Data.Tagged (Tagged (..))
-import qualified GitHub as GH
+-- import qualified GitHub.Request as GH
 
 import qualified Data.Text as T
 
-data ProjectState = StateOpen | StateClosed
+data ProjectState = ProjectStateOpen | ProjectStateClosed
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData ProjectState where rnf = genericRnf
@@ -29,8 +29,8 @@ instance Binary ProjectState
 
 instance FromJSON ProjectState where
   parseJSON = withText "ProjecState" $ \t -> case T.toLower t of
-    "open" -> pure StateOpen
-    "closed" -> pure StateClosed
+    "open" -> pure ProjectStateOpen
+    "closed" -> pure ProjectStateClosed
     _ -> fail $ "Unknown ProjectState: " <> T.unpack t
 
 data Project = Project
@@ -106,7 +106,7 @@ data Card = Card
     cardUpdatedAt :: !UTCTime,
     archived:: !Bool,
     cardColumnUrl:: !URL,
-    cardContenttUrl:: !(Maybe URL),
+    cardContentUrl:: !(Maybe URL),
     cardProjectUrl:: !URL
   }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -128,11 +128,3 @@ instance FromJSON Card where
       <*> o .: "column_url"
       <*> o .:? "content_url"
       <*> o .: "project_url"
-
-data Inertia
-
-instance GH.PreviewAccept Inertia where
-  previewContentType = Tagged "application/vnd.github.inertia-preview+json"
-
-instance FromJSON a => GH.PreviewParseResponse Inertia a where
-  previewParseResponse _ res = Tagged (GH.parseResponseJSON res)

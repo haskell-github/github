@@ -14,7 +14,7 @@ import Prelude ()
 main = do
     auth <- getAuth
     possibleProjects <- GitHub.executeRequestMaybe auth $ P.repoProjectsForR "lambda-coast" "infinite-turtles"  GitHub.FetchAll
-    putStrLn $ either n(("Error: " <>) . tshow)
+    putStrLn $ either (("Error: " <>) . tshow)
                       (foldMap ((<> "\n") . tshow))
                       possibleProjects
 

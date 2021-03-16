@@ -16,6 +16,8 @@ module GitHub.Data (
     mkTeamName,
     mkOrganizationName,
     mkRepoName,
+    mkProjectName,
+    mkColumnName,
     mkCommitName,
     fromUserName,
     fromOrganizationName,
@@ -30,6 +32,9 @@ module GitHub.Data (
     mkRepoId,
     fromUserId,
     fromOrganizationId,
+    mkProjectId,
+    mkColumnId,
+    mkCardId,
     -- * IssueNumber
     IssueNumber (..),
     -- * Module re-exports
@@ -53,6 +58,7 @@ module GitHub.Data (
     module GitHub.Data.RateLimit,
     module GitHub.Data.Releases,
     module GitHub.Data.Repos,
+    module GitHub.Data.Projects,
     module GitHub.Data.Request,
     module GitHub.Data.Reviews,
     module GitHub.Data.Search,
@@ -88,6 +94,7 @@ import GitHub.Data.PullRequests
 import GitHub.Data.RateLimit
 import GitHub.Data.Releases
 import GitHub.Data.Repos
+import GitHub.Data.Projects
 import GitHub.Data.Request
 import GitHub.Data.Reviews
 import GitHub.Data.Search
@@ -126,6 +133,21 @@ mkRepoId = Id
 
 mkRepoName :: Text -> Name Repo
 mkRepoName = N
+
+mkProjectId :: Int -> Id Project
+mkProjectId = Id
+
+mkProjectName :: Text -> Name Project
+mkProjectName = N
+
+mkColumnId :: Int -> Id Column
+mkColumnId = Id
+
+mkColumnName :: Text -> Name Column
+mkColumnName = N
+
+mkCardId :: Int -> Id Card
+mkCardId = Id
 
 mkCommitName :: Text -> Name Commit
 mkCommitName = N

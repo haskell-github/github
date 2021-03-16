@@ -16,6 +16,7 @@ module GitHub.Endpoints.Repos.Projects (
 
 import GitHub.Data
 import GitHub.Data.Request
+import GitHub.Request
 import GitHub.Data.Projects
 import GitHub.Internal.Prelude
 import Prelude ()

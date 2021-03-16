@@ -413,6 +413,13 @@ module GitHub (
     -- | See <https://developer.github.com/v3/rate_limit/>
     rateLimitR,
 
+    -- ** Projects
+    -- | See <https://docs.github.com/en/rest/reference/projects>
+    repoProjectsForR,
+    orgProjectsForR,
+    projectColumnsForR,
+    columnCardsForR,
+
     -- * Data definitions
     module GitHub.Data,
     -- * Request handling
@@ -452,6 +459,7 @@ import GitHub.Endpoints.Repos.DeployKeys
 import GitHub.Endpoints.Repos.Deployments
 import GitHub.Endpoints.Repos.Forks
 import GitHub.Endpoints.Repos.Invitations
+import GitHub.Endpoints.Repos.Projects
 import GitHub.Endpoints.Repos.Releases
 import GitHub.Endpoints.Repos.Statuses
 import GitHub.Endpoints.Repos.Webhooks
