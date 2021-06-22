@@ -19,6 +19,7 @@ module GitHub.Data (
     mkCommitName,
     fromUserName,
     fromOrganizationName,
+    mkWorkflowRunId,
     -- ** Id
     Id,
     mkId,
@@ -34,6 +35,7 @@ module GitHub.Data (
     IssueNumber (..),
     -- * Module re-exports
     module GitHub.Auth,
+    module GitHub.Data.Actions,
     module GitHub.Data.Activities,
     module GitHub.Data.Comments,
     module GitHub.Data.Content,
@@ -67,6 +69,7 @@ import GitHub.Internal.Prelude
 import Prelude ()
 
 import GitHub.Auth
+import GitHub.Data.Actions
 import GitHub.Data.Activities
 import GitHub.Data.Comments
 import GitHub.Data.Content
@@ -141,3 +144,6 @@ fromOrganizationId = Id . untagId
 
 fromUserId :: Id User -> Id Owner
 fromUserId = Id . untagId
+
+mkWorkflowRunId :: Int -> Id WorkflowRun
+mkWorkflowRunId = Id

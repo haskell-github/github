@@ -43,6 +43,7 @@ tested-with:
 extra-source-files:
   README.md
   CHANGELOG.md
+  fixtures/actions/artifacts-list.json
   fixtures/issue-search.json
   fixtures/list-teams.json
   fixtures/members-list.json
@@ -85,6 +86,7 @@ library
     GitHub
     GitHub.Auth
     GitHub.Data
+    GitHub.Data.Actions
     GitHub.Data.Activities
     GitHub.Data.Comments
     GitHub.Data.Content
@@ -116,6 +118,7 @@ library
     GitHub.Data.URL
     GitHub.Data.Webhooks
     GitHub.Data.Webhooks.Validate
+    GitHub.Endpoints.Actions.Artifacts
     GitHub.Endpoints.Activity.Events
     GitHub.Endpoints.Activity.Notifications
     GitHub.Endpoints.Activity.Starring
@@ -219,6 +222,7 @@ test-suite github-test
   build-tool-depends: hspec-discover:hspec-discover >=2.7.1 && <2.8
   other-extensions:   TemplateHaskell
   other-modules:
+    GitHub.ActionsSpec
     GitHub.ActivitySpec
     GitHub.CommitsSpec
     GitHub.EventsSpec

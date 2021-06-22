@@ -1,0 +1,29 @@
+{
+  "artifacts": [
+    {
+      "archive_download_url": "https://api.github.com/repos/python/cpython/actions/artifacts/69186197/zip",
+      "created_at": "2021-06-21T11:44:28Z",
+      "expired": false,
+      "expires_at": "2021-09-19T11:42:51Z",
+      "id": 69186197,
+      "name": "doc-html",
+      "node_id": "MDg6QXJ0aWZhY3Q2OTE4NjE5Nw==",
+      "size_in_bytes": 53023433,
+      "updated_at": "2021-06-21T11:44:29Z",
+      "url": "https://api.github.com/repos/python/cpython/actions/artifacts/69186197"
+    },
+    {
+      "archive_download_url": "https://api.github.com/repos/python/cpython/actions/artifacts/69186115/zip",
+      "created_at": "2021-06-21T11:44:01Z",
+      "expired": false,
+      "expires_at": "2021-09-19T11:43:05Z",
+      "id": 69186115,
+      "name": "doc-html",
+      "node_id": "MDg6QXJ0aWZhY3Q2OTE4NjExNQ==",
+      "size_in_bytes": 56038290,
+      "updated_at": "2021-06-21T11:44:01Z",
+      "url": "https://api.github.com/repos/python/cpython/actions/artifacts/69186115"
+    }
+  ],
+  "total_count": 13676
+}

@@ -413,6 +413,14 @@ module GitHub (
     -- | See <https://developer.github.com/v3/rate_limit/>
     rateLimitR,
 
+    -- ** Actions
+    -- | See <https://docs.github.com/en/rest/reference/actions/>
+    artifactsForR,
+    artifactR,
+    deleteArtifactR,
+    downloadArtifactR,
+    artifactsForWorkflowRunR,
+
     -- * Data definitions
     module GitHub.Data,
     -- * Request handling
@@ -420,6 +428,7 @@ module GitHub (
     ) where
 
 import GitHub.Data
+import GitHub.Endpoints.Actions.Artifacts
 import GitHub.Endpoints.Activity.Events
 import GitHub.Endpoints.Activity.Notifications
 import GitHub.Endpoints.Activity.Starring
