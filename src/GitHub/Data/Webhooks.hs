@@ -35,6 +35,7 @@ data RepoWebhookEvent
     = WebhookWildcardEvent
     | WebhookCheckRunEvent
     | WebhookCheckSuiteEvent
+    | WebhookCodeScanningAlert
     | WebhookCommitCommentEvent
     | WebhookContentReferenceEvent
     | WebhookCreateEvent
@@ -42,12 +43,13 @@ data RepoWebhookEvent
     | WebhookDeployKeyEvent
     | WebhookDeploymentEvent
     | WebhookDeploymentStatusEvent
+    | WebhookDiscussion
+    | WebhookDiscussionComment
     | WebhookDownloadEvent
     | WebhookFollowEvent
     | WebhookForkEvent
-    | WebhookForkApplyEvent
-    | WebhookGitHubAppAuthorizationEvent
     | WebhookGistEvent
+    | WebhookGitHubAppAuthorizationEvent
     | WebhookGollumEvent
     | WebhookInstallationEvent
     | WebhookInstallationRepositoriesEvent
@@ -59,8 +61,9 @@ data RepoWebhookEvent
     | WebhookMembershipEvent
     | WebhookMetaEvent
     | WebhookMilestoneEvent
-    | WebhookOrganizationEvent
     | WebhookOrgBlockEvent
+    | WebhookOrganizationEvent
+    | WebhookPackage
     | WebhookPageBuildEvent
     | WebhookPingEvent
     | WebhookProjectCardEvent
@@ -68,20 +71,25 @@ data RepoWebhookEvent
     | WebhookProjectEvent
     | WebhookPublicEvent
     | WebhookPullRequestEvent
-    | WebhookPullRequestReviewEvent
     | WebhookPullRequestReviewCommentEvent
+    | WebhookPullRequestReviewEvent
     | WebhookPushEvent
     | WebhookRegistryPackageEvent
     | WebhookReleaseEvent
+    | WebhookRepositoryDispatch
     | WebhookRepositoryEvent
     | WebhookRepositoryImportEvent
     | WebhookRepositoryVulnerabilityAlertEvent
+    | WebhookSecretScanningAlert
     | WebhookSecurityAdvisoryEvent
+    | WebhookSponsorship
     | WebhookStarEvent
     | WebhookStatusEvent
-    | WebhookTeamEvent
     | WebhookTeamAddEvent
+    | WebhookTeamEvent
     | WebhookWatchEvent
+    | WebhookWorkflowDispatch
+    | WebhookWorkflowRun
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData RepoWebhookEvent where rnf = genericRnf
@@ -137,6 +145,7 @@ instance FromJSON RepoWebhookEvent where
         "*"                              -> pure WebhookWildcardEvent
         "check_run"                      -> pure WebhookCheckRunEvent
         "check_suite"                    -> pure WebhookCheckSuiteEvent
+        "code_scanning_alert"            -> pure WebhookCodeScanningAlert
         "commit_comment"                 -> pure WebhookCommitCommentEvent
         "content_reference"              -> pure WebhookContentReferenceEvent
         "create"                         -> pure WebhookCreateEvent
@@ -144,12 +153,13 @@ instance FromJSON RepoWebhookEvent where
         "deploy_key"                     -> pure WebhookDeployKeyEvent
         "deployment"                     -> pure WebhookDeploymentEvent
         "deployment_status"              -> pure WebhookDeploymentStatusEvent
+        "discussion"                     -> pure WebhookDiscussion
+        "discussion_comment"             -> pure WebhookDiscussionComment
         "download"                       -> pure WebhookDownloadEvent
         "follow"                         -> pure WebhookFollowEvent
         "fork"                           -> pure WebhookForkEvent
-        "fork_apply"                     -> pure WebhookForkApplyEvent
-        "github_app_authorization"       -> pure WebhookGitHubAppAuthorizationEvent
         "gist"                           -> pure WebhookGistEvent
+        "github_app_authorization"       -> pure WebhookGitHubAppAuthorizationEvent
         "gollum"                         -> pure WebhookGollumEvent
         "installation"                   -> pure WebhookInstallationEvent
         "installation_repositories"      -> pure WebhookInstallationRepositoriesEvent
@@ -161,13 +171,14 @@ instance FromJSON RepoWebhookEvent where
         "membership"                     -> pure WebhookMembershipEvent
         "meta"                           -> pure WebhookMetaEvent
         "milestone"                      -> pure WebhookMilestoneEvent
-        "organization"                   -> pure WebhookOrganizationEvent
         "org_block"                      -> pure WebhookOrgBlockEvent
+        "organization"                   -> pure WebhookOrganizationEvent
+        "package"                        -> pure WebhookPackage
         "page_build"                     -> pure WebhookPageBuildEvent
         "ping"                           -> pure WebhookPingEvent
+        "project"                        -> pure WebhookProjectEvent
         "project_card"                   -> pure WebhookProjectCardEvent
         "project_column"                 -> pure WebhookProjectColumnEvent
-        "project"                        -> pure WebhookProjectEvent
         "public"                         -> pure WebhookPublicEvent
         "pull_request"                   -> pure WebhookPullRequestEvent
         "pull_request_review"            -> pure WebhookPullRequestReviewEvent
@@ -176,20 +187,26 @@ instance FromJSON RepoWebhookEvent where
         "registry_package"               -> pure WebhookRegistryPackageEvent
         "release"                        -> pure WebhookReleaseEvent
         "repository"                     -> pure WebhookRepositoryEvent
+        "repository_dispatch"            -> pure WebhookRepositoryDispatch
         "repository_import"              -> pure WebhookRepositoryImportEvent
         "repository_vulnerability_alert" -> pure WebhookRepositoryVulnerabilityAlertEvent
+        "secret_scanning_alert"          -> pure WebhookSecretScanningAlert
         "security_advisory"              -> pure WebhookSecurityAdvisoryEvent
+        "sponsorship"                    -> pure WebhookSponsorship
         "star"                           -> pure WebhookStarEvent
         "status"                         -> pure WebhookStatusEvent
         "team"                           -> pure WebhookTeamEvent
         "team_add"                       -> pure WebhookTeamAddEvent
         "watch"                          -> pure WebhookWatchEvent
+        "workflow_dispatch"              -> pure WebhookWorkflowDispatch
+        "workflow_run"                   -> pure WebhookWorkflowRun
         _                                -> fail $ "Unknown RepoWebhookEvent: " <> T.unpack t
 
 instance ToJSON RepoWebhookEvent where
     toJSON WebhookWildcardEvent                     = String "*"
     toJSON WebhookCheckRunEvent                     = String "check_run"
     toJSON WebhookCheckSuiteEvent                   = String "check_suite"
+    toJSON WebhookCodeScanningAlert                 = String "code_scanning_alert"
     toJSON WebhookCommitCommentEvent                = String "commit_comment"
     toJSON WebhookContentReferenceEvent             = String "content_reference"
     toJSON WebhookCreateEvent                       = String "create"
@@ -197,12 +214,13 @@ instance ToJSON RepoWebhookEvent where
     toJSON WebhookDeployKeyEvent                    = String "deploy_key"
     toJSON WebhookDeploymentEvent                   = String "deployment"
     toJSON WebhookDeploymentStatusEvent             = String "deployment_status"
+    toJSON WebhookDiscussion                        = String "discussion"
+    toJSON WebhookDiscussionComment                 = String "discussion_comment"
     toJSON WebhookDownloadEvent                     = String "download"
     toJSON WebhookFollowEvent                       = String "follow"
     toJSON WebhookForkEvent                         = String "fork"
-    toJSON WebhookForkApplyEvent                    = String "fork_apply"
-    toJSON WebhookGitHubAppAuthorizationEvent       = String "github_app_authorization"
     toJSON WebhookGistEvent                         = String "gist"
+    toJSON WebhookGitHubAppAuthorizationEvent       = String "github_app_authorization"
     toJSON WebhookGollumEvent                       = String "gollum"
     toJSON WebhookInstallationEvent                 = String "installation"
     toJSON WebhookInstallationRepositoriesEvent     = String "installation_repositories"
@@ -214,8 +232,9 @@ instance ToJSON RepoWebhookEvent where
     toJSON WebhookMembershipEvent                   = String "membership"
     toJSON WebhookMetaEvent                         = String "meta"
     toJSON WebhookMilestoneEvent                    = String "milestone"
-    toJSON WebhookOrganizationEvent                 = String "organization"
     toJSON WebhookOrgBlockEvent                     = String "org_block"
+    toJSON WebhookOrganizationEvent                 = String "organization"
+    toJSON WebhookPackage                           = String "package"
     toJSON WebhookPageBuildEvent                    = String "page_build"
     toJSON WebhookPingEvent                         = String "ping"
     toJSON WebhookProjectCardEvent                  = String "project_card"
@@ -223,20 +242,25 @@ instance ToJSON RepoWebhookEvent where
     toJSON WebhookProjectEvent                      = String "project"
     toJSON WebhookPublicEvent                       = String "public"
     toJSON WebhookPullRequestEvent                  = String "pull_request"
-    toJSON WebhookPullRequestReviewEvent            = String "pull_request_review"
     toJSON WebhookPullRequestReviewCommentEvent     = String "pull_request_review_comment"
+    toJSON WebhookPullRequestReviewEvent            = String "pull_request_review"
     toJSON WebhookPushEvent                         = String "push"
     toJSON WebhookRegistryPackageEvent              = String "registry_package"
     toJSON WebhookReleaseEvent                      = String "release"
+    toJSON WebhookRepositoryDispatch                = String "repository_dispatch"
     toJSON WebhookRepositoryEvent                   = String "repository"
     toJSON WebhookRepositoryImportEvent             = String "repository_import"
     toJSON WebhookRepositoryVulnerabilityAlertEvent = String "repository_vulnerability_alert"
+    toJSON WebhookSecretScanningAlert               = String "secret_scanning_alert"
     toJSON WebhookSecurityAdvisoryEvent             = String "security_advisory"
+    toJSON WebhookSponsorship                       = String "sponsorship"
     toJSON WebhookStarEvent                         = String "star"
     toJSON WebhookStatusEvent                       = String "status"
-    toJSON WebhookTeamEvent                         = String "team"
     toJSON WebhookTeamAddEvent                      = String "team_add"
+    toJSON WebhookTeamEvent                         = String "team"
     toJSON WebhookWatchEvent                        = String "watch"
+    toJSON WebhookWorkflowDispatch                  = String "workflow_dispatch"
+    toJSON WebhookWorkflowRun                       = String "workflow_run"
 
 instance FromJSON RepoWebhook where
     parseJSON = withObject "RepoWebhook" $ \o -> RepoWebhook
