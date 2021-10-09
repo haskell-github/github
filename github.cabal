@@ -223,6 +223,7 @@ test-suite github-test
     GitHub.RateLimitSpec
     GitHub.ReleasesSpec
     GitHub.ReposSpec
+    GitHub.ReviewDecodeSpec
     GitHub.SearchSpec
     GitHub.UsersSpec
 
