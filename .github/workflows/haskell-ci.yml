@@ -192,6 +192,7 @@ jobs:
           allow-newer:  deepseq-generics-0.2.0.0:base
           allow-newer:  deepseq-generics-0.2.0.0:ghc-prim
           allow-newer:  cryptohash-sha1-0.11.100.1:base
+          allow-newer:  http-link-header-1.2.0:attoparsec
           optimization: False
           EOF
           $HCPKG list --simple-output --names-only | perl -ne 'for (split /\s+/) { print "constraints: $_ installed\n" unless /^(github|github-samples)$/; }' >> cabal.project.local
