@@ -1,4 +1,5 @@
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE CPP #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -14,6 +15,10 @@ import Prelude ()
 import Data.Aeson.Types (Pair)
 import Data.Maybe (maybe)
 import qualified Data.Text as T
+
+#if MIN_VERSION_aeson(2,0,0)
+import Data.Aeson (Key)
+#endif
 
 data Content
   = ContentFile !ContentFileData
@@ -205,5 +210,9 @@ instance ToJSON DeleteFile where
     ++ "author"    .=? deleteFileAuthor
     ++ "committer" .=? deleteFileCommitter
 
+#if MIN_VERSION_aeson(2,0,0)
+(.=?) :: ToJSON v => Key -> Maybe v -> [Pair]
+#else
 (.=?) :: ToJSON v => Text -> Maybe v -> [Pair]
+#endif
 name .=? value = maybe [] (pure . (name .=)) value
