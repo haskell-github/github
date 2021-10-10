@@ -1,6 +1,6 @@
 cabal-version:      >=1.10
 name:               github
-version:            0.26
+version:            0.27
 synopsis:           Access to the GitHub API, v3.
 category:           Network
 description:
