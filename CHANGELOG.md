@@ -1,3 +1,14 @@
+## Changes for 0.27
+
+- Add vector of SimpleTeam in "requested_teams" field of PullRequest
+  [#453](https://github.com/phadej/github/pull/453)
+- Add endpoint to create gist
+  [#455](https://github.com/phadej/github/pull/455)
+- Update RepoWebhookEvent
+  [#461](https://github.com/phadej/github/pull/461)
+- PullRequest Reviews may not have submitted_at field 
+  [#450](https://github.com/phadej/github/pull/450)
+
 ## Changes for 0.26
 
 - Generalize PagedQuery to allow its reuse by preview github APIs
