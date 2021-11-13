@@ -1,6 +1,7 @@
 cabal-version:      >=1.10
 name:               github
 version:            0.27
+x-revision:         1
 synopsis:           Access to the GitHub API, v3.
 category:           Network
 description:
@@ -37,8 +38,9 @@ tested-with:
    || ==8.4.4
    || ==8.6.5
    || ==8.8.4
-   || ==8.10.4
+   || ==8.10.7
    || ==9.0.1
+   || ==9.2.1
 
 extra-source-files:
   README.md
@@ -158,9 +160,9 @@ library
 
   -- Packages bundles with GHC, mtl and text are also here
   build-depends:
-      base          >=4.7      && <4.16
+      base          >=4.7      && <4.17
     , binary        >=0.7.1.0  && <0.11
-    , bytestring    >=0.10.4.0 && <0.11
+    , bytestring    >=0.10.4.0 && <0.12
     , containers    >=0.5.5.1  && <0.7
     , deepseq       >=1.3.0.2  && <1.5
     , mtl           >=2.1.3.1  && <2.2 || >=2.2.1 && <2.3
@@ -177,7 +179,7 @@ library
     , cryptohash-sha1       >=0.11.100.1 && <0.12
     , deepseq-generics      >=0.2.0.0    && <0.3
     , exceptions            >=0.10.2     && <0.11
-    , hashable              >=1.2.7.0    && <1.4
+    , hashable              >=1.2.7.0    && <1.5
     , http-client           >=0.5.12     && <0.8
     , http-link-header      >=1.0.3.1    && <1.3
     , http-types            >=0.12.3     && <0.13
@@ -209,7 +211,7 @@ test-suite github-test
   hs-source-dirs:     spec
   main-is:            Spec.hs
   ghc-options:        -Wall -threaded
-  build-tool-depends: hspec-discover:hspec-discover >=2.7.1 && <2.8
+  build-tool-depends: hspec-discover:hspec-discover >=2.7.1 && <2.10
   other-extensions:   TemplateHaskell
   other-modules:
     GitHub.ActivitySpec
@@ -234,7 +236,7 @@ test-suite github-test
     , bytestring
     , file-embed
     , github
-    , hspec                 >=2.6.1 && <2.8
+    , hspec                 >=2.6.1 && <2.10
     , tagged
     , text
     , unordered-containers
