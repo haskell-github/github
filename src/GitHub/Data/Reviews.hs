@@ -6,7 +6,6 @@ import GitHub.Data.URL (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
 
-import Data.Text (Text)
 import qualified Data.Text as T
 
 data ReviewState

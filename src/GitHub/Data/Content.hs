@@ -13,7 +13,6 @@ import GitHub.Internal.Prelude
 import Prelude ()
 
 import Data.Aeson.Types (Pair)
-import Data.Maybe (maybe)
 import qualified Data.Text as T
 
 #if MIN_VERSION_aeson(2,0,0)
