@@ -12,7 +12,6 @@ module GitHub.Endpoints.PullRequests.Reviews
     ) where
 
 import GitHub.Data
-import GitHub.Data.Id (Id)
 import GitHub.Internal.Prelude
 import Prelude ()
 
