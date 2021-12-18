@@ -1,13 +1,13 @@
-Github
+GitHub
 ------
 
 [![Build Status](https://travis-ci.org/phadej/github.svg?branch=master)](https://travis-ci.org/phadej/github)
 [![Hackage](https://img.shields.io/hackage/v/github.svg)][hackage]
 
-The Github API v3 for Haskell.
+The GitHub API v3 for Haskell.
 
-Some functions are missing; these are functions where the Github API did
-not work as expected. The full Github API is in beta and constantly
+Some functions are missing; these are functions where the GitHub API did
+not work as expected. The full GitHub API is in beta and constantly
 improving.
 
 Installation
