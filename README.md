@@ -1,7 +1,7 @@
 GitHub
 ------
 
-[![Build Status](https://travis-ci.org/phadej/github.svg?branch=master)](https://travis-ci.org/phadej/github)
+[![Haskell-CI](https://github.com/phadej/github/actions/workflows/haskell-ci.yml/badge.svg)](https://github.com/phadej/github/actions/workflows/haskell-ci.yml)
 [![Hackage](https://img.shields.io/hackage/v/github.svg)][hackage]
 
 The GitHub API v3 for Haskell.
@@ -76,16 +76,6 @@ main = do
 formatUser :: GitHub.SimpleUser -> Text
 formatUser = GitHub.untagName . GitHub.simpleUserLogin
 ```
-
-Test setup
-==========
-
-To run integration part of tests, you'll need [github access token](https://github.com/settings/tokens/new)
-Token is needed, because unauthorised access is highly limited.
-It's enough to add only basic read access for public information.
-
-With `travis encrypt --org --repo yournick/github "GITHUB_TOKEN=yourtoken"` command you get a secret,
-you can use in your travis setup to run the test-suite there.
 
 Contributions
 =============
