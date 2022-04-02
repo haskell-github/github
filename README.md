@@ -1,7 +1,7 @@
 GitHub
 ------
 
-[![Haskell-CI](https://github.com/phadej/github/actions/workflows/haskell-ci.yml/badge.svg)](https://github.com/phadej/github/actions/workflows/haskell-ci.yml)
+[![Haskell-CI](https://github.com/haskell-github/github/actions/workflows/haskell-ci.yml/badge.svg)](https://github.com/haskell-github/github/actions/workflows/haskell-ci.yml)
 [![Hackage](https://img.shields.io/hackage/v/github.svg)][hackage]
 
 The GitHub API v3 for Haskell.
@@ -30,7 +30,7 @@ Example Usage
 =============
 
 See the samples in the
-[samples/](https://github.com/fpco/github/tree/master/samples) directory.
+[samples/](https://github.com/haskell-github/github/tree/master/samples) directory.
 
 Note: some samples might be outdated.
 
@@ -51,7 +51,7 @@ you want. You must call the function using IO goodness, then dispatch on the
 possible error message. Here's an example from the samples:
 
 Many function have samples under
-[`samples/`](https://github.com/phadej/github/tree/master/samples) directory.
+[`samples/`](https://github.com/haskell-github/github/tree/master/samples) directory.
 
 ```hs
 {-# LANGUAGE NoImplicitPrelude #-}
@@ -81,7 +81,7 @@ Contributions
 =============
 
 Please see
-[CONTRIBUTING.md](https://github.com/fpco/github/blob/master/CONTRIBUTING.md)
+[CONTRIBUTING.md](https://github.com/haskell-github/github/blob/master/CONTRIBUTING.md)
 for details on how you can help.
 
 Copyright
