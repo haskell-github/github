@@ -61,13 +61,16 @@ data Repo = Repo
     , repoPushedAt        :: !(Maybe UTCTime)   -- ^ this is Nothing for new repositories
     , repoCreatedAt       :: !(Maybe UTCTime)
     , repoUpdatedAt       :: !(Maybe UTCTime)
-    , repoPermissions     :: !(Maybe RepoPermissions)
+    , repoPermissions     :: !(Maybe RepoPermissions) -- ^ Repository permissions as they relate to the authenticated user.
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Repo where rnf = genericRnf
 instance Binary Repo
 
+-- | Repository permissions, as they relate to the authenticated user.
+--
+-- Returned by for example 'GitHub.Endpoints.Repos.currentUserReposR'
 data RepoPermissions = RepoPermissions
     { repoPermissionAdmin :: !Bool
     , repoPermissionPush :: !Bool
