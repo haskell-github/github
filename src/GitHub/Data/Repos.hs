@@ -61,11 +61,25 @@ data Repo = Repo
     , repoPushedAt        :: !(Maybe UTCTime)   -- ^ this is Nothing for new repositories
     , repoCreatedAt       :: !(Maybe UTCTime)
     , repoUpdatedAt       :: !(Maybe UTCTime)
+    , repoPermissions     :: !(Maybe RepoPermissions) -- ^ Repository permissions as they relate to the authenticated user.
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Repo where rnf = genericRnf
 instance Binary Repo
+
+-- | Repository permissions, as they relate to the authenticated user.
+--
+-- Returned by for example 'GitHub.Endpoints.Repos.currentUserReposR'
+data RepoPermissions = RepoPermissions
+    { repoPermissionAdmin :: !Bool
+    , repoPermissionPush :: !Bool
+    , repoPermissionPull :: !Bool
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData RepoPermissions where rnf = genericRnf
+instance Binary RepoPermissions
 
 data RepoRef = RepoRef
     { repoRefOwner :: !SimpleOwner
@@ -214,6 +228,7 @@ instance FromJSON Repo where
         <*> o .:? "pushed_at"
         <*> o .:? "created_at"
         <*> o .:? "updated_at"
+        <*> o .:? "permissions"
 
 instance ToJSON NewRepo where
   toJSON (NewRepo { newRepoName              = name
@@ -272,6 +287,12 @@ instance ToJSON EditRepo where
                    , "allow_rebase_merge" .= allowRebaseMerge
                    , "archived"           .= archived
                    ]
+
+instance FromJSON RepoPermissions where
+  parseJSON = withObject "RepoPermissions" $ \o -> RepoPermissions
+        <$> o .: "admin"
+        <*> o .: "push"
+        <*> o .: "pull"
 
 instance FromJSON RepoRef where
     parseJSON = withObject "RepoRef" $ \o -> RepoRef
