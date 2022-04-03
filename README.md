@@ -1,7 +1,7 @@
 GitHub
 ------
 
-[![Build Status](https://travis-ci.org/phadej/github.svg?branch=master)](https://travis-ci.org/phadej/github)
+[![Haskell-CI](https://github.com/haskell-github/github/actions/workflows/haskell-ci.yml/badge.svg)](https://github.com/haskell-github/github/actions/workflows/haskell-ci.yml)
 [![Hackage](https://img.shields.io/hackage/v/github.svg)][hackage]
 
 The GitHub API v3 for Haskell.
@@ -30,7 +30,7 @@ Example Usage
 =============
 
 See the samples in the
-[samples/](https://github.com/fpco/github/tree/master/samples) directory.
+[samples/](https://github.com/haskell-github/github/tree/master/samples) directory.
 
 Note: some samples might be outdated.
 
@@ -51,7 +51,7 @@ you want. You must call the function using IO goodness, then dispatch on the
 possible error message. Here's an example from the samples:
 
 Many function have samples under
-[`samples/`](https://github.com/phadej/github/tree/master/samples) directory.
+[`samples/`](https://github.com/haskell-github/github/tree/master/samples) directory.
 
 ```hs
 {-# LANGUAGE NoImplicitPrelude #-}
@@ -77,21 +77,11 @@ formatUser :: GitHub.SimpleUser -> Text
 formatUser = GitHub.untagName . GitHub.simpleUserLogin
 ```
 
-Test setup
-==========
-
-To run integration part of tests, you'll need [github access token](https://github.com/settings/tokens/new)
-Token is needed, because unauthorised access is highly limited.
-It's enough to add only basic read access for public information.
-
-With `travis encrypt --org --repo yournick/github "GITHUB_TOKEN=yourtoken"` command you get a secret,
-you can use in your travis setup to run the test-suite there.
-
 Contributions
 =============
 
 Please see
-[CONTRIBUTING.md](https://github.com/fpco/github/blob/master/CONTRIBUTING.md)
+[CONTRIBUTING.md](https://github.com/haskell-github/github/blob/master/CONTRIBUTING.md)
 for details on how you can help.
 
 Copyright
