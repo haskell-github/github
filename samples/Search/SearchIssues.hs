@@ -2,25 +2,27 @@
 module SearchIssues where
 
 import qualified Github.Search as Github
+import qualified Data.Text as T
 import Control.Monad (forM_)
 
+main :: IO ()
 main = do
   let query = "q=build%20repo%3Aphadej%2Fgithub&per_page=100"
-  let auth = Nothing
-  result <- Github.searchIssues' auth query
+  result <- Github.github' Github.searchIssuesR query 1000
   case result of
     Left e  -> putStrLn $ "Error: " ++ show e
-    Right r -> do forM_ (Github.searchIssuesIssues r) (\i -> do
-                    putStrLn $ formatIssue i
-                    putStrLn ""
-                    )
-                  putStrLn $ "Count: " ++ show n ++ " build issues"
-      where n = Github.searchIssuesTotalCount r
+    Right r -> do
+      forM_ (Github.searchResultResults r) $ \r -> do
+        putStrLn $ formatIssue r
+        putStrLn ""
+      putStrLn $ "Count: " ++ show (Github.searchResultTotalCount r)
+        ++ " matches for the query: \"" ++ T.unpack query ++ "\""
 
+formatIssue :: Github.Issue -> String
 formatIssue issue =
-  (Github.githubOwnerLogin $ Github.issueUser issue) ++
-    " opened this issue " ++
-    (show $ Github.fromDate $ Github.issueCreatedAt issue) ++ "\n" ++
-    (Github.issueState issue) ++ " with " ++
-    (show $ Github.issueComments issue) ++ " comments" ++ "\n\n" ++
-    (Github.issueTitle issue)
+  (show $ Github.issueUser issue) <>
+    " opened this issue " <>
+    (show $ Github.issueCreatedAt issue) <> "\n" <>
+    (show $ Github.issueState issue) <> " with " <>
+    (show $ Github.issueComments issue) <> " comments" <> "\n\n" <>
+    (T.unpack $ Github.issueTitle issue)
