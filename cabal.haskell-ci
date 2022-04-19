@@ -1,3 +1,4 @@
 branches: master
 haddock: >=8.6
   -- See PR #355: haddocks for GADT constructor arguments only supported from GHC 8.6
+jobs-selection: any

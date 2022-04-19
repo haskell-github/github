@@ -77,6 +77,11 @@ jobs:
             compilerVersion: 7.10.3
             setup-method: hvr-ppa
             allow-failure: false
+          - compiler: ghc-7.8.4
+            compilerKind: ghc
+            compilerVersion: 7.8.4
+            setup-method: hvr-ppa
+            allow-failure: false
       fail-fast: false
     steps:
       - name: apt
@@ -186,7 +191,7 @@ jobs:
         run: |
           touch cabal.project
           echo "packages: $GITHUB_WORKSPACE/source/." >> cabal.project
-          echo "packages: $GITHUB_WORKSPACE/source/samples" >> cabal.project
+          if [ $((HCNUMVER >= 71000)) -ne 0 ] ; then echo "packages: $GITHUB_WORKSPACE/source/samples" >> cabal.project ; fi
           cat cabal.project
       - name: sdist
         run: |
@@ -206,7 +211,7 @@ jobs:
           touch cabal.project
           touch cabal.project.local
           echo "packages: ${PKGDIR_github}" >> cabal.project
-          echo "packages: ${PKGDIR_github_samples}" >> cabal.project
+          if [ $((HCNUMVER >= 71000)) -ne 0 ] ; then echo "packages: ${PKGDIR_github_samples}" >> cabal.project ; fi
           if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "package github" >> cabal.project ; fi
           if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
           if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "package github-samples" >> cabal.project ; fi
@@ -251,8 +256,8 @@ jobs:
         run: |
           cd ${PKGDIR_github} || false
           ${CABAL} -vnormal check
-          cd ${PKGDIR_github_samples} || false
-          ${CABAL} -vnormal check
+          if [ $((HCNUMVER >= 71000)) -ne 0 ] ; then cd ${PKGDIR_github_samples} || false ; fi
+          if [ $((HCNUMVER >= 71000)) -ne 0 ] ; then ${CABAL} -vnormal check ; fi
       - name: haddock
         run: |
           if [ $((HCNUMVER >= 80600)) -ne 0 ] ; then $CABAL v2-haddock $ARG_COMPILER --with-haddock $HADDOCK $ARG_TESTS $ARG_BENCH all ; fi
