@@ -1,8 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module SearchRepos where
 
-import qualified Github.Search as Github
-import qualified Github.Data as Github
+import qualified Github as Github
 import Control.Monad (forM,forM_)
 import Data.Maybe (fromMaybe)
 import Data.List (intercalate)
@@ -12,22 +11,22 @@ import Data.Time.Clock (getCurrentTime, UTCTime(..))
 import Data.Time.LocalTime (utc,utcToLocalTime,localDay,localTimeOfDay,TimeOfDay(..))
 import Data.Time.Calendar (toGregorian)
 
+main :: IO ()
 main = do
   args <- getArgs
   date <- case args of
             (x:_)     -> return x
             otherwise -> today
   let query = "q=language%3Ahaskell created%3A>" ++ date ++ "&per_page=100"
-  let auth = Nothing
-  result <- Github.searchRepos' auth query
+  result <- Github.github' Github.searchReposR query 1000
   case result of
     Left e  -> putStrLn $ "Error: " ++ show e
-    Right r -> do forM_ (Github.searchReposRepos r) (\r -> do
-                    putStrLn $ formatRepo r
-                    putStrLn ""
-                    )
-                  putStrLn $ "Count: " ++ show n ++ " Haskell repos created since " ++ date
-      where n = Github.searchReposTotalCount r
+    Right r -> do
+      forM_ (Github.searchResultResults r) $ \r -> do
+        putStrLn $ formatIssue r
+        putStrLn ""
+      putStrLn $ "Count: " ++ show (Github.searchResultTotalCount r)
+        ++ " Haskell repos created since " ++ date
 
 -- | return today (in UTC) formatted as YYYY-MM-DD
 today :: IO String
@@ -39,9 +38,9 @@ today = do
 
 formatRepo :: Github.Repo -> String
 formatRepo r =
-  let fields = [ ("Name", Github.repoName)
-                 ,("URL",  Github.repoHtmlUrl)
-                 ,("Description", orEmpty . Github.repoDescription)
+  let fields = [ ("Name", show . Github.repoName)
+                 ,("URL",  show . Github.repoHtmlUrl)
+                 ,("Description", show . orEmpty . Github.repoDescription)
                  ,("Created-At", formatMaybeDate . Github.repoCreatedAt)
                  ,("Pushed-At", formatMaybeDate . Github.repoPushedAt)
                  ,("Stars", show . Github.repoStargazersCount)
@@ -52,5 +51,5 @@ formatRepo r =
           fill n s = s ++ replicate n' ' '
             where n' = max 0 (n - length s) 
 
-formatMaybeDate = maybe "???" formatDate
-formatDate = show . Github.fromDate
+
+formatMaybeDate = maybe "???" show
