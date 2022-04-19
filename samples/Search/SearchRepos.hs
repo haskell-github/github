@@ -52,7 +52,7 @@ formatRepo r =
     where fmt (s,f) = fill 12 (s ++ ":") ++ " " ++ f r
           orEmpty = fromMaybe ""
           fill n s = s ++ replicate n' ' '
-            where n' = max 0 (n - length s) 
+            where n' = max 0 (n - length s)
 
 
 formatMaybeDate :: Maybe UTCTime -> String

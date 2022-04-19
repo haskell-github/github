@@ -30,4 +30,4 @@ formatCode r =
   in intercalate "\n" $ map fmt fields
     where fmt (s,f) = fill 12 (s ++ ":") ++ " " ++ f r
           fill n s = s ++ replicate n' ' '
-            where n' = max 0 (n - length s) 
+            where n' = max 0 (n - length s)

@@ -6,7 +6,7 @@
   [#455](https://github.com/phadej/github/pull/455)
 - Update RepoWebhookEvent
   [#461](https://github.com/phadej/github/pull/461)
-- PullRequest Reviews may not have submitted_at field 
+- PullRequest Reviews may not have submitted_at field
   [#450](https://github.com/phadej/github/pull/450)
 
 ## Changes for 0.26
@@ -23,7 +23,7 @@
   [#417](https://github.com/phadej/github/pull/417)
 - Add deleteReference endpoint
   [#388](https://github.com/phadej/github/pull/388)
-	
+
 ## Changes for 0.25
 
 - Add `executeRequestWithMgrAndRes`
@@ -145,7 +145,7 @@ This reduces symbol bloat in the library.
   [#307](https://github.com/phadej/github/pull/307)
 - Make "repo" in PullRequestCommit nullable (repository can be gone)
   [#311](https://github.com/phadej/github/pull/311)
-- Add 	read-only emails endpoint
+- Add read-only emails endpoint
   [#313](https://github.com/phadej/github/pull/313)
 - Organisation membership API
   [#312](https://github.com/phadej/github/pull/312)
