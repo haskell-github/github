@@ -50,7 +50,9 @@ executable github-operational
 
 common deps
   default-language: Haskell2010
-  ghc-options:      -Wall
+  ghc-options:
+    -Wall
+    -threaded
   build-depends:
     , base                   >=4.7 && <5
     , base-compat-batteries
@@ -69,6 +71,11 @@ executable github-create-deploy-key
   import:         deps
   main-is:        CreateDeployKey.hs
   hs-source-dirs: Repos/DeployKeys
+
+executable github-create-issue
+  import:         deps
+  main-is:        CreateIssue.hs
+  hs-source-dirs: Issues
 
 -- executable github-delete-deploy-key
 --   import:         deps
