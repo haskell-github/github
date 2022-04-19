@@ -1,22 +1,36 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module CreateIssue where
 
-import qualified Github.Auth   as Github
-import qualified Github.Issues as Github
+import qualified Data.Text               as T (unpack)
+import qualified Data.Vector             as Vector (fromList)
+import qualified GitHub.Auth             as GitHub
+import qualified GitHub.Data.Issues      as GitHub
+import qualified GitHub.Endpoints.Issues as GitHub
+
+
+main :: IO ()
 main = do
-  let auth = Github.BasicAuth "user" "password"
-      newiss = (Github.newIssue "A new issue") {
-        Github.newIssueBody = Just "Issue description text goes here"
+  let auth = GitHub.BasicAuth "user" "password"
+      newiss = (GitHub.newIssue "A new issue")
+        { GitHub.newIssueBody = Just "Issue description text goes here"
+        -- UnComment to add issue labels.
+        -- , GitHub.newIssueLabels = Just $ Vector.fromList ["foo", "bar", "baz"]
         }
-  possibleIssue <- Github.createIssue auth "thoughtbot" "paperclip" newiss
+  possibleIssue <- GitHub.createIssue auth "thoughtbot" "paperclip" newiss
   putStrLn $ either (\e -> "Error: " ++ show e)
                     formatIssue
                     possibleIssue
 
+formatIssue :: GitHub.Issue -> String
 formatIssue issue =
-  (Github.githubOwnerLogin $ Github.issueUser issue) ++
+  formatUser issue ++
     " opened this issue " ++
-    (show $ Github.fromDate $ Github.issueCreatedAt issue) ++ "\n" ++
-    (Github.issueState issue) ++ " with " ++
-    (show $ Github.issueComments issue) ++ " comments" ++ "\n\n" ++
-    (Github.issueTitle issue)
+    (show $ GitHub.issueCreatedAt issue) ++ "\n" ++
+    (T.unpack $ GitHub.issueState issue) ++ " with " ++
+    (show $ GitHub.issueComments issue) ++ " comments" ++ "\n\n" ++
+    (T.unpack $ GitHub.issueTitle issue)
+
+formatUser :: GitHub.Issue -> String
+formatUser issue =
+  (T.unpack . GitHub.untagName . GitHub.simpleUserLogin $ GitHub.issueUser issue)
