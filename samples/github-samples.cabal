@@ -9,16 +9,15 @@ maintainer:    Oleg Grenrus <oleg.grenrus@iki.fi>
 description:   Various samples of github package
 build-type:    Simple
 tested-with:
-  GHC ==7.8.4
-   || ==7.10.3
+  GHC ==7.10.3
    || ==8.0.2
    || ==8.2.2
    || ==8.4.4
    || ==8.6.5
    || ==8.8.4
    || ==8.10.7
-   || ==9.0.1
-   || ==9.2.1
+   || ==9.0.2
+   || ==9.2.2
 
 library
   hs-source-dirs:   src
@@ -54,7 +53,7 @@ common deps
     -Wall
     -threaded
   build-depends:
-    , base                   >=4.7 && <5
+    , base                   >=4.8 && <5
     , base-compat-batteries
     , base64-bytestring
     , github
