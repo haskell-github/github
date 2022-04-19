@@ -18,7 +18,7 @@ formatCommit commit =
     patches
   where author = Github.gitCommitAuthor gitCommit
         gitCommit = Github.commitGitCommit commit
-        patches = 
+        patches =
           intercalate "\n" $ map Github.filePatch $ Github.commitFiles commit
 
 formatAuthor :: Github.GitUser -> String

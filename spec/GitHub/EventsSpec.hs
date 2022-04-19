@@ -29,7 +29,7 @@ spec = do
     it "returns non empty list of events" $ shouldSucceed $
       GitHub.repositoryEventsR "phadej" "github" 1
   describe "userEventsR" $ do
-    it "returns non empty list of events" $ shouldSucceed $ GitHub.userEventsR "phadej" 1 
+    it "returns non empty list of events" $ shouldSucceed $ GitHub.userEventsR "phadej" 1
   where shouldSucceed f = withAuth $ \auth -> do
           cs <- GitHub.executeRequest auth $ f
           cs `shouldSatisfy` isRight
