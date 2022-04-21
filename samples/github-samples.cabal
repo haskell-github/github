@@ -150,6 +150,22 @@ executable github-show-user-2
   main-is:        ShowUser2.hs
   hs-source-dirs: Users
 
+executable github-search-code
+  import:         deps
+  main-is:        SearchCode.hs
+  hs-source-dirs: Search
+
+executable github-search-issues
+  import:         deps
+  main-is:        SearchIssues.hs
+  hs-source-dirs: Search
+
+executable github-search-repos
+  import:         deps
+  main-is:        SearchRepos.hs
+  hs-source-dirs: Search
+  build-depends:  time
+
 -- executable github-team-membership-info-for
 --   import:         deps
 --   main-is:        TeamMembershipInfoFor.hs

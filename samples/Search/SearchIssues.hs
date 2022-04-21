@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module SearchIssues where
 
-import qualified Github.Search as Github
+import qualified Github as Github
 import qualified Data.Text as T
 import Control.Monad (forM_)
 

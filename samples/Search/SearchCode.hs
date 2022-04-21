@@ -3,7 +3,6 @@
 module SearchCode where
 
 import qualified Github as Github
-import qualified Github as Github
 import Control.Monad (forM_)
 import Data.List (intercalate)
 
