@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Unwatch where
+module Main where
 
 import qualified GitHub as GH
 import qualified Data.Text    as T
