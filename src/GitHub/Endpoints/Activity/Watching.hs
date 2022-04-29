@@ -8,6 +8,7 @@
 module GitHub.Endpoints.Activity.Watching (
     watchersForR,
     reposWatchedByR,
+    unwatchRepoR,
     module GitHub.Data,
 ) where
 
@@ -27,3 +28,9 @@ watchersForR user repo limit =
 reposWatchedByR :: Name Owner -> FetchCount -> Request k (Vector Repo)
 reposWatchedByR user =
     pagedQuery ["users", toPathPart user, "subscriptions"] []
+
+-- | Stop watching repository.
+-- See <https://docs.github.com/en/rest/reference/activity#delete-a-repository-subscription>
+unwatchRepoR :: Name Owner -> Name Repo -> Request 'RW ()
+unwatchRepoR owner repo =
+    command Delete ["repos", toPathPart owner, toPathPart repo, "subscription"] mempty

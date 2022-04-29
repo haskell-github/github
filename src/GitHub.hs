@@ -52,9 +52,9 @@ module GitHub (
     --
     -- * Query a Repository Subscription
     -- * Set a Repository Subscription
-    -- * Delete a Repository Subscription
     watchersForR,
     reposWatchedByR,
+    unwatchRepoR,
 
     -- * Gists
     -- | See <https://developer.github.com/v3/gists/>

@@ -166,6 +166,12 @@ executable github-teaminfo-for
   main-is:        TeamInfoFor.hs
   hs-source-dirs: Teams
 
+executable github-unwatch-repo
+  import:         deps
+  main-is:        Unwatch.hs
+  ghc-options:    -Wall -threaded
+  hs-source-dirs: Repos/Watching
+
 -- executable github-create-public-ssh-key
 --   import:         deps
 --   main-is:        CreatePublicSSHKey.hs
