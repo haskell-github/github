@@ -4,6 +4,7 @@ module Main where
 import qualified GitHub
 import qualified Data.Text as T
 import Control.Monad (forM_)
+import Data.Monoid ((<>))
 
 main :: IO ()
 main = do

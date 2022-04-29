@@ -4,6 +4,7 @@ module Main where
 import qualified GitHub
 import Control.Monad (forM_)
 import Data.Maybe (fromMaybe)
+import Data.Monoid ((<>))
 import Data.List (intercalate)
 import System.Environment (getArgs)
 import Text.Printf (printf)
