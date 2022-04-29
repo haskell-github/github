@@ -1,6 +1,5 @@
 {-# LANGUAGE CPP               #-}
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE DuplicateRecordFields #-}
 #define UNSAFE 1
 -----------------------------------------------------------------------------
 -- |
@@ -70,34 +69,34 @@ instance NFData Repo where rnf = genericRnf
 instance Binary Repo
 
 data CodeSearchRepo = CodeSearchRepo
-    { repoId              :: !(Id Repo)
-    , repoName            :: !(Name Repo)
-    , repoOwner           :: !SimpleOwner
-    , repoPrivate         :: !Bool
-    , repoHtmlUrl         :: !URL
-    , repoDescription     :: !(Maybe Text)
-    , repoFork            :: !(Maybe Bool)
-    , repoUrl             :: !URL
-    , repoGitUrl          :: !(Maybe URL)
-    , repoSshUrl          :: !(Maybe URL)
-    , repoCloneUrl        :: !(Maybe URL)
-    , repoHooksUrl        :: !URL
-    , repoSvnUrl          :: !(Maybe URL)
-    , repoHomepage        :: !(Maybe Text)
-    , repoLanguage        :: !(Maybe Language)
-    , repoSize            :: !(Maybe Int)
-    , repoDefaultBranch   :: !(Maybe Text)
-    , repoHasIssues       :: !(Maybe Bool)
-    , repoHasProjects     :: !(Maybe Bool)
-    , repoHasWiki         :: !(Maybe Bool)
-    , repoHasPages        :: !(Maybe Bool)
-    , repoHasDownloads    :: !(Maybe Bool)
-    , repoArchived        :: !Bool
-    , repoDisabled        :: !Bool
-    , repoPushedAt        :: !(Maybe UTCTime)   -- ^ this is Nothing for new repositories
-    , repoCreatedAt       :: !(Maybe UTCTime)
-    , repoUpdatedAt       :: !(Maybe UTCTime)
-    , repoPermissions     :: !(Maybe RepoPermissions) -- ^ Repository permissions as they relate to the authenticated user.
+    { codeSearchRepoId              :: !(Id Repo)
+    , codeSearchRepoName            :: !(Name Repo)
+    , codeSearchRepoOwner           :: !SimpleOwner
+    , codeSearchRepoPrivate         :: !Bool
+    , codeSearchRepoHtmlUrl         :: !URL
+    , codeSearchRepoDescription     :: !(Maybe Text)
+    , codeSearchRepoFork            :: !(Maybe Bool)
+    , codeSearchRepoUrl             :: !URL
+    , codeSearchRepoGitUrl          :: !(Maybe URL)
+    , codeSearchRepoSshUrl          :: !(Maybe URL)
+    , codeSearchRepoCloneUrl        :: !(Maybe URL)
+    , codeSearchRepoHooksUrl        :: !URL
+    , codeSearchRepoSvnUrl          :: !(Maybe URL)
+    , codeSearchRepoHomepage        :: !(Maybe Text)
+    , codeSearchRepoLanguage        :: !(Maybe Language)
+    , codeSearchRepoSize            :: !(Maybe Int)
+    , codeSearchRepoDefaultBranch   :: !(Maybe Text)
+    , codeSearchRepoHasIssues       :: !(Maybe Bool)
+    , codeSearchRepoHasProjects     :: !(Maybe Bool)
+    , codeSearchRepoHasWiki         :: !(Maybe Bool)
+    , codeSearchRepoHasPages        :: !(Maybe Bool)
+    , codeSearchRepoHasDownloads    :: !(Maybe Bool)
+    , codeSearchRepoArchived        :: !Bool
+    , codeSearchRepoDisabled        :: !Bool
+    , codeSearchRepoPushedAt        :: !(Maybe UTCTime)   -- ^ this is Nothing for new repositories
+    , codeSearchRepoCreatedAt       :: !(Maybe UTCTime)
+    , codeSearchRepoUpdatedAt       :: !(Maybe UTCTime)
+    , codeSearchRepoPermissions     :: !(Maybe RepoPermissions) -- ^ Repository permissions as they relate to the authenticated user.
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
