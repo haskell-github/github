@@ -1,5 +1,6 @@
 {-# LANGUAGE CPP               #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE DuplicateRecordFields #-}
 #define UNSAFE 1
 -----------------------------------------------------------------------------
 -- |
@@ -67,6 +68,41 @@ data Repo = Repo
 
 instance NFData Repo where rnf = genericRnf
 instance Binary Repo
+
+data CodeSearchRepo = CodeSearchRepo
+    { repoId              :: !(Id Repo)
+    , repoName            :: !(Name Repo)
+    , repoOwner           :: !SimpleOwner
+    , repoPrivate         :: !Bool
+    , repoHtmlUrl         :: !URL
+    , repoDescription     :: !(Maybe Text)
+    , repoFork            :: !(Maybe Bool)
+    , repoUrl             :: !URL
+    , repoGitUrl          :: !(Maybe URL)
+    , repoSshUrl          :: !(Maybe URL)
+    , repoCloneUrl        :: !(Maybe URL)
+    , repoHooksUrl        :: !URL
+    , repoSvnUrl          :: !(Maybe URL)
+    , repoHomepage        :: !(Maybe Text)
+    , repoLanguage        :: !(Maybe Language)
+    , repoSize            :: !(Maybe Int)
+    , repoDefaultBranch   :: !(Maybe Text)
+    , repoHasIssues       :: !(Maybe Bool)
+    , repoHasProjects     :: !(Maybe Bool)
+    , repoHasWiki         :: !(Maybe Bool)
+    , repoHasPages        :: !(Maybe Bool)
+    , repoHasDownloads    :: !(Maybe Bool)
+    , repoArchived        :: !Bool
+    , repoDisabled        :: !Bool
+    , repoPushedAt        :: !(Maybe UTCTime)   -- ^ this is Nothing for new repositories
+    , repoCreatedAt       :: !(Maybe UTCTime)
+    , repoUpdatedAt       :: !(Maybe UTCTime)
+    , repoPermissions     :: !(Maybe RepoPermissions) -- ^ Repository permissions as they relate to the authenticated user.
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData CodeSearchRepo where rnf = genericRnf
+instance Binary CodeSearchRepo
 
 -- | Repository permissions, as they relate to the authenticated user.
 --
@@ -218,6 +254,36 @@ instance FromJSON Repo where
         <*> o .:? "size"
         <*> o .:? "default_branch"
         <*> o .: "open_issues_count"
+        <*> o .:? "has_issues"
+        <*> o .:? "has_projects"
+        <*> o .:? "has_wiki"
+        <*> o .:? "has_pages"
+        <*> o .:? "has_downloads"
+        <*> o .:? "archived" .!= False
+        <*> o .:? "disabled" .!= False
+        <*> o .:? "pushed_at"
+        <*> o .:? "created_at"
+        <*> o .:? "updated_at"
+        <*> o .:? "permissions"
+
+instance FromJSON CodeSearchRepo where
+    parseJSON = withObject "Repo" $ \o -> CodeSearchRepo <$> o .: "id"
+        <*> o .: "name"
+        <*> o .: "owner"
+        <*> o .: "private"
+        <*> o .: "html_url"
+        <*> o .:? "description"
+        <*> o .: "fork"
+        <*> o .: "url"
+        <*> o .:? "git_url"
+        <*> o .:? "ssh_url"
+        <*> o .:? "clone_url"
+        <*> o .: "hooks_url"
+        <*> o .:? "svn_url"
+        <*> o .:? "homepage"
+        <*> o .:? "language"
+        <*> o .:? "size"
+        <*> o .:? "default_branch"
         <*> o .:? "has_issues"
         <*> o .:? "has_projects"
         <*> o .:? "has_wiki"

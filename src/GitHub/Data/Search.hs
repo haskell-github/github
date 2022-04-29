@@ -5,7 +5,7 @@
 --
 module GitHub.Data.Search where
 
-import GitHub.Data.Repos       (Repo)
+import GitHub.Data.Repos       (CodeSearchRepo)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
@@ -41,7 +41,7 @@ data Code = Code
     , codeUrl     :: !URL
     , codeGitUrl  :: !URL
     , codeHtmlUrl :: !URL
-    , codeRepo    :: !Repo
+    , codeRepo    :: !CodeSearchRepo
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 

@@ -1,28 +1,28 @@
 {-# LANGUAGE OverloadedStrings #-}
-module SearchIssues where
+module Main where
 
-import qualified Github as Github
+import qualified GitHub
 import qualified Data.Text as T
 import Control.Monad (forM_)
 
 main :: IO ()
 main = do
-  let query = "q=build%20repo%3Aphadej%2Fgithub&per_page=100"
-  result <- Github.github' Github.searchIssuesR query 1000
+  let query = "build repo:haskell-github/github"
+  result <- GitHub.github' GitHub.searchIssuesR query 1000
   case result of
     Left e  -> putStrLn $ "Error: " ++ show e
     Right r -> do
-      forM_ (Github.searchResultResults r) $ \r -> do
+      forM_ (GitHub.searchResultResults r) $ \r -> do
         putStrLn $ formatIssue r
         putStrLn ""
-      putStrLn $ "Count: " ++ show (Github.searchResultTotalCount r)
+      putStrLn $ "Count: " ++ show (GitHub.searchResultTotalCount r)
         ++ " matches for the query: \"" ++ T.unpack query ++ "\""
 
-formatIssue :: Github.Issue -> String
+formatIssue :: GitHub.Issue -> String
 formatIssue issue =
-  (show $ Github.issueUser issue) <>
+  (show $ GitHub.issueUser issue) <>
     " opened this issue " <>
-    (show $ Github.issueCreatedAt issue) <> "\n" <>
-    (show $ Github.issueState issue) <> " with " <>
-    (show $ Github.issueComments issue) <> " comments" <> "\n\n" <>
-    (T.unpack $ Github.issueTitle issue)
+    (show $ GitHub.issueCreatedAt issue) <> "\n" <>
+    (show $ GitHub.issueState issue) <> " with " <>
+    (show $ GitHub.issueComments issue) <> " comments" <> "\n\n" <>
+    (T.unpack $ GitHub.issueTitle issue)

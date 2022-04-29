@@ -152,16 +152,19 @@ executable github-show-user-2
 
 executable github-search-code
   import:         deps
+  ghc-options:    -Wall -threaded
   main-is:        SearchCode.hs
   hs-source-dirs: Search
 
 executable github-search-issues
   import:         deps
+  ghc-options:    -Wall -threaded
   main-is:        SearchIssues.hs
   hs-source-dirs: Search
 
 executable github-search-repos
   import:         deps
+  ghc-options:    -Wall -threaded
   main-is:        SearchRepos.hs
   hs-source-dirs: Search
   build-depends:  time

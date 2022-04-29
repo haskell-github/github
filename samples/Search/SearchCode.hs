@@ -1,30 +1,31 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module SearchCode where
+module Main where
 
-import qualified Github as Github
+import qualified GitHub
 import Control.Monad (forM_)
 import Data.List (intercalate)
+import qualified Data.Text as T
 
 main :: IO ()
 main = do
-  let query = "q=Code repo:jwiegley/github&per_page=100"
-  result <- Github.github' Github.searchCodeR query 1000
+  let query = "Code repo:haskell-github/github"
+  result <- GitHub.github' GitHub.searchCodeR query 1000
   case result of
     Left e  -> putStrLn $ "Error: " ++ show e
     Right r -> do
-      forM_ (Github.searchResultResults r) $ \r -> do
+      forM_ (GitHub.searchResultResults r) $ \r -> do
         putStrLn $ formatCode r
         putStrLn ""
-      putStrLn $ "Count: " ++ show (Github.searchResultTotalCount r)
+      putStrLn $ "Count: " ++ show (GitHub.searchResultTotalCount r)
         ++ " matches for the query: \"" ++ T.unpack query ++ "\""
 
-formatCode :: Github.Code -> String
+formatCode :: GitHub.Code -> String
 formatCode r =
-  let fields = [ ("Name", show . Github.codeName)
-               , ("Path", show . Github.codePath)
-               , ("Sha",  show . Github.codeSha)
-               , ("URL",  show . Github.codeHtmlUrl)
+  let fields = [ ("Name", show . GitHub.codeName)
+               , ("Path", show . GitHub.codePath)
+               , ("Sha",  show . GitHub.codeSha)
+               , ("URL",  show . GitHub.codeHtmlUrl)
                ]
   in intercalate "\n" $ map fmt fields
     where fmt (s,f) = fill 12 (s ++ ":") ++ " " ++ f r
