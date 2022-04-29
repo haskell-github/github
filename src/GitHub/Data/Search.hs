@@ -5,26 +5,34 @@
 --
 module GitHub.Data.Search where
 
-import GitHub.Data.Repos       (Repo)
+import GitHub.Data.Repos       (CodeSearchRepo)
 import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
 
 import qualified Data.Vector as V
 
-data SearchResult entity = SearchResult
+data SearchResult' entities = SearchResult
     { searchResultTotalCount :: !Int
-    , searchResultResults    :: !(Vector entity)
+    , searchResultResults    :: !entities
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-instance NFData entity => NFData (SearchResult entity) where rnf = genericRnf
-instance Binary entity => Binary (SearchResult entity)
+type SearchResult entity = SearchResult' (V.Vector entity)
 
-instance FromJSON entity => FromJSON (SearchResult entity) where
+instance NFData entities => NFData (SearchResult' entities) where rnf = genericRnf
+instance Binary entities => Binary (SearchResult' entities)
+
+instance (Monoid entities, FromJSON entities) => FromJSON (SearchResult' entities) where
     parseJSON = withObject "SearchResult" $ \o -> SearchResult
         <$> o .: "total_count"
-        <*> o .:? "items" .!= V.empty
+        <*> o .:? "items" .!= mempty
+
+instance Semigroup res => Semigroup (SearchResult' res) where
+    (SearchResult count res) <> (SearchResult count' res') = SearchResult (max count count') (res <> res')
+
+instance Foldable SearchResult' where
+    foldMap f (SearchResult count results) = f results
 
 data Code = Code
     { codeName    :: !Text
@@ -33,7 +41,7 @@ data Code = Code
     , codeUrl     :: !URL
     , codeGitUrl  :: !URL
     , codeHtmlUrl :: !URL
-    , codeRepo    :: !Repo
+    , codeRepo    :: !CodeSearchRepo
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
