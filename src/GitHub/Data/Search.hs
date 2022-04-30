@@ -32,7 +32,7 @@ instance Semigroup res => Semigroup (SearchResult' res) where
     (SearchResult count res) <> (SearchResult count' res') = SearchResult (max count count') (res <> res')
 
 instance Foldable SearchResult' where
-    foldMap f (SearchResult count results) = f results
+    foldMap f (SearchResult _count results) = f results
 
 data Code = Code
     { codeName    :: !Text
