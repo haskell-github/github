@@ -1,5 +1,7 @@
 ## Changes for 0.27
 
+_2021-10-10, Oleg Grenrus_
+
 - Add vector of `SimpleTeam` in "requested_teams" field of `PullRequest`
   [#453](https://github.com/haskell-github/github/pull/453)
 - Add endpoint to create gist
@@ -10,6 +12,8 @@
   [#450](https://github.com/haskell-github/github/pull/450)
 
 ## Changes for 0.26
+
+_2020-05-26, Oleg Grenrus_
 
 - Generalize `PagedQuery` to allow its reuse by preview github APIs
   [#439](https://github.com/haskell-github/github/pull/439)
@@ -25,6 +29,8 @@
   [#388](https://github.com/haskell-github/github/pull/388)
 
 ## Changes for 0.25
+
+_2020-02-18, Oleg Grenrus_
 
 - Add `executeRequestWithMgrAndRes`
   [#421](https://github.com/haskell-github/github/pull/421)
@@ -47,6 +53,8 @@
 
 ## Changes for 0.24
 
+_2019-11-27, Oleg Grenrus_
+
 **Major change**:
 Introduce `github` n-ary combinator to hoist `... -> Request rw res`
 into `... -> IO (Either Error res)` (i.e. n-ary `executeRequest`).
@@ -64,6 +72,8 @@ This reduces symbol bloat in the library.
 
 ## Changes for 0.23
 
+_2019-10-01, Oleg Grenrus_
+
 - Escape URI paths
   [#404](https://github.com/haskell-github/github/pull/404)
 - Add `OwnerBot` to `OwnerType`
@@ -75,6 +85,8 @@ This reduces symbol bloat in the library.
   [#394](https://github.com/haskell-github/github/pull/394)
 
 ## Changes for 0.22
+
+_2019-05-31, Oleg Grenrus_
 
 - Type-class for various auth methods
   [#365](https://github.com/haskell-github/github/pull/365)
@@ -103,6 +115,8 @@ This reduces symbol bloat in the library.
 
 ## Changes for 0.21
 
+_2019-02-18, Oleg Grenrus_
+
 - Refactor `Request` type.
   [#349](https://github.com/haskell-github/github/pull/349)
 - Allow `http-client-0.6`
@@ -124,6 +138,8 @@ This reduces symbol bloat in the library.
 
 ## Changes for 0.20
 
+_2018-09-26, Oleg Grenrus_
+
 - Add ratelimit endpoint
   [#315](https://github.com/haskell-github/github/pull/315)
 - Add some deployment endoints
@@ -134,6 +150,8 @@ This reduces symbol bloat in the library.
   [#332](https://github.com/haskell-github/github/pull/332)
 
 ## Changes for 0.19
+
+_2018-02-19, Oleg Grenrus_
 
 - Fix issue event type enumeration
   [#301](https://github.com/haskell-github/github/issues/301)
@@ -157,6 +175,8 @@ This reduces symbol bloat in the library.
 
 ## Changes for 0.18
 
+_2017-11-10, Oleg Grenrus_
+
 - Endpoints for deleting issue comments.
   [#294](https://github.com/haskell-github/github/pull/294)
 - Endpoints for (un)starring gists.
@@ -172,12 +192,16 @@ This reduces symbol bloat in the library.
 
 ## Changes for 0.17.0
 
+_2017-09-26, Oleg Grenrus_
+
 - Add `Ord Request` instance
 - Repository contents
 - Repository starring endpoints
 - Pull Request review endpoints
 
 ## Changes for 0.16.0
+
+_2017-07-24, Oleg Grenrus_
 
 - Add support for `mergeable_state = "blocked".`
 - Fix HTTP status code of merge PR
@@ -187,6 +211,8 @@ This reduces symbol bloat in the library.
 - `forkExistingRepo`
 
 ## Changes for 0.15.0
+
+_2016-11-04, Oleg Grenrus_
 
 - Reworked `PullRequest` (notably `pullRequestsFor`)
 - Reworked PR and Issue filtering
@@ -210,6 +236,8 @@ See [git commit summary](https://github.com/haskell-github/github/compare/v0.14.
 
 ## Changes for 0.14.1
 
+_2016-02-02, Oleg Grenrus_
+
 - Add `membersOfWithR`, `listTeamMembersR`
 - Add related enums: `OrgMemberFilter`, `OrgMemberRole`, `TeamMemberRole`
 - Add `Enum` and `Bounded` instances to `Privacy`, `Permission`,
@@ -217,6 +245,8 @@ See [git commit summary](https://github.com/haskell-github/github/compare/v0.14.
 - Don't require network access for search tests
 
 ## Changes for 0.14.0
+
+_2016-01-25, Oleg Grenrus_
 
 Large API changes:
 
@@ -227,7 +257,29 @@ Large API changes:
 - Add `Binary` instances for all data
 - `GithubOwner` is a `newtype` of `Either User Organization`. There's still `SimpleOwner`.
 
+## Releases without changelog
+
+| Version | Date  | Uploader  |
+|---|---|---|
+| __0.13.2__ | _2015-04-26_ | _John Wiegley_        |
+| __0.13.1__ | _2014-12-01_ | _César López-Natarén_ |
+| __0.13__   | _2014-11-09_ | _César López-Natarén_ |
+| __0.12__   | _2014-11-09_ | _César López-Natarén_ |
+| __0.11.1__ | _2014-09-07_ | _César López-Natarén_ |
+| __0.11.0__ | _2014-08-25_ | _César López-Natarén_ |
+| __0.10.0__ | _2014-08-18_ | _César López-Natarén_ |
+| __0.9__    | _2014-07-31_ | _John Wiegley_        |
+| __0.8__    | _2014-05-02_ | _John Wiegley_        |
+| __0.7.4__  | _2014-01-22_ | _John Wiegley_        |
+| __0.7.3__  | _2013-12-21_ | _John Wiegley_        |
+| __0.7.2__  | _2013-12-02_ | _John Wiegley_        |
+| __0.7.1__  | _2013-08-08_ | _John Wiegley_        |
+| __0.7.0__  | _2013-04-26_ | _John Wiegley_        |
+| __0.6.0__  | _2013-04-12_ | _John Wiegley_        |
+
 ## Changes for 0.5.0:
+
+_2013-02-05, Mike Burns_
 
 * `OAuth`.
 * New function: `Github.Repos.organizationRepo`, to get the repo for a specific organization.
@@ -237,6 +289,8 @@ Large API changes:
 
 ## Changes for 0.4.1:
 
+_2013-01-14, Mike Burns_
+
 * Stop using the `uri` package.
 * Use `aeson` version 0.6.1.0.
 * Use `attoparsec` version 0.10.3.0.
@@ -245,9 +299,13 @@ Large API changes:
 
 ## Changes for 0.4.0:
 
+_2012-06-26, Mike Burns_
+
 * Use `http-conduit` version 1.4.1.10.
 
 ## Changes for 0.3.0:
+
+_2012-06-10, Mike Burns_
 
 * Re-instantiate the Blobs API.
 * `repoDescription1` and `repoPushedAt` are a `Maybe GithubDate`.
@@ -259,9 +317,13 @@ Large API changes:
 
 ## Changes for 0.2.1:
 
+_2012-02-16, Mike Burns_
+
 * Expand the `unordered-containers` dependency to anything in 0.1.x .
 
 ## Changes for 0.2.0:
+
+_2012-02-15, Mike Burns_
 
 * `milestoneDueOn` and `repoLanguage` are now `Maybe` types.
 * Introduce `GithubOwner` as the sum type for a `GithubUser` or `GithubOrganization`. Everything that once produced a `GithubUser` now produces a `GithubOwner`. All record accessors have changed their names.
