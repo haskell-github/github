@@ -16,14 +16,13 @@ Installation
 In your project's cabal file:
 
 ```cabal
--- Packages needed in order to build this package.
 Build-depends:       github
 ```
 
 Or from the command line:
 
 ```sh
-cabal install github
+cabal v1-install github
 ```
 
 Example Usage
@@ -94,3 +93,11 @@ Copyright 2016-2019 Oleg Grenrus.
 Available under the BSD 3-clause license.
 
 [hackage]: http://hackage.haskell.org/package/github "Hackage"
+
+Alternative
+===========
+
+Library [`github-rest`](https://hackage.haskell.org/package/github-rest)
+also provides an interface to the GitHub API.
+It compares itself to `github` here:
+https://github.com/LeapYear/github-rest#comparison-to-other-libraries
