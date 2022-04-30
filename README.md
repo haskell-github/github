@@ -39,7 +39,7 @@ Documentation
 For details see the reference [documentation on Hackage][hackage].
 
 Each module lines up with the hierarchy of
-[documentation from the GitHub API](http://developer.github.com/v3/).
+[documentation from the GitHub API](https://docs.github.com/en/rest).
 
 Request functions (ending with `R`) construct a data type which can be executed
 in `IO` by `executeRequest` functions. They are all listed in the root `GitHub`

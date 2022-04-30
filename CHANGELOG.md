@@ -1,3 +1,30 @@
+## Changes for 0.28
+
+_2022-04-30, Andreas Abel, Valborg edition_
+
+Tested with GHC 7.8 - 9.2.2
+
+- Add constructors to `IssueRepoMod` that allow filtering issues by
+  milestone, assignee, creator, mentioned user:
+  `GitHub.Data.Options.options{Milestone,Assignee,Creator,Mentioned}`
+  (PR [#470](https://github.com/haskell-github/github/pull/470))
+
+- Add permissions field to `Repo`.
+  This adds record `RepoPermissions` and field `Repo.repoPermissions`
+  in module `GitHub.Data.Repos`.
+  (PR [#476](https://github.com/haskell-github/github/pull/476))
+
+- Add unwatch request `GitHub.Endpoints.Activity.Watching.unwatchRepoR`
+  (PR [#473](https://github.com/haskell-github/github/pull/473))
+
+Breaking change:
+
+- Make searches paginated
+  (PR [#474](https://github.com/haskell-github/github/pull/474)):
+  * Adds record `GitHub.Data.Repos.CodeSearchRepo`.
+  * Adds argument `FetchCount`
+    to `GitHub.Endpoints.Search.search{Repos,Code,Issues,Users}R`.
+
 ## Changes for 0.27
 
 _2021-10-10, Oleg Grenrus_

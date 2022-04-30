@@ -1,6 +1,6 @@
 cabal-version:      >=1.10
 name:               github
-version:            0.27.1
+version:            0.28
 synopsis:           Access to the GitHub API, v3.
 category:           Network
 description:
@@ -23,7 +23,7 @@ description:
 license:            BSD3
 license-file:       LICENSE
 author:             Mike Burns, John Wiegley, Oleg Grenrus
-maintainer:         Oleg Grenrus <oleg.grenrus@iki.fi>
+maintainer:         Andreas Abel
 homepage:           https://github.com/haskell-github/github
 build-type:         Simple
 copyright:
