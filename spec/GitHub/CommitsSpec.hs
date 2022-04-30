@@ -30,13 +30,13 @@ spec :: Spec
 spec = do
   describe "commitsFor" $ do
     it "works" $ withAuth $ \auth -> do
-      cs <- github auth commitsForR "phadej" "github" FetchAll
+      cs <- github auth commitsForR "haskell-github" "github" FetchAll
       cs `shouldSatisfy` isRight
       V.length (fromRightS cs) `shouldSatisfy` (> 300)
 
     -- Page size is 30, so we get 60 commits
     it "limits the response" $ withAuth $ \auth -> do
-      cs <- github auth commitsForR "phadej" "github" (FetchAtLeast 40)
+      cs <- github auth commitsForR "haskell-github" "github" (FetchAtLeast 40)
       cs `shouldSatisfy` isRight
       let cs' = fromRightS cs
       V.length cs' `shouldSatisfy` (< 70)
@@ -45,12 +45,12 @@ spec = do
 
   describe "diff" $ do
     it "works" $ withAuth $ \auth -> do
-      cs <- github auth commitsForR "phadej" "github" (FetchAtLeast 30)
+      cs <- github auth commitsForR "haskell-github" "github" (FetchAtLeast 30)
       cs `shouldSatisfy` isRight
       let commits = take 10 . V.toList . fromRightS $ cs
       let pairs = zip commits $ drop 1 commits
       forM_ pairs $ \(a, b) -> do
-        d <- github auth diffR "phadej" "github" (commitSha a) (commitSha b)
+        d <- github auth diffR "haskell-github" "github" (commitSha a) (commitSha b)
         d `shouldSatisfy` isRight
 
     it "issue #155" $ withAuth $ \auth -> do

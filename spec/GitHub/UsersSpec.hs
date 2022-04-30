@@ -67,7 +67,7 @@ spec = do
       (userLogin . fromLeftS . fromOwner . fromRightS $ b) `shouldBe` "phadej"
 
   describe "userInfoCurrentR" $ do
-    it "returns information about the autenticated user" $ withAuth $ \auth -> do
+    it "returns information about the authenticated user" $ withAuth $ \auth -> do
       userInfo <- github auth userInfoCurrentR
       userInfo `shouldSatisfy` isRight
 

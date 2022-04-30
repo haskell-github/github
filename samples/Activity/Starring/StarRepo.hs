@@ -8,7 +8,7 @@ import qualified Data.Text.IO as T
 
 main :: IO ()
 main = do
-    let owner = "phadej"
+    let owner = "haskell-github"
         repo  = "github"
     result <- GH.starRepo (GH.OAuth "your-token")
         (GH.mkOwnerName owner) (GH.mkRepoName repo)
