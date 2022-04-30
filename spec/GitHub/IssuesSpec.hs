@@ -41,10 +41,10 @@ spec = do
     describe "issueR" $ do
         it "fetches issue #428" $ withAuth $ \auth -> do
             resIss <- GitHub.executeRequest auth $
-                GitHub.issueR "phadej" "github" (GitHub.IssueNumber 428)
+                GitHub.issueR "haskell-github" "github" (GitHub.IssueNumber 428)
             resIss `shouldSatisfy` isRight
   where
     repos =
       [ ("thoughtbot", "paperclip")
-      , ("phadej", "github")
+      , ("haskell-github", "github")
       ]

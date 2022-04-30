@@ -54,7 +54,7 @@ spec = do
       issueState issue2 `shouldBe` StateOpen
 
     it "performs an issue search via the API" $ withAuth $ \auth -> do
-      let query = "Decouple in:title repo:phadej/github created:<=2015-12-01"
+      let query = "Decouple in:title repo:haskell-github/github created:<=2015-12-01"
       issues <- fmap (searchResultResults . fromRightS) <$> github auth $ searchIssuesR query 5
       length issues `shouldBe` 1
       issueId (V.head issues) `shouldBe` mkId (Proxy :: Proxy Issue) 119694665

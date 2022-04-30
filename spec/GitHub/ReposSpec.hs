@@ -29,10 +29,10 @@ spec :: Spec
 spec = do
   describe "repositoryR" $ do
     it "works" $ withAuth $ \auth -> do
-      er <- github auth repositoryR "phadej" "github"
+      er <- github auth repositoryR "haskell-github" "github"
       er `shouldSatisfy` isRight
       let Right r = er
-      -- https://github.com/phadej/github/pull/219
+      -- https://github.com/haskell-github/github/pull/219
       repoDefaultBranch r `shouldBe` Just "master"
 
   describe "currentUserRepos" $ do
@@ -47,6 +47,6 @@ spec = do
 
   describe "languagesFor'" $ do
     it "works" $ withAuth $ \auth -> do
-      ls <- github auth languagesForR "phadej" "github"
+      ls <- github auth languagesForR "haskell-github" "github"
       ls `shouldSatisfy` isRight
       fromRightS ls `shouldSatisfy` HM.member "Haskell"

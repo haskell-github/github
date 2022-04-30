@@ -47,7 +47,7 @@ spec = do
     describe "pullRequestPatchR" $
         it "works" $ withAuth $ \auth -> do
             Right patch <- GH.executeRequest auth $
-                GH.pullRequestPatchR "phadej" "github" (GH.IssueNumber 349)
+                GH.pullRequestPatchR "haskell-github" "github" (GH.IssueNumber 349)
             head (LBS8.lines patch) `shouldBe` "From c0e4ad33811be82e1f72ee76116345c681703103 Mon Sep 17 00:00:00 2001"
 
     describe "decoding pull request payloads" $ do
@@ -74,21 +74,21 @@ spec = do
 
     describe "checking if a pull request is merged" $ do
         it "works" $ withAuth $ \auth -> do
-            b <- GH.executeRequest auth $ GH.isPullRequestMergedR "phadej" "github" (GH.IssueNumber 14)
+            b <- GH.executeRequest auth $ GH.isPullRequestMergedR "haskell-github" "github" (GH.IssueNumber 14)
             b `shouldSatisfy` isRight
             fromRightS b `shouldBe` True
 
     describe "Draft Pull Request" $ do
         it "works" $ withAuth $ \auth -> do
             cs <- GH.executeRequest auth $
-                draftPullRequestsForR "phadej" "github" opts GH.FetchAll
+                draftPullRequestsForR "haskell-github" "github" opts GH.FetchAll
 
             cs `shouldSatisfy` isRight
 
   where
     repos =
       [ ("thoughtbot", "paperclip")
-      , ("phadej", "github")
+      , ("haskell-github", "github")
       ]
     opts = GH.stateClosed
 

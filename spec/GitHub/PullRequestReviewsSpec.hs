@@ -29,4 +29,4 @@ spec = do
             cs `shouldSatisfy` isRight
   where
     prs =
-      [("phadej", "github", IssueNumber 268)]
+      [("haskell-github", "github", IssueNumber 268)]
