@@ -7,5 +7,5 @@ tests: True
 constraints: github +openssl
 constraints: github-samples +openssl
 
-constraints: text >=2
-allow-newer: *:text
+-- constraints: text >=2
+-- allow-newer: *:text
