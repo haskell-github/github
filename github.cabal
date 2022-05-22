@@ -170,10 +170,10 @@ library
     , bytestring    >=0.10.4.0 && <0.12
     , containers    >=0.5.5.1  && <0.7
     , deepseq       >=1.3.0.2  && <1.5
-    , mtl           >=2.1.3.1  && <2.2 || >=2.2.1 && <2.3
+    , mtl           >=2.1.3.1  && <2.2 || >=2.2.1 && <2.4
     , text          >=1.2.0.6  && <2.1
     , time-compat   >=1.9.2.2  && <1.10
-    , transformers  >=0.3.0.0  && <0.6
+    , transformers  >=0.3.0.0  && <0.7
 
   -- other packages
   build-depends:
@@ -216,7 +216,7 @@ test-suite github-test
   hs-source-dirs:     spec
   main-is:            Spec.hs
   ghc-options:        -Wall -threaded
-  build-tool-depends: hspec-discover:hspec-discover >=2.7.1 && <2.10
+  build-tool-depends: hspec-discover:hspec-discover >=2.7.1 && <2.11
   other-extensions:   TemplateHaskell
   other-modules:
     GitHub.ActivitySpec
@@ -241,7 +241,7 @@ test-suite github-test
     , bytestring
     , file-embed
     , github
-    , hspec                 >=2.6.1 && <2.10
+    , hspec                 >=2.6.1 && <2.11
     , tagged
     , text
     , unordered-containers
