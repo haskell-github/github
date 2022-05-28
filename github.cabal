@@ -72,6 +72,7 @@ library
     DeriveGeneric
     OverloadedStrings
     ScopedTypeVariables
+    TypeOperators
 
   other-extensions:
     CPP
