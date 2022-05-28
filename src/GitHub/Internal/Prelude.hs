@@ -57,6 +57,5 @@ import Data.Text                (Text, pack, unpack)
 import Data.Time.Compat         (UTCTime)
 import Data.Time.ISO8601        (formatISO8601)
 import Data.Vector              (Vector)
-import Data.Vector.Instances ()
 import GHC.Generics             (Generic)
 import Prelude.Compat
