@@ -36,6 +36,7 @@ data Issue = Issue
     , issueId          :: !(Id Issue)
     , issueComments    :: !Int
     , issueMilestone   :: !(Maybe Milestone)
+    , issueReactions   :: !(Maybe IssueReactions)
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -203,6 +204,7 @@ instance FromJSON Issue where
         <*> o .: "id"
         <*> o .: "comments"
         <*> o .:? "milestone"
+        <*> o .:? "reactions"
 
 instance ToJSON NewIssue where
     toJSON (NewIssue t b a m ls) = object $ filter notNull
@@ -228,3 +230,33 @@ instance ToJSON EditIssue where
       where
         notNull (_, Null) = False
         notNull (_, _)    = True
+
+data IssueReactions = IssueReactions
+    { issueReactionsUrl         :: URL
+    , issueReactionsTotalCount  :: Int
+    , issueReactionsPlusOne     :: Int
+    , issueReactionsMinusOne    :: Int
+    , issueReactionsLaugh       :: Int
+    , issueReactionsHooray      :: Int
+    , issueReactionsConfused    :: Int
+    , issueReactionsHeart       :: Int
+    , issueReactionsRocket      :: Int
+    , issueReactionsEyes        :: Int
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance FromJSON IssueReactions where
+    parseJSON = withObject "IssueReactions" $ \o -> IssueReactions
+        <$> o .: "url"
+        <*> o .: "total_count"
+        <*> o .: "+1"
+        <*> o .: "-1"
+        <*> o .: "laugh"
+        <*> o .: "hooray"
+        <*> o .: "confused"
+        <*> o .: "heart"
+        <*> o .: "rocket"
+        <*> o .: "eyes"
+
+instance NFData IssueReactions where rnf = genericRnf
+instance Binary IssueReactions
