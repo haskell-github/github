@@ -1,4 +1,5 @@
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE LambdaCase #-}
 -----------------------------------------------------------------------------
 -- |
 -- License     :  BSD-3-Clause
@@ -44,6 +45,18 @@ module GitHub.Data.Options (
     optionsIrrelevantAssignee,
     optionsAnyAssignee,
     optionsNoAssignee,
+    -- * Actions cache
+    CacheMod,
+    cacheModToQueryString,
+    optionsRef,
+    optionsNoRef,
+    optionsKey,
+    optionsNoKey,
+    optionsDirectionAsc,
+    optionsDirectionDesc,
+    sortByCreatedAt,
+    sortByLastAccessedAt,
+    sortBySizeInBytes,
     -- * Data
     IssueState (..),
     MergeableState (..),
@@ -179,6 +192,18 @@ data FilterBy a
       -- I.e. won't show issues without mileston specified
   deriving
     (Eq, Ord, Show, Generic, Typeable, Data)
+
+-- Actions cache
+
+data SortCache
+    = SortCacheCreatedAt
+    | SortCacheLastAccessedAt
+    | SortCacheSizeInBytes
+  deriving
+    (Eq, Ord, Show, Enum, Bounded, Generic, Typeable, Data)
+
+instance NFData SortCache where rnf = genericRnf
+instance Binary SortCache
 
 -------------------------------------------------------------------------------
 -- Classes
@@ -607,3 +632,101 @@ optionsAnyAssignee = IssueRepoMod $ \opts ->
 optionsNoAssignee :: IssueRepoMod
 optionsNoAssignee = IssueRepoMod $ \opts ->
     opts { issueRepoOptionsAssignee = FilterNone }
+
+-------------------------------------------------------------------------------
+-- Actions cache
+-------------------------------------------------------------------------------
+
+-- | See <https://docs.github.com/en/rest/actions/cache#list-github-actions-caches-for-a-repository>.
+data CacheOptions = CacheOptions
+    { cacheOptionsRef     :: !(Maybe Text)
+    , cacheOptionsKey      :: !(Maybe Text)
+    , cacheOptionsSort      :: !(Maybe SortCache)
+    , cacheOptionsDirection :: !(Maybe SortDirection)
+    }
+  deriving
+    (Eq, Ord, Show, Generic, Typeable, Data)
+
+defaultCacheOptions :: CacheOptions
+defaultCacheOptions = CacheOptions
+    { cacheOptionsRef = Nothing
+    , cacheOptionsKey  = Nothing
+    , cacheOptionsSort  = Nothing
+    , cacheOptionsDirection = Nothing
+    }
+
+-- | See <https://docs.github.com/en/rest/actions/cache#list-github-actions-caches-for-a-repository>.
+newtype CacheMod = CacheMod (CacheOptions -> CacheOptions)
+
+instance Semigroup CacheMod where
+    CacheMod f <> CacheMod g = CacheMod (g . f)
+
+instance Monoid CacheMod where
+    mempty  = CacheMod id
+    mappend = (<>)
+
+toCacheOptions :: CacheMod -> CacheOptions
+toCacheOptions (CacheMod f) = f defaultCacheOptions
+
+cacheModToQueryString :: CacheMod -> QueryString
+cacheModToQueryString = cacheOptionsToQueryString . toCacheOptions
+
+cacheOptionsToQueryString :: CacheOptions -> QueryString
+cacheOptionsToQueryString (CacheOptions ref key sort dir) =
+    catMaybes
+    [ mk "ref" <$> ref'
+    , mk "key" <$> key'
+    , mk "sort" <$> sort'
+    , mk "directions" <$> direction'
+    ]
+  where
+    mk k v = (k, Just v)
+    sort' = fmap (\case
+        SortCacheCreatedAt     -> "created_at"
+        SortCacheLastAccessedAt     -> "last_accessed_at"
+        SortCacheSizeInBytes  -> "size_in_bytes") sort
+    direction' = fmap (\case
+       SortDescending -> "desc"
+       SortAscending  -> "asc") dir
+    ref' = fmap TE.encodeUtf8 ref
+    key' = fmap TE.encodeUtf8 key
+
+-------------------------------------------------------------------------------
+-- Pull request modifiers
+-------------------------------------------------------------------------------
+
+optionsRef :: Text -> CacheMod
+optionsRef x = CacheMod $ \opts ->
+    opts { cacheOptionsRef = Just x }
+
+optionsNoRef :: CacheMod
+optionsNoRef = CacheMod $ \opts ->
+    opts { cacheOptionsRef = Nothing }
+
+optionsKey :: Text -> CacheMod
+optionsKey x = CacheMod $ \opts ->
+    opts { cacheOptionsKey = Just x }
+
+optionsNoKey :: CacheMod
+optionsNoKey = CacheMod $ \opts ->
+    opts { cacheOptionsKey = Nothing }
+
+optionsDirectionAsc :: CacheMod
+optionsDirectionAsc = CacheMod $ \opts ->
+    opts { cacheOptionsDirection = Just SortAscending }
+
+optionsDirectionDesc :: CacheMod
+optionsDirectionDesc = CacheMod $ \opts ->
+    opts { cacheOptionsDirection = Just SortDescending }
+
+sortByCreatedAt :: CacheMod
+sortByCreatedAt = CacheMod $ \opts ->
+    opts { cacheOptionsSort = Just SortCacheCreatedAt }
+
+sortByLastAccessedAt :: CacheMod
+sortByLastAccessedAt = CacheMod $ \opts ->
+    opts { cacheOptionsSort = Just SortCacheLastAccessedAt }
+
+sortBySizeInBytes :: CacheMod
+sortBySizeInBytes = CacheMod $ \opts ->
+    opts { cacheOptionsSort = Just SortCacheSizeInBytes }

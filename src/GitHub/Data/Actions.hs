@@ -13,6 +13,7 @@ module GitHub.Data.Actions (
     PaginatedWithTotalCount(..),
     WithTotalCount(..),
     WorkflowRun,
+    Cache(..),
     ) where
 
 import GHC.TypeLits
@@ -23,6 +24,32 @@ import Prelude ()
 
 import           Data.Data (Proxy (..))
 import qualified Data.Text as T
+
+-------------------------------------------------------------------------------
+-- Common
+-------------------------------------------------------------------------------
+
+data PaginatedWithTotalCount a (tag :: Symbol) = PaginatedWithTotalCount
+    { paginatedWithTotalCountItems :: !(Vector a)
+    , paginatedWithTotalCountTotalCount :: !Int
+    }
+
+data WithTotalCount a = WithTotalCount
+    { withTotalCountItems :: !(Vector a)
+    , withTotalCountTotalCount :: !Int
+    } deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance Semigroup (WithTotalCount a) where
+    (WithTotalCount items1 count1) <> (WithTotalCount items2 _) =
+        WithTotalCount (items1 <> items2) count1
+
+instance Foldable WithTotalCount where
+    foldMap f (WithTotalCount items _) = foldMap f items
+
+
+-------------------------------------------------------------------------------
+-- Artifact
+-------------------------------------------------------------------------------
 
 data Artifact = Artifact
     { artifactArchiveDownloadUrl :: !URL
@@ -43,23 +70,6 @@ data ArtifactList = ArtifactList
     , artifactListTotalCount :: !Int
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-data PaginatedWithTotalCount a (tag :: Symbol) = PaginatedWithTotalCount
-    { paginatedWithTotalCountItems :: !(Vector a)
-    , paginatedWithTotalCountTotalCount :: !Int
-    }
-
-data WithTotalCount a = WithTotalCount
-    { withTotalCountItems :: !(Vector a)
-    , withTotalCountTotalCount :: !Int
-    } deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
-instance Semigroup (WithTotalCount a) where
-    (WithTotalCount items1 count1) <> (WithTotalCount items2 _) =
-        WithTotalCount (items1 <> items2) count1
-
-instance Foldable WithTotalCount where
-    foldMap f (WithTotalCount items _) = foldMap f items
 
 data Workflow
 data WorkflowRun
@@ -95,3 +105,62 @@ instance FromJSON (WithTotalCount Artifact) where
     parseJSON = withObject "ArtifactList" $ \o -> WithTotalCount
         <$> o .: "artifacts"
         <*> o .: "total_count"
+
+
+-------------------------------------------------------------------------------
+-- Cache
+-------------------------------------------------------------------------------
+
+data Cache = Cache
+    { cacheId :: !(Id Cache)
+    , cacheRef :: !Text
+    , cacheKey :: !Text
+    , cacheVersion :: !Text
+    , cacheLastAccessedAt :: !UTCTime
+    , cacheCreatedAt :: !UTCTime
+    , cacheSizeInBytes :: !Int
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+-- data CacheList = CacheList
+--     { cacheListCaches :: !(Vector Cache)
+--     , cacheListTotalCount :: !Int
+--     }
+--     deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+-- data Workflow
+-- data WorkflowRun
+
+-- -------------------------------------------------------------------------------
+-- -- JSON instances
+-- -------------------------------------------------------------------------------
+
+instance FromJSON Cache where
+    parseJSON = withObject "Cache" $ \o -> Cache
+        <$> o .: "id"
+        <*> o .: "ref"
+        <*> o .: "key"
+        <*> o .: "version"
+        <*> o .: "last_accessed_at"
+        <*> o .: "created_at"
+        <*> o .: "size_in_bytes"
+
+-- instance FromJSON CacheList where
+--     parseJSON = withObject "CacheList" $ \o -> CacheList
+--         <$> o .: "actions_caches"
+--         <*> o .: "total_count"
+    
+instance FromJSON (WithTotalCount Cache) where
+    parseJSON = withObject "CacheList" $ \o -> WithTotalCount
+        <$> o .: "actions_caches"
+        <*> o .: "total_count"
+
+-- instance (FromJSON a, KnownSymbol l) => FromJSON (PaginatedWithTotalCount a l) where
+--     parseJSON = withObject "PaginatedWithTotalCount" $ \o -> PaginatedWithTotalCount
+--         <$> o .: T.pack (symbolVal (Proxy :: Proxy l))
+--         <*> o .: "total_count"
+
+-- instance FromJSON (WithTotalCount Artifact) where
+--     parseJSON = withObject "ArtifactList" $ \o -> WithTotalCount
+--         <$> o .: "artifacts"
+--         <*> o .: "total_count"

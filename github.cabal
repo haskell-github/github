@@ -119,6 +119,7 @@ library
     GitHub.Data.Webhooks
     GitHub.Data.Webhooks.Validate
     GitHub.Endpoints.Actions.Artifacts
+    GitHub.Endpoints.Actions.Cache
     GitHub.Endpoints.Activity.Events
     GitHub.Endpoints.Activity.Notifications
     GitHub.Endpoints.Activity.Starring
@@ -201,9 +202,9 @@ library
 
   if flag(openssl)
     build-depends:
-        HsOpenSSL              >=0.11.4.16 && <0.12
-      , HsOpenSSL-x509-system  >=0.1.0.3   && <0.2
-      , http-client-openssl    >=0.2.2.0   && <0.4
+        HsOpenSSL              >=0.11.4.16 && <1.12
+      , HsOpenSSL-x509-system  >=0.1.0.3   && <1.2
+      , http-client-openssl    >=0.2.2.0   && <1.4
 
   else
     build-depends:

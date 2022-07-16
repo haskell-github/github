@@ -1,0 +1,4 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "github:lib"
