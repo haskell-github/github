@@ -6,6 +6,9 @@
 -- The actions API as documented at
 -- <https://docs.github.com/en/rest/reference/actions>.
 module GitHub.Endpoints.Actions.Cache (
+    cacheUsageOrganizationR,
+    cacheUsageByRepositoryR,
+    cacheUsageR,
     cachesForRepoR,
     deleteCacheR,
     module GitHub.Data
@@ -13,34 +16,25 @@ module GitHub.Endpoints.Actions.Cache (
 
 import GitHub.Data
 import GitHub.Internal.Prelude
-import Network.URI             (URI)
 import Prelude ()
--- import GitHub.Data.Actions (ActionWorkflow, ActionWorkflowResult, ActionWorkflowRun, Workflow, ActionWorkflowRunResult, CreateWorkflowDispatchEvent)
 
--- -- | List artifacts for repository.
--- -- See <https://docs.github.com/en/rest/reference/actions#list-artifacts-for-a-repository>
--- artifactsForR
---     :: Name Owner
---     -> Name Repo
---     -> FetchCount
---     -> Request k (WithTotalCount Artifact)
--- artifactsForR user repo  = PagedQuery
---     ["repos", toPathPart user, toPathPart repo, "actions", "artifacts"]
---     []
+-- | Get Actions cache usage for the organization.
+-- See <https://docs.github.com/en/rest/actions/cache#get-github-actions-cache-usage-for-an-organization>
+cacheUsageOrganizationR :: Name Organization -> GenRequest 'MtJSON 'RA OrganizationCacheUsage
+cacheUsageOrganizationR org =
+    Query ["orgs", toPathPart org, "actions", "cache", "usage"] []
 
+-- | Get Actions cache usage for the organization.
+-- See <https://docs.github.com/en/rest/actions/cache#list-repositories-with-github-actions-cache-usage-for-an-organization>
+cacheUsageByRepositoryR :: Name Organization -> FetchCount -> GenRequest 'MtJSON 'RA (WithTotalCount RepositoryCacheUsage) 
+cacheUsageByRepositoryR org =
+    PagedQuery ["orgs", toPathPart org, "actions", "cache", "usage-by-repository"] []
 
--- -- | Query a single artifact.
--- -- See <https://docs.github.com/en/rest/reference/actions#get-an-artifact>
--- artifactR :: Name Owner -> Name Repo -> Id Artifact -> Request k Artifact
--- artifactR user repo artid =
---     query ["repos", toPathPart user, toPathPart repo, "actions", "artifacts", toPathPart artid] []
-
-
--- -- | Download an artifact.
--- -- See <https://docs.github.com/en/rest/reference/actions#download-an-artifact>
--- downloadArtifactR :: Name Owner -> Name Repo -> Id Artifact -> GenRequest 'MtRedirect 'RW URI
--- downloadArtifactR user repo artid =
---     Query ["repos", toPathPart user, toPathPart repo, "actions", "artifacts", toPathPart artid, "zip"] []
+-- | Get Actions cache usage for the repository.
+-- See <https://docs.github.com/en/rest/actions/cache#get-github-actions-cache-usage-for-a-repository>
+cacheUsageR :: Name Owner -> Name Repo -> Request k RepositoryCacheUsage
+cacheUsageR user repo =
+    Query ["repos", toPathPart user, toPathPart repo, "actions", "cache", "usage"] []
 
 -- | List the GitHub Actions caches for a repository.
 -- See <https://docs.github.com/en/rest/actions/cache#list-github-actions-caches-for-a-repository>

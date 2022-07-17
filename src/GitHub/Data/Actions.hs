@@ -13,6 +13,8 @@ module GitHub.Data.Actions (
     WithTotalCount(..),
     WorkflowRun,
     Cache(..),
+    RepositoryCacheUsage(..),
+    OrganizationCacheUsage(..),
     ) where
 
 import GHC.TypeLits
@@ -110,6 +112,19 @@ data Cache = Cache
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
+data RepositoryCacheUsage = CacheUsage
+              { fullName :: !Text
+              , activeCachesSizeInBytes :: !Int
+              , activeCachesCount :: !Int
+              }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+data OrganizationCacheUsage = OrganizationCacheUsage
+              { totalActiveCachesSizeInBytes :: !Int
+              , totalActiveCachesCount :: !Int
+              }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
 -- -------------------------------------------------------------------------------
 -- -- JSON instances
 -- -------------------------------------------------------------------------------
@@ -129,3 +144,18 @@ instance FromJSON (WithTotalCount Cache) where
         <$> o .: "actions_caches"
         <*> o .: "total_count"
 
+instance FromJSON OrganizationCacheUsage where
+    parseJSON = withObject "OrganizationCacheUsage" $ \o -> OrganizationCacheUsage
+        <$> o .: "total_active_caches_size_in_bytes"
+        <*> o .: "total_active_caches_count"
+
+instance FromJSON RepositoryCacheUsage where
+    parseJSON = withObject "CacheUsage" $ \o -> CacheUsage
+        <$> o .: "full_name"
+        <*> o .: "active_caches_size_in_bytes"
+        <*> o .: "active_caches_count"
+
+instance FromJSON (WithTotalCount RepositoryCacheUsage) where
+    parseJSON = withObject "CacheUsageList" $ \o -> WithTotalCount
+        <$> o .: "repository_cache_usages"
+        <*> o .: "total_count"
