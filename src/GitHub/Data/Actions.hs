@@ -8,7 +8,6 @@
 {-# LANGUAGE KindSignatures    #-}
 module GitHub.Data.Actions (
     Artifact(..),
-    ArtifactList(..),
     Workflow,
     PaginatedWithTotalCount(..),
     WithTotalCount(..),
@@ -65,12 +64,6 @@ data Artifact = Artifact
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-data ArtifactList = ArtifactList
-    { artifactListArtifacts :: !(Vector Artifact)
-    , artifactListTotalCount :: !Int
-    }
-    deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
 data Workflow
 data WorkflowRun
 
@@ -90,11 +83,6 @@ instance FromJSON Artifact where
         <*> o .: "size_in_bytes"
         <*> o .: "updated_at"
         <*> o .: "url"
-
-instance FromJSON ArtifactList where
-    parseJSON = withObject "ArtifactList" $ \o -> ArtifactList
-        <$> o .: "artifacts"
-        <*> o .: "total_count"
 
 instance (FromJSON a, KnownSymbol l) => FromJSON (PaginatedWithTotalCount a l) where
     parseJSON = withObject "PaginatedWithTotalCount" $ \o -> PaginatedWithTotalCount
@@ -122,15 +110,6 @@ data Cache = Cache
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
--- data CacheList = CacheList
---     { cacheListCaches :: !(Vector Cache)
---     , cacheListTotalCount :: !Int
---     }
---     deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
--- data Workflow
--- data WorkflowRun
-
 -- -------------------------------------------------------------------------------
 -- -- JSON instances
 -- -------------------------------------------------------------------------------
@@ -145,22 +124,8 @@ instance FromJSON Cache where
         <*> o .: "created_at"
         <*> o .: "size_in_bytes"
 
--- instance FromJSON CacheList where
---     parseJSON = withObject "CacheList" $ \o -> CacheList
---         <$> o .: "actions_caches"
---         <*> o .: "total_count"
-    
 instance FromJSON (WithTotalCount Cache) where
     parseJSON = withObject "CacheList" $ \o -> WithTotalCount
         <$> o .: "actions_caches"
         <*> o .: "total_count"
 
--- instance (FromJSON a, KnownSymbol l) => FromJSON (PaginatedWithTotalCount a l) where
---     parseJSON = withObject "PaginatedWithTotalCount" $ \o -> PaginatedWithTotalCount
---         <$> o .: T.pack (symbolVal (Proxy :: Proxy l))
---         <*> o .: "total_count"
-
--- instance FromJSON (WithTotalCount Artifact) where
---     parseJSON = withObject "ArtifactList" $ \o -> WithTotalCount
---         <$> o .: "artifacts"
---         <*> o .: "total_count"
