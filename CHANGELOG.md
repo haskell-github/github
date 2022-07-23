@@ -1,3 +1,12 @@
+## Changes for 0.28.0.1
+
+_2022-07-23, Andreas Abel_
+
+Tested with GHC 7.8 - 9.4.1 alpha3
+
+- Drop unused dependency `vector-instances`.
+- Allow latest: `aeson-2.1`, `mtl-2.3`, `vector-0.13`, `transformers-0.6`.
+
 ## Changes for 0.28
 
 _2022-04-30, Andreas Abel, Valborg edition_
