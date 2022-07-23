@@ -8,18 +8,20 @@
 #
 # For more information, see https://github.com/haskell-CI/haskell-ci
 #
-# version: 0.15.20220525
+# version: 0.15.20220710
 #
-# REGENDATA ("0.15.20220525",["--config=cabal.haskell-ci","github","cabal.project"])
+# REGENDATA ("0.15.20220710",["--config=cabal.haskell-ci","github","cabal.project"])
 #
 name: Haskell-CI
 on:
   push:
     branches:
       - master
+      - ci*
   pull_request:
     branches:
       - master
+      - ci*
 jobs:
   linux:
     name: Haskell-CI - Linux - ${{ matrix.compiler }}
@@ -32,14 +34,14 @@ jobs:
     strategy:
       matrix:
         include:
-          - compiler: ghc-9.4.0.20220501
+          - compiler: ghc-9.4.0.20220623
             compilerKind: ghc
-            compilerVersion: 9.4.0.20220501
+            compilerVersion: 9.4.0.20220623
             setup-method: ghcup
             allow-failure: true
-          - compiler: ghc-9.2.2
+          - compiler: ghc-9.2.3
             compilerKind: ghc
-            compilerVersion: 9.2.2
+            compilerVersion: 9.2.3
             setup-method: ghcup
             allow-failure: false
           - compiler: ghc-9.0.2
@@ -97,9 +99,9 @@ jobs:
             mkdir -p "$HOME/.ghcup/bin"
             curl -sL https://downloads.haskell.org/ghcup/0.1.17.8/x86_64-linux-ghcup-0.1.17.8 > "$HOME/.ghcup/bin/ghcup"
             chmod a+x "$HOME/.ghcup/bin/ghcup"
-            if $HEADHACKAGE; then "$HOME/.ghcup/bin/ghcup" config add-release-channel https://raw.githubusercontent.com/haskell/ghcup-metadata/master/ghcup-prereleases-0.0.7.yaml; fi
-            "$HOME/.ghcup/bin/ghcup" install ghc "$HCVER"
-            "$HOME/.ghcup/bin/ghcup" install cabal 3.6.2.0
+            "$HOME/.ghcup/bin/ghcup" config add-release-channel https://raw.githubusercontent.com/haskell/ghcup-metadata/master/ghcup-prereleases-0.0.7.yaml;
+            "$HOME/.ghcup/bin/ghcup" install ghc "$HCVER" || (cat "$HOME"/.ghcup/logs/*.* && false)
+            "$HOME/.ghcup/bin/ghcup" install cabal 3.6.2.0 || (cat "$HOME"/.ghcup/logs/*.* && false)
           else
             apt-add-repository -y 'ppa:hvr/ghc'
             apt-get update
@@ -107,7 +109,7 @@ jobs:
             mkdir -p "$HOME/.ghcup/bin"
             curl -sL https://downloads.haskell.org/ghcup/0.1.17.8/x86_64-linux-ghcup-0.1.17.8 > "$HOME/.ghcup/bin/ghcup"
             chmod a+x "$HOME/.ghcup/bin/ghcup"
-            "$HOME/.ghcup/bin/ghcup" install cabal 3.6.2.0
+            "$HOME/.ghcup/bin/ghcup" install cabal 3.6.2.0 || (cat "$HOME"/.ghcup/logs/*.* && false)
           fi
         env:
           HCKIND: ${{ matrix.compilerKind }}
@@ -176,6 +178,7 @@ jobs:
                         26021a13b401500c8eb2761ca95c61f2d625bfef951b939a8124ed12ecf07329
                         f76d08be13e9a61a377a85e2fb63f4c5435d40f8feb3e12eb05905edb8cdea89
              key-threshold: 3
+          active-repositories: hackage.haskell.org, head.hackage.ghc.haskell.org:override
           EOF
           fi
           cat >> $CABAL_CONFIG <<EOF
@@ -208,7 +211,7 @@ jobs:
         run: |
           touch cabal.project
           echo "packages: $GITHUB_WORKSPACE/source/." >> cabal.project
-          if [ $((HCNUMVER >= 71000 && HCNUMVER < 90400)) -ne 0 ] ; then echo "packages: $GITHUB_WORKSPACE/source/samples" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 71000)) -ne 0 ] ; then echo "packages: $GITHUB_WORKSPACE/source/samples" >> cabal.project ; fi
           cat cabal.project
       - name: sdist
         run: |
@@ -228,11 +231,11 @@ jobs:
           touch cabal.project
           touch cabal.project.local
           echo "packages: ${PKGDIR_github}" >> cabal.project
-          if [ $((HCNUMVER >= 71000 && HCNUMVER < 90400)) -ne 0 ] ; then echo "packages: ${PKGDIR_github_samples}" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 71000)) -ne 0 ] ; then echo "packages: ${PKGDIR_github_samples}" >> cabal.project ; fi
           if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "package github" >> cabal.project ; fi
           if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 80200 && HCNUMVER < 90400)) -ne 0 ] ; then echo "package github-samples" >> cabal.project ; fi
-          if [ $((HCNUMVER >= 80200 && HCNUMVER < 90400)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "package github-samples" >> cabal.project ; fi
+          if [ $((HCNUMVER >= 80200)) -ne 0 ] ; then echo "    ghc-options: -Werror=missing-methods" >> cabal.project ; fi
           cat >> cabal.project <<EOF
           constraints:  github +openssl
           constraints:  github-samples +openssl
@@ -271,8 +274,8 @@ jobs:
         run: |
           cd ${PKGDIR_github} || false
           ${CABAL} -vnormal check
-          if [ $((HCNUMVER >= 71000 && HCNUMVER < 90400)) -ne 0 ] ; then cd ${PKGDIR_github_samples} || false ; fi
-          if [ $((HCNUMVER >= 71000 && HCNUMVER < 90400)) -ne 0 ] ; then ${CABAL} -vnormal check ; fi
+          if [ $((HCNUMVER >= 71000)) -ne 0 ] ; then cd ${PKGDIR_github_samples} || false ; fi
+          if [ $((HCNUMVER >= 71000)) -ne 0 ] ; then ${CABAL} -vnormal check ; fi
       - name: haddock
         run: |
           if [ $((HCNUMVER >= 80600)) -ne 0 ] ; then $CABAL v2-haddock --haddock-all $ARG_COMPILER --with-haddock $HADDOCK $ARG_TESTS $ARG_BENCH all ; fi
