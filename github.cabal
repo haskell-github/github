@@ -195,7 +195,7 @@ library
     , tagged                >=0.8.5      && <0.9
     , transformers-compat   >=0.6.5      && <0.8
     , unordered-containers  >=0.2.10.0   && <0.3
-    , vector                >=0.12.0.1   && <0.13
+    , vector                >=0.12.0.1   && <0.14
 
   if flag(openssl)
     build-depends:
