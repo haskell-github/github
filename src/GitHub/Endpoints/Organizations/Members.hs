@@ -10,6 +10,7 @@ module GitHub.Endpoints.Organizations.Members (
     membersOfWithR,
     isMemberOfR,
     orgInvitationsR,
+    orgMembershipR,
     module GitHub.Data,
     ) where
 
@@ -51,3 +52,10 @@ isMemberOfR user org =
 -- See <https://developer.github.com/v3/orgs/members/#list-pending-organization-invitations>
 orgInvitationsR :: Name Organization -> FetchCount -> Request 'RA (Vector Invitation)
 orgInvitationsR org = pagedQuery ["orgs", toPathPart org, "invitations"] []
+
+-- | Get user membership information in an organization
+--
+-- See <https://docs.github.com/en/rest/orgs/members#get-organization-membership-for-a-user>
+orgMembershipR :: Name User -> Name Organization -> Request 'RA Membership
+orgMembershipR user org =
+    Query [ "orgs", toPathPart org, "memberships", toPathPart user ] []
