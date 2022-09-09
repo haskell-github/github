@@ -233,6 +233,63 @@ type QueryString = [(BS.ByteString, Maybe BS.ByteString)]
 -- | Count of elements
 type Count = Int
 
+
+
+data MembershipRole
+    = MembershipRoleMember
+    | MembershipRoleAdmin
+    | MembershipRoleBillingManager
+  deriving
+    (Eq, Ord, Show, Enum, Bounded, Generic, Typeable, Data)
+
+instance NFData MembershipRole where rnf = genericRnf
+instance Binary MembershipRole
+
+instance FromJSON MembershipRole where
+    parseJSON = withText "MembershipRole" $ \t -> case T.toLower t of
+        "member"   -> pure MembershipRoleMember
+        "admin"           -> pure MembershipRoleAdmin
+        "billing_manager" -> pure MembershipRoleBillingManager
+        _                 -> fail $ "Unknown MembershipRole: " <> T.unpack t
+
+data MembershipState
+    = MembershipPending
+    | MembershipActive
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData MembershipState where rnf = genericRnf
+instance Binary MembershipState
+
+instance FromJSON MembershipState where
+    parseJSON = withText "MembershipState" $ \t -> case T.toLower t of
+        "active"  -> pure MembershipActive
+        "pending" -> pure MembershipPending
+        _         -> fail $ "Unknown MembershipState: " <> T.unpack t
+
+
+data Membership = Membership
+    { membershipUrl             :: !URL
+    , membershipState           :: !MembershipState
+    , membershipRole            :: !MembershipRole
+    , membershipOrganizationUrl :: !URL
+    , membershipOrganization    :: !SimpleOrganization
+    , membershipUser            :: !SimpleUser
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData Membership where rnf = genericRnf
+instance Binary Membership
+
+instance FromJSON Membership where
+    parseJSON = withObject "Membership" $ \o -> Membership
+        <$> o .: "url"
+        <*> o .: "state"
+        <*> o .: "role"
+        <*> o .: "organization_url"
+        <*> o .: "organization"
+        <*> o .: "user"
+
+
 -------------------------------------------------------------------------------
 -- IssueNumber
 -------------------------------------------------------------------------------
