@@ -86,7 +86,9 @@ library
     GitHub
     GitHub.Auth
     GitHub.Data
-    GitHub.Data.Actions
+    GitHub.Data.Actions.Common
+    GitHub.Data.Actions.Artifacts
+    GitHub.Data.Actions.Cache
     GitHub.Data.Activities
     GitHub.Data.Comments
     GitHub.Data.Content
@@ -223,7 +225,8 @@ test-suite github-test
   build-tool-depends: hspec-discover:hspec-discover >=2.7.1 && <2.8
   other-extensions:   TemplateHaskell
   other-modules:
-    GitHub.ActionsSpec
+    GitHub.Actions.ArtifactsSpec
+    GitHub.Actions.CacheSpec
     GitHub.ActivitySpec
     GitHub.CommitsSpec
     GitHub.EventsSpec

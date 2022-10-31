@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell   #-}
-module GitHub.ActionsSpec where
+module GitHub.Actions.ArtifactsSpec where
 
 import qualified GitHub as GH
 
@@ -39,8 +39,11 @@ spec = do
 
     describe "decoding artifacts payloads" $ do
         it "decodes artifacts list payload" $ do
-            GH.withTotalCountTotalCount artifactList `shouldBe` 13676
+            GH.withTotalCountTotalCount artifactList `shouldBe` 23809
             V.length (GH.withTotalCountItems artifactList) `shouldBe` 2
+        it "decodes signle artifact payload" $ do
+            GH.artifactName artifact `shouldBe` "dist-without-markdown"
+            GH.workflowRunHeadSha (GH.workflowRun artifact) `shouldBe` "601593ecb1d8a57a04700fdb445a28d4186b8954"
 
   where
     repos =
@@ -52,5 +55,12 @@ spec = do
     artifactList =
         fromRightS (eitherDecodeStrict artifactsListPayload)
 
+    artifact :: GH.Artifact
+    artifact =
+        fromRightS (eitherDecodeStrict artifactPayload)
+
     artifactsListPayload :: ByteString
     artifactsListPayload = $(embedFile "fixtures/actions/artifacts-list.json")
+
+    artifactPayload :: ByteString
+    artifactPayload = $(embedFile "fixtures/actions/artifact.json")

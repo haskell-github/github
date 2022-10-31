@@ -35,7 +35,9 @@ module GitHub.Data (
     IssueNumber (..),
     -- * Module re-exports
     module GitHub.Auth,
-    module GitHub.Data.Actions,
+    module GitHub.Data.Actions.Common,
+    module GitHub.Data.Actions.Artifacts,
+    module GitHub.Data.Actions.Cache,
     module GitHub.Data.Activities,
     module GitHub.Data.Comments,
     module GitHub.Data.Content,
@@ -69,7 +71,9 @@ import GitHub.Internal.Prelude
 import Prelude ()
 
 import GitHub.Auth
-import GitHub.Data.Actions
+import GitHub.Data.Actions.Common
+import GitHub.Data.Actions.Artifacts
+import GitHub.Data.Actions.Cache
 import GitHub.Data.Activities
 import GitHub.Data.Comments
 import GitHub.Data.Content
