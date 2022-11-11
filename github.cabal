@@ -89,6 +89,7 @@ library
     GitHub.Data.Actions.Common
     GitHub.Data.Actions.Artifacts
     GitHub.Data.Actions.Cache
+    GitHub.Data.Actions.Secrets
     GitHub.Data.Activities
     GitHub.Data.Comments
     GitHub.Data.Content
@@ -122,6 +123,7 @@ library
     GitHub.Data.Webhooks.Validate
     GitHub.Endpoints.Actions.Artifacts
     GitHub.Endpoints.Actions.Cache
+    GitHub.Endpoints.Actions.Secrets
     GitHub.Endpoints.Activity.Events
     GitHub.Endpoints.Activity.Notifications
     GitHub.Endpoints.Activity.Starring
@@ -227,6 +229,7 @@ test-suite github-test
   other-modules:
     GitHub.Actions.ArtifactsSpec
     GitHub.Actions.CacheSpec
+    GitHub.Actions.SecretsSpec
     GitHub.ActivitySpec
     GitHub.CommitsSpec
     GitHub.EventsSpec

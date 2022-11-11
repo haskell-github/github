@@ -38,6 +38,7 @@ module GitHub.Data (
     module GitHub.Data.Actions.Common,
     module GitHub.Data.Actions.Artifacts,
     module GitHub.Data.Actions.Cache,
+    module GitHub.Data.Actions.Secrets,
     module GitHub.Data.Activities,
     module GitHub.Data.Comments,
     module GitHub.Data.Content,
@@ -73,6 +74,7 @@ import Prelude ()
 import GitHub.Auth
 import GitHub.Data.Actions.Common
 import GitHub.Data.Actions.Artifacts
+import GitHub.Data.Actions.Secrets
 import GitHub.Data.Actions.Cache
 import GitHub.Data.Activities
 import GitHub.Data.Comments

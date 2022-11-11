@@ -22,13 +22,6 @@ fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
 fromRightS (Left a) = error $ "Expected a Right and got a Left" ++ show a
 
-withAuth :: (GH.Auth -> IO ()) -> IO ()
-withAuth action = do
-    mtoken <- lookupEnv "GITHUB_TOKEN"
-    case mtoken of
-        Nothing    -> pendingWith "no GITHUB_TOKEN"
-        Just token -> action (GH.OAuth $ fromString token)
-
 spec :: Spec
 spec = do
     describe "decoding cache payloads" $ do
