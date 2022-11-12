@@ -8,7 +8,7 @@
 {-# LANGUAGE KindSignatures    #-}
 module GitHub.Data.Actions.Artifacts (
     Artifact(..),
-    WorkflowRun(..),
+    -- WorkflowRun(..),
     ) where
 
 import GitHub.Data.Id          (Id)
@@ -18,19 +18,20 @@ import Prelude ()
 
 import GitHub.Data.Repos (Repo)
 import GitHub.Data.Actions.Common (WithTotalCount (WithTotalCount))
+import GitHub.Data.Actions.WorkflowRuns (WorkflowRun)
 
 
 -------------------------------------------------------------------------------
 -- Artifact
 -------------------------------------------------------------------------------
-data WorkflowRun  = WorkflowRun
-    { workflowRunWorkflowRunId :: !(Id WorkflowRun)
-    , workflowRunRepositoryId :: !(Id Repo)
-    , workflowRunHeadRepositoryId :: !(Id Repo)
-    , workflowRunHeadBranch :: !Text
-    , workflowRunHeadSha :: !Text
-    }
-  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+-- data WorkflowRun  = WorkflowRun
+--     { workflowRunWorkflowRunId :: !(Id WorkflowRun)
+--     , workflowRunRepositoryId :: !(Id Repo)
+--     , workflowRunHeadRepositoryId :: !(Id Repo)
+--     , workflowRunHeadBranch :: !Text
+--     , workflowRunHeadSha :: !Text
+--     }
+--   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 data Artifact = Artifact
     { artifactArchiveDownloadUrl :: !URL
@@ -51,13 +52,13 @@ data Artifact = Artifact
 -- JSON instances
 -------------------------------------------------------------------------------
 
-instance FromJSON WorkflowRun where
-    parseJSON = withObject "WorkflowRun" $ \o -> WorkflowRun
-        <$> o .: "id"
-        <*> o .: "repository_id"
-        <*> o .: "head_repository_id"
-        <*> o .: "head_branch"
-        <*> o .: "head_sha"
+-- instance FromJSON WorkflowRun where
+--     parseJSON = withObject "WorkflowRun" $ \o -> WorkflowRun
+--         <$> o .: "id"
+--         <*> o .: "repository_id"
+--         <*> o .: "head_repository_id"
+--         <*> o .: "head_branch"
+--         <*> o .: "head_sha"
 
 instance FromJSON Artifact where
     parseJSON = withObject "Artifact" $ \o -> Artifact

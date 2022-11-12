@@ -43,6 +43,8 @@ module GitHub.Data (
     module GitHub.Data.Actions.Cache,
     module GitHub.Data.Actions.Secrets,
     module GitHub.Data.Actions.Workflows,
+    module GitHub.Data.Actions.WorkflowJobs,
+    module GitHub.Data.Actions.WorkflowRuns,
     module GitHub.Data.Activities,
     module GitHub.Data.Comments,
     module GitHub.Data.Content,
@@ -81,6 +83,8 @@ import GitHub.Data.Actions.Artifacts
 import GitHub.Data.Actions.Secrets
 import GitHub.Data.Actions.Cache
 import GitHub.Data.Actions.Workflows
+import GitHub.Data.Actions.WorkflowJobs
+import GitHub.Data.Actions.WorkflowRuns
 import GitHub.Data.Activities
 import GitHub.Data.Comments
 import GitHub.Data.Content

@@ -32,10 +32,10 @@ import Data.Maybe (maybeToList)
 -------------------------------------------------------------------------------
 
 data OrganizationSecret = OrganizationSecret
-    { secretNmae :: !(Name OrganizationSecret)
-    , secretCreatedAt :: !UTCTime
-    , secretUpdatedAt :: !UTCTime
-    , secretVisibility :: !Text
+    { organizationSecretNmae :: !(Name OrganizationSecret)
+    , organizationSecretCreatedAt :: !UTCTime
+    , organizationSecretUpdatedAt :: !UTCTime
+    , organizationSecretVisibility :: !Text
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
