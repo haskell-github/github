@@ -34,7 +34,7 @@ import Prelude ()
 
 -- | List organization secrets.
 -- See <https://docs.github.com/en/rest/actions/secrets#list-organization-secrets>
-organizationSecretsR :: Name Organization -> GenRequest 'MtJSON 'RA (WithTotalCount Secret)
+organizationSecretsR :: Name Organization -> GenRequest 'MtJSON 'RA (WithTotalCount OrganizationSecret)
 organizationSecretsR org =
     Query ["orgs", toPathPart org, "actions", "secrets"] []
 
@@ -46,19 +46,19 @@ organizationPublicKeyR org =
 
 -- | Get an organization secret.
 -- See <https://docs.github.com/en/rest/actions/secrets#get-an-organization-secret>
-organizationSecretR :: Name Organization -> Name Secret -> GenRequest 'MtJSON 'RA Secret
+organizationSecretR :: Name Organization -> Name OrganizationSecret -> GenRequest 'MtJSON 'RA OrganizationSecret
 organizationSecretR org name =
     Query ["orgs", toPathPart org, "actions", "secrets", toPathPart name] []
 
 -- | Create or update an organization secret.
 -- See <https://docs.github.com/en/rest/actions/secrets#create-or-update-an-organization-secret>
-setOrganizationSecretR :: Name Organization -> Name Secret -> SetSecret -> GenRequest 'MtJSON 'RW ()
+setOrganizationSecretR :: Name Organization -> Name OrganizationSecret -> SetSecret -> GenRequest 'MtJSON 'RW ()
 setOrganizationSecretR org name =
     command Put ["orgs", toPathPart org, "actions", "secrets", toPathPart name] . encode
 
 -- | Delete an organization secret.
 -- See <https://docs.github.com/en/rest/actions/secrets#delete-an-organization-secret>
-deleteOrganizationSecretR :: Name Organization -> Name Secret -> Request 'RW ()
+deleteOrganizationSecretR :: Name Organization -> Name OrganizationSecret -> Request 'RW ()
 deleteOrganizationSecretR org name =
     command Delete parts mempty
     where
@@ -66,25 +66,25 @@ deleteOrganizationSecretR org name =
 
 -- | Get selected repositories for an organization secret.
 -- See <https://docs.github.com/en/rest/actions/secrets#list-selected-repositories-for-an-organization-secret>
-organizationSelectedRepositoriesForSecretR :: Name Organization -> Name Secret -> GenRequest 'MtJSON 'RA (WithTotalCount SelectedRepo)
+organizationSelectedRepositoriesForSecretR :: Name Organization -> Name OrganizationSecret -> GenRequest 'MtJSON 'RA (WithTotalCount SelectedRepo)
 organizationSelectedRepositoriesForSecretR org name =
     Query ["orgs", toPathPart org, "actions", "secrets", toPathPart name, "repositories"] []
 
 -- | Set selected repositories for an organization secret.
 -- See <https://docs.github.com/en/rest/actions/secrets#set-selected-repositories-for-an-organization-secret>
-setOrganizationSelectedRepositoriesForSecretR :: Name Organization -> Name Secret -> SetSelectedRepositories -> GenRequest 'MtJSON 'RW ()
+setOrganizationSelectedRepositoriesForSecretR :: Name Organization -> Name OrganizationSecret -> SetSelectedRepositories -> GenRequest 'MtJSON 'RW ()
 setOrganizationSelectedRepositoriesForSecretR org name =
     command Put ["orgs", toPathPart org, "actions", "secrets", toPathPart name, "repositories"]  . encode
 
 -- | Add selected repository to an organization secret.
 -- See <https://docs.github.com/en/rest/actions/secrets#add-selected-repository-to-an-organization-secret>
-addOrganizationSelectedRepositoriesForSecretR :: Name Organization -> Name Secret -> Id Repo -> GenRequest 'MtJSON 'RW ()
+addOrganizationSelectedRepositoriesForSecretR :: Name Organization -> Name OrganizationSecret -> Id Repo -> GenRequest 'MtJSON 'RW ()
 addOrganizationSelectedRepositoriesForSecretR org name repo =
     command Put ["orgs", toPathPart org, "actions", "secrets", toPathPart name, "repositories", toPathPart repo] mempty
 
 -- | Remove selected repository from an organization secret.
 -- See <https://docs.github.com/en/rest/actions/secrets#remove-selected-repository-from-an-organization-secret>
-removeOrganizationSelectedRepositoriesForSecretR :: Name Organization -> Name Secret -> Id Repo -> GenRequest 'MtJSON 'RW ()
+removeOrganizationSelectedRepositoriesForSecretR :: Name Organization -> Name OrganizationSecret -> Id Repo -> GenRequest 'MtJSON 'RW ()
 removeOrganizationSelectedRepositoriesForSecretR org name repo =
     command Delete ["orgs", toPathPart org, "actions", "secrets", toPathPart name, "repositories", toPathPart repo] mempty
 
@@ -102,19 +102,19 @@ repoPublicKeyR user org =
 
 -- | Get a repository secret.
 -- See <https://docs.github.com/en/rest/actions/secrets#get-a-repository-secret>
-repoSecretR :: Name Owner -> Name Organization -> Name Secret -> GenRequest 'MtJSON 'RA RepoSecret
+repoSecretR :: Name Owner -> Name Organization -> Name RepoSecret -> GenRequest 'MtJSON 'RA RepoSecret
 repoSecretR user org name =
     Query ["repos", toPathPart user, toPathPart org, "actions", "secrets", toPathPart name] []
 
 -- | Create or update a repository secret.
 -- See <https://docs.github.com/en/rest/actions/secrets#create-or-update-a-repository-secret>
-setRepoSecretR :: Name Owner -> Name Organization -> Name Secret -> SetSecret -> GenRequest 'MtJSON 'RW ()
+setRepoSecretR :: Name Owner -> Name Organization -> Name RepoSecret -> SetSecret -> GenRequest 'MtJSON 'RW ()
 setRepoSecretR user org name =
     command Put ["repos", toPathPart user, toPathPart org, "actions", "secrets", toPathPart name] . encode
 
 -- | Delete a repository secret.
 -- See <https://docs.github.com/en/rest/actions/secrets#delete-a-repository-secret>
-deleteRepoSecretR :: Name Owner -> Name Organization -> Name Secret -> Request 'RW ()
+deleteRepoSecretR :: Name Owner -> Name Organization -> Name RepoSecret -> Request 'RW ()
 deleteRepoSecretR user org name =
     command Delete parts mempty
     where
@@ -134,19 +134,19 @@ environmentPublicKeyR repo env =
 
 -- | Get an environment secret
 -- See <https://docs.github.com/en/rest/actions/secrets#get-an-environment-secret>
-environmentSecretR :: Id Repo -> Name Environment -> Name Secret -> GenRequest 'MtJSON 'RA RepoSecret
+environmentSecretR :: Id Repo -> Name Environment -> Name RepoSecret -> GenRequest 'MtJSON 'RA RepoSecret
 environmentSecretR repo env name =
     Query ["repositories", toPathPart repo, "environments", toPathPart env, "secrets", toPathPart name] []
 
 -- | Create or update an environment secret.
 -- See <https://docs.github.com/en/rest/actions/secrets#create-or-update-an-environment-secret>
-setEnvironmentSecretR :: Id Repo -> Name Environment -> Name Secret -> SetSecret -> GenRequest 'MtJSON 'RW ()
+setEnvironmentSecretR :: Id Repo -> Name Environment -> Name RepoSecret -> SetSecret -> GenRequest 'MtJSON 'RW ()
 setEnvironmentSecretR repo env name =
     command Put ["repositories", toPathPart repo, "environments", toPathPart env, "secrets", toPathPart name] . encode
 
 -- | Delete an environment secret.
 -- See <https://docs.github.com/en/rest/actions/secrets#delete-an-environment-secret>
-deleteEnvironmentSecretR :: Id Repo -> Name Environment -> Name Secret -> Request 'RW ()
+deleteEnvironmentSecretR :: Id Repo -> Name Environment -> Name RepoSecret -> Request 'RW ()
 deleteEnvironmentSecretR repo env name =
     command Delete parts mempty
     where

@@ -8,7 +8,7 @@
 {-# LANGUAGE KindSignatures    #-}
 {-# LANGUAGE RecordWildCards   #-}
 module GitHub.Data.Actions.Secrets (
-    Secret(..),
+    OrganizationSecret(..),
     PublicKey(..),
     SetSecret(..),
     SelectedRepo(..),
@@ -31,8 +31,8 @@ import Data.Maybe (maybeToList)
 -- Secret
 -------------------------------------------------------------------------------
 
-data Secret = Secret
-    { secretNmae :: !(Name Secret)
+data OrganizationSecret = OrganizationSecret
+    { secretNmae :: !(Name OrganizationSecret)
     , secretCreatedAt :: !UTCTime
     , secretUpdatedAt :: !UTCTime
     , secretVisibility :: !Text
@@ -65,7 +65,7 @@ data SetSelectedRepositories = SetSelectedRepositories
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 data RepoSecret = RepoSecret
-    { repoSecretNmae :: !(Name Secret)
+    { repoSecretNmae :: !(Name RepoSecret)
     , repoSecretCreatedAt :: !UTCTime
     , repoSecretUpdatedAt :: !UTCTime
     }
@@ -79,14 +79,14 @@ data Environment = Environment
 -- -- JSON instances
 -- -------------------------------------------------------------------------------
 
-instance FromJSON Secret where
-    parseJSON = withObject "Secret" $ \o -> Secret
+instance FromJSON OrganizationSecret where
+    parseJSON = withObject "Secret" $ \o -> OrganizationSecret
         <$> o .: "name"
         <*> o .: "created_at"
         <*> o .: "updated_at"
         <*> o .: "visibility"
 
-instance FromJSON (WithTotalCount Secret) where
+instance FromJSON (WithTotalCount OrganizationSecret) where
     parseJSON = withObject "SecretList" $ \o -> WithTotalCount
         <$> o .: "secrets"
         <*> o .: "total_count"

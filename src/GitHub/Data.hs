@@ -19,7 +19,10 @@ module GitHub.Data (
     mkCommitName,
     fromUserName,
     fromOrganizationName,
-    mkWorkflowRunId,
+    mkWorkflowName,
+    mkWorkflowId,
+    -- mkWorkflowRunId,
+    -- mkWorkflowRunName,
     -- ** Id
     Id,
     mkId,
@@ -39,6 +42,7 @@ module GitHub.Data (
     module GitHub.Data.Actions.Artifacts,
     module GitHub.Data.Actions.Cache,
     module GitHub.Data.Actions.Secrets,
+    module GitHub.Data.Actions.Workflows,
     module GitHub.Data.Activities,
     module GitHub.Data.Comments,
     module GitHub.Data.Content,
@@ -76,6 +80,7 @@ import GitHub.Data.Actions.Common
 import GitHub.Data.Actions.Artifacts
 import GitHub.Data.Actions.Secrets
 import GitHub.Data.Actions.Cache
+import GitHub.Data.Actions.Workflows
 import GitHub.Data.Activities
 import GitHub.Data.Comments
 import GitHub.Data.Content
@@ -151,5 +156,14 @@ fromOrganizationId = Id . untagId
 fromUserId :: Id User -> Id Owner
 fromUserId = Id . untagId
 
-mkWorkflowRunId :: Int -> Id WorkflowRun
-mkWorkflowRunId = Id
+mkWorkflowId :: Int -> Id Workflow
+mkWorkflowId = Id
+
+mkWorkflowName :: Text -> Name Workflow
+mkWorkflowName = N
+
+-- mkWorkflowRunId :: Int -> Id ActionWorkflowRun
+-- mkWorkflowRunId = Id
+
+-- mkWorkflowRunName :: Text -> Name ActionWorkflowRun
+-- mkWorkflowRunName = N

@@ -90,6 +90,7 @@ library
     GitHub.Data.Actions.Artifacts
     GitHub.Data.Actions.Cache
     GitHub.Data.Actions.Secrets
+    GitHub.Data.Actions.Workflows
     GitHub.Data.Activities
     GitHub.Data.Comments
     GitHub.Data.Content
@@ -124,6 +125,7 @@ library
     GitHub.Endpoints.Actions.Artifacts
     GitHub.Endpoints.Actions.Cache
     GitHub.Endpoints.Actions.Secrets
+    GitHub.Endpoints.Actions.Workflows
     GitHub.Endpoints.Activity.Events
     GitHub.Endpoints.Activity.Notifications
     GitHub.Endpoints.Activity.Starring

@@ -5,33 +5,74 @@
 -- --
 -- -- The pull requests API as documented at
 -- -- <http://developer.github.com/v3/pulls/>.
--- module GitHub.Endpoints.Actions.Workflows (
---     workflowsForR,
---     workflowRunsForR,
---     createWorkflowDispatchEventR,
---     workflowRunForR,
---     module GitHub.Data
---     ) where
+module GitHub.Endpoints.Actions.Workflows (
+    repositoryWorkflowsR,
+    workflowR,
+    disableWorkflowR,
+    triggerWorkflowR,
+    enableWorkflowR,
+    module GitHub.Data
+    ) where
 
--- import GitHub.Data
--- import GitHub.Internal.Prelude
--- import Prelude ()
--- import GitHub.Data.Actions (ActionWorkflow, ActionWorkflowResult, ActionWorkflowRun, Workflow, ActionWorkflowRunResult, CreateWorkflowDispatchEvent)
+import GitHub.Data
+import GitHub.Internal.Prelude
+import Prelude ()
 
--- -- | List pull requests.
--- -- See <TODO>
--- workflowsForR
---     :: Name Owner
---     -> Name Repo
---     -- -> FetchCount
---     -> Request k (ActionWorkflowResult ActionWorkflow)
--- workflowsForR user repo  = query
---     ["repos", toPathPart user, toPathPart repo, "actions", "workflows"]
---     []
+-- | List repository workflows.
+-- See <https://docs.github.com/en/rest/actions/workflows#list-repository-workflows>
+repositoryWorkflowsR
+    :: Name Owner
+    -> Name Repo
+    -> FetchCount
+    -> GenRequest 'MtJSON 'RA (WithTotalCount Workflow)
+repositoryWorkflowsR user repo  = PagedQuery
+    ["repos", toPathPart user, toPathPart repo, "actions", "workflows"]
+    []
 
--- -- TODO move?
--- -- data Workflow
+-- | Get a workflow.
+-- See <https://docs.github.com/en/rest/actions/workflows#get-a-workflow>
+workflowR
+    :: Name Owner
+    -> Name Repo
+    -> Id Workflow
+    -> GenRequest 'MtJSON 'RA  Workflow
+workflowR user repo workflow  = Query
+    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflow]
+    []
 
+-- | Disable a workflow.
+-- See <https://docs.github.com/en/rest/actions/workflows#disable-a-workflow>
+disableWorkflowR
+    :: Name Owner
+    -> Name Repo
+    -> Id Workflow
+    -> GenRequest 'MtJSON 'RW  Workflow
+disableWorkflowR user repo workflow  = command Put
+    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflow, "disable"]
+    mempty
+
+-- | Create a workflow dispatch event.
+-- See <https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event>
+triggerWorkflowR
+    :: (ToJSON a) => Name Owner
+    -> Name Repo
+    -> Id Workflow
+    -> CreateWorkflowDispatchEvent a
+    -> GenRequest 'MtJSON 'RW  Workflow
+triggerWorkflowR user repo workflow  = command Post
+    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflow, "dispatches"]
+    . encode
+
+-- | Enable a workflow.
+-- See <https://docs.github.com/en/rest/actions/workflows#enable-a-workflow>
+enableWorkflowR
+    :: Name Owner
+    -> Name Repo
+    -> Id Workflow
+    -> GenRequest 'MtJSON 'RW  Workflow
+enableWorkflowR user repo workflow  = command Put
+    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflow, "enable"]
+    mempty
 
 -- workflowRunsForR
 --     :: Name Owner
