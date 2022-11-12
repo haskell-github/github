@@ -21,24 +21,24 @@ import qualified Data.Text.Encoding as TE
 
 -- | Search repositories.
 -- See <https://developer.github.com/v3/search/#search-repositories>
-searchReposR :: Text -> Request k (SearchResult Repo)
+searchReposR :: Text -> FetchCount -> Request k (SearchResult Repo)
 searchReposR searchString =
-    query ["search", "repositories"] [("q", Just $ TE.encodeUtf8 searchString)]
+    PagedQuery ["search", "repositories"] [("q", Just $ TE.encodeUtf8 searchString)]
 
 -- | Search code.
 -- See <https://developer.github.com/v3/search/#search-code>
-searchCodeR :: Text -> Request k (SearchResult Code)
+searchCodeR :: Text -> FetchCount -> Request k (SearchResult Code)
 searchCodeR searchString =
-    query ["search", "code"] [("q", Just $ TE.encodeUtf8 searchString)]
+    PagedQuery ["search", "code"] [("q", Just $ TE.encodeUtf8 searchString)]
 
 -- | Search issues.
 -- See <https://developer.github.com/v3/search/#search-issues>
-searchIssuesR :: Text -> Request k (SearchResult Issue)
+searchIssuesR :: Text -> FetchCount -> Request k (SearchResult Issue)
 searchIssuesR searchString =
-    query ["search", "issues"] [("q", Just $ TE.encodeUtf8 searchString)]
+    PagedQuery ["search", "issues"] [("q", Just $ TE.encodeUtf8 searchString)]
 
 -- | Search users.
 -- See <https://developer.github.com/v3/search/#search-code>
-searchUsersR :: Text -> Request k (SearchResult SimpleUser)
+searchUsersR :: Text -> FetchCount -> Request k (SearchResult SimpleUser)
 searchUsersR searchString =
-  query ["search", "users"] [("q", Just $ TE.encodeUtf8 searchString)]
+    PagedQuery ["search", "users"] [("q", Just $ TE.encodeUtf8 searchString)]

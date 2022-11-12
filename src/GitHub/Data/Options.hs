@@ -39,12 +39,16 @@ module GitHub.Data.Options (
     -- * Repo issues
     IssueRepoMod,
     issueRepoModToQueryString,
+    optionsCreator,
+    optionsMentioned,
     optionsIrrelevantMilestone,
     optionsAnyMilestone,
     optionsNoMilestone,
+    optionsMilestone,
     optionsIrrelevantAssignee,
     optionsAnyAssignee,
     optionsNoAssignee,
+    optionsAssignee,
     -- * Actions cache
     CacheMod,
     cacheModToQueryString,
@@ -376,7 +380,7 @@ sortByLongRunning = PRMod $ \opts ->
 -- Issues
 -------------------------------------------------------------------------------
 
--- | See <https://developer.github.com/v3/issues/#parameters>.
+-- | See <https://docs.github.com/en/rest/reference/issues#list-issues-assigned-to-the-authenticated-user--parameters>.
 data IssueOptions = IssueOptions
     { issueOptionsFilter    :: !IssueFilter
     , issueOptionsState     :: !(Maybe IssueState)
@@ -398,7 +402,7 @@ defaultIssueOptions = IssueOptions
     , issueOptionsSince     = Nothing
     }
 
--- | See <https://developer.github.com/v3/issues/#parameters>.
+-- | See <https://docs.github.com/en/rest/reference/issues#list-issues-assigned-to-the-authenticated-user--parameters>.
 newtype IssueMod = IssueMod (IssueOptions -> IssueOptions)
 
 instance Semigroup IssueMod where
@@ -516,16 +520,20 @@ issueFilter f = IssueMod $ \opts ->
 -- Issues repo
 -------------------------------------------------------------------------------
 
+-- | Parameters of "list repository issues" (@get /repos/{owner}/{repo}/issues@).
+--
+-- See <https://docs.github.com/en/rest/reference/issues#list-repository-issues>.
+--
 data IssueRepoOptions = IssueRepoOptions
-    { issueRepoOptionsMilestone :: !(FilterBy (Id Milestone))
-    , issueRepoOptionsState     :: !(Maybe IssueState)
-    , issueRepoOptionsAssignee  :: !(FilterBy (Name User))
-    , issueRepoOptionsCreator   :: !(Maybe (Name User))
-    , issueRepoOptionsMentioned :: !(Maybe (Name User))
-    , issueRepoOptionsLabels    :: ![Name IssueLabel]
-    , issueRepoOptionsSort      :: !SortIssue
-    , issueRepoOptionsDirection :: !SortDirection
-    , issueRepoOptionsSince     :: !(Maybe UTCTime)
+    { issueRepoOptionsMilestone :: !(FilterBy (Id Milestone))   -- ^ 'optionsMilestone' etc.
+    , issueRepoOptionsState     :: !(Maybe IssueState)          -- ^ 'HasState'
+    , issueRepoOptionsAssignee  :: !(FilterBy (Name User))      -- ^ 'optionsAssignee' etc.
+    , issueRepoOptionsCreator   :: !(Maybe (Name User))         -- ^ 'optionsCreator'
+    , issueRepoOptionsMentioned :: !(Maybe (Name User))         -- ^ 'optionsMentioned'
+    , issueRepoOptionsLabels    :: ![Name IssueLabel]           -- ^ 'HasLabels'
+    , issueRepoOptionsSort      :: !SortIssue                   -- ^ 'HasCreatedUpdated' and 'HasComments'
+    , issueRepoOptionsDirection :: !SortDirection               -- ^ 'HasDirection'
+    , issueRepoOptionsSince     :: !(Maybe UTCTime)             -- ^ 'HasSince'
     }
   deriving
     (Eq, Ord, Show, Generic, Typeable, Data)
@@ -604,7 +612,17 @@ issueRepoOptionsToQueryString IssueRepoOptions {..} =
 -- Issues repo modifiers
 -------------------------------------------------------------------------------
 
--- | Don't care about milestones.
+-- | Issues created by a certain user.
+optionsCreator :: Name User -> IssueRepoMod
+optionsCreator u = IssueRepoMod $ \opts ->
+    opts { issueRepoOptionsCreator = Just u }
+
+-- | Issue mentioning the given user.
+optionsMentioned :: Name User -> IssueRepoMod
+optionsMentioned u = IssueRepoMod $ \opts ->
+    opts { issueRepoOptionsMentioned = Just u }
+
+-- | Don't care about milestones (default).
 --
 -- 'optionsAnyMilestone' means there should be some milestone, but it can be any.
 --
@@ -613,26 +631,41 @@ optionsIrrelevantMilestone :: IssueRepoMod
 optionsIrrelevantMilestone = IssueRepoMod $ \opts ->
     opts { issueRepoOptionsMilestone = FilterNotSpecified }
 
+-- | Issues that have a milestone.
 optionsAnyMilestone :: IssueRepoMod
 optionsAnyMilestone = IssueRepoMod $ \opts ->
     opts { issueRepoOptionsMilestone = FilterAny }
 
+-- | Issues that have no milestone.
 optionsNoMilestone :: IssueRepoMod
 optionsNoMilestone = IssueRepoMod $ \opts ->
     opts { issueRepoOptionsMilestone = FilterNone }
 
+-- | Issues with the given milestone.
+optionsMilestone :: Id Milestone -> IssueRepoMod
+optionsMilestone m = IssueRepoMod $ \opts ->
+    opts { issueRepoOptionsMilestone = FilterBy m }
+
+-- | Issues with or without assignee (default).
 optionsIrrelevantAssignee :: IssueRepoMod
 optionsIrrelevantAssignee = IssueRepoMod $ \opts ->
     opts { issueRepoOptionsAssignee = FilterNotSpecified }
 
+-- | Issues assigned to someone.
 optionsAnyAssignee :: IssueRepoMod
 optionsAnyAssignee = IssueRepoMod $ \opts ->
     opts { issueRepoOptionsAssignee = FilterAny }
 
+-- | Issues assigned to nobody.
 optionsNoAssignee :: IssueRepoMod
 optionsNoAssignee = IssueRepoMod $ \opts ->
     opts { issueRepoOptionsAssignee = FilterNone }
 
+-- | Issues assigned to a specific user.
+optionsAssignee :: Name User -> IssueRepoMod
+optionsAssignee u = IssueRepoMod $ \opts ->
+    opts { issueRepoOptionsAssignee = FilterBy u }
+    
 -------------------------------------------------------------------------------
 -- Actions cache
 -------------------------------------------------------------------------------

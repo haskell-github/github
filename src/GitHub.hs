@@ -52,9 +52,9 @@ module GitHub (
     --
     -- * Query a Repository Subscription
     -- * Set a Repository Subscription
-    -- * Delete a Repository Subscription
     watchersForR,
     reposWatchedByR,
+    unwatchRepoR,
 
     -- * Gists
     -- | See <https://developer.github.com/v3/gists/>
@@ -62,7 +62,6 @@ module GitHub (
     -- Missing endpoints:
     --
     -- * Query a specific revision of a gist
-    -- * Create a gist
     -- * Edit a gist
     -- * List gist commits
     -- * Check if a gist is starred
@@ -70,6 +69,7 @@ module GitHub (
     -- * List gist forks
     gistsR,
     gistR,
+    createGistR,
     starGistR,
     unstarGistR,
     deleteGistR,

@@ -47,7 +47,7 @@ spec = do
     describe "pullRequestPatchR" $
         it "works" $ withAuth $ \auth -> do
             Right patch <- GH.executeRequest auth $
-                GH.pullRequestPatchR "phadej" "github" (GH.IssueNumber 349)
+                GH.pullRequestPatchR "haskell-github" "github" (GH.IssueNumber 349)
             head (LBS8.lines patch) `shouldBe` "From c0e4ad33811be82e1f72ee76116345c681703103 Mon Sep 17 00:00:00 2001"
 
     describe "decoding pull request payloads" $ do
@@ -65,23 +65,30 @@ spec = do
             V.length (GH.pullRequestRequestedReviewers pullRequestReviewRequested)
                 `shouldBe` 1
 
+        it "decodes a pull request 'team_requested' payload" $ do
+          V.length (GH.simplePullRequestRequestedTeamReviewers simplePullRequestTeamReviewRequested)
+                `shouldBe` 1
+
+          V.length (GH.pullRequestRequestedTeamReviewers pullRequestTeamReviewRequested)
+                `shouldBe` 1
+
     describe "checking if a pull request is merged" $ do
         it "works" $ withAuth $ \auth -> do
-            b <- GH.executeRequest auth $ GH.isPullRequestMergedR "phadej" "github" (GH.IssueNumber 14)
+            b <- GH.executeRequest auth $ GH.isPullRequestMergedR "haskell-github" "github" (GH.IssueNumber 14)
             b `shouldSatisfy` isRight
             fromRightS b `shouldBe` True
 
     describe "Draft Pull Request" $ do
         it "works" $ withAuth $ \auth -> do
             cs <- GH.executeRequest auth $
-                draftPullRequestsForR "phadej" "github" opts GH.FetchAll
+                draftPullRequestsForR "haskell-github" "github" opts GH.FetchAll
 
             cs `shouldSatisfy` isRight
 
   where
     repos =
       [ ("thoughtbot", "paperclip")
-      , ("phadej", "github")
+      , ("haskell-github", "github")
       ]
     opts = GH.stateClosed
 
@@ -97,15 +104,26 @@ spec = do
     simplePullRequestReviewRequested =
         fromRightS (eitherDecodeStrict prReviewRequestedPayload)
 
+    simplePullRequestTeamReviewRequested :: GH.SimplePullRequest
+    simplePullRequestTeamReviewRequested =
+        fromRightS (eitherDecodeStrict prTeamReviewRequestedPayload)
+
     pullRequestReviewRequested :: GH.PullRequest
     pullRequestReviewRequested =
         fromRightS (eitherDecodeStrict prReviewRequestedPayload)
+
+    pullRequestTeamReviewRequested :: GH.PullRequest
+    pullRequestTeamReviewRequested =
+        fromRightS (eitherDecodeStrict prTeamReviewRequestedPayload)
 
     prOpenedPayload :: ByteString
     prOpenedPayload = $(embedFile "fixtures/pull-request-opened.json")
 
     prReviewRequestedPayload :: ByteString
     prReviewRequestedPayload = $(embedFile "fixtures/pull-request-review-requested.json")
+
+    prTeamReviewRequestedPayload :: ByteString
+    prTeamReviewRequestedPayload = $(embedFile "fixtures/pull-request-team-review-requested.json")
 
 -------------------------------------------------------------------------------
 -- Draft Pull Requests

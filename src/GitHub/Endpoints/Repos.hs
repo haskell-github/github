@@ -43,7 +43,7 @@ repoPublicityQueryString RepoPublicityPublic  = [("type", Just "public")]
 repoPublicityQueryString RepoPublicityPrivate = [("type", Just "private")]
 
 -- | List your repositories.
--- See <https://developer.github.com/v3/repos/#list-your-repositories>
+-- See <https://docs.github.com/en/rest/reference/repos#list-repositories-for-the-authenticated-user>
 currentUserReposR :: RepoPublicity -> FetchCount -> Request k (Vector Repo)
 currentUserReposR publicity =
     pagedQuery  ["user", "repos"] qs
@@ -51,7 +51,7 @@ currentUserReposR publicity =
     qs = repoPublicityQueryString publicity
 
 -- | List user repositories.
--- See <https://developer.github.com/v3/repos/#list-user-repositories>
+-- See <https://docs.github.com/en/rest/reference/repos#list-repositories-for-a-user>
 userReposR :: Name Owner -> RepoPublicity -> FetchCount -> Request k(Vector Repo)
 userReposR user publicity =
     pagedQuery  ["users", toPathPart user, "repos"] qs
@@ -59,7 +59,7 @@ userReposR user publicity =
     qs = repoPublicityQueryString publicity
 
 -- | List organization repositories.
--- See <https://developer.github.com/v3/repos/#list-organization-repositories>
+-- See <https://docs.github.com/en/rest/reference/repos#list-organization-repositories>
 organizationReposR
     :: Name Organization
     -> RepoPublicity

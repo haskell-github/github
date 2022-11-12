@@ -19,9 +19,6 @@ import Prelude ()
 import Control.Arrow (second)
 
 import Data.ByteString (ByteString)
-import Data.Maybe      (catMaybes)
-import Data.Text       (Text)
-import Data.Vector     (Vector)
 
 import GitHub.Data.Definitions (SimpleUser)
 import GitHub.Data.Id          (Id)

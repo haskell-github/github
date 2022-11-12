@@ -21,6 +21,7 @@ import GitHub.Data.Id          (Id)
 import GitHub.Data.Options     (IssueState (..), MergeableState (..))
 import GitHub.Data.Repos       (Repo)
 import GitHub.Data.URL         (URL)
+import GitHub.Data.Teams       (SimpleTeam)
 import GitHub.Internal.Prelude
 import Prelude ()
 
@@ -38,6 +39,7 @@ data SimplePullRequest = SimplePullRequest
     , simplePullRequestBody               :: !(Maybe Text)
     , simplePullRequestAssignees          :: (Vector SimpleUser)
     , simplePullRequestRequestedReviewers :: (Vector SimpleUser)
+    , simplePullRequestRequestedTeamReviewers:: (Vector SimpleTeam)
     , simplePullRequestIssueUrl           :: !URL
     , simplePullRequestDiffUrl            :: !URL
     , simplePullRequestUrl                :: !URL
@@ -63,6 +65,7 @@ data PullRequest = PullRequest
     , pullRequestBody                 :: !(Maybe Text)
     , pullRequestAssignees            :: (Vector SimpleUser)
     , pullRequestRequestedReviewers   :: (Vector SimpleUser)
+    , pullRequestRequestedTeamReviewers :: (Vector SimpleTeam)
     , pullRequestIssueUrl             :: !URL
     , pullRequestDiffUrl              :: !URL
     , pullRequestUrl                  :: !URL
@@ -198,6 +201,7 @@ instance FromJSON SimplePullRequest where
         <*> o .:? "body"
         <*> o .: "assignees"
         <*> o .:? "requested_reviewers" .!= mempty
+        <*> o .:? "requested_teams" .!= mempty
         <*> o .: "issue_url"
         <*> o .: "diff_url"
         <*> o .: "url"
@@ -239,6 +243,7 @@ instance FromJSON PullRequest where
         <*> o .:? "body"
         <*> o .: "assignees"
         <*> o .:? "requested_reviewers" .!= mempty
+        <*> o .:? "requested_teams" .!= mempty
         <*> o .: "issue_url"
         <*> o .: "diff_url"
         <*> o .: "url"

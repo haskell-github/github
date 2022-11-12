@@ -45,7 +45,7 @@ sumUp = foldl s 0.0
                 s z (Just x) = z+x
 
 toNames ::  [Github.IssueLabel] -> [Maybe Double]
-toNames = map (toValue . Github.labelName) 
+toNames = map (toValue . Github.labelName)
 
 isValue :: String -> Bool
 isValue label = (label =~ ("^[0-9]h" :: String)) :: Bool

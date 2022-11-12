@@ -1,2 +1,13 @@
-branches: master
+branches: master ci*
 haddock: >=8.6
+  -- See PR #355: haddocks for GADT constructor arguments only supported from GHC 8.6
+jobs-selection: any
+
+-- Some dependencies do not allow mtl-2.3 yet, so this doesn't pass yet:
+-- constraint-set mtl-2.3
+--   ghc: >= 8.6
+--   constraints: mtl >= 2.3, transformers >= 0.6
+
+-- constraint-set text-2.0
+--   constraints: text >= 2.0
+--   allow-newer: *:text -- allow-newer not supported

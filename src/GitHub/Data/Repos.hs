@@ -61,11 +61,60 @@ data Repo = Repo
     , repoPushedAt        :: !(Maybe UTCTime)   -- ^ this is Nothing for new repositories
     , repoCreatedAt       :: !(Maybe UTCTime)
     , repoUpdatedAt       :: !(Maybe UTCTime)
+    , repoPermissions     :: !(Maybe RepoPermissions) -- ^ Repository permissions as they relate to the authenticated user.
     }
     deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 instance NFData Repo where rnf = genericRnf
 instance Binary Repo
+
+data CodeSearchRepo = CodeSearchRepo
+    { codeSearchRepoId              :: !(Id Repo)
+    , codeSearchRepoName            :: !(Name Repo)
+    , codeSearchRepoOwner           :: !SimpleOwner
+    , codeSearchRepoPrivate         :: !Bool
+    , codeSearchRepoHtmlUrl         :: !URL
+    , codeSearchRepoDescription     :: !(Maybe Text)
+    , codeSearchRepoFork            :: !(Maybe Bool)
+    , codeSearchRepoUrl             :: !URL
+    , codeSearchRepoGitUrl          :: !(Maybe URL)
+    , codeSearchRepoSshUrl          :: !(Maybe URL)
+    , codeSearchRepoCloneUrl        :: !(Maybe URL)
+    , codeSearchRepoHooksUrl        :: !URL
+    , codeSearchRepoSvnUrl          :: !(Maybe URL)
+    , codeSearchRepoHomepage        :: !(Maybe Text)
+    , codeSearchRepoLanguage        :: !(Maybe Language)
+    , codeSearchRepoSize            :: !(Maybe Int)
+    , codeSearchRepoDefaultBranch   :: !(Maybe Text)
+    , codeSearchRepoHasIssues       :: !(Maybe Bool)
+    , codeSearchRepoHasProjects     :: !(Maybe Bool)
+    , codeSearchRepoHasWiki         :: !(Maybe Bool)
+    , codeSearchRepoHasPages        :: !(Maybe Bool)
+    , codeSearchRepoHasDownloads    :: !(Maybe Bool)
+    , codeSearchRepoArchived        :: !Bool
+    , codeSearchRepoDisabled        :: !Bool
+    , codeSearchRepoPushedAt        :: !(Maybe UTCTime)   -- ^ this is Nothing for new repositories
+    , codeSearchRepoCreatedAt       :: !(Maybe UTCTime)
+    , codeSearchRepoUpdatedAt       :: !(Maybe UTCTime)
+    , codeSearchRepoPermissions     :: !(Maybe RepoPermissions) -- ^ Repository permissions as they relate to the authenticated user.
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData CodeSearchRepo where rnf = genericRnf
+instance Binary CodeSearchRepo
+
+-- | Repository permissions, as they relate to the authenticated user.
+--
+-- Returned by for example 'GitHub.Endpoints.Repos.currentUserReposR'
+data RepoPermissions = RepoPermissions
+    { repoPermissionAdmin :: !Bool
+    , repoPermissionPush :: !Bool
+    , repoPermissionPull :: !Bool
+    }
+    deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+instance NFData RepoPermissions where rnf = genericRnf
+instance Binary RepoPermissions
 
 data RepoRef = RepoRef
     { repoRefOwner :: !SimpleOwner
@@ -214,6 +263,37 @@ instance FromJSON Repo where
         <*> o .:? "pushed_at"
         <*> o .:? "created_at"
         <*> o .:? "updated_at"
+        <*> o .:? "permissions"
+
+instance FromJSON CodeSearchRepo where
+    parseJSON = withObject "Repo" $ \o -> CodeSearchRepo <$> o .: "id"
+        <*> o .: "name"
+        <*> o .: "owner"
+        <*> o .: "private"
+        <*> o .: "html_url"
+        <*> o .:? "description"
+        <*> o .: "fork"
+        <*> o .: "url"
+        <*> o .:? "git_url"
+        <*> o .:? "ssh_url"
+        <*> o .:? "clone_url"
+        <*> o .: "hooks_url"
+        <*> o .:? "svn_url"
+        <*> o .:? "homepage"
+        <*> o .:? "language"
+        <*> o .:? "size"
+        <*> o .:? "default_branch"
+        <*> o .:? "has_issues"
+        <*> o .:? "has_projects"
+        <*> o .:? "has_wiki"
+        <*> o .:? "has_pages"
+        <*> o .:? "has_downloads"
+        <*> o .:? "archived" .!= False
+        <*> o .:? "disabled" .!= False
+        <*> o .:? "pushed_at"
+        <*> o .:? "created_at"
+        <*> o .:? "updated_at"
+        <*> o .:? "permissions"
 
 instance ToJSON NewRepo where
   toJSON (NewRepo { newRepoName              = name
@@ -272,6 +352,12 @@ instance ToJSON EditRepo where
                    , "allow_rebase_merge" .= allowRebaseMerge
                    , "archived"           .= archived
                    ]
+
+instance FromJSON RepoPermissions where
+  parseJSON = withObject "RepoPermissions" $ \o -> RepoPermissions
+        <$> o .: "admin"
+        <*> o .: "push"
+        <*> o .: "pull"
 
 instance FromJSON RepoRef where
     parseJSON = withObject "RepoRef" $ \o -> RepoRef

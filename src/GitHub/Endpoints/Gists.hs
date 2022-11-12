@@ -7,6 +7,7 @@
 module GitHub.Endpoints.Gists (
     gistsR,
     gistR,
+    createGistR,
     starGistR,
     unstarGistR,
     deleteGistR,
@@ -27,6 +28,11 @@ gistsR user = pagedQuery ["users", toPathPart user, "gists"] []
 gistR :: Name Gist -> Request k Gist
 gistR gid =
     query ["gists", toPathPart gid] []
+
+-- | Create a new gist
+-- See <https://docs.github.com/rest/reference/gists#create-a-gist>
+createGistR :: NewGist -> Request 'RW Gist
+createGistR ngist = command Post ["gists"] (encode ngist)
 
 -- | Star a gist by the authenticated user.
 -- See <https://developer.github.com/v3/gists/#star-a-gist>

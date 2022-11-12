@@ -17,4 +17,3 @@ main = do
 formatRepoDeployKey :: DK.RepoDeployKey -> String
 formatRepoDeployKey = show
 
-

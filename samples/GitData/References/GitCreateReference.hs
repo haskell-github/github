@@ -13,7 +13,7 @@ main = do
   case newlyCreatedGitRef of
    (Left err) -> putStrLn $ "Error: " ++ show err
    (Right newRef) -> putStrLn . formatReference $ newRef
-                        
+
 formatReference :: GitReference -> String
 formatReference ref  =
   (gitObjectSha $ gitReferenceObject ref) ++ "\t" ++ (gitReferenceRef ref)

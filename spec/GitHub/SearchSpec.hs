@@ -18,7 +18,7 @@ import GitHub (github)
 import GitHub.Data
        (Auth (..), Issue (..), IssueNumber (..), IssueState (..),
        SimpleUser (..), User, mkId)
-import GitHub.Endpoints.Search (SearchResult (..), searchIssuesR, searchUsersR)
+import GitHub.Endpoints.Search (SearchResult' (..), SearchResult, searchIssuesR, searchUsersR)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -54,14 +54,14 @@ spec = do
       issueState issue2 `shouldBe` StateOpen
 
     it "performs an issue search via the API" $ withAuth $ \auth -> do
-      let query = "Decouple in:title repo:phadej/github created:<=2015-12-01"
-      issues <- searchResultResults . fromRightS <$> github auth searchIssuesR query
+      let query = "Decouple in:title repo:haskell-github/github created:<=2015-12-01"
+      issues <- fmap (searchResultResults . fromRightS) <$> github auth $ searchIssuesR query 5
       length issues `shouldBe` 1
       issueId (V.head issues) `shouldBe` mkId (Proxy :: Proxy Issue) 119694665
 
   describe "searchUsers" $
     it "performs a user search via the API" $ withAuth $ \auth -> do
       let query = "oleg.grenrus@iki.fi created:<2020-01-01"
-      users <- searchResultResults . fromRightS <$> github auth searchUsersR query
+      users <- fmap (searchResultResults . fromRightS) <$> github auth $ searchUsersR query 5
       length users `shouldBe` 1
       simpleUserId (V.head users) `shouldBe` mkId (Proxy :: Proxy User) 51087

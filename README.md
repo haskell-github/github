@@ -1,13 +1,13 @@
-Github
+GitHub
 ------
 
-[![Build Status](https://travis-ci.org/phadej/github.svg?branch=master)](https://travis-ci.org/phadej/github)
+[![Haskell-CI](https://github.com/haskell-github/github/actions/workflows/haskell-ci.yml/badge.svg)](https://github.com/haskell-github/github/actions/workflows/haskell-ci.yml)
 [![Hackage](https://img.shields.io/hackage/v/github.svg)][hackage]
 
-The Github API v3 for Haskell.
+The GitHub API v3 for Haskell.
 
-Some functions are missing; these are functions where the Github API did
-not work as expected. The full Github API is in beta and constantly
+Some functions are missing; these are functions where the GitHub API did
+not work as expected. The full GitHub API is in beta and constantly
 improving.
 
 Installation
@@ -16,21 +16,20 @@ Installation
 In your project's cabal file:
 
 ```cabal
--- Packages needed in order to build this package.
 Build-depends:       github
 ```
 
 Or from the command line:
 
 ```sh
-cabal install github
+cabal v1-install github
 ```
 
 Example Usage
 =============
 
 See the samples in the
-[samples/](https://github.com/fpco/github/tree/master/samples) directory.
+[samples/](https://github.com/haskell-github/github/tree/master/samples) directory.
 
 Note: some samples might be outdated.
 
@@ -40,7 +39,7 @@ Documentation
 For details see the reference [documentation on Hackage][hackage].
 
 Each module lines up with the hierarchy of
-[documentation from the Github API](http://developer.github.com/v3/).
+[documentation from the GitHub API](https://docs.github.com/en/rest).
 
 Request functions (ending with `R`) construct a data type which can be executed
 in `IO` by `executeRequest` functions. They are all listed in the root `GitHub`
@@ -51,7 +50,7 @@ you want. You must call the function using IO goodness, then dispatch on the
 possible error message. Here's an example from the samples:
 
 Many function have samples under
-[`samples/`](https://github.com/phadej/github/tree/master/samples) directory.
+[`samples/`](https://github.com/haskell-github/github/tree/master/samples) directory.
 
 ```hs
 {-# LANGUAGE NoImplicitPrelude #-}
@@ -77,21 +76,11 @@ formatUser :: GitHub.SimpleUser -> Text
 formatUser = GitHub.untagName . GitHub.simpleUserLogin
 ```
 
-Test setup
-==========
-
-To run integration part of tests, you'll need [github access token](https://github.com/settings/tokens/new)
-Token is needed, because unauthorised access is highly limited.
-It's enough to add only basic read access for public information.
-
-With `travis encrypt --org --repo yournick/github "GITHUB_TOKEN=yourtoken"` command you get a secret,
-you can use in your travis setup to run the test-suite there.
-
 Contributions
 =============
 
 Please see
-[CONTRIBUTING.md](https://github.com/fpco/github/blob/master/CONTRIBUTING.md)
+[CONTRIBUTING.md](https://github.com/haskell-github/github/blob/master/CONTRIBUTING.md)
 for details on how you can help.
 
 Copyright
@@ -104,3 +93,11 @@ Copyright 2016-2019 Oleg Grenrus.
 Available under the BSD 3-clause license.
 
 [hackage]: http://hackage.haskell.org/package/github "Hackage"
+
+Alternative
+===========
+
+Library [`github-rest`](https://hackage.haskell.org/package/github-rest)
+also provides an interface to the GitHub API.
+It compares itself to `github` here:
+https://github.com/LeapYear/github-rest#comparison-to-other-libraries

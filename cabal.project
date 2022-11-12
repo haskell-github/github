@@ -4,12 +4,8 @@ packages: samples
 optimization: False
 tests: True
 
-constraints: hashable ^>=1.3
-constraints: semigroups ^>=0.19
-
 constraints: github +openssl
 constraints: github-samples +openssl
 
-allow-newer: deepseq-generics-0.2.0.0:base
-allow-newer: deepseq-generics-0.2.0.0:ghc-prim
-allow-newer: cryptohash-sha1-0.11.100.1:base
+-- constraints: text >=2
+-- allow-newer: *:text

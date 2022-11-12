@@ -47,7 +47,7 @@ main = GH.withOpenSSL $ do
 
 script :: Program R (GH.Owner, GH.Limits)
 script = do
-    repo <- githubRequest $ GH.repositoryR "phadej" "github"
+    repo <- githubRequest $ GH.repositoryR "haskell-github" "github"
     owner <- githubRequest $ GH.ownerInfoForR (GH.simpleOwnerLogin . GH.repoOwner $ repo)
     rl <- githubRequest GH.rateLimitR
     return (owner, GH.rateLimitCore rl)

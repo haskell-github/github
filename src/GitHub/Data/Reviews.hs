@@ -6,7 +6,6 @@ import GitHub.Data.URL (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
 
-import Data.Text (Text)
 import qualified Data.Text as T
 
 data ReviewState
@@ -35,7 +34,7 @@ data Review = Review
     { reviewBody :: !Text
     , reviewCommitId :: !Text
     , reviewState :: ReviewState
-    , reviewSubmittedAt :: !UTCTime
+    , reviewSubmittedAt :: !(Maybe UTCTime)
     , reviewPullRequestUrl :: !URL
     , reviewHtmlUrl :: !Text
     , reviewUser :: !SimpleUser
@@ -51,11 +50,11 @@ instance FromJSON Review where
     parseJSON =
         withObject "Review" $ \o ->
             Review <$> o .: "body" <*> o .: "commit_id" <*> o .: "state" <*>
-            o .: "submitted_at" <*>
-            o .: "pull_request_url" <*>
-            o .: "html_url" <*>
-            o .: "user" <*>
-            o .: "id"
+            o .:? "submitted_at" <*>
+            o .:  "pull_request_url" <*>
+            o .:  "html_url" <*>
+            o .:  "user" <*>
+            o .:  "id"
 
 data ReviewComment = ReviewComment
     { reviewCommentId :: !(Id ReviewComment)

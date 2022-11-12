@@ -11,8 +11,6 @@ module GitHub.Endpoints.Repos.Deployments
 
 import Control.Arrow (second)
 
-import Data.Vector (Vector)
-
 import GitHub.Data
 import GitHub.Internal.Prelude
 
