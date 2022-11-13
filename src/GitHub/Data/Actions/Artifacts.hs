@@ -8,7 +8,7 @@
 {-# LANGUAGE KindSignatures    #-}
 module GitHub.Data.Actions.Artifacts (
     Artifact(..),
-    -- WorkflowRun(..),
+    ArtifactWorkflowRun(..),
     ) where
 
 import GitHub.Data.Id          (Id)
@@ -24,14 +24,14 @@ import GitHub.Data.Actions.WorkflowRuns (WorkflowRun)
 -------------------------------------------------------------------------------
 -- Artifact
 -------------------------------------------------------------------------------
--- data WorkflowRun  = WorkflowRun
---     { workflowRunWorkflowRunId :: !(Id WorkflowRun)
---     , workflowRunRepositoryId :: !(Id Repo)
---     , workflowRunHeadRepositoryId :: !(Id Repo)
---     , workflowRunHeadBranch :: !Text
---     , workflowRunHeadSha :: !Text
---     }
---   deriving (Show, Data, Typeable, Eq, Ord, Generic)
+data ArtifactWorkflowRun  = ArtifactWorkflowRun
+    { artifactWorkflowRunWorkflowRunId :: !(Id WorkflowRun)
+    , artifactWorkflowRunRepositoryId :: !(Id Repo)
+    , artifactWorkflowRunHeadRepositoryId :: !(Id Repo)
+    , artifactWorkflowRunHeadBranch :: !Text
+    , artifactWorkflowRunHeadSha :: !Text
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 data Artifact = Artifact
     { artifactArchiveDownloadUrl :: !URL
@@ -44,7 +44,7 @@ data Artifact = Artifact
     , artifactSizeInBytes :: !Int
     , artifactUpdatedAt :: !UTCTime
     , artifactUrl :: !URL
-    , workflowRun :: !WorkflowRun
+    , workflowRun :: !ArtifactWorkflowRun
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -52,13 +52,13 @@ data Artifact = Artifact
 -- JSON instances
 -------------------------------------------------------------------------------
 
--- instance FromJSON WorkflowRun where
---     parseJSON = withObject "WorkflowRun" $ \o -> WorkflowRun
---         <$> o .: "id"
---         <*> o .: "repository_id"
---         <*> o .: "head_repository_id"
---         <*> o .: "head_branch"
---         <*> o .: "head_sha"
+instance FromJSON ArtifactWorkflowRun where
+    parseJSON = withObject "ArtifactWorkflowRun" $ \o -> ArtifactWorkflowRun
+        <$> o .: "id"
+        <*> o .: "repository_id"
+        <*> o .: "head_repository_id"
+        <*> o .: "head_branch"
+        <*> o .: "head_sha"
 
 instance FromJSON Artifact where
     parseJSON = withObject "Artifact" $ \o -> Artifact

@@ -73,33 +73,3 @@ enableWorkflowR
 enableWorkflowR user repo workflow  = command Put
     ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflow, "enable"]
     mempty
-
--- workflowRunsForR
---     :: Name Owner
---     -> Name Repo
---     -> Name Workflow
---     -- -> FetchCount
---     -> Request k (ActionWorkflowRunResult ActionWorkflowRun)
--- workflowRunsForR user repo workflowId = query
---     ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflowId, "runs"]
---     []
-
--- -- | Create a pull request.
--- -- See <TODO>
--- createWorkflowDispatchEventR :: (ToJSON a) => Name Owner
---                    -> Name Repo
---                    -> Name Workflow
---                    -> CreateWorkflowDispatchEvent a
---                    -> GenRequest 'MtUnit 'RW ()
--- createWorkflowDispatchEventR user repo workflowId cwde =
---     Command Post ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflowId, "dispatches"] (encode cwde)
-
-
--- workflowRunForR
---     :: Name Owner
---     -> Name Repo
---     -> Id ActionWorkflowRun 
---     -> Request k (ActionWorkflowRun)
--- workflowRunForR user repo runId = query
---     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart runId]
---     []

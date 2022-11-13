@@ -11,6 +11,7 @@ module GitHub.Data.Actions.WorkflowRuns (
     -- ActionWorkflowRunResult(..),
     WorkflowRun(..),
     RunAttempt(..),
+    ReviewHistory(..),
     ) where
 
 import GitHub.Data.Definitions
@@ -24,40 +25,32 @@ import Prelude ()
 
 import qualified Data.Text as T
 import qualified Data.Vector as V
-    -- "run_id": 3353449941,
-    -- "run_url": "https://api.github.com/repos/kote-test-org-actions/actions-api/actions/runs/3353449941",
-    -- "run_attempt": 1,
-    -- "node_id": "CR_kwDOIVc8sc8AAAACI12rNA",
-    -- "head_sha": "3156f684232a3adec5085c920d2006aca80f2798",
-    -- "url": "https://api.github.com/repos/kote-test-org-actions/actions-api/actions/jobs/9183275828",
-    -- "html_url": "https://github.com/kote-test-org-actions/actions-api/actions/runs/3353449941/jobs/5556228789",
-    -- "status": "completed",
-    -- "conclusion": "success",
-    -- "started_at": "2022-10-30T00:09:29Z",
-    -- "completed_at": "2022-10-30T00:09:49Z",
-    -- -- "name": "check-bats-version",
-    --       {
-    --     "name": "Set up job",
-    --     "status": "completed",
-    --     "conclusion": "success",
-    --     "number": 1,
-    --     "started_at": "2022-10-29T17:09:29.000-07:00",
-    --     "completed_at": "2022-10-29T17:09:32.000-07:00"
-    --   },
-    --       "check_run_url": "https://api.github.com/repos/kote-test-org-actions/actions-api/check-runs/9183275828",
-    -- "labels": [
-    --   "ubuntu-latest"
-    -- ],
-    -- "runner_id": 1,
-    -- "runner_name": "Hosted Agent",
-    -- "runner_group_id": 2,
-    -- "runner_group_name": "GitHub Actions"
+import GitHub.Data.PullRequests (SimplePullRequest)
+
+import GitHub.Data.Name (Name)
+
 data WorkflowRun  = WorkflowRun
     { workflowRunWorkflowRunId :: !(Id WorkflowRun)
-    , workflowRunRepositoryId :: !(Id Repo)
-    , workflowRunHeadRepositoryId :: !(Id Repo)
+    , workflowRunName :: !(Name WorkflowRun)
     , workflowRunHeadBranch :: !Text
     , workflowRunHeadSha :: !Text
+    , workflowRunPath :: !Text
+    , workflowRunDisplayTitle :: !Text
+    , workflowRunRunNumber :: !Integer
+    , workflowRunEvent :: !Text
+    , workflowRunStatus :: !Text
+    , workflowRunConclusion :: !Text
+    , workflowRunWorkflowId :: !Integer
+    , workflowRunUrl :: !URL
+    , workflowRunHtmlUrl :: !URL
+    , workflowRunPullRequests :: !(Vector SimplePullRequest)
+    , workflowRunCreatedAt :: !UTCTime
+    , workflowRunUpdatedAt :: !UTCTime
+    , workflowRunActor :: !SimpleUser
+    , workflowRunAttempt :: !Integer
+    , workflowRunStartedAt :: !UTCTime
+    , workflowRunTrigerringActor :: !SimpleUser
+    , workflowRunRepository :: !Repo
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -75,6 +68,13 @@ data RunAttempt = RunAttempt
     -- }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
+data ReviewHistory  = ReviewHistory
+    { reviewHistoryState :: !Text
+    , reviewHistoryComment :: !Text
+    , reviewHistoryUser :: !SimpleUser
+
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
 -- data RunCommit = RunCommit
 --     { 
 --      runCommitId   :: !Text
@@ -182,7 +182,23 @@ data RunAttempt = RunAttempt
 instance FromJSON WorkflowRun where
     parseJSON = withObject "WorkflowRun" $ \o -> WorkflowRun
         <$> o .: "id"
-        <*> o .: "repository_id"
-        <*> o .: "head_repository_id"
+        <*> o .: "name"
         <*> o .: "head_branch"
         <*> o .: "head_sha"
+        <*> o .: "path"
+        <*> o .: "display_title"
+        <*> o .: "run_number"
+        <*> o .: "event"
+        <*> o .: "status"
+        <*> o .: "conclusion"
+        <*> o .: "workflow_id"
+        <*> o .: "url"
+        <*> o .: "html_url"
+        <*> o .: "pull_requests"
+        <*> o .: "created_at"
+        <*> o .: "updated_at"
+        <*> o .: "actor"
+        <*> o .: "attempt"
+        <*> o .: "started_at"
+        <*> o .: "trigerring_actor"
+        <*> o .: "repository"
