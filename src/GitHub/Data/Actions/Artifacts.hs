@@ -16,9 +16,9 @@ import GitHub.Data.URL         (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
 
-import GitHub.Data.Repos (Repo)
-import GitHub.Data.Actions.Common (WithTotalCount (WithTotalCount))
+import GitHub.Data.Actions.Common       (WithTotalCount (WithTotalCount))
 import GitHub.Data.Actions.WorkflowRuns (WorkflowRun)
+import GitHub.Data.Repos                (Repo)
 
 
 -------------------------------------------------------------------------------

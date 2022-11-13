@@ -25,8 +25,8 @@ module GitHub.Endpoints.Actions.WorkflowRuns (
 
 import GitHub.Data
 import GitHub.Internal.Prelude
+import Network.URI             (URI)
 import Prelude ()
-import Network.URI (URI)
 
 -- | Re-run a job from a workflow run.
 -- See <https://docs.github.com/en/rest/actions/workflow-runs#re-run-a-job-from-a-workflow-run>
@@ -34,7 +34,7 @@ reRunJobR
     :: Name Owner
     -> Name Repo
     -> Id Job ->  GenRequest 'MtJSON 'RW ()
-reRunJobR user repo job = Command Post 
+reRunJobR user repo job = Command Post
     ["repos", toPathPart user, toPathPart repo, "actions", "jobs", toPathPart job, "rerun"]
     mempty
 
@@ -44,7 +44,7 @@ workflowRunsR
     :: Name Owner
     -> Name Repo
     -> FetchCount ->  GenRequest 'MtJSON 'RA (WithTotalCount WorkflowRun)
-workflowRunsR user repo = PagedQuery 
+workflowRunsR user repo = PagedQuery
     ["repos", toPathPart user, toPathPart repo, "actions", "runs"]
     []
 
@@ -55,7 +55,7 @@ workflowRunR
     -> Name Repo
     -> Id WorkflowRun
     ->  GenRequest 'MtJSON 'RA (WithTotalCount WorkflowRun)
-workflowRunR user repo run = Query 
+workflowRunR user repo run = Query
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart run]
     []
 
@@ -77,7 +77,7 @@ workflowRunReviewHistoryR
     -> Name Repo
     -> Id WorkflowRun
     ->  GenRequest 'MtJSON 'RA (Vector ReviewHistory)
-workflowRunReviewHistoryR user repo run = Query 
+workflowRunReviewHistoryR user repo run = Query
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart run, "approvals"]
     []
 
@@ -100,7 +100,7 @@ workflowRunAttemptR
     -> Id WorkflowRun
     -> Id RunAttempt
     ->  GenRequest 'MtJSON 'RA (WithTotalCount WorkflowRun)
-workflowRunAttemptR user repo run attempt = Query 
+workflowRunAttemptR user repo run attempt = Query
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart run, "attempts", toPathPart attempt]
     []
 
@@ -112,7 +112,7 @@ downloadWorkflowRunAttemptLogsR
     -> Id WorkflowRun
     -> Id RunAttempt
     -> GenRequest 'MtRedirect 'RO URI
-downloadWorkflowRunAttemptLogsR user repo run attempt = Query 
+downloadWorkflowRunAttemptLogsR user repo run attempt = Query
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart run, "attempts", toPathPart attempt, "logs"]
     []
 
@@ -134,7 +134,7 @@ downloadWorkflowRunLogsR
     -> Name Repo
     -> Id WorkflowRun
     -> GenRequest 'MtRedirect 'RO URI
-downloadWorkflowRunLogsR user repo run = Query 
+downloadWorkflowRunLogsR user repo run = Query
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart run, "logs"]
     []
 
@@ -155,7 +155,7 @@ reRunWorkflowR
     :: Name Owner
     -> Name Repo
     -> Id WorkflowRun->  GenRequest 'MtJSON 'RW ()
-reRunWorkflowR user repo run = Command Post 
+reRunWorkflowR user repo run = Command Post
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart run, "rerun"]
     mempty
 
@@ -165,7 +165,7 @@ reRunFailedJobsR
     :: Name Owner
     -> Name Repo
     -> Id WorkflowRun->  GenRequest 'MtJSON 'RW ()
-reRunFailedJobsR user repo run = Command Post 
+reRunFailedJobsR user repo run = Command Post
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart run, "rerun-failed-jobs"]
     mempty
 
@@ -174,8 +174,8 @@ reRunFailedJobsR user repo run = Command Post
 workflowRunsForWorkflowR
     :: Name Owner
     -> Name Repo
-    -> Id Workflow 
+    -> Id Workflow
     -> FetchCount -> GenRequest 'MtJSON 'RA (WithTotalCount WorkflowRun)
-workflowRunsForWorkflowR user repo workflow = PagedQuery 
+workflowRunsForWorkflowR user repo workflow = PagedQuery
     ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflow, "runs"]
     []

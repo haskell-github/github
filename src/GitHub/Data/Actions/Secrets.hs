@@ -21,10 +21,10 @@ import GitHub.Data.Id          (Id)
 import GitHub.Internal.Prelude
 import Prelude ()
 
+import Data.Maybe                 (maybeToList)
 import GitHub.Data.Actions.Common (WithTotalCount (WithTotalCount))
-import GitHub.Data.Name (Name)
-import GitHub.Data.Repos (Repo)
-import Data.Maybe (maybeToList)
+import GitHub.Data.Name           (Name)
+import GitHub.Data.Repos          (Repo)
 
 
 -------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ data PublicKey = PublicKey
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-data SetSecret = SetSecret 
+data SetSecret = SetSecret
     { setSecretPublicKeyId :: !(Id PublicKey)
     , setSecretEncryptedValue :: !Text
     , setSecretVisibility :: !Text
@@ -59,7 +59,7 @@ data SelectedRepo = SelectedRepo
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-data SetSelectedRepositories = SetSelectedRepositories 
+data SetSelectedRepositories = SetSelectedRepositories
     { setSelectedRepositoriesRepositoryIds :: ![Id Repo]
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
@@ -105,14 +105,14 @@ instance ToJSON SetSelectedRepositories where
     toJSON SetSelectedRepositories{..} =
         object
             [ "selected_repository_ids" .=  setSelectedRepositoriesRepositoryIds
-            ] 
+            ]
 
 instance ToJSON SetSecret where
     toJSON SetSecret{..} =
         object $
-            [ "encrypted_value" .= setSecretEncryptedValue 
+            [ "encrypted_value" .= setSecretEncryptedValue
             ,  "key_id" .= setSecretPublicKeyId
-            ,  "visibility" .= setSecretVisibility 
+            ,  "visibility" .= setSecretVisibility
             ] <> maybeToList (fmap ("selected_repository_ids" .=) setSecretSelectedRepositoryIds)
 
 instance FromJSON (WithTotalCount SelectedRepo) where

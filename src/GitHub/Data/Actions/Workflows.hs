@@ -7,14 +7,14 @@ module GitHub.Data.Actions.Workflows (
     CreateWorkflowDispatchEvent(..),
     ) where
 
-import GitHub.Data.Id          (Id)
 import GitHub.Data.Actions.Common (WithTotalCount (WithTotalCount))
+import GitHub.Data.Id             (Id)
 import GitHub.Internal.Prelude
 import Prelude ()
 
 
 data Workflow = Workflow
-    { 
+    {
      workflowWorkflowId                 :: !(Id Workflow)
     , workflowName                 :: !Text
     , workflowPath                 :: !Text

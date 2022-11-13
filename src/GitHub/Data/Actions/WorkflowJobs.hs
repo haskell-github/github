@@ -8,33 +8,20 @@ module GitHub.Data.Actions.WorkflowJobs (
     ) where
 
 import GitHub.Data.Id          (Id)
+import GitHub.Data.Name        (Name)
 import GitHub.Data.URL         (URL)
-import GitHub.Data.Name (Name)
 import GitHub.Internal.Prelude
-    ( ($),
-      Eq,
-      Data,
-      Ord,
-      Show,
-      Typeable,
-      Applicative((<*>)),
-      Generic,
-      Integer,
-      (<$>),
-      (.:),
-      withObject,
-      FromJSON(parseJSON),
-      Text,
-      UTCTime,
-      Vector )
+       (Applicative ((<*>)), Data, Eq, FromJSON (parseJSON), Generic, Integer,
+       Ord, Show, Text, Typeable, UTCTime, Vector, withObject, ($), (.:),
+       (<$>))
 import Prelude ()
 
+import GitHub.Data.Actions.Common       (WithTotalCount (WithTotalCount))
 import GitHub.Data.Actions.WorkflowRuns (WorkflowRun)
-import GitHub.Data.Actions.Common (WithTotalCount (WithTotalCount))
 
 
 data JobStep = JobStep
-    { 
+    {
      jobStepName                 :: !(Name JobStep)
     , jobStepStatus                 :: !Text
     , jobStepConclusion                 :: !Text
@@ -45,7 +32,7 @@ data JobStep = JobStep
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 data Job = Job
-    { 
+    {
      jobId                 :: !(Id Job)
     , jobRunId                 :: !(Id WorkflowRun)
     , jobRunUrl                 :: !URL

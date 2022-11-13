@@ -14,18 +14,18 @@ module GitHub.Data.Actions.WorkflowRuns (
     ReviewHistory(..),
     ) where
 
-import GitHub.Data.Definitions
-import GitHub.Data.Id          (Id)
-import GitHub.Data.Options     (IssueState (..), MergeableState (..))
-import GitHub.Data.Repos       (Repo)
-import GitHub.Data.URL         (URL)
 import GitHub.Data.Actions.Common (WithTotalCount (WithTotalCount))
+import GitHub.Data.Definitions
+import GitHub.Data.Id             (Id)
+import GitHub.Data.Options        (IssueState (..), MergeableState (..))
+import GitHub.Data.Repos          (Repo)
+import GitHub.Data.URL            (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
 
-import qualified Data.Text as T
-import qualified Data.Vector as V
-import GitHub.Data.PullRequests (SimplePullRequest)
+import qualified Data.Text                as T
+import qualified Data.Vector              as V
+import           GitHub.Data.PullRequests (SimplePullRequest)
 
 import GitHub.Data.Name (Name)
 
@@ -55,7 +55,7 @@ data WorkflowRun  = WorkflowRun
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 data RunAttempt = RunAttempt
-    -- { 
+    -- {
     --  jobId                 :: !(Id Job)
     -- , runRunId                 :: !(Id WorkflowRun)
     -- , workflowPath                 :: !Text
@@ -76,7 +76,7 @@ data ReviewHistory  = ReviewHistory
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 -- data RunCommit = RunCommit
---     { 
+--     {
 --      runCommitId   :: !Text
 --     , runCommitTreeId   :: !Text
 --     }

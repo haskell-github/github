@@ -26,7 +26,7 @@ cacheUsageOrganizationR org =
 
 -- | Get Actions cache usage for the organization.
 -- See <https://docs.github.com/en/rest/actions/cache#list-repositories-with-github-actions-cache-usage-for-an-organization>
-cacheUsageByRepositoryR :: Name Organization -> FetchCount -> GenRequest 'MtJSON 'RA (WithTotalCount RepositoryCacheUsage) 
+cacheUsageByRepositoryR :: Name Organization -> FetchCount -> GenRequest 'MtJSON 'RA (WithTotalCount RepositoryCacheUsage)
 cacheUsageByRepositoryR org =
     PagedQuery ["orgs", toPathPart org, "actions", "cache", "usage-by-repository"] []
 
@@ -43,7 +43,7 @@ cachesForRepoR
     -> Name Repo
     -> CacheMod
     -> FetchCount
-    -> GenRequest 'MtJSON 'RA (WithTotalCount Cache) 
+    -> GenRequest 'MtJSON 'RA (WithTotalCount Cache)
 cachesForRepoR user repo opts = PagedQuery
     ["repos", toPathPart user, toPathPart repo, "actions", "caches"]
     (cacheModToQueryString opts)
