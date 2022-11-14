@@ -773,7 +773,7 @@ cacheOptionsToQueryString (CacheOptions ref key sort dir) =
     key' = fmap TE.encodeUtf8 key
 
 -------------------------------------------------------------------------------
--- Pull request modifiers
+-- Cache modifiers
 -------------------------------------------------------------------------------
 
 optionsRef :: Text -> CacheMod

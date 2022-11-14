@@ -24,13 +24,13 @@ cacheUsageOrganizationR :: Name Organization -> GenRequest 'MtJSON 'RA Organizat
 cacheUsageOrganizationR org =
     Query ["orgs", toPathPart org, "actions", "cache", "usage"] []
 
--- | Get Actions cache usage for the organization.
+-- | List repositories with GitHub Actions cache usage for an organization.
 -- See <https://docs.github.com/en/rest/actions/cache#list-repositories-with-github-actions-cache-usage-for-an-organization>
 cacheUsageByRepositoryR :: Name Organization -> FetchCount -> GenRequest 'MtJSON 'RA (WithTotalCount RepositoryCacheUsage)
 cacheUsageByRepositoryR org =
     PagedQuery ["orgs", toPathPart org, "actions", "cache", "usage-by-repository"] []
 
--- | Get Actions cache usage for the repository.
+-- | Get GitHub Actions cache usage for a repository.
 -- See <https://docs.github.com/en/rest/actions/cache#get-github-actions-cache-usage-for-a-repository>
 cacheUsageR :: Name Owner -> Name Repo -> Request k RepositoryCacheUsage
 cacheUsageR user repo =
@@ -47,16 +47,6 @@ cachesForRepoR
 cachesForRepoR user repo opts = PagedQuery
     ["repos", toPathPart user, toPathPart repo, "actions", "caches"]
     (cacheModToQueryString opts)
-
--- | Delete GitHub Actions cache for a repository.
--- See <https://docs.github.com/en/rest/actions/cache#delete-github-actions-caches-for-a-repository-using-a-cache-key>
--- TODO: No querystring for Commands???
--- TODO: return value
--- deleteCachesKeyR :: Name Owner -> Name Repo -> String -> Maybe String -> GenRequest 'MtUnit 'RW ()
--- deleteCachesKeyR user repo key ref =
---     Command Delete parts mempty
---   where
---     parts = ["repos", toPathPart user, toPathPart repo, "actions", "caches"]
 
 -- | Delete GitHub Actions cache for a repository.
 -- See <https://docs.github.com/en/rest/actions/cache#delete-a-github-actions-cache-for-a-repository-using-a-cache-id>

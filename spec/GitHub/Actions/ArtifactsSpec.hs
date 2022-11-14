@@ -34,7 +34,7 @@ spec = do
     describe "artifactsForR" $ do
         it "works" $ withAuth $ \auth -> for_ repos $ \(owner, repo) -> do
             cs <- GH.executeRequest auth $
-                GH.artifactsForR owner repo GH.FetchAll
+                GH.artifactsForR owner repo mempty GH.FetchAll
             cs `shouldSatisfy` isRight
 
     describe "decoding artifacts payloads" $ do

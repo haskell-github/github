@@ -413,13 +413,21 @@ module GitHub (
     -- | See <https://developer.github.com/v3/rate_limit/>
     rateLimitR,
 
-    -- ** Actions
-    -- | See <https://docs.github.com/en/rest/reference/actions/>
+    -- ** Actions - artifacts
+    -- | See <https://docs.github.com/en/rest/actions/artifacts>
     artifactsForR,
     artifactR,
     deleteArtifactR,
     downloadArtifactR,
     artifactsForWorkflowRunR,
+
+    -- ** Actions - cache
+    -- | See <https://docs.github.com/en/rest/actions/cache>
+    cacheUsageOrganizationR,
+    cacheUsageByRepositoryR,
+    cacheUsageR,
+    cachesForRepoR,
+    deleteCacheR,
 
     -- * Data definitions
     module GitHub.Data,
@@ -429,6 +437,7 @@ module GitHub (
 
 import GitHub.Data
 import GitHub.Endpoints.Actions.Artifacts
+import GitHub.Endpoints.Actions.Cache
 import GitHub.Endpoints.Activity.Events
 import GitHub.Endpoints.Activity.Notifications
 import GitHub.Endpoints.Activity.Starring
