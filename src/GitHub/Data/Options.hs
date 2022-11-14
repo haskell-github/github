@@ -49,6 +49,10 @@ module GitHub.Data.Options (
     optionsAnyAssignee,
     optionsNoAssignee,
     optionsAssignee,
+    -- * Actions artifacts
+    ArtifactMod,
+    artifactModToQueryString,
+    optionsArtifactName,
     -- * Actions cache
     CacheMod,
     cacheModToQueryString,
@@ -666,6 +670,50 @@ optionsAssignee :: Name User -> IssueRepoMod
 optionsAssignee u = IssueRepoMod $ \opts ->
     opts { issueRepoOptionsAssignee = FilterBy u }
     
+-------------------------------------------------------------------------------
+-- Actions artifacts
+-------------------------------------------------------------------------------
+-- | See <https://docs.github.com/en/rest/actions/artifacts#list-artifacts-for-a-repository>.
+data ArtifactOptions = ArtifactOptions
+    { artifactOptionsName     :: !(Maybe Text)
+    }
+  deriving
+    (Eq, Ord, Show, Generic, Typeable, Data)
+
+defaultArtifactOptions :: ArtifactOptions
+defaultArtifactOptions = ArtifactOptions
+    { artifactOptionsName = Nothing
+    }
+
+-- | See <https://docs.github.com/en/rest/actions/artifacts#list-artifacts-for-a-repository>.
+newtype ArtifactMod = ArtifactMod (ArtifactOptions -> ArtifactOptions)
+
+instance Semigroup ArtifactMod where
+    ArtifactMod f <> ArtifactMod g = ArtifactMod (g . f)
+
+instance Monoid ArtifactMod where
+    mempty  = ArtifactMod id
+    mappend = (<>)
+
+-- | Filters artifacts by exact match on their name field.
+optionsArtifactName :: Text -> ArtifactMod
+optionsArtifactName n = ArtifactMod $ \opts ->
+    opts { artifactOptionsName = Just n }
+
+toArtifactOptions :: ArtifactMod -> ArtifactOptions
+toArtifactOptions (ArtifactMod f) = f defaultArtifactOptions
+
+artifactModToQueryString :: ArtifactMod -> QueryString
+artifactModToQueryString = artifactOptionsToQueryString . toArtifactOptions
+
+artifactOptionsToQueryString :: ArtifactOptions -> QueryString
+artifactOptionsToQueryString (ArtifactOptions name) =
+    catMaybes
+    [ mk "name" <$> name'
+    ]
+  where
+    mk k v = (k, Just v)
+    name' = fmap TE.encodeUtf8 name
 -------------------------------------------------------------------------------
 -- Actions cache
 -------------------------------------------------------------------------------

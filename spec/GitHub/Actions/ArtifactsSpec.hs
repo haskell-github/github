@@ -43,7 +43,7 @@ spec = do
             V.length (GH.withTotalCountItems artifactList) `shouldBe` 2
         it "decodes signle artifact payload" $ do
             GH.artifactName artifact `shouldBe` "dist-without-markdown"
-            GH.workflowRunHeadSha (GH.workflowRun artifact) `shouldBe` "601593ecb1d8a57a04700fdb445a28d4186b8954"
+            GH.artifactWorkflowRunHeadSha (GH.artifactWorkflowRun artifact) `shouldBe` "601593ecb1d8a57a04700fdb445a28d4186b8954"
 
   where
     repos =

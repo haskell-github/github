@@ -18,23 +18,23 @@ import GitHub.Data
 import GitHub.Internal.Prelude
 import Network.URI             (URI)
 import Prelude ()
--- import GitHub.Data.Actions (ActionWorkflow, ActionWorkflowResult, ActionWorkflowRun, Workflow, ActionWorkflowRunResult, CreateWorkflowDispatchEvent)
 
 -- | List artifacts for repository.
 -- See <https://docs.github.com/en/rest/reference/actions#list-artifacts-for-a-repository>
 artifactsForR
     :: Name Owner
     -> Name Repo
+    -> ArtifactMod
     -> FetchCount
-    -> Request k (WithTotalCount Artifact)
-artifactsForR user repo  = PagedQuery
+    -> Request 'RA (WithTotalCount Artifact)
+artifactsForR user repo opts = PagedQuery
     ["repos", toPathPart user, toPathPart repo, "actions", "artifacts"]
-    []
+    (artifactModToQueryString opts)
 
 
--- | Query a single artifact.
+-- | Get an artifact.
 -- See <https://docs.github.com/en/rest/reference/actions#get-an-artifact>
-artifactR :: Name Owner -> Name Repo -> Id Artifact -> Request k Artifact
+artifactR :: Name Owner -> Name Repo -> Id Artifact -> Request 'RA Artifact
 artifactR user repo artid =
     query ["repos", toPathPart user, toPathPart repo, "actions", "artifacts", toPathPart artid] []
 
@@ -59,7 +59,7 @@ artifactsForWorkflowRunR
     -> Name Repo
     -> Id WorkflowRun
     -> FetchCount
-    -> Request k (WithTotalCount Artifact)
+    -> Request 'RA (WithTotalCount Artifact)
 artifactsForWorkflowRunR user repo runid  = PagedQuery
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart runid, "artifacts"]
     []

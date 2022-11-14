@@ -7,7 +7,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE KindSignatures    #-}
 module GitHub.Data.Actions.Common (
-    PaginatedWithTotalCount(..),
     WithTotalCount(..),
     ) where
 
@@ -23,11 +22,6 @@ import qualified Data.Text as T
 -- Common
 -------------------------------------------------------------------------------
 
-data PaginatedWithTotalCount a (tag :: Symbol) = PaginatedWithTotalCount
-    { paginatedWithTotalCountItems :: !(Vector a)
-    , paginatedWithTotalCountTotalCount :: !Int
-    }
-
 data WithTotalCount a = WithTotalCount
     { withTotalCountItems :: !(Vector a)
     , withTotalCountTotalCount :: !Int
@@ -39,13 +33,3 @@ instance Semigroup (WithTotalCount a) where
 
 instance Foldable WithTotalCount where
     foldMap f (WithTotalCount items _) = foldMap f items
-
--------------------------------------------------------------------------------
--- JSON instances
--------------------------------------------------------------------------------
-
-
-instance (FromJSON a, KnownSymbol l) => FromJSON (PaginatedWithTotalCount a l) where
-    parseJSON = withObject "PaginatedWithTotalCount" $ \o -> PaginatedWithTotalCount
-        <$> o .: T.pack (symbolVal (Proxy :: Proxy l))
-        <*> o .: "total_count"

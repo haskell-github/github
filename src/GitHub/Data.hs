@@ -19,10 +19,6 @@ module GitHub.Data (
     mkCommitName,
     fromUserName,
     fromOrganizationName,
-    mkWorkflowName,
-    mkWorkflowId,
-    -- mkWorkflowRunId,
-    -- mkWorkflowRunName,
     -- ** Id
     Id,
     mkId,
@@ -159,15 +155,3 @@ fromOrganizationId = Id . untagId
 
 fromUserId :: Id User -> Id Owner
 fromUserId = Id . untagId
-
-mkWorkflowId :: Int -> Id Workflow
-mkWorkflowId = Id
-
-mkWorkflowName :: Text -> Name Workflow
-mkWorkflowName = N
-
--- mkWorkflowRunId :: Int -> Id ActionWorkflowRun
--- mkWorkflowRunId = Id
-
--- mkWorkflowRunName :: Text -> Name ActionWorkflowRun
--- mkWorkflowRunName = N

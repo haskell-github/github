@@ -44,7 +44,7 @@ data Artifact = Artifact
     , artifactSizeInBytes :: !Int
     , artifactUpdatedAt :: !UTCTime
     , artifactUrl :: !URL
-    , workflowRun :: !ArtifactWorkflowRun
+    , artifactWorkflowRun :: !ArtifactWorkflowRun
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
