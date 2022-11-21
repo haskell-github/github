@@ -1,6 +1,0 @@
-cradle:
-  stack:
-    - path: "./src"
-      component: "github:lib"
-    - path: "./spec"
-      component: "github-test"
