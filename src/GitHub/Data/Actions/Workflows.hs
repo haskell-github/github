@@ -9,6 +9,7 @@ module GitHub.Data.Actions.Workflows (
 
 import GitHub.Data.Actions.Common (WithTotalCount (WithTotalCount))
 import GitHub.Data.Id             (Id)
+import GitHub.Data.URL            (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
 
@@ -21,9 +22,9 @@ data Workflow = Workflow
     , workflowState                 :: !Text
     , workflowCreatedAt                 :: !UTCTime
     , workflowUpdatedAt                 :: !UTCTime
-    , workflowUrl                 :: !UTCTime
-    , workflowHtmlUrl                 :: !UTCTime
-    , workflowBadgeUrl                 :: !UTCTime
+    , workflowUrl                 :: !URL
+    , workflowHtmlUrl                 :: !URL
+    , workflowBadgeUrl                 :: !URL
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 

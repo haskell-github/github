@@ -237,6 +237,8 @@ test-suite github-test
     GitHub.Actions.CacheSpec
     GitHub.Actions.SecretsSpec
     GitHub.Actions.WorkflowJobSpec
+    GitHub.Actions.WorkflowRunsSpec
+    GitHub.Actions.WorkflowSpec
     GitHub.ActivitySpec
     GitHub.CommitsSpec
     GitHub.EventsSpec

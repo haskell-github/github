@@ -46,8 +46,8 @@ disableWorkflowR
     :: Name Owner
     -> Name Repo
     -> Id Workflow
-    -> GenRequest 'MtJSON 'RW  Workflow
-disableWorkflowR user repo workflow  = command Put
+    -> GenRequest 'MtUnit 'RW  ()
+disableWorkflowR user repo workflow  = Command Put
     ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflow, "disable"]
     mempty
 
@@ -58,8 +58,8 @@ triggerWorkflowR
     -> Name Repo
     -> Id Workflow
     -> CreateWorkflowDispatchEvent a
-    -> GenRequest 'MtJSON 'RW  Workflow
-triggerWorkflowR user repo workflow  = command Post
+    -> GenRequest 'MtUnit 'RW  ()
+triggerWorkflowR user repo workflow  = Command Post
     ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflow, "dispatches"]
     . encode
 
@@ -69,7 +69,7 @@ enableWorkflowR
     :: Name Owner
     -> Name Repo
     -> Id Workflow
-    -> GenRequest 'MtJSON 'RW  Workflow
-enableWorkflowR user repo workflow  = command Put
+    -> GenRequest 'MtUnit 'RW  ()
+enableWorkflowR user repo workflow  = Command Put
     ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflow, "enable"]
     mempty

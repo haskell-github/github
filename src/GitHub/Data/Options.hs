@@ -65,6 +65,15 @@ module GitHub.Data.Options (
     sortByCreatedAt,
     sortByLastAccessedAt,
     sortBySizeInBytes,
+    -- * Actions workflow runs
+    WorkflowRunMod,
+    workflowRunModToQueryString,
+    optionsWorkflowRunActor,
+    optionsWorkflowRunBranch,
+    optionsWorkflowRunEvent,
+    optionsWorkflowRunStatus,
+    optionsWorkflowRunCreated,
+    optionsWorkflowRunHeadSha,
     -- * Data
     IssueState (..),
     MergeableState (..),
@@ -811,3 +820,92 @@ sortByLastAccessedAt = CacheMod $ \opts ->
 sortBySizeInBytes :: CacheMod
 sortBySizeInBytes = CacheMod $ \opts ->
     opts { cacheOptionsSort = Just SortCacheSizeInBytes }
+
+-------------------------------------------------------------------------------
+-- Actions workflow runs
+-------------------------------------------------------------------------------
+
+-- | See <https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-repository>.
+data WorkflowRunOptions = WorkflowRunOptions
+    { workflowRunOptionsActor     :: !(Maybe Text)
+    , workflowRunOptionsBranch      :: !(Maybe Text)
+    , workflowRunOptionsEvent      :: !(Maybe Text)
+    , workflowRunOptionsStatus :: !(Maybe Text)
+    , workflowRunOptionsCreated :: !(Maybe Text)
+    , workflowRunOptionsHeadSha :: !(Maybe Text)
+    }
+  deriving
+    (Eq, Ord, Show, Generic, Typeable, Data)
+
+defaultWorkflowRunOptions :: WorkflowRunOptions
+defaultWorkflowRunOptions = WorkflowRunOptions
+    { workflowRunOptionsActor     = Nothing
+    , workflowRunOptionsBranch      = Nothing
+    , workflowRunOptionsEvent     = Nothing
+    , workflowRunOptionsStatus = Nothing
+    , workflowRunOptionsCreated = Nothing
+    , workflowRunOptionsHeadSha = Nothing
+    }
+
+-- | See <https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-repository>.
+newtype WorkflowRunMod = WorkflowRunMod (WorkflowRunOptions -> WorkflowRunOptions)
+
+instance Semigroup WorkflowRunMod where
+    WorkflowRunMod f <> WorkflowRunMod g = WorkflowRunMod (g . f)
+
+instance Monoid WorkflowRunMod where
+    mempty  = WorkflowRunMod id
+    mappend = (<>)
+
+toWorkflowRunOptions :: WorkflowRunMod -> WorkflowRunOptions
+toWorkflowRunOptions (WorkflowRunMod f) = f defaultWorkflowRunOptions
+
+workflowRunModToQueryString :: WorkflowRunMod -> QueryString
+workflowRunModToQueryString = workflowRunOptionsToQueryString . toWorkflowRunOptions
+
+workflowRunOptionsToQueryString :: WorkflowRunOptions -> QueryString
+workflowRunOptionsToQueryString (WorkflowRunOptions actor branch event status created headSha) =
+    catMaybes
+    [ mk "actor" <$> actor'
+    , mk "branch" <$> branch'
+    , mk "event" <$> event'
+    , mk "status" <$> status'
+    , mk "created" <$> created'
+    , mk "head_sha" <$> headSha'
+    ]
+  where
+    mk k v = (k, Just v)
+    actor' = fmap TE.encodeUtf8 actor
+    branch' = fmap TE.encodeUtf8 branch
+    event' = fmap TE.encodeUtf8 event
+    status' = fmap TE.encodeUtf8 status
+    created' = fmap TE.encodeUtf8 created
+    headSha' = fmap TE.encodeUtf8 headSha
+
+-------------------------------------------------------------------------------
+-- Workflow run modifiers
+-------------------------------------------------------------------------------
+
+optionsWorkflowRunActor :: Text -> WorkflowRunMod
+optionsWorkflowRunActor x = WorkflowRunMod $ \opts ->
+    opts { workflowRunOptionsActor = Just x }
+
+optionsWorkflowRunBranch :: Text -> WorkflowRunMod
+optionsWorkflowRunBranch x = WorkflowRunMod $ \opts ->
+    opts { workflowRunOptionsBranch = Just x }
+
+optionsWorkflowRunEvent :: Text -> WorkflowRunMod
+optionsWorkflowRunEvent x = WorkflowRunMod $ \opts ->
+    opts { workflowRunOptionsEvent = Just x }
+
+optionsWorkflowRunStatus :: Text -> WorkflowRunMod
+optionsWorkflowRunStatus x = WorkflowRunMod $ \opts ->
+    opts { workflowRunOptionsStatus = Just x }
+
+optionsWorkflowRunCreated :: Text -> WorkflowRunMod
+optionsWorkflowRunCreated x = WorkflowRunMod $ \opts ->
+    opts { workflowRunOptionsCreated = Just x }
+
+optionsWorkflowRunHeadSha :: Text -> WorkflowRunMod
+optionsWorkflowRunHeadSha x = WorkflowRunMod $ \opts ->
+    opts { workflowRunOptionsHeadSha = Just x }

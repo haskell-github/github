@@ -458,6 +458,31 @@ module GitHub (
     jobsForWorkflowRunAttemptR,
     jobsForWorkflowRunR,
 
+    -- ** Actions - workflow runs
+    -- | See <https://docs.github.com/en/rest/actions/workflow-runs>
+    reRunJobR,
+    workflowRunsR,
+    workflowRunR,
+    deleteWorkflowRunR,
+    workflowRunReviewHistoryR,
+    approveWorkflowRunR,
+    workflowRunAttemptR,
+    downloadWorkflowRunAttemptLogsR,
+    cancelWorkflowRunR,
+    downloadWorkflowRunLogsR,
+    deleteWorkflowRunLogsR,
+    reRunWorkflowR,
+    reRunFailedJobsR,
+    workflowRunsForWorkflowR,
+
+    -- ** Actions - workflows
+    -- | See <https://docs.github.com/en/rest/actions/workflows>
+    repositoryWorkflowsR,
+    workflowR,
+    disableWorkflowR,
+    triggerWorkflowR,
+    enableWorkflowR,
+
     -- * Data definitions
     module GitHub.Data,
     -- * Request handling
@@ -469,6 +494,8 @@ import GitHub.Endpoints.Actions.Artifacts
 import GitHub.Endpoints.Actions.Cache
 import GitHub.Endpoints.Actions.Secrets
 import GitHub.Endpoints.Actions.WorkflowJobs
+import GitHub.Endpoints.Actions.WorkflowRuns
+import GitHub.Endpoints.Actions.Workflows
 import GitHub.Endpoints.Activity.Events
 import GitHub.Endpoints.Activity.Notifications
 import GitHub.Endpoints.Activity.Starring
