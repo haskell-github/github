@@ -451,6 +451,13 @@ module GitHub (
     setEnvironmentSecretR,
     deleteEnvironmentSecretR,
 
+    -- ** Actions - workflow jobs
+    -- | See <https://docs.github.com/en/rest/actions/workflow-jobs>
+    jobR,
+    downloadJobLogsR,
+    jobsForWorkflowRunAttemptR,
+    jobsForWorkflowRunR,
+
     -- * Data definitions
     module GitHub.Data,
     -- * Request handling
@@ -461,6 +468,7 @@ import GitHub.Data
 import GitHub.Endpoints.Actions.Artifacts
 import GitHub.Endpoints.Actions.Cache
 import GitHub.Endpoints.Actions.Secrets
+import GitHub.Endpoints.Actions.WorkflowJobs
 import GitHub.Endpoints.Activity.Events
 import GitHub.Endpoints.Activity.Notifications
 import GitHub.Endpoints.Activity.Starring

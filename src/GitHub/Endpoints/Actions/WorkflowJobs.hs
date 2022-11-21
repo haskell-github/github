@@ -14,13 +14,12 @@ module GitHub.Endpoints.Actions.WorkflowJobs (
     ) where
 
 import GitHub.Data
-import GitHub.Internal.Prelude
 import Network.URI             (URI)
 import Prelude ()
 
 -- | Get a job for a workflow run.
 -- See <https://docs.github.com/en/rest/actions/workflow-jobs#get-a-job-for-a-workflow-run>
-jobR :: Name Owner -> Name Repo -> Id Job -> Request 'RO Job
+jobR :: Name Owner -> Name Repo -> Id Job -> Request 'RA Job
 jobR owner repo job =
     Query ["repos", toPathPart owner, toPathPart repo, "actions", "jobs", toPathPart job] []
 

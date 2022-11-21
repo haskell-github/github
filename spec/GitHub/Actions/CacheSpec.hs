@@ -9,14 +9,10 @@ import Prelude.Compat
 
 import           Data.Aeson         (eitherDecodeStrict)
 import           Data.ByteString    (ByteString)
-import           Data.Either.Compat (isRight)
 import           Data.FileEmbed     (embedFile)
-import           Data.Foldable      (for_)
-import           Data.String        (fromString)
-import qualified Data.Vector        as V
-import           System.Environment (lookupEnv)
+import qualified Data.Vector as V
 import           Test.Hspec
-                 (Spec, describe, it, pendingWith, shouldBe, shouldSatisfy)
+                 (Spec, describe, it, shouldBe)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
