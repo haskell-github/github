@@ -7,12 +7,11 @@ import qualified GitHub as GH
 import Prelude ()
 import Prelude.Compat
 
-import           Data.Aeson         (eitherDecodeStrict)
-import           Data.ByteString    (ByteString)
-import qualified Data.Vector as V
-import           Data.FileEmbed     (embedFile)
-import           Test.Hspec
-                 (Spec, describe, it, shouldBe)
+import           Data.Aeson      (eitherDecodeStrict)
+import           Data.ByteString (ByteString)
+import           Data.FileEmbed  (embedFile)
+import qualified Data.Vector     as V
+import           Test.Hspec      (Spec, describe, it, shouldBe)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b

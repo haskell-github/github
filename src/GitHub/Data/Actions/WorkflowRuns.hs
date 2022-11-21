@@ -10,13 +10,13 @@ module GitHub.Data.Actions.WorkflowRuns (
 
 import GitHub.Data.Actions.Common (WithTotalCount (WithTotalCount))
 import GitHub.Data.Definitions
+import GitHub.Data.PullRequests   (SimplePullRequest)
 import GitHub.Data.URL            (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
-import           GitHub.Data.PullRequests (SimplePullRequest)
 
+import GitHub.Data.Id   (Id)
 import GitHub.Data.Name (Name)
-import GitHub.Data.Id (Id)
 
 data WorkflowRun  = WorkflowRun
     { workflowRunWorkflowRunId :: !(Id WorkflowRun)

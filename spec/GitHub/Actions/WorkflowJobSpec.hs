@@ -2,17 +2,16 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module GitHub.Actions.WorkflowJobSpec where
 
-import qualified GitHub as GH
-import GitHub.Data.Id
+import qualified GitHub         as GH
+import           GitHub.Data.Id
 
 import Prelude ()
 import Prelude.Compat
 
-import           Data.Aeson         (eitherDecodeStrict)
-import           Data.ByteString    (ByteString)
-import           Data.FileEmbed     (embedFile)
-import           Test.Hspec
-                 (Spec, describe, it, shouldBe)
+import Data.Aeson      (eitherDecodeStrict)
+import Data.ByteString (ByteString)
+import Data.FileEmbed  (embedFile)
+import Test.Hspec      (Spec, describe, it, shouldBe)
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b

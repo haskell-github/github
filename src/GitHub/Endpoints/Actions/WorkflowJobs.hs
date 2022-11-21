@@ -14,7 +14,7 @@ module GitHub.Endpoints.Actions.WorkflowJobs (
     ) where
 
 import GitHub.Data
-import Network.URI             (URI)
+import Network.URI (URI)
 import Prelude ()
 
 -- | Get a job for a workflow run.
