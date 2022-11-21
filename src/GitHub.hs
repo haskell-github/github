@@ -429,6 +429,28 @@ module GitHub (
     cachesForRepoR,
     deleteCacheR,
 
+    -- ** Actions - secrets
+    -- | See <https://docs.github.com/en/rest/actions/secrets>
+    organizationSecretsR,
+    organizationPublicKeyR,
+    organizationSecretR,
+    setOrganizationSecretR,
+    deleteOrganizationSecretR,
+    organizationSelectedRepositoriesForSecretR,
+    setOrganizationSelectedRepositoriesForSecretR,
+    addOrganizationSelectedRepositoriesForSecretR,
+    removeOrganizationSelectedRepositoriesForSecretR,
+    repoSecretsR,
+    repoPublicKeyR,
+    repoSecretR,
+    setRepoSecretR,
+    deleteRepoSecretR,
+    environmentSecretsR,
+    environmentPublicKeyR,
+    environmentSecretR,
+    setEnvironmentSecretR,
+    deleteEnvironmentSecretR,
+
     -- * Data definitions
     module GitHub.Data,
     -- * Request handling
@@ -438,6 +460,7 @@ module GitHub (
 import GitHub.Data
 import GitHub.Endpoints.Actions.Artifacts
 import GitHub.Endpoints.Actions.Cache
+import GitHub.Endpoints.Actions.Secrets
 import GitHub.Endpoints.Activity.Events
 import GitHub.Endpoints.Activity.Notifications
 import GitHub.Endpoints.Activity.Starring

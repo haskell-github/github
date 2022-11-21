@@ -27,32 +27,12 @@ spec = do
     describe "decoding secrets payloads" $ do
         it "decodes selected repo list payload" $ do
             V.length (GH.withTotalCountItems repoList) `shouldBe` 1
-        -- it "decodes cache usage for repo" $ do
-        --     GH.repositoryCacheUsageFullName repoCacheUsage `shouldBe` "python/cpython"
-        --     GH.repositoryCacheUsageActiveCachesSizeInBytes repoCacheUsage `shouldBe` 55000268087
-        --     GH.repositoryCacheUsageActiveCachesCount repoCacheUsage `shouldBe` 171
-        -- it "decodes cache usage for org" $ do
-        --     GH.organizationCacheUsageTotalActiveCachesSizeInBytes orgCacheUsage `shouldBe` 26586
-        --     GH.organizationCacheUsageTotalActiveCachesCount orgCacheUsage `shouldBe` 1
 
   where
     repoList :: GH.WithTotalCount GH.SelectedRepo
     repoList =
         fromRightS (eitherDecodeStrict repoListPayload)
 
-    -- repoCacheUsage :: GH.RepositoryCacheUsage
-    -- repoCacheUsage =
-    --     fromRightS (eitherDecodeStrict repoCacheUsagePayload)
-
-    -- orgCacheUsage :: GH.OrganizationCacheUsage
-    -- orgCacheUsage =
-    --     fromRightS (eitherDecodeStrict orgCacheUsagePayload)
 
     repoListPayload :: ByteString
     repoListPayload = $(embedFile "fixtures/actions/selected-repositories-for-secret.json")
-
-    -- repoCacheUsagePayload :: ByteString
-    -- repoCacheUsagePayload = $(embedFile "fixtures/actions/repo-cache-usage.json")
-
-    -- orgCacheUsagePayload :: ByteString
-    -- orgCacheUsagePayload = $(embedFile "fixtures/actions/org-cache-usage.json")

@@ -11,6 +11,7 @@ module GitHub.Data.Actions.Secrets (
     OrganizationSecret(..),
     PublicKey(..),
     SetSecret(..),
+    SetRepoSecret(..),
     SelectedRepo(..),
     SetSelectedRepositories(..),
     RepoSecret(..),
@@ -32,7 +33,7 @@ import GitHub.Data.Repos          (Repo)
 -------------------------------------------------------------------------------
 
 data OrganizationSecret = OrganizationSecret
-    { organizationSecretNmae :: !(Name OrganizationSecret)
+    { organizationSecretName :: !(Name OrganizationSecret)
     , organizationSecretCreatedAt :: !UTCTime
     , organizationSecretUpdatedAt :: !UTCTime
     , organizationSecretVisibility :: !Text
@@ -40,16 +41,22 @@ data OrganizationSecret = OrganizationSecret
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 data PublicKey = PublicKey
-    { publicKeyId :: !(Id PublicKey)
+    { publicKeyId :: !Text
     , publicKeyKey :: !Text
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 data SetSecret = SetSecret
-    { setSecretPublicKeyId :: !(Id PublicKey)
+    { setSecretPublicKeyId :: !Text
     , setSecretEncryptedValue :: !Text
     , setSecretVisibility :: !Text
     , setSecretSelectedRepositoryIds :: !(Maybe [Id Repo])
+    }
+  deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+data SetRepoSecret = SetRepoSecret
+    { setRepoSecretPublicKeyId :: !Text
+    , setRepoSecretEncryptedValue :: !Text
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -65,7 +72,7 @@ data SetSelectedRepositories = SetSelectedRepositories
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 data RepoSecret = RepoSecret
-    { repoSecretNmae :: !(Name RepoSecret)
+    { repoSecretName :: !(Name RepoSecret)
     , repoSecretCreatedAt :: !UTCTime
     , repoSecretUpdatedAt :: !UTCTime
     }
@@ -115,6 +122,13 @@ instance ToJSON SetSecret where
             ,  "visibility" .= setSecretVisibility
             ] <> maybeToList (fmap ("selected_repository_ids" .=) setSecretSelectedRepositoryIds)
 
+instance ToJSON SetRepoSecret where
+    toJSON SetRepoSecret{..} =
+        object
+            [ "encrypted_value" .= setRepoSecretEncryptedValue
+            ,  "key_id" .= setRepoSecretPublicKeyId
+            ]
+
 instance FromJSON (WithTotalCount SelectedRepo) where
     parseJSON = withObject "SelectedRepoList" $ \o -> WithTotalCount
         <$> o .: "repositories"
@@ -125,3 +139,8 @@ instance FromJSON RepoSecret where
         <$> o .: "name"
         <*> o .: "created_at"
         <*> o .: "updated_at"
+
+instance FromJSON (WithTotalCount RepoSecret) where
+    parseJSON = withObject "RepoSecretList" $ \o -> WithTotalCount
+        <$> o .: "secrets"
+        <*> o .: "total_count"

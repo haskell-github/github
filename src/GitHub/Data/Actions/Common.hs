@@ -11,12 +11,9 @@ module GitHub.Data.Actions.Common (
     ) where
 
 
-import GHC.TypeLits
 import GitHub.Internal.Prelude
 import Prelude ()
 
-import           Data.Data (Proxy (..))
-import qualified Data.Text as T
 
 -------------------------------------------------------------------------------
 -- Common
