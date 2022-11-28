@@ -33,7 +33,8 @@ import Prelude ()
 reRunJobR
     :: Name Owner
     -> Name Repo
-    -> Id Job ->  GenRequest 'MtUnit 'RW ()
+    -> Id Job
+    -> GenRequest 'MtUnit 'RW ()
 reRunJobR user repo job = Command Post
     ["repos", toPathPart user, toPathPart repo, "actions", "jobs", toPathPart job, "rerun"]
     mempty
@@ -44,7 +45,8 @@ workflowRunsR
     :: Name Owner
     -> Name Repo
     -> WorkflowRunMod
-    -> FetchCount ->  GenRequest 'MtJSON 'RA (WithTotalCount WorkflowRun)
+    -> FetchCount
+    -> GenRequest 'MtJSON 'RA (WithTotalCount WorkflowRun)
 workflowRunsR user repo runMod = PagedQuery
     ["repos", toPathPart user, toPathPart repo, "actions", "runs"]
     (workflowRunModToQueryString runMod)
@@ -55,7 +57,7 @@ workflowRunR
     :: Name Owner
     -> Name Repo
     -> Id WorkflowRun
-    ->  GenRequest 'MtJSON 'RA WorkflowRun
+    -> GenRequest 'MtJSON 'RA WorkflowRun
 workflowRunR user repo run = Query
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart run]
     []
@@ -66,7 +68,7 @@ deleteWorkflowRunR
     :: Name Owner
     -> Name Repo
     -> Id WorkflowRun
-    ->  GenRequest 'MtUnit 'RW ()
+    -> GenRequest 'MtUnit 'RW ()
 deleteWorkflowRunR user repo run = Command Delete
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart run]
     mempty
@@ -77,7 +79,7 @@ workflowRunReviewHistoryR
     :: Name Owner
     -> Name Repo
     -> Id WorkflowRun
-    ->  GenRequest 'MtJSON 'RA (Vector ReviewHistory)
+    -> GenRequest 'MtJSON 'RA (Vector ReviewHistory)
 workflowRunReviewHistoryR user repo run = Query
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart run, "approvals"]
     []
@@ -88,7 +90,7 @@ approveWorkflowRunR
     :: Name Owner
     -> Name Repo
     -> Id WorkflowRun
-    ->  GenRequest 'MtUnit 'RW ()
+    -> GenRequest 'MtUnit 'RW ()
 approveWorkflowRunR user repo run = Command Post
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart run, "approve"]
     mempty
@@ -100,7 +102,7 @@ workflowRunAttemptR
     -> Name Repo
     -> Id WorkflowRun
     -> Id RunAttempt
-    ->  GenRequest 'MtJSON 'RA WorkflowRun
+    -> GenRequest 'MtJSON 'RA WorkflowRun
 workflowRunAttemptR user repo run attempt = Query
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart run, "attempts", toPathPart attempt]
     []
@@ -123,7 +125,7 @@ cancelWorkflowRunR
     :: Name Owner
     -> Name Repo
     -> Id WorkflowRun
-    ->  GenRequest 'MtUnit 'RW ()
+    -> GenRequest 'MtUnit 'RW ()
 cancelWorkflowRunR user repo run = Command Post
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart run, "cancel"]
     mempty
@@ -155,7 +157,8 @@ deleteWorkflowRunLogsR user repo run = Command Delete
 reRunWorkflowR
     :: Name Owner
     -> Name Repo
-    -> Id WorkflowRun->  GenRequest 'MtUnit 'RW ()
+    -> Id WorkflowRun
+    -> GenRequest 'MtUnit 'RW ()
 reRunWorkflowR user repo run = Command Post
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart run, "rerun"]
     mempty
@@ -165,7 +168,8 @@ reRunWorkflowR user repo run = Command Post
 reRunFailedJobsR
     :: Name Owner
     -> Name Repo
-    -> Id WorkflowRun->  GenRequest 'MtUnit 'RW ()
+    -> Id WorkflowRun
+    -> GenRequest 'MtUnit 'RW ()
 reRunFailedJobsR user repo run = Command Post
     ["repos", toPathPart user, toPathPart repo, "actions", "runs", toPathPart run, "rerun-failed-jobs"]
     mempty
@@ -173,11 +177,12 @@ reRunFailedJobsR user repo run = Command Post
 -- | List workflow runs for a workflow.
 -- See <https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-workflow>
 workflowRunsForWorkflowR
-    :: Name Owner
+    :: (IsPathPart idOrName) => Name Owner
     -> Name Repo
-    -> Id Workflow
+    -> idOrFileName
     -> WorkflowRunMod
-    -> FetchCount -> GenRequest 'MtJSON 'RA (WithTotalCount WorkflowRun)
+    -> FetchCount
+    -> GenRequest 'MtJSON 'RA (WithTotalCount WorkflowRun)
 workflowRunsForWorkflowR user repo workflow runMod = PagedQuery
-    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflow, "runs"]
+    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart idOrFileName, "runs"]
      (workflowRunModToQueryString runMod)
