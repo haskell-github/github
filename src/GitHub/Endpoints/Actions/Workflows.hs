@@ -32,44 +32,44 @@ repositoryWorkflowsR user repo  = PagedQuery
 -- | Get a workflow.
 -- See <https://docs.github.com/en/rest/actions/workflows#get-a-workflow>
 workflowR
-    :: Name Owner
+    :: (IsPathPart idOrName) => Name Owner
     -> Name Repo
-    -> Id Workflow
+    -> idOrName
     -> GenRequest 'MtJSON 'RA  Workflow
-workflowR user repo workflow  = Query
-    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflow]
+workflowR user repo idOrName  = Query
+    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart idOrName]
     []
 
 -- | Disable a workflow.
 -- See <https://docs.github.com/en/rest/actions/workflows#disable-a-workflow>
 disableWorkflowR
-    :: Name Owner
+    :: (IsPathPart idOrName) => Name Owner
     -> Name Repo
-    -> Id Workflow
+    -> idOrName
     -> GenRequest 'MtUnit 'RW  ()
 disableWorkflowR user repo workflow  = Command Put
-    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflow, "disable"]
+    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart idOrName, "disable"]
     mempty
 
 -- | Create a workflow dispatch event.
 -- See <https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event>
 triggerWorkflowR
-    :: (ToJSON a) => Name Owner
+    :: (ToJSON a, IsPathPart idOrName) => Name Owner
     -> Name Repo
-    -> Id Workflow
+    -> idOrName
     -> CreateWorkflowDispatchEvent a
     -> GenRequest 'MtUnit 'RW  ()
 triggerWorkflowR user repo workflow  = Command Post
-    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflow, "dispatches"]
+    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart idOrName, "dispatches"]
     . encode
 
 -- | Enable a workflow.
 -- See <https://docs.github.com/en/rest/actions/workflows#enable-a-workflow>
 enableWorkflowR
-    :: Name Owner
+    :: (IsPathPart idOrName) => Name Owner
     -> Name Repo
-    -> Id Workflow
+    -> idOrName
     -> GenRequest 'MtUnit 'RW  ()
 enableWorkflowR user repo workflow  = Command Put
-    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart workflow, "enable"]
+    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart idOrName, "enable"]
     mempty
