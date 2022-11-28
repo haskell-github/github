@@ -179,10 +179,10 @@ reRunFailedJobsR user repo run = Command Post
 workflowRunsForWorkflowR
     :: (IsPathPart idOrName) => Name Owner
     -> Name Repo
-    -> idOrFileName
+    -> idOrName
     -> WorkflowRunMod
     -> FetchCount
     -> GenRequest 'MtJSON 'RA (WithTotalCount WorkflowRun)
-workflowRunsForWorkflowR user repo workflow runMod = PagedQuery
-    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart idOrFileName, "runs"]
+workflowRunsForWorkflowR user repo idOrName runMod = PagedQuery
+    ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart idOrName, "runs"]
      (workflowRunModToQueryString runMod)
