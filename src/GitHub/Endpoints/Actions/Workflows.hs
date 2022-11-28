@@ -47,7 +47,7 @@ disableWorkflowR
     -> Name Repo
     -> idOrName
     -> GenRequest 'MtUnit 'RW  ()
-disableWorkflowR user repo workflow  = Command Put
+disableWorkflowR user repo idOrName  = Command Put
     ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart idOrName, "disable"]
     mempty
 
@@ -59,7 +59,7 @@ triggerWorkflowR
     -> idOrName
     -> CreateWorkflowDispatchEvent a
     -> GenRequest 'MtUnit 'RW  ()
-triggerWorkflowR user repo workflow  = Command Post
+triggerWorkflowR user repo idOrName  = Command Post
     ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart idOrName, "dispatches"]
     . encode
 
@@ -70,6 +70,6 @@ enableWorkflowR
     -> Name Repo
     -> idOrName
     -> GenRequest 'MtUnit 'RW  ()
-enableWorkflowR user repo workflow  = Command Put
+enableWorkflowR user repo idOrName  = Command Put
     ["repos", toPathPart user, toPathPart repo, "actions", "workflows", toPathPart idOrName, "enable"]
     mempty
