@@ -36,7 +36,6 @@ data WorkflowRun  = WorkflowRun
     , workflowRunActor :: !SimpleUser
     , workflowRunAttempt :: !Integer
     , workflowRunStartedAt :: !UTCTime
-    , workflowRunTrigerringActor :: !SimpleUser
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -71,7 +70,6 @@ instance FromJSON WorkflowRun where
         <*> o .: "actor"
         <*> o .: "run_attempt"
         <*> o .: "run_started_at"
-        <*> o .: "triggering_actor"
 
 instance FromJSON (WithTotalCount WorkflowRun) where
     parseJSON = withObject "WorkflowRunList" $ \o -> WithTotalCount
