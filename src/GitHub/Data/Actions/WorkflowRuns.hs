@@ -27,7 +27,7 @@ data WorkflowRun  = WorkflowRun
     , workflowRunRunNumber :: !Integer
     , workflowRunEvent :: !Text
     , workflowRunStatus :: !Text
-    , workflowRunConclusion :: !Text
+    , workflowRunConclusion :: !(Maybe Text)
     , workflowRunWorkflowId :: !Integer
     , workflowRunUrl :: !URL
     , workflowRunHtmlUrl :: !URL
