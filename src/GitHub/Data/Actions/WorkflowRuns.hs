@@ -10,7 +10,6 @@ module GitHub.Data.Actions.WorkflowRuns (
 
 import GitHub.Data.Actions.Common (WithTotalCount (WithTotalCount))
 import GitHub.Data.Definitions
-import GitHub.Data.PullRequests   (SimplePullRequest)
 import GitHub.Data.URL            (URL)
 import GitHub.Internal.Prelude
 import Prelude ()
@@ -32,7 +31,6 @@ data WorkflowRun  = WorkflowRun
     , workflowRunWorkflowId :: !Integer
     , workflowRunUrl :: !URL
     , workflowRunHtmlUrl :: !URL
-    , workflowRunPullRequests :: !(Vector SimplePullRequest)
     , workflowRunCreatedAt :: !UTCTime
     , workflowRunUpdatedAt :: !UTCTime
     , workflowRunActor :: !SimpleUser
@@ -68,7 +66,6 @@ instance FromJSON WorkflowRun where
         <*> o .: "workflow_id"
         <*> o .: "url"
         <*> o .: "html_url"
-        <*> o .: "pull_requests"
         <*> o .: "created_at"
         <*> o .: "updated_at"
         <*> o .: "actor"
