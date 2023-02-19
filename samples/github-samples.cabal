@@ -10,8 +10,7 @@ description:   Various samples of github package
 build-type:    Simple
 
 tested-with:
-  -- GHC 9.6 disables: `operational` has build failure with mtl-2.3
-  -- GHC == 9.6.0
+  GHC == 9.6.0
   GHC == 9.4.4
   GHC == 9.2.6
   GHC == 9.0.2
