@@ -6,6 +6,7 @@ tests: True
 
 constraints: github +openssl
 constraints: github-samples +openssl
+constraints: operational -buildExamples
 
 -- constraints: text >=2
 -- allow-newer: *:text
