@@ -1,8 +1,10 @@
 GitHub
 ------
 
+[![Hackage version](https://img.shields.io/hackage/v/github.svg?label=Hackage&color=informational)](http://hackage.haskell.org/package/github)
+[![github on Stackage Nightly](https://stackage.org/package/github/badge/nightly)](https://stackage.org/nightly/package/github)
+[![Stackage LTS version](https://www.stackage.org/package/github/badge/lts?label=Stackage)](https://www.stackage.org/package/github)
 [![Haskell-CI](https://github.com/haskell-github/github/actions/workflows/haskell-ci.yml/badge.svg)](https://github.com/haskell-github/github/actions/workflows/haskell-ci.yml)
-[![Hackage](https://img.shields.io/hackage/v/github.svg)][hackage]
 
 The GitHub API v3 for Haskell.
 
@@ -92,7 +94,7 @@ Copyright 2016-2019 Oleg Grenrus.
 
 Available under the BSD 3-clause license.
 
-[hackage]: http://hackage.haskell.org/package/github "Hackage"
+[hackage]: https://hackage.haskell.org/package/github "Hackage"
 
 Alternative
 ===========
