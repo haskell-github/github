@@ -1,8 +1,3 @@
------------------------------------------------------------------------------
--- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 module GitHub.Data.Webhooks where
 
 import GitHub.Data.Id          (Id)

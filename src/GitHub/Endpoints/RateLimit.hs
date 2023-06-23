@@ -1,10 +1,7 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The Github RateLimit API, as described at
 -- <http://developer.github.com/v3/rate_limit/>.
+
 module GitHub.Endpoints.RateLimit (
     rateLimitR,
     module GitHub.Data,

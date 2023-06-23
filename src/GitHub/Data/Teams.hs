@@ -2,11 +2,7 @@
 {-# LANGUAGE DeriveGeneric      #-}
 {-# LANGUAGE NoImplicitPrelude  #-}
 {-# LANGUAGE OverloadedStrings  #-}
------------------------------------------------------------------------------
--- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
+
 module GitHub.Data.Teams where
 
 import GitHub.Data.Definitions

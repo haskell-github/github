@@ -1,10 +1,7 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The organization members API as described on
 -- <https://developer.github.com/v3/orgs/outside_collaborators/>.
+
 module GitHub.Endpoints.Organizations.OutsideCollaborators (
     outsideCollaboratorsR,
     ) where

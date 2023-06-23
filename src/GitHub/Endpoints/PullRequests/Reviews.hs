@@ -1,9 +1,6 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The reviews API as described on <http://developer.github.com/v3/pulls/reviews/>.
+
 module GitHub.Endpoints.PullRequests.Reviews
     ( pullRequestReviewsR
     , pullRequestReviewR

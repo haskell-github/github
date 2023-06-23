@@ -1,10 +1,7 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- Verification of incomming webhook payloads, as described at
 -- <https://developer.github.com/webhooks/securing/>
+
 module GitHub.Data.Webhooks.Validate (
   isValidPayload
 ) where

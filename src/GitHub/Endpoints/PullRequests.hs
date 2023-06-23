@@ -1,10 +1,7 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The pull requests API as documented at
 -- <http://developer.github.com/v3/pulls/>.
+
 module GitHub.Endpoints.PullRequests (
     pullRequestsForR,
     pullRequestR,
@@ -102,4 +99,3 @@ mergePullRequestR user repo prid commitMessage =
     buildCommitMessageMap :: Maybe Text -> Value
     buildCommitMessageMap (Just msg) = object ["commit_message" .= msg ]
     buildCommitMessageMap Nothing    = object []
-

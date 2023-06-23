@@ -1,14 +1,12 @@
 {-# LANGUAGE CPP               #-}
 {-# LANGUAGE FlexibleInstances #-}
 #define UNSAFE 1
------------------------------------------------------------------------------
+
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- This module also exports
 -- @'FromJSON' a => 'FromJSON' ('HM.HashMap' 'Language' a)@
 -- orphan-ish instance for @aeson < 1@
+
 module GitHub.Data.Repos where
 
 import GitHub.Data.Definitions

@@ -1,9 +1,6 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The GitHub Enterprise orgs API as described on <https://developer.github.com/enterprise/v3/enterprise-admin/orgs/>.
+
 module GitHub.Endpoints.Enterprise.Organizations (
     createOrganizationR,
     renameOrganizationR,

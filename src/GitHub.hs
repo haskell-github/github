@@ -1,8 +1,4 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- This module re-exports all request constructors and data definitions from
 -- this package.
 --
@@ -16,7 +12,7 @@
 --
 -- The missing endpoints lists show which endpoints we know are missing, there
 -- might be more.
---
+
 module GitHub (
     -- * Activity
     -- | See <https://developer.github.com/v3/activity/>

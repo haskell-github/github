@@ -6,11 +6,8 @@
 {-# LANGUAGE KindSignatures         #-}
 {-# LANGUAGE ScopedTypeVariables    #-}
 {-# LANGUAGE UndecidableInstances   #-}
------------------------------------------------------------------------------
+
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- This module provides data types and helper methods, which makes possible
 -- to build alternative API request intepreters in addition to provided
 -- 'IO' functions.
@@ -30,6 +27,7 @@
 -- > -- | Lift request into Monad
 -- > githubRequest :: GH.Request 'False a -> GithubMonad a
 -- > githubRequest = singleton
+
 module GitHub.Request (
     -- * A convenient execution of requests
     github,

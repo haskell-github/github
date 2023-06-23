@@ -1,8 +1,3 @@
------------------------------------------------------------------------------
--- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 module GitHub.Data.Events where
 
 import GitHub.Data.Definitions
@@ -14,6 +9,7 @@ import Prelude ()
 -- /TODO:/
 --
 -- * missing repo, org, payload, id
+--
 data Event = Event
     -- { eventId        :: !(Id Event) -- id can be encoded as string.
     { eventActor     :: !SimpleUser

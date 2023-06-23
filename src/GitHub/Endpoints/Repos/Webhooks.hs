@@ -1,11 +1,8 @@
- -----------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The webhooks API, as described at
 -- <https://developer.github.com/v3/repos/hooks/>
 -- <https://developer.github.com/webhooks>
+
 module GitHub.Endpoints.Repos.Webhooks (
     -- * Querying repositories
     webhooksForR,

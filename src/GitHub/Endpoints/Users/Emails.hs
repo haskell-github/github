@@ -1,10 +1,7 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The user emails API as described on
 -- <http://developer.github.com/v3/users/emails/>.
+
 module GitHub.Endpoints.Users.Emails (
     currentUserEmailsR,
     currentUserPublicEmailsR,

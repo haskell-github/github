@@ -1,8 +1,3 @@
------------------------------------------------------------------------------
--- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 module GitHub.Data.Milestone where
 
 import GitHub.Data.Definitions

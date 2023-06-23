@@ -1,10 +1,7 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The Github Repo Contents API, as documented at
 -- <https://developer.github.com/v3/repos/contents/>
+
 module GitHub.Endpoints.Repos.Contents (
     -- * Querying contents
     contentsForR,

@@ -1,10 +1,7 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The repo watching API as described on
 -- <https://developer.github.com/v3/activity/watching/>.
+
 module GitHub.Endpoints.Activity.Watching (
     watchersForR,
     reposWatchedByR,

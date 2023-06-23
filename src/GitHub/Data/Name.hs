@@ -1,9 +1,4 @@
 {-# LANGUAGE CPP #-}
------------------------------------------------------------------------------
--- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 module GitHub.Data.Name (
     Name(..),
     mkName,

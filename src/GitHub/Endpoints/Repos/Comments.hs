@@ -1,11 +1,9 @@
 {-# LANGUAGE CPP #-}
------------------------------------------------------------------------------
+
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The repo commits API as described on
 -- <http://developer.github.com/v3/repos/comments/>.
+
 module GitHub.Endpoints.Repos.Comments (
     commentsForR,
     commitCommentsForR,

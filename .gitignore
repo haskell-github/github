@@ -1,6 +1,8 @@
 .env
 dist
 dist-newstyle
+/dist*
+/tmp
 .ghc.environment.*
 *swp
 .cabal-sandbox
@@ -10,8 +12,11 @@ cabal.sandbox.config
 *~
 *.hi
 *.o
+*.lock
 .stack-work
 run.sh
 src/hightlight.js
 src/style.css
+TAGS
 .DS_Store
+

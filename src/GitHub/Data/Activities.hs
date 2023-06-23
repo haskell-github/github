@@ -1,8 +1,3 @@
------------------------------------------------------------------------------
--- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 module GitHub.Data.Activities where
 
 import GitHub.Data.Id          (Id, mkId)
@@ -107,4 +102,3 @@ instance FromJSON Notification where
         <*> o .: "updated_at"
         <*> o .: "last_read_at"
         <*> o .: "url"
-
