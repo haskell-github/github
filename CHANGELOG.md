@@ -1,3 +1,13 @@
+## Changes for 0.29
+
+_2022-06-24, Andreas Abel, Midsommar edition_
+
+- Add field `issueStateReason` of type `Maybe IssueStateReason` to `Issue`
+  with possible values `completed`, `not_planned` and `reopened`
+  (PR [#496](https://github.com/haskell-github/github/pull/496)).
+
+Tested with GHC 7.8 - 9.6.2
+
 ## Changes for 0.28.0.1
 
 _2022-07-23, Andreas Abel_

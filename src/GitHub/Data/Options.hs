@@ -76,6 +76,7 @@ module GitHub.Data.Options (
     optionsWorkflowRunHeadSha,
     -- * Data
     IssueState (..),
+    IssueStateReason (..),
     MergeableState (..),
     -- * Internal
     HasState,
@@ -119,6 +120,30 @@ instance FromJSON IssueState where
 
 instance NFData IssueState where rnf = genericRnf
 instance Binary IssueState
+
+-- | 'GitHub.Data.Issues.Issue' state reason
+data IssueStateReason
+    = StateReasonCompleted
+    | StateReasonNotPlanned
+    | StateReasonReopened
+  deriving
+    (Eq, Ord, Show, Enum, Bounded, Generic, Typeable, Data)
+
+instance ToJSON IssueStateReason where
+    toJSON = String . \case
+      StateReasonCompleted  -> "completed"
+      StateReasonNotPlanned -> "not_planned"
+      StateReasonReopened   -> "reopened"
+
+instance FromJSON IssueStateReason where
+    parseJSON = withText "IssueStateReason" $ \t -> case T.toLower t of
+        "completed"   -> pure StateReasonCompleted
+        "not_planned" -> pure StateReasonNotPlanned
+        "reopened"    -> pure StateReasonReopened
+        _ -> fail $ "Unknown IssueStateReason: " <> T.unpack t
+
+instance NFData IssueStateReason where rnf = genericRnf
+instance Binary IssueStateReason
 
 -- | 'GitHub.Data.PullRequests.PullRequest' mergeable_state
 data MergeableState

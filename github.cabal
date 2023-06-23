@@ -1,6 +1,6 @@
 cabal-version:      >=1.10
 name:               github
-version:            0.28.0.1
+version:            0.29
 synopsis:           Access to the GitHub API, v3.
 category:           Network
 description:
@@ -30,8 +30,9 @@ copyright:
   Copyright 2012-2013 Mike Burns, Copyright 2013-2015 John Wiegley, Copyright 2016-2021 Oleg Grenrus
 
 tested-with:
-  GHC == 9.4.2
-  GHC == 9.2.4
+  GHC == 9.6.2
+  GHC == 9.4.5
+  GHC == 9.2.8
   GHC == 9.0.2
   GHC == 8.10.7
   GHC == 8.8.4
@@ -49,7 +50,7 @@ extra-source-files:
 
 source-repository head
   type:     git
-  location: git://github.com/haskell-github/github.git
+  location: https://github.com/haskell-github/github.git
 
 flag openssl
   description: "Use http-client-openssl"
@@ -70,6 +71,7 @@ library
     DataKinds
     DeriveDataTypeable
     DeriveGeneric
+    LambdaCase
     OverloadedStrings
     ScopedTypeVariables
     TypeOperators
@@ -193,7 +195,7 @@ library
   -- other packages
   build-depends:
       aeson                 >=1.4.0.0    && <1.6 || >=2.0.1.0 && <2.2
-    , base-compat           >=0.11.1     && <0.13
+    , base-compat           >=0.11.1     && <0.14
     , base16-bytestring     >=0.1.1.6    && <1.1
     , binary-instances      >=1          && <1.1
     , cryptohash-sha1       >=0.11.100.1 && <0.12
@@ -230,7 +232,7 @@ test-suite github-test
   hs-source-dirs:     spec
   main-is:            Spec.hs
   ghc-options:        -Wall -threaded
-  build-tool-depends: hspec-discover:hspec-discover >=2.7.1 && <2.11
+  build-tool-depends: hspec-discover:hspec-discover >=2.7.1 && <2.12
   other-extensions:   TemplateHaskell
   other-modules:
     GitHub.Actions.ArtifactsSpec
@@ -261,7 +263,7 @@ test-suite github-test
     , bytestring
     , file-embed
     , github
-    , hspec                 >=2.6.1 && <2.11
+    , hspec                 >=2.6.1 && <2.12
     , tagged
     , text
     , unordered-containers
