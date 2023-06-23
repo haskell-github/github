@@ -9,7 +9,7 @@ import GitHub.Data.Definitions
 import GitHub.Data.Id           (Id)
 import GitHub.Data.Milestone    (Milestone)
 import GitHub.Data.Name         (Name)
-import GitHub.Data.Options      (IssueState)
+import GitHub.Data.Options      (IssueState, IssueStateReason)
 import GitHub.Data.PullRequests
 import GitHub.Data.URL          (URL)
 import GitHub.Internal.Prelude
@@ -36,6 +36,7 @@ data Issue = Issue
     , issueId          :: !(Id Issue)
     , issueComments    :: !Int
     , issueMilestone   :: !(Maybe Milestone)
+    , issueStateReason :: !(Maybe IssueStateReason)
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
@@ -203,6 +204,7 @@ instance FromJSON Issue where
         <*> o .: "id"
         <*> o .: "comments"
         <*> o .:? "milestone"
+        <*> o .:? "state_reason"
 
 instance ToJSON NewIssue where
     toJSON (NewIssue t b a m ls) = object $ filter notNull
