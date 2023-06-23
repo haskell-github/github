@@ -794,13 +794,13 @@ cacheOptionsToQueryString (CacheOptions ref key sort dir) =
     ]
   where
     mk k v = (k, Just v)
-    sort' = fmap (\case
-        SortCacheCreatedAt     -> "created_at"
-        SortCacheLastAccessedAt     -> "last_accessed_at"
-        SortCacheSizeInBytes  -> "size_in_bytes") sort
-    direction' = fmap (\case
+    sort' = sort <&> \case
+        SortCacheCreatedAt      -> "created_at"
+        SortCacheLastAccessedAt -> "last_accessed_at"
+        SortCacheSizeInBytes    -> "size_in_bytes"
+    direction' = dir <&> \case
        SortDescending -> "desc"
-       SortAscending  -> "asc") dir
+       SortAscending  -> "asc"
     ref' = fmap TE.encodeUtf8 ref
     key' = fmap TE.encodeUtf8 key
 
