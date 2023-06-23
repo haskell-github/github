@@ -1,4 +1,4 @@
-cabal-version:      >=1.10
+cabal-version:      2.4
 name:               github
 version:            0.29
 synopsis:           Access to the GitHub API, v3.
@@ -20,7 +20,7 @@ description:
   .
   For more of an overview please see the README: <https://github.com/haskell-github/github/blob/master/README.md>
 
-license:            BSD3
+license:            BSD-3-Clause
 license-file:       LICENSE
 author:             Mike Burns, John Wiegley, Oleg Grenrus
 maintainer:         Andreas Abel
@@ -43,10 +43,12 @@ tested-with:
   GHC == 7.10.3
   GHC == 7.8.4
 
-extra-source-files:
+extra-doc-files:
   README.md
   CHANGELOG.md
-  fixtures/*.json
+
+extra-source-files:
+  fixtures/**/*.json
 
 source-repository head
   type:     git
@@ -178,7 +180,8 @@ library
     GitHub.Internal.Prelude
     GitHub.Request
 
-  other-modules: Paths_github
+  other-modules:   Paths_github
+  autogen-modules: Paths_github
 
   -- Packages bundles with GHC, mtl and text are also here
   build-depends:
