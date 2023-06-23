@@ -109,6 +109,7 @@ library
     GitHub.Data.Options
     GitHub.Data.PublicSSHKeys
     GitHub.Data.PullRequests
+    GitHub.Data.Projects
     GitHub.Data.RateLimit
     GitHub.Data.Releases
     GitHub.Data.Repos
@@ -153,6 +154,7 @@ library
     GitHub.Endpoints.Repos.Deployments
     GitHub.Endpoints.Repos.Forks
     GitHub.Endpoints.Repos.Invitations
+    GitHub.Endpoints.Repos.Projects
     GitHub.Endpoints.Repos.Releases
     GitHub.Endpoints.Repos.Statuses
     GitHub.Endpoints.Repos.Webhooks

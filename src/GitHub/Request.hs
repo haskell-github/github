@@ -66,6 +66,10 @@ module GitHub.Request (
     -- They change accordingly, to make use of the library simpler.
     withOpenSSL,
     tlsManagerSettings,
+
+
+    -- preview types
+    Inertia
     ) where
 
 import GitHub.Internal.Prelude
@@ -382,6 +386,16 @@ instance PreviewAccept p => Accept ('MtPreview p) where
 
 instance PreviewParseResponse p a => ParseResponse ('MtPreview p) a where
     parseResponse = previewParseResponse
+
+
+data Inertia
+
+instance PreviewAccept Inertia where
+  previewContentType = Tagged "application/vnd.github.inertia-preview+json"
+
+instance FromJSON a => PreviewParseResponse Inertia a where
+  previewParseResponse _ res = Tagged (parseResponseJSON res)
+
 
 -------------------------------------------------------------------------------
 -- Status
