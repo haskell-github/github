@@ -6,6 +6,7 @@
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE KindSignatures    #-}
+
 module GitHub.Data.Actions.Artifacts (
     Artifact(..),
     ArtifactWorkflowRun(..),
@@ -20,31 +21,31 @@ import GitHub.Data.Actions.Common       (WithTotalCount (WithTotalCount))
 import GitHub.Data.Actions.WorkflowRuns (WorkflowRun)
 import GitHub.Data.Repos                (Repo)
 
-
 -------------------------------------------------------------------------------
 -- Artifact
 -------------------------------------------------------------------------------
+
 data ArtifactWorkflowRun  = ArtifactWorkflowRun
-    { artifactWorkflowRunWorkflowRunId :: !(Id WorkflowRun)
-    , artifactWorkflowRunRepositoryId :: !(Id Repo)
+    { artifactWorkflowRunWorkflowRunId    :: !(Id WorkflowRun)
+    , artifactWorkflowRunRepositoryId     :: !(Id Repo)
     , artifactWorkflowRunHeadRepositoryId :: !(Id Repo)
-    , artifactWorkflowRunHeadBranch :: !Text
-    , artifactWorkflowRunHeadSha :: !Text
+    , artifactWorkflowRunHeadBranch       :: !Text
+    , artifactWorkflowRunHeadSha          :: !Text
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 data Artifact = Artifact
     { artifactArchiveDownloadUrl :: !URL
-    , artifactCreatedAt :: !UTCTime
-    , artifactExpired :: !Bool
-    , artifactExpiresAt :: !UTCTime
-    , artifactId :: !(Id Artifact)
-    , artifactName :: !Text
-    , artifactNodeId :: !Text
-    , artifactSizeInBytes :: !Int
-    , artifactUpdatedAt :: !UTCTime
-    , artifactUrl :: !URL
-    , artifactWorkflowRun :: !ArtifactWorkflowRun
+    , artifactCreatedAt          :: !UTCTime
+    , artifactExpired            :: !Bool
+    , artifactExpiresAt          :: !UTCTime
+    , artifactId                 :: !(Id Artifact)
+    , artifactName               :: !Text
+    , artifactNodeId             :: !Text
+    , artifactSizeInBytes        :: !Int
+    , artifactUpdatedAt          :: !UTCTime
+    , artifactUrl                :: !URL
+    , artifactWorkflowRun        :: !ArtifactWorkflowRun
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 

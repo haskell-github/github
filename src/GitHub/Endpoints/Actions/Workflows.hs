@@ -5,6 +5,7 @@
 -- --
 -- -- The pull requests API as documented at
 -- -- <http://developer.github.com/v3/pulls/>.
+
 module GitHub.Endpoints.Actions.Workflows (
     repositoryWorkflowsR,
     workflowR,

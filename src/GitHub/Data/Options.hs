@@ -703,7 +703,7 @@ optionsNoAssignee = IssueRepoMod $ \opts ->
 optionsAssignee :: Name User -> IssueRepoMod
 optionsAssignee u = IssueRepoMod $ \opts ->
     opts { issueRepoOptionsAssignee = FilterBy u }
-    
+
 -------------------------------------------------------------------------------
 -- Actions artifacts
 -------------------------------------------------------------------------------

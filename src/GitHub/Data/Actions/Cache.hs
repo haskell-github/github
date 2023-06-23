@@ -24,27 +24,27 @@ import GitHub.Data.Actions.Common (WithTotalCount (WithTotalCount))
 -------------------------------------------------------------------------------
 
 data Cache = Cache
-    { cacheId :: !(Id Cache)
-    , cacheRef :: !Text
-    , cacheKey :: !Text
-    , cacheVersion :: !Text
+    { cacheId             :: !(Id Cache)
+    , cacheRef            :: !Text
+    , cacheKey            :: !Text
+    , cacheVersion        :: !Text
     , cacheLastAccessedAt :: !UTCTime
-    , cacheCreatedAt :: !UTCTime
-    , cacheSizeInBytes :: !Int
+    , cacheCreatedAt      :: !UTCTime
+    , cacheSizeInBytes    :: !Int
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 data RepositoryCacheUsage = RepositoryCacheUsage
-              { repositoryCacheUsageFullName :: !Text
-              , repositoryCacheUsageActiveCachesSizeInBytes :: !Int
-              , repositoryCacheUsageActiveCachesCount :: !Int
-              }
+    { repositoryCacheUsageFullName                :: !Text
+    , repositoryCacheUsageActiveCachesSizeInBytes :: !Int
+    , repositoryCacheUsageActiveCachesCount       :: !Int
+    }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 data OrganizationCacheUsage = OrganizationCacheUsage
-              { organizationCacheUsageTotalActiveCachesSizeInBytes :: !Int
-              , organizationCacheUsageTotalActiveCachesCount :: !Int
-              }
+    { organizationCacheUsageTotalActiveCachesSizeInBytes :: !Int
+    , organizationCacheUsageTotalActiveCachesCount       :: !Int
+    }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 -- -------------------------------------------------------------------------------
