@@ -23,7 +23,6 @@ import GitHub.Data.Actions.Common (WithTotalCount (WithTotalCount))
 import GitHub.Data.Name           (Name)
 import GitHub.Data.Repos          (Repo)
 
-
 -------------------------------------------------------------------------------
 -- Secret
 -------------------------------------------------------------------------------
@@ -78,9 +77,9 @@ data RepoSecret = RepoSecret
 data Environment = Environment
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
--- -------------------------------------------------------------------------------
--- -- JSON instances
--- -------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-- JSON instances
+-------------------------------------------------------------------------------
 
 instance FromJSON OrganizationSecret where
     parseJSON = withObject "Secret" $ \o -> OrganizationSecret

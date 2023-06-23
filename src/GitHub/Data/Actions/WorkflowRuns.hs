@@ -17,6 +17,10 @@ import Prelude ()
 import GitHub.Data.Id   (Id)
 import GitHub.Data.Name (Name)
 
+-------------------------------------------------------------------------------
+-- Workflow runs
+-------------------------------------------------------------------------------
+
 data WorkflowRun  = WorkflowRun
     { workflowRunWorkflowRunId :: !(Id WorkflowRun)
     , workflowRunName :: !(Name WorkflowRun)
@@ -49,6 +53,10 @@ data ReviewHistory  = ReviewHistory
 
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
+
+-------------------------------------------------------------------------------
+-- JSON instances
+-------------------------------------------------------------------------------
 
 instance FromJSON WorkflowRun where
     parseJSON = withObject "WorkflowRun" $ \o -> WorkflowRun

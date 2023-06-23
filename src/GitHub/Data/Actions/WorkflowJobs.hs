@@ -7,54 +7,55 @@ module GitHub.Data.Actions.WorkflowJobs (
     Job(..),
     ) where
 
-import GitHub.Data.Id          (Id)
-import GitHub.Data.Name        (Name)
-import GitHub.Data.URL         (URL)
+import Prelude ()
 import GitHub.Internal.Prelude
        (Applicative ((<*>)), Data, Eq, FromJSON (parseJSON), Generic, Integer,
        Ord, Show, Text, Typeable, UTCTime, Vector, withObject, ($), (.:),
        (<$>))
-import Prelude ()
+
+import GitHub.Data.Id                   (Id)
+import GitHub.Data.Name                 (Name)
+import GitHub.Data.URL                  (URL)
 
 import GitHub.Data.Actions.Common       (WithTotalCount (WithTotalCount))
 import GitHub.Data.Actions.WorkflowRuns (WorkflowRun)
 
+-------------------------------------------------------------------------------
+-- Workflow jobs
+-------------------------------------------------------------------------------
 
 data JobStep = JobStep
-    {
-     jobStepName                 :: !(Name JobStep)
-    , jobStepStatus                 :: !Text
-    , jobStepConclusion                 :: !Text
-    , jobStepNumber                 :: !Integer
-    , jobStepStartedAt                 :: !UTCTime
-    , jobStepCompletedAt                 :: !UTCTime
+    { jobStepName        :: !(Name JobStep)
+    , jobStepStatus      :: !Text
+    , jobStepConclusion  :: !Text
+    , jobStepNumber      :: !Integer
+    , jobStepStartedAt   :: !UTCTime
+    , jobStepCompletedAt :: !UTCTime
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
 data Job = Job
-    {
-     jobId                 :: !(Id Job)
-    , jobRunId                 :: !(Id WorkflowRun)
-    , jobRunUrl                 :: !URL
-    , jobRunAttempt                 :: !Integer
-    , jobNodeId                 :: !Text
-    , jobHeadSha                 :: !Text
-    , jobUrl                 :: !URL
-    , jobHtmlUrl                 :: !URL
-    , jobStatus                 :: !Text
-    , jobConclusion                 :: !Text
-    , jobStartedAt                 :: !UTCTime
-    , jobCompletedAt                 :: !UTCTime
-    , jobSteps                 :: !(Vector JobStep)
-    , jobRunCheckUrl                 :: !URL
-    , jobLabels                 :: !(Vector Text)
-    , jobRunnerId                 :: !Integer
-    , jobRunnerName                 :: !Text
-    , jobRunnerGroupId                 :: !Integer
-    , jobRunnerGroupName                 :: !Text
+    { jobId              :: !(Id Job)
+    , jobRunId           :: !(Id WorkflowRun)
+    , jobRunUrl          :: !URL
+    , jobRunAttempt      :: !Integer
+    , jobNodeId          :: !Text
+    , jobHeadSha         :: !Text
+    , jobUrl             :: !URL
+    , jobHtmlUrl         :: !URL
+    , jobStatus          :: !Text
+    , jobConclusion      :: !Text
+    , jobStartedAt       :: !UTCTime
+    , jobCompletedAt     :: !UTCTime
+    , jobSteps           :: !(Vector JobStep)
+    , jobRunCheckUrl     :: !URL
+    , jobLabels          :: !(Vector Text)
+    , jobRunnerId        :: !Integer
+    , jobRunnerName      :: !Text
+    , jobRunnerGroupId   :: !Integer
+    , jobRunnerGroupName :: !Text
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
-
 
 -------------------------------------------------------------------------------
 -- JSON instances

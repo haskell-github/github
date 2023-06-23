@@ -707,7 +707,7 @@ optionsAssignee u = IssueRepoMod $ \opts ->
 -------------------------------------------------------------------------------
 -- | See <https://docs.github.com/en/rest/actions/artifacts#list-artifacts-for-a-repository>.
 data ArtifactOptions = ArtifactOptions
-    { artifactOptionsName     :: !(Maybe Text)
+    { artifactOptionsName :: !(Maybe Text)
     }
   deriving
     (Eq, Ord, Show, Generic, Typeable, Data)
@@ -752,8 +752,8 @@ artifactOptionsToQueryString (ArtifactOptions name) =
 
 -- | See <https://docs.github.com/en/rest/actions/cache#list-github-actions-caches-for-a-repository>.
 data CacheOptions = CacheOptions
-    { cacheOptionsRef     :: !(Maybe Text)
-    , cacheOptionsKey      :: !(Maybe Text)
+    { cacheOptionsRef       :: !(Maybe Text)
+    , cacheOptionsKey       :: !(Maybe Text)
     , cacheOptionsSort      :: !(Maybe SortCache)
     , cacheOptionsDirection :: !(Maybe SortDirection)
     }
@@ -762,9 +762,9 @@ data CacheOptions = CacheOptions
 
 defaultCacheOptions :: CacheOptions
 defaultCacheOptions = CacheOptions
-    { cacheOptionsRef = Nothing
-    , cacheOptionsKey  = Nothing
-    , cacheOptionsSort  = Nothing
+    { cacheOptionsRef       = Nothing
+    , cacheOptionsKey       = Nothing
+    , cacheOptionsSort      = Nothing
     , cacheOptionsDirection = Nothing
     }
 
@@ -787,9 +787,9 @@ cacheModToQueryString = cacheOptionsToQueryString . toCacheOptions
 cacheOptionsToQueryString :: CacheOptions -> QueryString
 cacheOptionsToQueryString (CacheOptions ref key sort dir) =
     catMaybes
-    [ mk "ref" <$> ref'
-    , mk "key" <$> key'
-    , mk "sort" <$> sort'
+    [ mk "ref"        <$> ref'
+    , mk "key"        <$> key'
+    , mk "sort"       <$> sort'
     , mk "directions" <$> direction'
     ]
   where
@@ -850,10 +850,10 @@ sortBySizeInBytes = CacheMod $ \opts ->
 
 -- | See <https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-repository>.
 data WorkflowRunOptions = WorkflowRunOptions
-    { workflowRunOptionsActor     :: !(Maybe Text)
-    , workflowRunOptionsBranch      :: !(Maybe Text)
-    , workflowRunOptionsEvent      :: !(Maybe Text)
-    , workflowRunOptionsStatus :: !(Maybe Text)
+    { workflowRunOptionsActor   :: !(Maybe Text)
+    , workflowRunOptionsBranch  :: !(Maybe Text)
+    , workflowRunOptionsEvent   :: !(Maybe Text)
+    , workflowRunOptionsStatus  :: !(Maybe Text)
     , workflowRunOptionsCreated :: !(Maybe Text)
     , workflowRunOptionsHeadSha :: !(Maybe Text)
     }
@@ -862,10 +862,10 @@ data WorkflowRunOptions = WorkflowRunOptions
 
 defaultWorkflowRunOptions :: WorkflowRunOptions
 defaultWorkflowRunOptions = WorkflowRunOptions
-    { workflowRunOptionsActor     = Nothing
-    , workflowRunOptionsBranch      = Nothing
-    , workflowRunOptionsEvent     = Nothing
-    , workflowRunOptionsStatus = Nothing
+    { workflowRunOptionsActor   = Nothing
+    , workflowRunOptionsBranch  = Nothing
+    , workflowRunOptionsEvent   = Nothing
+    , workflowRunOptionsStatus  = Nothing
     , workflowRunOptionsCreated = Nothing
     , workflowRunOptionsHeadSha = Nothing
     }
@@ -889,19 +889,19 @@ workflowRunModToQueryString = workflowRunOptionsToQueryString . toWorkflowRunOpt
 workflowRunOptionsToQueryString :: WorkflowRunOptions -> QueryString
 workflowRunOptionsToQueryString (WorkflowRunOptions actor branch event status created headSha) =
     catMaybes
-    [ mk "actor" <$> actor'
-    , mk "branch" <$> branch'
-    , mk "event" <$> event'
-    , mk "status" <$> status'
-    , mk "created" <$> created'
+    [ mk "actor"    <$> actor'
+    , mk "branch"   <$> branch'
+    , mk "event"    <$> event'
+    , mk "status"   <$> status'
+    , mk "created"  <$> created'
     , mk "head_sha" <$> headSha'
     ]
   where
     mk k v = (k, Just v)
-    actor' = fmap TE.encodeUtf8 actor
-    branch' = fmap TE.encodeUtf8 branch
-    event' = fmap TE.encodeUtf8 event
-    status' = fmap TE.encodeUtf8 status
+    actor'   = fmap TE.encodeUtf8 actor
+    branch'  = fmap TE.encodeUtf8 branch
+    event'   = fmap TE.encodeUtf8 event
+    status'  = fmap TE.encodeUtf8 status
     created' = fmap TE.encodeUtf8 created
     headSha' = fmap TE.encodeUtf8 headSha
 

@@ -42,9 +42,9 @@ data OrganizationCacheUsage = OrganizationCacheUsage
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
--- -------------------------------------------------------------------------------
--- -- JSON instances
--- -------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-- JSON instances
+-------------------------------------------------------------------------------
 
 instance FromJSON Cache where
     parseJSON = withObject "Cache" $ \o -> Cache

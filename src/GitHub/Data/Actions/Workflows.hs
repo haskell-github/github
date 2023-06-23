@@ -7,32 +7,30 @@ module GitHub.Data.Actions.Workflows (
     CreateWorkflowDispatchEvent(..),
     ) where
 
+import Prelude ()
+import GitHub.Internal.Prelude
+
 import GitHub.Data.Actions.Common (WithTotalCount (WithTotalCount))
 import GitHub.Data.Id             (Id)
 import GitHub.Data.URL            (URL)
-import GitHub.Internal.Prelude
-import Prelude ()
-
 
 data Workflow = Workflow
-    {
-     workflowWorkflowId                 :: !(Id Workflow)
-    , workflowName                 :: !Text
-    , workflowPath                 :: !Text
-    , workflowState                 :: !Text
-    , workflowCreatedAt                 :: !UTCTime
-    , workflowUpdatedAt                 :: !UTCTime
-    , workflowUrl                 :: !URL
-    , workflowHtmlUrl                 :: !URL
-    , workflowBadgeUrl                 :: !URL
+    { workflowWorkflowId :: !(Id Workflow)
+    , workflowName       :: !Text
+    , workflowPath       :: !Text
+    , workflowState      :: !Text
+    , workflowCreatedAt  :: !UTCTime
+    , workflowUpdatedAt  :: !UTCTime
+    , workflowUrl        :: !URL
+    , workflowHtmlUrl    :: !URL
+    , workflowBadgeUrl   :: !URL
     }
   deriving (Show, Data, Typeable, Eq, Ord, Generic)
 
-data CreateWorkflowDispatchEvent a
-    = CreateWorkflowDispatchEvent
-      { createWorkflowDispatchEventRef :: !Text
-      , createWorkflowDispatchEventInputs  :: !a
-      }
+data CreateWorkflowDispatchEvent a = CreateWorkflowDispatchEvent
+    { createWorkflowDispatchEventRef    :: !Text
+    , createWorkflowDispatchEventInputs :: !a
+    }
   deriving (Show, Generic)
 
 instance (NFData a) => NFData (CreateWorkflowDispatchEvent a) where rnf = genericRnf
