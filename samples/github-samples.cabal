@@ -18,15 +18,13 @@ tested-with:
   GHC == 8.8.4
   GHC == 8.6.5
   GHC == 8.4.4
-  GHC == 8.2.2
-  GHC == 8.0.2
-  GHC == 7.10.3
 
 library
   hs-source-dirs:   src
   ghc-options:      -Wall
   build-depends:
-    , base                   >=4.7 && <5
+    , base                   >=4.11 && <5
+        -- require base-4.11 because then (<>) is in Prelude
     , base-compat-batteries
     , github
     , text
@@ -148,6 +146,11 @@ executable github-list-team-current
 --   import:         deps
 --   main-is:        ShowDeployKey.hs
 --   hs-source-dirs: Repos/DeployKeys
+
+executable github-show-repo-issues
+  import:         deps
+  main-is:        ShowRepoIssues.hs
+  hs-source-dirs: Issues
 
 executable github-show-user
   import:         deps

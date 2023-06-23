@@ -1,21 +1,31 @@
-module ShowRepoIssue where
+{-# LANGUAGE OverloadedStrings #-}
 
-import qualified Github.Issues as Github
+import qualified GitHub as Github
 import Data.List (intercalate)
+import Data.Foldable (toList)
 
+main :: IO ()
 main = do
-  let limitations = [Github.OnlyClosed, Github.Mentions "mike-burns", Github.AssignedTo "jyurek"]
-  possibleIssues <- Github.issuesForRepo "thoughtbot" "paperclip" limitations
+  let filt = Github.stateClosed <> Github.optionsMentioned "mike-burns" <> Github.optionsAssignee "jyurek"
+  possibleIssues <- Github.github' $ Github.issuesForRepoR "thoughtbot" "paperclip" filt Github.FetchAll
   case possibleIssues of
-       (Left error) -> putStrLn $ "Error: " ++ show error
-       (Right issues) ->
-         putStrLn $ intercalate "\n\n" $ map formatIssue issues
+       Left err -> putStrLn $ "Error: " ++ show err
+       Right issues ->
+         putStrLn $ intercalate "\n\n" $ map formatIssue $ toList issues
 
-formatIssue issue =
-  (Github.githubOwnerLogin $ Github.issueUser issue) ++
-    " opened this issue " ++
-    (show $ Github.fromDate $ Github.issueCreatedAt issue) ++ "\n" ++
-    (Github.issueState issue) ++ " with " ++
-    (show $ Github.issueComments issue) ++ " comments" ++ "\n\n" ++
-    (Github.issueTitle issue)
+formatIssue :: Github.Issue -> String
+formatIssue issue = concat
 
+  [ show $ Github.simpleUserLogin $ Github.issueUser issue
+  , " opened this issue "
+  , show $ Github.issueCreatedAt issue
+  , ".\n"
+
+  , "It is currently "
+  , show $ Github.issueState issue
+  , " with "
+  , show $ Github.issueComments issue
+  , " comments.\n\n"
+
+  , show $ Github.issueTitle issue
+  ]
