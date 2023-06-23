@@ -705,6 +705,7 @@ optionsAssignee u = IssueRepoMod $ \opts ->
 -------------------------------------------------------------------------------
 -- Actions artifacts
 -------------------------------------------------------------------------------
+
 -- | See <https://docs.github.com/en/rest/actions/artifacts#list-artifacts-for-a-repository>.
 data ArtifactOptions = ArtifactOptions
     { artifactOptionsName :: !(Maybe Text)
@@ -746,6 +747,7 @@ artifactOptionsToQueryString (ArtifactOptions name) =
   where
     mk k v = (k, Just v)
     name' = fmap TE.encodeUtf8 name
+
 -------------------------------------------------------------------------------
 -- Actions cache
 -------------------------------------------------------------------------------

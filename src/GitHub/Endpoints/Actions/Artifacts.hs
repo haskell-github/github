@@ -28,7 +28,6 @@ artifactsForR user repo opts = PagedQuery
     ["repos", toPathPart user, toPathPart repo, "actions", "artifacts"]
     (artifactModToQueryString opts)
 
-
 -- | Get an artifact.
 -- See <https://docs.github.com/en/rest/reference/actions#get-an-artifact>
 artifactR :: Name Owner -> Name Repo -> Id Artifact -> Request 'RA Artifact
