@@ -1,10 +1,8 @@
 {-# LANGUAGE CPP #-}
------------------------------------------------------------------------------
+
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The issues API as described on <http://developer.github.com/v3/issues/>.
+
 module GitHub.Endpoints.Issues (
     currentUserIssuesR,
     organizationIssuesR,

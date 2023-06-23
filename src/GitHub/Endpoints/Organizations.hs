@@ -1,9 +1,6 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The orgs API as described on <http://developer.github.com/v3/orgs/>.
+
 module GitHub.Endpoints.Organizations (
     publicOrganizationsForR,
     publicOrganizationR,

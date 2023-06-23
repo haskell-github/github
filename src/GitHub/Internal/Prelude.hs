@@ -1,11 +1,9 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE CPP #-}
------------------------------------------------------------------------------
+
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- This module may change between minor releases. Do not rely on its contents.
+
 module GitHub.Internal.Prelude (
     module Prelude.Compat,
     -- * Commonly used types

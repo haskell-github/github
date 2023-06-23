@@ -1,9 +1,6 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The events API as described on <https://developer.github.com/v3/activity/events/>.
+
 module GitHub.Endpoints.Activity.Events (
     -- * Events
     repositoryEventsR,

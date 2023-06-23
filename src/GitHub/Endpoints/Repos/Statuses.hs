@@ -1,10 +1,7 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The repo statuses API as described on
 -- <https://developer.github.com/v3/repos/statuses/>.
+
 module GitHub.Endpoints.Repos.Statuses (
     createStatusR,
     statusesForR,

@@ -1,10 +1,7 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- Hot forking action, as described at
 -- <http://developer.github.com/v3/repos/forks/>.
+
 module GitHub.Endpoints.Repos.Forks (
     forksForR,
     module GitHub.Data,

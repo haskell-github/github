@@ -1,10 +1,7 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The organization members API as described on
 -- <http://developer.github.com/v3/orgs/members/>.
+
 module GitHub.Endpoints.Organizations.Members (
     membersOfR,
     membersOfWithR,

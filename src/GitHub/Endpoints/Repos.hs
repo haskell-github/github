@@ -1,10 +1,7 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The Github Repos API, as documented at
 -- <http://developer.github.com/v3/repos/>
+
 module GitHub.Endpoints.Repos (
     -- * Querying repositories
     currentUserReposR,

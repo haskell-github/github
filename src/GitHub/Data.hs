@@ -1,10 +1,8 @@
 {-# LANGUAGE CPP #-}
------------------------------------------------------------------------------
+
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- This module re-exports the @GitHub.Data.@ and "GitHub.Auth" submodules.
+
 module GitHub.Data (
     -- * Tagged types
     -- ** Name

@@ -1,10 +1,7 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The API for dealing with labels on Github issues as described on
 -- <http://developer.github.com/v3/issues/labels/>.
+
 module GitHub.Endpoints.Issues.Labels (
     labelsOnRepoR,
     labelR,

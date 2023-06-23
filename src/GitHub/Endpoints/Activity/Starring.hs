@@ -1,10 +1,7 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The repo starring API as described on
 -- <https://developer.github.com/v3/activity/starring/>.
+
 module GitHub.Endpoints.Activity.Starring (
     stargazersForR,
     reposStarredByR,

@@ -1,10 +1,8 @@
 {-# LANGUAGE RecordWildCards #-}
------------------------------------------------------------------------------
+
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- Module with modifiers for pull requests' and issues' listings.
+
 module GitHub.Data.Options (
     -- * Common modifiers
     stateOpen,

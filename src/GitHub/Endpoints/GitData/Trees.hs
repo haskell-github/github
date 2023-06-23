@@ -1,10 +1,7 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The underlying tree of SHA1s and files that make up a git repo. The API is
 -- described on <http://developer.github.com/v3/git/trees/>.
+
 module GitHub.Endpoints.GitData.Trees (
     treeR,
     nestedTreeR,

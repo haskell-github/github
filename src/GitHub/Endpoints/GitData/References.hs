@@ -1,11 +1,8 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The underlying git references on a Github repo, exposed for the world to
 -- see. The git internals documentation will also prove handy for understanding
 -- these. API documentation at <http://developer.github.com/v3/git/refs/>.
+
 module GitHub.Endpoints.GitData.References (
     referenceR,
     referencesR,
