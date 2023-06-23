@@ -1,12 +1,8 @@
------------------------------------------------------------------------------
--- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE KindSignatures    #-}
 {-# LANGUAGE RecordWildCards   #-}
+
 module GitHub.Data.Actions.Secrets (
     OrganizationSecret(..),
     PublicKey(..),

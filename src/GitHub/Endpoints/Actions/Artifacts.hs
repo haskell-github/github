@@ -1,10 +1,7 @@
------------------------------------------------------------------------------
 -- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 -- The actions API as documented at
 -- <https://docs.github.com/en/rest/reference/actions>.
+
 module GitHub.Endpoints.Actions.Artifacts (
     artifactsForR,
     artifactR,

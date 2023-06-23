@@ -1,10 +1,3 @@
--- -----------------------------------------------------------------------------
--- -- |
--- -- License     :  BSD-3-Clause
--- -- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
--- --
--- -- The pull requests API as documented at
--- -- <http://developer.github.com/v3/pulls/>.
 module GitHub.Endpoints.Actions.WorkflowRuns (
     reRunJobR,
     workflowRunsR,

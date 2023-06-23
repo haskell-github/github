@@ -1,11 +1,7 @@
------------------------------------------------------------------------------
--- |
--- License     :  BSD-3-Clause
--- Maintainer  :  Oleg Grenrus <oleg.grenrus@iki.fi>
---
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE KindSignatures    #-}
+
 module GitHub.Data.Actions.Cache (
     Cache(..),
     RepositoryCacheUsage(..),
@@ -17,7 +13,6 @@ import GitHub.Internal.Prelude
 import Prelude ()
 
 import GitHub.Data.Actions.Common (WithTotalCount (WithTotalCount))
-
 
 -------------------------------------------------------------------------------
 -- Cache
