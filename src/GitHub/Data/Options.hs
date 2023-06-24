@@ -1,4 +1,5 @@
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE LambdaCase #-}
 
 -- |
 -- Module with modifiers for pull requests' and issues' listings.
@@ -46,6 +47,31 @@ module GitHub.Data.Options (
     optionsAnyAssignee,
     optionsNoAssignee,
     optionsAssignee,
+    -- * Actions artifacts
+    ArtifactMod,
+    artifactModToQueryString,
+    optionsArtifactName,
+    -- * Actions cache
+    CacheMod,
+    cacheModToQueryString,
+    optionsRef,
+    optionsNoRef,
+    optionsKey,
+    optionsNoKey,
+    optionsDirectionAsc,
+    optionsDirectionDesc,
+    sortByCreatedAt,
+    sortByLastAccessedAt,
+    sortBySizeInBytes,
+    -- * Actions workflow runs
+    WorkflowRunMod,
+    workflowRunModToQueryString,
+    optionsWorkflowRunActor,
+    optionsWorkflowRunBranch,
+    optionsWorkflowRunEvent,
+    optionsWorkflowRunStatus,
+    optionsWorkflowRunCreated,
+    optionsWorkflowRunHeadSha,
     -- * Data
     IssueState (..),
     IssueStateReason (..),
@@ -206,6 +232,18 @@ data FilterBy a
       -- I.e. won't show issues without mileston specified
   deriving
     (Eq, Ord, Show, Generic, Typeable, Data)
+
+-- Actions cache
+
+data SortCache
+    = SortCacheCreatedAt
+    | SortCacheLastAccessedAt
+    | SortCacheSizeInBytes
+  deriving
+    (Eq, Ord, Show, Enum, Bounded, Generic, Typeable, Data)
+
+instance NFData SortCache where rnf = genericRnf
+instance Binary SortCache
 
 -------------------------------------------------------------------------------
 -- Classes
@@ -663,3 +701,236 @@ optionsNoAssignee = IssueRepoMod $ \opts ->
 optionsAssignee :: Name User -> IssueRepoMod
 optionsAssignee u = IssueRepoMod $ \opts ->
     opts { issueRepoOptionsAssignee = FilterBy u }
+
+-------------------------------------------------------------------------------
+-- Actions artifacts
+-------------------------------------------------------------------------------
+
+-- | See <https://docs.github.com/en/rest/actions/artifacts#list-artifacts-for-a-repository>.
+data ArtifactOptions = ArtifactOptions
+    { artifactOptionsName :: !(Maybe Text)
+    }
+  deriving
+    (Eq, Ord, Show, Generic, Typeable, Data)
+
+defaultArtifactOptions :: ArtifactOptions
+defaultArtifactOptions = ArtifactOptions
+    { artifactOptionsName = Nothing
+    }
+
+-- | See <https://docs.github.com/en/rest/actions/artifacts#list-artifacts-for-a-repository>.
+newtype ArtifactMod = ArtifactMod (ArtifactOptions -> ArtifactOptions)
+
+instance Semigroup ArtifactMod where
+    ArtifactMod f <> ArtifactMod g = ArtifactMod (g . f)
+
+instance Monoid ArtifactMod where
+    mempty  = ArtifactMod id
+    mappend = (<>)
+
+-- | Filters artifacts by exact match on their name field.
+optionsArtifactName :: Text -> ArtifactMod
+optionsArtifactName n = ArtifactMod $ \opts ->
+    opts { artifactOptionsName = Just n }
+
+toArtifactOptions :: ArtifactMod -> ArtifactOptions
+toArtifactOptions (ArtifactMod f) = f defaultArtifactOptions
+
+artifactModToQueryString :: ArtifactMod -> QueryString
+artifactModToQueryString = artifactOptionsToQueryString . toArtifactOptions
+
+artifactOptionsToQueryString :: ArtifactOptions -> QueryString
+artifactOptionsToQueryString (ArtifactOptions name) =
+    catMaybes
+    [ mk "name" <$> name'
+    ]
+  where
+    mk k v = (k, Just v)
+    name' = fmap TE.encodeUtf8 name
+
+-------------------------------------------------------------------------------
+-- Actions cache
+-------------------------------------------------------------------------------
+
+-- | See <https://docs.github.com/en/rest/actions/cache#list-github-actions-caches-for-a-repository>.
+data CacheOptions = CacheOptions
+    { cacheOptionsRef       :: !(Maybe Text)
+    , cacheOptionsKey       :: !(Maybe Text)
+    , cacheOptionsSort      :: !(Maybe SortCache)
+    , cacheOptionsDirection :: !(Maybe SortDirection)
+    }
+  deriving
+    (Eq, Ord, Show, Generic, Typeable, Data)
+
+defaultCacheOptions :: CacheOptions
+defaultCacheOptions = CacheOptions
+    { cacheOptionsRef       = Nothing
+    , cacheOptionsKey       = Nothing
+    , cacheOptionsSort      = Nothing
+    , cacheOptionsDirection = Nothing
+    }
+
+-- | See <https://docs.github.com/en/rest/actions/cache#list-github-actions-caches-for-a-repository>.
+newtype CacheMod = CacheMod (CacheOptions -> CacheOptions)
+
+instance Semigroup CacheMod where
+    CacheMod f <> CacheMod g = CacheMod (g . f)
+
+instance Monoid CacheMod where
+    mempty  = CacheMod id
+    mappend = (<>)
+
+toCacheOptions :: CacheMod -> CacheOptions
+toCacheOptions (CacheMod f) = f defaultCacheOptions
+
+cacheModToQueryString :: CacheMod -> QueryString
+cacheModToQueryString = cacheOptionsToQueryString . toCacheOptions
+
+cacheOptionsToQueryString :: CacheOptions -> QueryString
+cacheOptionsToQueryString (CacheOptions ref key sort dir) =
+    catMaybes
+    [ mk "ref"        <$> ref'
+    , mk "key"        <$> key'
+    , mk "sort"       <$> sort'
+    , mk "directions" <$> direction'
+    ]
+  where
+    mk k v = (k, Just v)
+    sort' = sort <&> \case
+        SortCacheCreatedAt      -> "created_at"
+        SortCacheLastAccessedAt -> "last_accessed_at"
+        SortCacheSizeInBytes    -> "size_in_bytes"
+    direction' = dir <&> \case
+       SortDescending -> "desc"
+       SortAscending  -> "asc"
+    ref' = fmap TE.encodeUtf8 ref
+    key' = fmap TE.encodeUtf8 key
+
+-------------------------------------------------------------------------------
+-- Cache modifiers
+-------------------------------------------------------------------------------
+
+optionsRef :: Text -> CacheMod
+optionsRef x = CacheMod $ \opts ->
+    opts { cacheOptionsRef = Just x }
+
+optionsNoRef :: CacheMod
+optionsNoRef = CacheMod $ \opts ->
+    opts { cacheOptionsRef = Nothing }
+
+optionsKey :: Text -> CacheMod
+optionsKey x = CacheMod $ \opts ->
+    opts { cacheOptionsKey = Just x }
+
+optionsNoKey :: CacheMod
+optionsNoKey = CacheMod $ \opts ->
+    opts { cacheOptionsKey = Nothing }
+
+optionsDirectionAsc :: CacheMod
+optionsDirectionAsc = CacheMod $ \opts ->
+    opts { cacheOptionsDirection = Just SortAscending }
+
+optionsDirectionDesc :: CacheMod
+optionsDirectionDesc = CacheMod $ \opts ->
+    opts { cacheOptionsDirection = Just SortDescending }
+
+sortByCreatedAt :: CacheMod
+sortByCreatedAt = CacheMod $ \opts ->
+    opts { cacheOptionsSort = Just SortCacheCreatedAt }
+
+sortByLastAccessedAt :: CacheMod
+sortByLastAccessedAt = CacheMod $ \opts ->
+    opts { cacheOptionsSort = Just SortCacheLastAccessedAt }
+
+sortBySizeInBytes :: CacheMod
+sortBySizeInBytes = CacheMod $ \opts ->
+    opts { cacheOptionsSort = Just SortCacheSizeInBytes }
+
+-------------------------------------------------------------------------------
+-- Actions workflow runs
+-------------------------------------------------------------------------------
+
+-- | See <https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-repository>.
+data WorkflowRunOptions = WorkflowRunOptions
+    { workflowRunOptionsActor   :: !(Maybe Text)
+    , workflowRunOptionsBranch  :: !(Maybe Text)
+    , workflowRunOptionsEvent   :: !(Maybe Text)
+    , workflowRunOptionsStatus  :: !(Maybe Text)
+    , workflowRunOptionsCreated :: !(Maybe Text)
+    , workflowRunOptionsHeadSha :: !(Maybe Text)
+    }
+  deriving
+    (Eq, Ord, Show, Generic, Typeable, Data)
+
+defaultWorkflowRunOptions :: WorkflowRunOptions
+defaultWorkflowRunOptions = WorkflowRunOptions
+    { workflowRunOptionsActor   = Nothing
+    , workflowRunOptionsBranch  = Nothing
+    , workflowRunOptionsEvent   = Nothing
+    , workflowRunOptionsStatus  = Nothing
+    , workflowRunOptionsCreated = Nothing
+    , workflowRunOptionsHeadSha = Nothing
+    }
+
+-- | See <https://docs.github.com/en/rest/actions/workflow-runs#list-workflow-runs-for-a-repository>.
+newtype WorkflowRunMod = WorkflowRunMod (WorkflowRunOptions -> WorkflowRunOptions)
+
+instance Semigroup WorkflowRunMod where
+    WorkflowRunMod f <> WorkflowRunMod g = WorkflowRunMod (g . f)
+
+instance Monoid WorkflowRunMod where
+    mempty  = WorkflowRunMod id
+    mappend = (<>)
+
+toWorkflowRunOptions :: WorkflowRunMod -> WorkflowRunOptions
+toWorkflowRunOptions (WorkflowRunMod f) = f defaultWorkflowRunOptions
+
+workflowRunModToQueryString :: WorkflowRunMod -> QueryString
+workflowRunModToQueryString = workflowRunOptionsToQueryString . toWorkflowRunOptions
+
+workflowRunOptionsToQueryString :: WorkflowRunOptions -> QueryString
+workflowRunOptionsToQueryString (WorkflowRunOptions actor branch event status created headSha) =
+    catMaybes
+    [ mk "actor"    <$> actor'
+    , mk "branch"   <$> branch'
+    , mk "event"    <$> event'
+    , mk "status"   <$> status'
+    , mk "created"  <$> created'
+    , mk "head_sha" <$> headSha'
+    ]
+  where
+    mk k v = (k, Just v)
+    actor'   = fmap TE.encodeUtf8 actor
+    branch'  = fmap TE.encodeUtf8 branch
+    event'   = fmap TE.encodeUtf8 event
+    status'  = fmap TE.encodeUtf8 status
+    created' = fmap TE.encodeUtf8 created
+    headSha' = fmap TE.encodeUtf8 headSha
+
+-------------------------------------------------------------------------------
+-- Workflow run modifiers
+-------------------------------------------------------------------------------
+
+optionsWorkflowRunActor :: Text -> WorkflowRunMod
+optionsWorkflowRunActor x = WorkflowRunMod $ \opts ->
+    opts { workflowRunOptionsActor = Just x }
+
+optionsWorkflowRunBranch :: Text -> WorkflowRunMod
+optionsWorkflowRunBranch x = WorkflowRunMod $ \opts ->
+    opts { workflowRunOptionsBranch = Just x }
+
+optionsWorkflowRunEvent :: Text -> WorkflowRunMod
+optionsWorkflowRunEvent x = WorkflowRunMod $ \opts ->
+    opts { workflowRunOptionsEvent = Just x }
+
+optionsWorkflowRunStatus :: Text -> WorkflowRunMod
+optionsWorkflowRunStatus x = WorkflowRunMod $ \opts ->
+    opts { workflowRunOptionsStatus = Just x }
+
+optionsWorkflowRunCreated :: Text -> WorkflowRunMod
+optionsWorkflowRunCreated x = WorkflowRunMod $ \opts ->
+    opts { workflowRunOptionsCreated = Just x }
+
+optionsWorkflowRunHeadSha :: Text -> WorkflowRunMod
+optionsWorkflowRunHeadSha x = WorkflowRunMod $ \opts ->
+    opts { workflowRunOptionsHeadSha = Just x }

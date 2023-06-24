@@ -1,0 +1,14 @@
+{
+  "total_count": 1,
+  "actions_caches": [
+    {
+      "id": 1,
+      "ref": "refs/heads/main",
+      "key": "cache_key",
+      "version": "f5f850afdadd47730296d4ffa900de95f6bbafb75dc1e8475df1fa6ae79dcece",
+      "last_accessed_at": "2022-10-30T00:08:14.223333300Z",
+      "created_at": "2022-10-30T00:08:14.223333300Z",
+      "size_in_bytes": 26586
+    }
+  ]
+}

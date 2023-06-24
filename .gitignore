@@ -18,3 +18,5 @@ run.sh
 src/hightlight.js
 src/style.css
 TAGS
+.DS_Store
+

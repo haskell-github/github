@@ -1,6 +1,12 @@
 ## Changes for 0.29
 
-_2022-06-24, Andreas Abel, Midsommar edition_
+_2023-06-24, Andreas Abel, Midsommar edition_
+
+- Support for the GitHub Actions API
+  (PR [#459](https://github.com/haskell-github/github/pull/459)):
+  * New endpoint modules `GitHub.EndPoints.Actions.Artifacts`, `.Cache`,
+    `.Secrets`, `.Workflows`, `.WorkflowRuns`, `.WorkflowJobs`.
+  * Matching data structure modules `GitHub.Data.Actions.*`.
 
 - Add field `issueStateReason` of type `Maybe IssueStateReason` to `Issue`
   with possible values `completed`, `not_planned` and `reopened`
