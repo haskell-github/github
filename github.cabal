@@ -1,6 +1,7 @@
 cabal-version:      2.4
 name:               github
 version:            0.29
+x-revision:         1
 synopsis:           Access to the GitHub API, v3.
 category:           Network
 description:
@@ -197,7 +198,7 @@ library
 
   -- other packages
   build-depends:
-      aeson                 >=1.4.0.0    && <1.6 || >=2.0.1.0 && <2.2
+      aeson                 >=1.4.0.0    && <1.6 || >=2.0.1.0 && <2.3
     , base-compat           >=0.11.1     && <0.14
     , base16-bytestring     >=0.1.1.6    && <1.1
     , binary-instances      >=1          && <1.1
