@@ -1,5 +1,6 @@
 {-# LANGUAGE CPP                #-}
 {-# LANGUAGE FlexibleContexts   #-}
+{-# LANGUAGE FlexibleInstances  #-}
 {-# LANGUAGE GADTs              #-}
 {-# LANGUAGE KindSignatures     #-}
 {-# LANGUAGE StandaloneDeriving #-}
@@ -8,6 +9,7 @@ module GitHub.Data.Request (
     -- * Request
     Request,
     GenRequest (..),
+    FetchCountable (..),
     -- * Smart constructors
     query, pagedQuery, command,
     -- * Auxiliary types
@@ -78,7 +80,6 @@ toMethod Delete = Method.methodDelete
 data FetchCount = FetchAtLeast !Word | FetchAll
     deriving (Eq, Ord, Read, Show, Generic, Typeable)
 
-
 -- | This instance is there mostly for 'fromInteger'.
 instance Num FetchCount where
     fromInteger = FetchAtLeast . fromInteger
@@ -96,6 +97,17 @@ instance Num FetchCount where
 instance Hashable FetchCount
 instance Binary FetchCount
 instance NFData FetchCount where rnf = genericRnf
+
+-- A class that's separate from 'Foldable' so we can support API's like
+-- https://docs.github.com/en/rest/apps/installations?apiVersion=2022-11-28#list-repositories-accessible-to-the-user-access-token
+-- which return an object instead of an array.
+class FetchCountable a where
+  lessFetchCount :: a -> FetchCount -> Bool
+
+instance Foldable f => FetchCountable (f a) where
+  lessFetchCount f fc = case fc of
+    FetchAll -> True
+    FetchAtLeast n -> length f < fromIntegral n
 
 -------------------------------------------------------------------------------
 -- MediaType
@@ -150,7 +162,7 @@ instance IReadOnly 'RA        where iro = ROA
 -- /Note:/ 'Request' is not 'Functor' on purpose.
 data GenRequest (mt :: MediaType *) (rw :: RW) a where
     Query        :: Paths -> QueryString -> GenRequest mt rw a
-    PagedQuery   :: (a ~ t b, Foldable t, Semigroup a) => Paths -> QueryString -> FetchCount -> GenRequest mt rw a
+    PagedQuery   :: (FetchCountable a, Semigroup a) => Paths -> QueryString -> FetchCount -> GenRequest mt rw a
 
     -- | Command
     Command

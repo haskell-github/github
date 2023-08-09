@@ -199,11 +199,6 @@ executeRequest auth req = withOpenSSL $ do
     manager <- newManager tlsManagerSettings
     executeRequestWithMgr manager auth req
 
-lessFetchCount :: Int -> FetchCount -> Bool
-lessFetchCount _ FetchAll         = True
-lessFetchCount i (FetchAtLeast j) = i < fromIntegral j
-
-
 -- | Like 'executeRequest' but with provided 'Manager'.
 executeRequestWithMgr
     :: (AuthMethod am, ParseResponse mt a)
@@ -238,7 +233,7 @@ executeRequestWithMgrAndRes mgr auth req = runExceptT $ do
     performHttpReq httpReq (PagedQuery _ _ l) =
         unTagged (performPagedRequest httpLbs' predicate httpReq :: Tagged mt (ExceptT Error IO (HTTP.Response b)))
       where
-        predicate v = lessFetchCount (length v) l
+        predicate v = lessFetchCount v l
 
     performHttpReq httpReq (Command _ _ _) = do
         res <- httpLbs' httpReq
