@@ -1,4 +1,4 @@
-branches: master ci*
+branches: master
 haddock: >=8.6
   -- See PR #355: haddocks for GADT constructor arguments only supported from GHC 8.6
 jobs-selection: any
@@ -11,3 +11,12 @@ jobs-selection: any
 -- constraint-set text-2.0
 --   constraints: text >= 2.0
 --   allow-newer: *:text -- allow-newer not supported
+
+constraint-set containers-0.7
+  ghc: >= 9
+  constraints: containers >= 0.7
+  tests: True
+  run-tests: True
+
+raw-project
+  allow-newer: containers

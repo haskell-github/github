@@ -10,8 +10,9 @@ description:   Various samples of github package
 build-type:    Simple
 
 tested-with:
-  GHC == 9.6.2
-  GHC == 9.4.5
+  GHC == 9.8.0
+  GHC == 9.6.3
+  GHC == 9.4.7
   GHC == 9.2.8
   GHC == 9.0.2
   GHC == 8.10.7
