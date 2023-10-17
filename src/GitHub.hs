@@ -173,6 +173,7 @@ module GitHub (
     membersOfWithR,
     isMemberOfR,
     orgInvitationsR,
+    orgMembershipR,
     -- ** Outside Collaborators
     -- | See <https://developer.github.com/v3/orgs/outside_collaborators/>
     --
