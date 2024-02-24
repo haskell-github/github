@@ -79,6 +79,7 @@ import Control.Monad.Trans.Class  (lift)
 import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
 import Data.Aeson                 (eitherDecode)
 import Data.List                  (find)
+import Data.Maybe                 (fromMaybe)
 import Data.Tagged                (Tagged (..))
 import Data.Version               (showVersion)
 
@@ -87,13 +88,14 @@ import Network.HTTP.Client
        httpLbs, method, newManager, redirectCount, requestBody, requestHeaders,
        setQueryString, setRequestIgnoreStatus)
 import Network.HTTP.Link.Parser (parseLinkHeaderBS)
-import Network.HTTP.Link.Types  (LinkParam (..), href, linkParams)
+import Network.HTTP.Link.Types  (Link(..), LinkParam (..), href, linkParams)
 import Network.HTTP.Types       (Method, RequestHeaders, Status (..))
 import Network.URI
        (URI, escapeURIString, isUnescapedInURIComponent, parseURIReference,
        relativeTo)
 
 import qualified Data.ByteString              as BS
+import           Data.ByteString.Builder      (intDec, toLazyByteString)
 import qualified Data.ByteString.Lazy         as LBS
 import qualified Data.Text                    as T
 import qualified Data.Text.Encoding           as TE
@@ -239,6 +241,10 @@ executeRequestWithMgrAndRes mgr auth req = runExceptT $ do
         unTagged (performPagedRequest httpLbs' predicate httpReq :: Tagged mt (ExceptT Error IO (HTTP.Response b)))
       where
         predicate v = lessFetchCount (length v) l
+
+    performHttpReq httpReq (PerPageQuery _ _ _) = do
+        (res, _pageLinks) <- unTagged (performPerPageRequest httpLbs' httpReq :: Tagged mt (ExceptT Error IO (HTTP.Response b, PageLinks)))
+        pure res
 
     performHttpReq httpReq (Command _ _ _) = do
         res <- httpLbs' httpReq
@@ -466,6 +472,18 @@ makeHttpRequest auth r = case r of
             . maybe id setAuthRequest auth
             . setQueryString qs
             $ req
+    PerPageQuery paths qs pp -> do
+        req <- parseUrl' $ url paths
+        let extraQueryItems = catMaybes [
+              (\page -> ("page", Just (BS.toStrict $ toLazyByteString $ intDec page))) <$> pageParamsPage pp
+              , (\perPage -> ("per_page", Just (BS.toStrict $ toLazyByteString $ intDec perPage))) <$> pageParamsPerPage pp
+              ]
+        return
+            $ setReqHeaders
+            . unTagged (modifyRequest :: Tagged mt (HTTP.Request -> HTTP.Request))
+            . maybe id setAuthRequest auth
+            . setQueryString (qs <> extraQueryItems)
+            $ req
     Command m paths body -> do
         req <- parseUrl' $ url paths
         return
@@ -541,6 +559,39 @@ performPagedRequest httpLbs' predicate initReq = Tagged $ do
                 m <- unTagged (parseResponse req' res' :: Tagged mt (m a))
                 go (acc <> m) res' req'
             (_, _)           -> return (acc <$ res)
+
+-- | Helper for making paginated requests. Responses, @a@ are combined monoidally.
+--
+-- The result is wrapped in the last received 'HTTP.Response'.
+--
+-- @
+-- performPerPageRequest :: ('FromJSON' a, 'Semigroup' a)
+--                       => ('HTTP.Request' -> 'ExceptT' 'Error' 'IO' ('HTTP.Response' 'LBS.ByteString'))
+--                       -> (a -> 'Bool')
+--                       -> 'HTTP.Request'
+--                       -> 'ExceptT' 'Error' 'IO' ('HTTP.Response' a)
+-- @
+performPerPageRequest
+    :: forall a m mt. (ParseResponse mt a, MonadCatch m, MonadError Error m)
+    => (HTTP.Request -> m (HTTP.Response LBS.ByteString))  -- ^ `httpLbs` analogue
+    -> HTTP.Request                                        -- ^ initial request
+    -> Tagged mt (m (HTTP.Response a, PageLinks))
+performPerPageRequest httpLbs' initReq = Tagged $ do
+    res <- httpLbs' initReq
+
+    let links :: [Link URI] = fromMaybe [] (lookup "Link" (responseHeaders res) >>= parseLinkHeaderBS)
+
+    let linkToUri (Link uri _) = uri
+
+    let pageLinks = PageLinks {
+          pageLinksPrev = linkToUri <$> find (elem (Rel, "prev") . linkParams) links
+          , pageLinksNext = linkToUri <$> find (elem (Rel, "next") . linkParams) links
+          , pageLinksLast = linkToUri <$> find (elem (Rel, "last") . linkParams) links
+          , pageLinksFirst = linkToUri <$> find (elem (Rel, "first") . linkParams) links
+          }
+
+    m <- unTagged (parseResponse initReq res :: Tagged mt (m a))
+    return (m <$ res, pageLinks)
 
 -------------------------------------------------------------------------------
 -- Internal

@@ -9,12 +9,14 @@ module GitHub.Data.Request (
     Request,
     GenRequest (..),
     -- * Smart constructors
-    query, pagedQuery, command,
+    query, pagedQuery, perPageQuery, command,
     -- * Auxiliary types
     RW(..),
     CommandMethod(..),
     toMethod,
     FetchCount(..),
+    PageParams(..),
+    PageLinks(..),
     MediaType (..),
     Paths,
     IsPathPart(..),
@@ -30,6 +32,7 @@ import GitHub.Internal.Prelude
 import qualified Data.ByteString.Lazy      as LBS
 import qualified Data.Text                 as T
 import qualified Network.HTTP.Types.Method as Method
+import Network.URI (URI)
 
 ------------------------------------------------------------------------------
 -- Path parts
@@ -98,6 +101,37 @@ instance Binary FetchCount
 instance NFData FetchCount where rnf = genericRnf
 
 -------------------------------------------------------------------------------
+-- PageParams
+-------------------------------------------------------------------------------
+
+-- | Params for specifying the precise page and items per page.
+data PageParams = PageParams {
+  pageParamsPerPage :: Maybe Int
+  , pageParamsPage :: Maybe Int
+  }
+    deriving (Eq, Ord, Read, Show, Generic, Typeable)
+
+instance Hashable PageParams
+instance Binary PageParams
+instance NFData PageParams where rnf = genericRnf
+
+-------------------------------------------------------------------------------
+-- PageLinks
+-------------------------------------------------------------------------------
+
+-- | 'PagedQuery' returns just some results, using this data we can specify how
+-- many pages we want to fetch.
+data PageLinks = PageLinks {
+  pageLinksPrev :: Maybe URI
+  , pageLinksNext :: Maybe URI
+  , pageLinksLast :: Maybe URI
+  , pageLinksFirst :: Maybe URI
+  }
+    deriving (Eq, Ord, Show, Generic, Typeable)
+
+instance NFData PageLinks where rnf = genericRnf
+
+-------------------------------------------------------------------------------
 -- MediaType
 -------------------------------------------------------------------------------
 
@@ -151,6 +185,7 @@ instance IReadOnly 'RA        where iro = ROA
 data GenRequest (mt :: MediaType *) (rw :: RW) a where
     Query        :: Paths -> QueryString -> GenRequest mt rw a
     PagedQuery   :: (a ~ t b, Foldable t, Semigroup a) => Paths -> QueryString -> FetchCount -> GenRequest mt rw a
+    PerPageQuery   :: (a ~ t b, Foldable t, Semigroup a) => Paths -> QueryString -> PageParams -> GenRequest mt rw (a, PageLinks)
 
     -- | Command
     Command
@@ -173,6 +208,9 @@ query ps qs = Query ps qs
 pagedQuery :: FromJSON a => Paths -> QueryString -> FetchCount -> Request mt (Vector a)
 pagedQuery ps qs fc = PagedQuery ps qs fc
 
+perPageQuery :: FromJSON a => Paths -> QueryString -> PageParams -> Request mt (Vector a, PageLinks)
+perPageQuery ps qs pp = PerPageQuery ps qs pp
+
 command :: CommandMethod -> Paths -> LBS.ByteString -> Request 'RW a
 command m ps body = Command m ps body
 
@@ -194,8 +232,13 @@ instance Hashable (GenRequest rw mt a) where
              `hashWithSalt` ps
              `hashWithSalt` qs
              `hashWithSalt` l
-    hashWithSalt salt (Command m ps body) =
+    hashWithSalt salt (PerPageQuery ps qs pp) =
         salt `hashWithSalt` (2 :: Int)
+             `hashWithSalt` ps
+             `hashWithSalt` qs
+             `hashWithSalt` pp
+    hashWithSalt salt (Command m ps body) =
+        salt `hashWithSalt` (3 :: Int)
              `hashWithSalt` m
              `hashWithSalt` ps
              `hashWithSalt` body
