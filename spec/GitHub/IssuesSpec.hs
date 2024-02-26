@@ -12,6 +12,7 @@ import Data.String        (fromString)
 import System.Environment (lookupEnv)
 import Test.Hspec
        (Spec, describe, expectationFailure, it, pendingWith, shouldSatisfy)
+import GitHub.Data.Request (PageParams(PageParams))
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -38,6 +39,21 @@ spec = do
                   cms <- GitHub.executeRequest auth $
                     GitHub.commentsR owner repo (GitHub.issueNumber i) 1
                   cms `shouldSatisfy` isRight
+
+    describe "issuesForRepoPagedR" $ do
+        it "works" $ withAuth $ \auth -> for_ repos $ \(owner, repo) -> do
+            cs <- GitHub.executeRequest auth $
+                GitHub.issuesForRepoPagedR owner repo mempty (PageParams (Just 2) (Just 1))
+            case cs of
+              Left e ->
+                expectationFailure . show $ e
+              Right (cs', pageLinks) -> do
+                putStrLn ("GOT PAGE LINKS: " <> show pageLinks)
+                for_ cs' $ \i -> do
+                  cms <- GitHub.executeRequest auth $
+                    GitHub.commentsR owner repo (GitHub.issueNumber i) 1
+                  cms `shouldSatisfy` isRight
+
     describe "issueR" $ do
         it "fetches issue #428" $ withAuth $ \auth -> do
             resIss <- GitHub.executeRequest auth $

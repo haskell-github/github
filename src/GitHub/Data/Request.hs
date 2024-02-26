@@ -131,6 +131,13 @@ data PageLinks = PageLinks {
 
 instance NFData PageLinks where rnf = genericRnf
 
+instance FromJSON PageLinks where
+    parseJSON = withObject "PageLinks" $ \o -> PageLinks
+        <$> o .:? "prev"
+        <*> o .:? "next"
+        <*> o .:? "last"
+        <*> o .:? "first"
+
 -------------------------------------------------------------------------------
 -- MediaType
 -------------------------------------------------------------------------------
