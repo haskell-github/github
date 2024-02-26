@@ -76,6 +76,7 @@ import Control.Monad.Error.Class (MonadError (..))
 import Control.Monad              (when)
 import Control.Monad.Catch        (MonadCatch (..), MonadThrow)
 import Control.Monad.Trans.Class  (lift)
+import Control.Monad.IO.Class     (MonadIO (..))
 import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
 import Data.Aeson                 (eitherDecode)
 import Data.List                  (find)
@@ -243,7 +244,9 @@ executeRequestWithMgrAndRes mgr auth req = runExceptT $ do
         predicate v = lessFetchCount (length v) l
 
     performHttpReq httpReq (PerPageQuery _ _ _) = do
+        lift $ putStrLn "GOT HERE 1"
         (res, _pageLinks) <- unTagged (performPerPageRequest httpLbs' httpReq :: Tagged mt (ExceptT Error IO (HTTP.Response b, PageLinks)))
+        lift $ putStrLn "GOT HERE 2"
         pure res
 
     performHttpReq httpReq (Command _ _ _) = do
@@ -572,12 +575,14 @@ performPagedRequest httpLbs' predicate initReq = Tagged $ do
 --                       -> 'ExceptT' 'Error' 'IO' ('HTTP.Response' a)
 -- @
 performPerPageRequest
-    :: forall a m mt. (ParseResponse mt a, MonadCatch m, MonadError Error m)
+    :: forall a m mt. (ParseResponse mt a, MonadCatch m, MonadError Error m, MonadIO m)
     => (HTTP.Request -> m (HTTP.Response LBS.ByteString))  -- ^ `httpLbs` analogue
     -> HTTP.Request                                        -- ^ initial request
     -> Tagged mt (m (HTTP.Response a, PageLinks))
 performPerPageRequest httpLbs' initReq = Tagged $ do
     res <- httpLbs' initReq
+
+    liftIO $ putStrLn ("performPerPageRequest: Got res: " <> show res)
 
     let links :: [Link URI] = fromMaybe [] (lookup "Link" (responseHeaders res) >>= parseLinkHeaderBS)
 
@@ -590,7 +595,12 @@ performPerPageRequest httpLbs' initReq = Tagged $ do
           , pageLinksFirst = linkToUri <$> find (elem (Rel, "first") . linkParams) links
           }
 
+    liftIO $ putStrLn ("performPerPageRequest: Got page links: " <> show pageLinks)
+
     m <- unTagged (parseResponse initReq res :: Tagged mt (m a))
+
+    liftIO $ putStrLn ("performPerPageRequest: Got here")
+
     return (m <$ res, pageLinks)
 
 -------------------------------------------------------------------------------
