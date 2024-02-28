@@ -12,7 +12,6 @@ import Data.String        (fromString)
 import System.Environment (lookupEnv)
 import Test.Hspec
        (Spec, describe, expectationFailure, it, pendingWith, shouldSatisfy)
-import GitHub.Data.Request (PageParams(PageParams))
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -43,7 +42,7 @@ spec = do
     describe "issuesForRepoR paged" $ do
         it "works" $ withAuth $ \auth -> for_ repos $ \(owner, repo) -> do
             cs <- GitHub.executeRequest auth $
-                GitHub.issuesForRepoR owner repo mempty (GitHub.FetchPage (PageParams (Just 2) (Just 1)))
+                GitHub.issuesForRepoR owner repo mempty (GitHub.FetchPage (GitHub.PageParams (Just 2) (Just 1)))
 
             length cs `shouldSatisfy` (<= 2)
 
