@@ -43,7 +43,6 @@ module GitHub.Request (
     QueryString,
     -- * Request execution in IO
     executeRequest,
-    executeRequestPaged,
     executeRequestWithMgr,
     executeRequestWithMgrAndRes,
     executeRequest',
@@ -55,6 +54,7 @@ module GitHub.Request (
     ParseResponse (..),
     makeHttpRequest,
     parseStatus,
+    parsePageLinks,
     StatusMap,
     getNextUrl,
     performPagedRequest,
@@ -203,21 +203,6 @@ executeRequest auth req = withOpenSSL $ do
     manager <- newManager tlsManagerSettings
     executeRequestWithMgr manager auth req
 
-executeRequestPaged
-    :: (AuthMethod am, ParseResponse mt a)
-    => am
-    -> PageParams
-    -> GenRequest mt rw a
-    -> IO (Either Error (a, PageLinks))
-executeRequestPaged auth pageParams req = withOpenSSL $ do
-    manager <- newManager tlsManagerSettings
-    executeRequestWithMgrPaged manager auth pageParams req
-
-lessFetchCount :: Int -> FetchCount -> Bool
-lessFetchCount _ FetchAll         = True
-lessFetchCount i (FetchAtLeast j) = i < fromIntegral j
-
-
 -- | Like 'executeRequest' but with provided 'Manager'.
 executeRequestWithMgr
     :: (AuthMethod am, ParseResponse mt a)
@@ -227,19 +212,6 @@ executeRequestWithMgr
     -> IO (Either Error a)
 executeRequestWithMgr mgr auth req =
     fmap (fmap responseBody) (executeRequestWithMgrAndRes mgr auth req)
-
--- | Like 'executeRequest' but with provided 'Manager'.
-executeRequestWithMgrPaged
-    :: (AuthMethod am, ParseResponse mt a)
-    => Manager
-    -> am
-    -> PageParams
-    -> GenRequest mt rw a
-    -> IO (Either Error (a, PageLinks))
-executeRequestWithMgrPaged mgr auth pageParams req =
-    executeRequestWithMgrAndResPaged mgr auth pageParams req >>= \case
-        Left err -> return $ Left err
-        Right (res, links) -> return $ Right (responseBody res, links)
 
 -- | Execute request and return the last received 'HTTP.Response'.
 --
@@ -251,7 +223,13 @@ executeRequestWithMgrAndRes
     -> GenRequest mt rw a
     -> IO (Either Error (HTTP.Response a))
 executeRequestWithMgrAndRes mgr auth req = runExceptT $ do
-    httpReq <- makeHttpRequest (Just auth) req []
+    httpReq <- makeHttpRequest (Just auth) req $ case req of
+      PagedQuery _ _ (FetchPage pp) -> catMaybes [
+        (\page -> ("page", Just (BS.toStrict $ toLazyByteString $ intDec page))) <$> pageParamsPage pp
+        , (\perPage -> ("per_page", Just (BS.toStrict $ toLazyByteString $ intDec perPage))) <$> pageParamsPerPage pp
+        ]
+      _ -> []
+
     performHttpReq httpReq req
   where
     httpLbs' :: HTTP.Request -> ExceptT Error IO (HTTP.Response LBS.ByteString)
@@ -262,39 +240,17 @@ executeRequestWithMgrAndRes mgr auth req = runExceptT $ do
         res <- httpLbs' httpReq
         (<$ res) <$> unTagged (parseResponse httpReq res :: Tagged mt (ExceptT Error IO b))
 
-    performHttpReq httpReq (PagedQuery _ _ (FetchPage pp)) = do
+    performHttpReq httpReq (PagedQuery _ _ (FetchPage _)) = do
         (res, _pageLinks) <- unTagged (performPerPageRequest httpLbs' httpReq :: Tagged mt (ExceptT Error IO (HTTP.Response b, PageLinks)))
         return res
-
-    performHttpReq httpReq (PagedQuery _ _ l) =
-        unTagged (performPagedRequest httpLbs' predicate httpReq :: Tagged mt (ExceptT Error IO (HTTP.Response b)))
-      where
-        predicate v = lessFetchCount (length v) l
+    performHttpReq httpReq (PagedQuery _ _ FetchAll) =
+        unTagged (performPagedRequest httpLbs' (const True) httpReq :: Tagged mt (ExceptT Error IO (HTTP.Response b)))
+    performHttpReq httpReq (PagedQuery _ _ (FetchAtLeast j)) =
+        unTagged (performPagedRequest httpLbs' (\v -> length v < fromIntegral j) httpReq :: Tagged mt (ExceptT Error IO (HTTP.Response b)))
 
     performHttpReq httpReq (Command _ _ _) = do
         res <- httpLbs' httpReq
         (<$ res) <$> unTagged (parseResponse httpReq res :: Tagged mt (ExceptT Error IO b))
-
-executeRequestWithMgrAndResPaged
-    :: (AuthMethod am, ParseResponse mt a)
-    => Manager
-    -> am
-    -> PageParams
-    -> GenRequest mt rw a
-    -> IO (Either Error (HTTP.Response a, PageLinks))
-executeRequestWithMgrAndResPaged mgr auth pp req = runExceptT $ do
-    httpReq <- makeHttpRequest (Just auth) req $ catMaybes [
-      (\page -> ("page", Just (BS.toStrict $ toLazyByteString $ intDec page))) <$> pageParamsPage pp
-      , (\perPage -> ("per_page", Just (BS.toStrict $ toLazyByteString $ intDec perPage))) <$> pageParamsPerPage pp
-      ]
-    performHttpReq httpReq req
-  where
-    httpLbs' :: HTTP.Request -> ExceptT Error IO (HTTP.Response LBS.ByteString)
-    httpLbs' req' = lift (httpLbs req' mgr) `catch` onHttpException
-
-    performHttpReq :: forall rw mt b. (ParseResponse mt b) => HTTP.Request -> GenRequest mt rw b -> ExceptT Error IO (HTTP.Response b, PageLinks)
-    performHttpReq httpReq (PagedQuery _ _ _) =
-        unTagged (performPerPageRequest httpLbs' httpReq :: Tagged mt (ExceptT Error IO (HTTP.Response b, PageLinks)))
 
 -- | Like 'executeRequest' but without authentication.
 executeRequest' :: ParseResponse mt a => GenRequest mt 'RO a -> IO (Either Error a)
@@ -598,17 +554,9 @@ performPagedRequest httpLbs' predicate initReq = Tagged $ do
                 go (acc <> m) res' req'
             (_, _)           -> return (acc <$ res)
 
--- | Helper for making paginated requests. Responses, @a@ are combined monoidally.
+-- | Helper for requesting a single page, as specified by 'PageParams'.
 --
--- The result is wrapped in the last received 'HTTP.Response'.
---
--- @
--- performPerPageRequest :: ('FromJSON' a, 'Semigroup' a)
---                       => ('HTTP.Request' -> 'ExceptT' 'Error' 'IO' ('HTTP.Response' 'LBS.ByteString'))
---                       -> (a -> 'Bool')
---                       -> 'HTTP.Request'
---                       -> 'ExceptT' 'Error' 'IO' ('HTTP.Response' a)
--- @
+-- This parses and returns the 'PageLinks' alongside the HTTP response.
 performPerPageRequest
     :: forall a m mt. (ParseResponse mt a, MonadCatch m, MonadError Error m, MonadIO m)
     => (HTTP.Request -> m (HTTP.Response LBS.ByteString))  -- ^ `httpLbs` analogue
@@ -616,25 +564,22 @@ performPerPageRequest
     -> Tagged mt (m (HTTP.Response a, PageLinks))
 performPerPageRequest httpLbs' initReq = Tagged $ do
     res <- httpLbs' initReq
-
-    liftIO $ putStrLn ("performPerPageRequest: Got res: " <> show res)
-
-    let links :: [Link URI] = fromMaybe [] (lookup "Link" (responseHeaders res) >>= parseLinkHeaderBS)
-    let linkToUri (Link uri _) = uri
-    let pageLinks = PageLinks {
-          pageLinksPrev = linkToUri <$> find (elem (Rel, "prev") . linkParams) links
-          , pageLinksNext = linkToUri <$> find (elem (Rel, "next") . linkParams) links
-          , pageLinksLast = linkToUri <$> find (elem (Rel, "last") . linkParams) links
-          , pageLinksFirst = linkToUri <$> find (elem (Rel, "first") . linkParams) links
-          }
-
-    liftIO $ putStrLn ("performPerPageRequest: Got page links: " <> show pageLinks)
-
     m <- unTagged (parseResponse initReq res :: Tagged mt (m a))
+    return (m <$ res, parsePageLinks res)
 
-    liftIO $ putStrLn ("performPerPageRequest: Got here")
+-- | Parse the 'PageLinks' from an HTTP response, where the information is
+-- encoded in the Link header.
+parsePageLinks :: HTTP.Response a -> PageLinks
+parsePageLinks res = PageLinks {
+  pageLinksPrev = linkToUri <$> find (elem (Rel, "prev") . linkParams) links
+  , pageLinksNext = linkToUri <$> find (elem (Rel, "next") . linkParams) links
+  , pageLinksLast = linkToUri <$> find (elem (Rel, "last") . linkParams) links
+  , pageLinksFirst = linkToUri <$> find (elem (Rel, "first") . linkParams) links
+  }
+  where
+    links :: [Link URI] = fromMaybe [] (lookup "Link" (responseHeaders res) >>= parseLinkHeaderBS)
+    linkToUri (Link uri _) = uri
 
-    return (m <$ res, pageLinks)
 
 -------------------------------------------------------------------------------
 -- Internal

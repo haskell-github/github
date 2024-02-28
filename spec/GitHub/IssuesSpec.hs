@@ -42,13 +42,12 @@ spec = do
 
     describe "issuesForRepoPagedR" $ do
         it "works" $ withAuth $ \auth -> for_ repos $ \(owner, repo) -> do
-            cs <- GitHub.executeRequestPaged auth (PageParams (Just 2) (Just 1)) $
-                GitHub.issuesForRepoR owner repo mempty GitHub.FetchAll
+            cs <- GitHub.executeRequest auth $
+                GitHub.issuesForRepoR owner repo mempty (GitHub.FetchPage (PageParams (Just 2) (Just 1)))
             case cs of
               Left e ->
                 expectationFailure . show $ e
-              Right (cs', pageLinks) -> do
-                putStrLn ("GOT PAGE LINKS: " <> show pageLinks)
+              Right cs' -> do
                 for_ cs' $ \i -> do
                   cms <- GitHub.executeRequest auth $
                     GitHub.commentsR owner repo (GitHub.issueNumber i) 1
