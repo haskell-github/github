@@ -538,7 +538,6 @@ performPagedRequest
     -> Tagged mt (m (HTTP.Response a))
 performPagedRequest httpLbs' predicate initReq = Tagged $ do
     res <- httpLbs' initReq
-
     m <- unTagged (parseResponse initReq res :: Tagged mt (m a))
     go m res initReq
   where
