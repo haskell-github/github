@@ -40,10 +40,13 @@ spec = do
                     GitHub.commentsR owner repo (GitHub.issueNumber i) 1
                   cms `shouldSatisfy` isRight
 
-    describe "issuesForRepoPagedR" $ do
+    describe "issuesForRepoR paged" $ do
         it "works" $ withAuth $ \auth -> for_ repos $ \(owner, repo) -> do
             cs <- GitHub.executeRequest auth $
                 GitHub.issuesForRepoR owner repo mempty (GitHub.FetchPage (PageParams (Just 2) (Just 1)))
+
+            length cs `shouldSatisfy` (<= 2)
+
             case cs of
               Left e ->
                 expectationFailure . show $ e

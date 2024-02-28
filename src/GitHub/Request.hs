@@ -77,7 +77,6 @@ import Control.Monad.Error.Class (MonadError (..))
 import Control.Monad              (when)
 import Control.Monad.Catch        (MonadCatch (..), MonadThrow)
 import Control.Monad.Trans.Class  (lift)
-import Control.Monad.IO.Class     (MonadIO (..))
 import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
 import Data.Aeson                 (eitherDecode)
 import Data.List                  (find)
@@ -531,15 +530,13 @@ getNextUrl req = do
 --                     -> 'ExceptT' 'Error' 'IO' ('HTTP.Response' a)
 -- @
 performPagedRequest
-    :: forall a m mt. (ParseResponse mt a, Semigroup a, MonadCatch m, MonadError Error m, MonadIO m)
+    :: forall a m mt. (ParseResponse mt a, Semigroup a, MonadCatch m, MonadError Error m)
     => (HTTP.Request -> m (HTTP.Response LBS.ByteString))  -- ^ `httpLbs` analogue
     -> (a -> Bool)                                         -- ^ predicate to continue iteration
     -> HTTP.Request                                        -- ^ initial request
     -> Tagged mt (m (HTTP.Response a))
 performPagedRequest httpLbs' predicate initReq = Tagged $ do
     res <- httpLbs' initReq
-
-    liftIO $ putStrLn ("performPagedRequest: Got res: " <> show res)
 
     m <- unTagged (parseResponse initReq res :: Tagged mt (m a))
     go m res initReq
@@ -558,7 +555,7 @@ performPagedRequest httpLbs' predicate initReq = Tagged $ do
 --
 -- This parses and returns the 'PageLinks' alongside the HTTP response.
 performPerPageRequest
-    :: forall a m mt. (ParseResponse mt a, MonadCatch m, MonadError Error m, MonadIO m)
+    :: forall a m mt. (ParseResponse mt a, MonadCatch m, MonadError Error m)
     => (HTTP.Request -> m (HTTP.Response LBS.ByteString))  -- ^ `httpLbs` analogue
     -> HTTP.Request                                        -- ^ initial request
     -> Tagged mt (m (HTTP.Response a, PageLinks))

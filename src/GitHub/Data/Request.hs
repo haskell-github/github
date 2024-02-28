@@ -109,9 +109,9 @@ instance NFData FetchCount where rnf = genericRnf
 
 -- | Params for specifying the precise page and items per page.
 data PageParams = PageParams {
-  pageParamsPerPage :: Maybe Int
-  , pageParamsPage :: Maybe Int
-  }
+    pageParamsPerPage :: Maybe Int
+    , pageParamsPage :: Maybe Int
+    }
     deriving (Eq, Ord, Read, Show, Generic, Typeable)
 
 instance Hashable PageParams
@@ -125,11 +125,11 @@ instance NFData PageParams where rnf = genericRnf
 -- | 'PagedQuery' returns just some results, using this data we can specify how
 -- many pages we want to fetch.
 data PageLinks = PageLinks {
-  pageLinksPrev :: Maybe URI
-  , pageLinksNext :: Maybe URI
-  , pageLinksLast :: Maybe URI
-  , pageLinksFirst :: Maybe URI
-  }
+    pageLinksPrev :: Maybe URI
+    , pageLinksNext :: Maybe URI
+    , pageLinksLast :: Maybe URI
+    , pageLinksFirst :: Maybe URI
+    }
     deriving (Eq, Ord, Show, Generic, Typeable)
 
 instance NFData PageLinks where rnf = genericRnf
@@ -232,7 +232,7 @@ instance Hashable (GenRequest rw mt a) where
              `hashWithSalt` qs
              `hashWithSalt` l
     hashWithSalt salt (Command m ps body) =
-        salt `hashWithSalt` (3 :: Int)
+        salt `hashWithSalt` (2 :: Int)
              `hashWithSalt` m
              `hashWithSalt` ps
              `hashWithSalt` body
