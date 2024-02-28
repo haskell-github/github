@@ -9,7 +9,7 @@ module GitHub.Data.Request (
     Request,
     GenRequest (..),
     -- * Smart constructors
-    query, pagedQuery, perPageQuery, command,
+    query, pagedQuery, command,
     -- * Auxiliary types
     RW(..),
     CommandMethod(..),
@@ -78,7 +78,10 @@ toMethod Delete = Method.methodDelete
 
 -- | 'PagedQuery' returns just some results, using this data we can specify how
 -- many pages we want to fetch.
-data FetchCount = FetchAtLeast !Word | FetchAll
+data FetchCount =
+    FetchAtLeast !Word
+    | FetchAll
+    | FetchPage PageParams
     deriving (Eq, Ord, Read, Show, Generic, Typeable)
 
 
@@ -130,13 +133,6 @@ data PageLinks = PageLinks {
     deriving (Eq, Ord, Show, Generic, Typeable)
 
 instance NFData PageLinks where rnf = genericRnf
-
-instance FromJSON PageLinks where
-    parseJSON = withObject "PageLinks" $ \o -> PageLinks
-        <$> o .:? "prev"
-        <*> o .:? "next"
-        <*> o .:? "last"
-        <*> o .:? "first"
 
 -------------------------------------------------------------------------------
 -- MediaType
@@ -192,7 +188,6 @@ instance IReadOnly 'RA        where iro = ROA
 data GenRequest (mt :: MediaType *) (rw :: RW) a where
     Query        :: Paths -> QueryString -> GenRequest mt rw a
     PagedQuery   :: (a ~ t b, Foldable t, Semigroup a) => Paths -> QueryString -> FetchCount -> GenRequest mt rw a
-    PerPageQuery   :: (a ~ t b, Foldable t, Semigroup a) => Paths -> QueryString -> PageParams -> GenRequest mt rw (a, PageLinks)
 
     -- | Command
     Command
@@ -215,9 +210,6 @@ query ps qs = Query ps qs
 pagedQuery :: FromJSON a => Paths -> QueryString -> FetchCount -> Request mt (Vector a)
 pagedQuery ps qs fc = PagedQuery ps qs fc
 
-perPageQuery :: FromJSON a => Paths -> QueryString -> PageParams -> Request mt (Vector a, PageLinks)
-perPageQuery ps qs pp = PerPageQuery ps qs pp
-
 command :: CommandMethod -> Paths -> LBS.ByteString -> Request 'RW a
 command m ps body = Command m ps body
 
@@ -239,11 +231,6 @@ instance Hashable (GenRequest rw mt a) where
              `hashWithSalt` ps
              `hashWithSalt` qs
              `hashWithSalt` l
-    hashWithSalt salt (PerPageQuery ps qs pp) =
-        salt `hashWithSalt` (2 :: Int)
-             `hashWithSalt` ps
-             `hashWithSalt` qs
-             `hashWithSalt` pp
     hashWithSalt salt (Command m ps body) =
         salt `hashWithSalt` (3 :: Int)
              `hashWithSalt` m

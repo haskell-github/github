@@ -42,8 +42,8 @@ spec = do
 
     describe "issuesForRepoPagedR" $ do
         it "works" $ withAuth $ \auth -> for_ repos $ \(owner, repo) -> do
-            cs <- GitHub.executeRequest auth $
-                GitHub.issuesForRepoPagedR owner repo mempty (PageParams (Just 2) (Just 1))
+            cs <- GitHub.executeRequestPaged auth (PageParams (Just 2) (Just 1)) $
+                GitHub.issuesForRepoR owner repo mempty GitHub.FetchAll
             case cs of
               Left e ->
                 expectationFailure . show $ e

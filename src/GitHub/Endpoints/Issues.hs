@@ -8,7 +8,6 @@ module GitHub.Endpoints.Issues (
     organizationIssuesR,
     issueR,
     issuesForRepoR,
-    issuesForRepoPagedR,
     createIssueR,
     newIssue,
     editIssueR,
@@ -41,14 +40,6 @@ issueR user reqRepoName reqIssueNumber =
 issuesForRepoR :: Name Owner -> Name Repo -> IssueRepoMod -> FetchCount -> Request k (Vector Issue)
 issuesForRepoR user reqRepoName opts =
     pagedQuery ["repos", toPathPart user, toPathPart reqRepoName, "issues"] qs
-  where
-    qs = issueRepoModToQueryString opts
-
--- | List issues for a repository.
--- See <https://developer.github.com/v3/issues/#list-issues-for-a-repository>
-issuesForRepoPagedR :: Name Owner -> Name Repo -> IssueRepoMod -> PageParams -> Request k (Vector Issue, PageLinks)
-issuesForRepoPagedR user reqRepoName opts =
-    perPageQuery ["repos", toPathPart user, toPathPart reqRepoName, "issues"] qs
   where
     qs = issueRepoModToQueryString opts
 

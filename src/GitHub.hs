@@ -111,7 +111,6 @@ module GitHub (
     organizationIssuesR,
     issueR,
     issuesForRepoR,
-    issuesForRepoPagedR,
     createIssueR,
     editIssueR,
 
