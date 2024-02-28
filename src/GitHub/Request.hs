@@ -222,13 +222,7 @@ executeRequestWithMgrAndRes
     -> GenRequest mt rw a
     -> IO (Either Error (HTTP.Response a))
 executeRequestWithMgrAndRes mgr auth req = runExceptT $ do
-    httpReq <- makeHttpRequest (Just auth) req $ case req of
-      PagedQuery _ _ (FetchPage pp) -> catMaybes [
-        (\page -> ("page", Just (BS.toStrict $ toLazyByteString $ intDec page))) <$> pageParamsPage pp
-        , (\perPage -> ("per_page", Just (BS.toStrict $ toLazyByteString $ intDec perPage))) <$> pageParamsPerPage pp
-        ]
-      _ -> []
-
+    httpReq <- makeHttpRequest (Just auth) req
     performHttpReq httpReq req
   where
     httpLbs' :: HTTP.Request -> ExceptT Error IO (HTTP.Response LBS.ByteString)
@@ -455,9 +449,8 @@ makeHttpRequest
     :: forall am mt rw a m. (AuthMethod am, MonadThrow m, Accept mt)
     => Maybe am
     -> GenRequest mt rw a
-    -> [(BS.ByteString, Maybe BS.ByteString)]
     -> m HTTP.Request
-makeHttpRequest auth r extraQueryItems = case r of
+makeHttpRequest auth r = case r of
     Query paths qs -> do
         req <- parseUrl' $ url paths
         return
@@ -503,6 +496,14 @@ makeHttpRequest auth r extraQueryItems = case r of
 
     setBody :: LBS.ByteString -> HTTP.Request -> HTTP.Request
     setBody body req = req { requestBody = RequestBodyLBS body }
+
+    extraQueryItems :: [(BS.ByteString, Maybe BS.ByteString)]
+    extraQueryItems = case r of
+      PagedQuery _ _ (FetchPage pp) -> catMaybes [
+          (\page -> ("page", Just (BS.toStrict $ toLazyByteString $ intDec page))) <$> pageParamsPage pp
+          , (\perPage -> ("per_page", Just (BS.toStrict $ toLazyByteString $ intDec perPage))) <$> pageParamsPerPage pp
+          ]
+      _ -> []
 
 -- | Query @Link@ header with @rel=next@ from the request headers.
 getNextUrl :: HTTP.Response a -> Maybe URI
