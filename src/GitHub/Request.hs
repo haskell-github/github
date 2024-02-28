@@ -568,15 +568,17 @@ performPerPageRequest httpLbs' initReq = Tagged $ do
 -- encoded in the Link header.
 parsePageLinks :: HTTP.Response a -> PageLinks
 parsePageLinks res = PageLinks {
-  pageLinksPrev = linkToUri <$> find (elem (Rel, "prev") . linkParams) links
-  , pageLinksNext = linkToUri <$> find (elem (Rel, "next") . linkParams) links
-  , pageLinksLast = linkToUri <$> find (elem (Rel, "last") . linkParams) links
-  , pageLinksFirst = linkToUri <$> find (elem (Rel, "first") . linkParams) links
-  }
-  where
-    links :: [Link URI] = fromMaybe [] (lookup "Link" (responseHeaders res) >>= parseLinkHeaderBS)
-    linkToUri (Link uri _) = uri
+    pageLinksPrev = linkToUri <$> find (elem (Rel, "prev") . linkParams) links
+    , pageLinksNext = linkToUri <$> find (elem (Rel, "next") . linkParams) links
+    , pageLinksLast = linkToUri <$> find (elem (Rel, "last") . linkParams) links
+    , pageLinksFirst = linkToUri <$> find (elem (Rel, "first") . linkParams) links
+    }
+    where
+        links :: [Link URI]
+        links = fromMaybe [] (lookup "Link" (responseHeaders res) >>= parseLinkHeaderBS)
 
+        linkToUri :: Link URI -> URI
+        linkToUri (Link uri _) = uri
 
 -------------------------------------------------------------------------------
 -- Internal
