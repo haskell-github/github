@@ -6,12 +6,13 @@ import qualified GitHub
 import Prelude ()
 import Prelude.Compat
 
-import Data.Either.Compat (isRight)
-import Data.Foldable      (for_)
-import Data.String        (fromString)
-import System.Environment (lookupEnv)
-import Test.Hspec
-       (Spec, describe, expectationFailure, it, pendingWith, shouldSatisfy)
+import Data.Either.Compat  (isRight)
+import Data.Foldable       (for_)
+import Data.String         (fromString)
+import Network.HTTP.Client (newManager, responseBody)
+import System.Environment  (lookupEnv)
+import Test.Hspec          (Spec, describe, expectationFailure, it, pendingWith, shouldSatisfy)
+
 
 fromRightS :: Show a => Either a b -> b
 fromRightS (Right b) = b
@@ -38,6 +39,25 @@ spec = do
                   cms <- GitHub.executeRequest auth $
                     GitHub.commentsR owner repo (GitHub.issueNumber i) 1
                   cms `shouldSatisfy` isRight
+
+    describe "issuesForRepoR paged" $ do
+        it "works" $ withAuth $ \auth -> for_ repos $ \(owner, repo) -> do
+            mgr <- newManager GitHub.tlsManagerSettings
+            ret <- GitHub.executeRequestWithMgrAndRes mgr auth $
+                GitHub.issuesForRepoR owner repo mempty (GitHub.FetchPage (GitHub.PageParams (Just 2) (Just 1)))
+
+            case ret of
+              Left e ->
+                expectationFailure . show $ e
+              Right res -> do
+                let issues = responseBody res
+                length issues `shouldSatisfy` (<= 2)
+
+                for_ issues $ \i -> do
+                  cms <- GitHub.executeRequest auth $
+                    GitHub.commentsR owner repo (GitHub.issueNumber i) 1
+                  cms `shouldSatisfy` isRight
+
     describe "issueR" $ do
         it "fetches issue #428" $ withAuth $ \auth -> do
             resIss <- GitHub.executeRequest auth $

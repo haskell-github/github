@@ -15,6 +15,8 @@ module GitHub.Data.Request (
     CommandMethod(..),
     toMethod,
     FetchCount(..),
+    PageParams(..),
+    PageLinks(..),
     MediaType (..),
     Paths,
     IsPathPart(..),
@@ -30,6 +32,7 @@ import GitHub.Internal.Prelude
 import qualified Data.ByteString.Lazy      as LBS
 import qualified Data.Text                 as T
 import qualified Network.HTTP.Types.Method as Method
+import Network.URI (URI)
 
 ------------------------------------------------------------------------------
 -- Path parts
@@ -75,7 +78,10 @@ toMethod Delete = Method.methodDelete
 
 -- | 'PagedQuery' returns just some results, using this data we can specify how
 -- many pages we want to fetch.
-data FetchCount = FetchAtLeast !Word | FetchAll
+data FetchCount =
+    FetchAtLeast !Word
+    | FetchAll
+    | FetchPage PageParams
     deriving (Eq, Ord, Read, Show, Generic, Typeable)
 
 
@@ -96,6 +102,37 @@ instance Num FetchCount where
 instance Hashable FetchCount
 instance Binary FetchCount
 instance NFData FetchCount where rnf = genericRnf
+
+-------------------------------------------------------------------------------
+-- PageParams
+-------------------------------------------------------------------------------
+
+-- | Params for specifying the precise page and items per page.
+data PageParams = PageParams {
+    pageParamsPerPage :: Maybe Int
+    , pageParamsPage :: Maybe Int
+    }
+    deriving (Eq, Ord, Read, Show, Generic, Typeable)
+
+instance Hashable PageParams
+instance Binary PageParams
+instance NFData PageParams where rnf = genericRnf
+
+-------------------------------------------------------------------------------
+-- PageLinks
+-------------------------------------------------------------------------------
+
+-- | 'PagedQuery' returns just some results, using this data we can specify how
+-- many pages we want to fetch.
+data PageLinks = PageLinks {
+    pageLinksPrev :: Maybe URI
+    , pageLinksNext :: Maybe URI
+    , pageLinksLast :: Maybe URI
+    , pageLinksFirst :: Maybe URI
+    }
+    deriving (Eq, Ord, Show, Generic, Typeable)
+
+instance NFData PageLinks where rnf = genericRnf
 
 -------------------------------------------------------------------------------
 -- MediaType

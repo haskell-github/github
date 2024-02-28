@@ -54,6 +54,7 @@ module GitHub.Request (
     ParseResponse (..),
     makeHttpRequest,
     parseStatus,
+    parsePageLinks,
     StatusMap,
     getNextUrl,
     performPagedRequest,
@@ -79,6 +80,7 @@ import Control.Monad.Trans.Class  (lift)
 import Control.Monad.Trans.Except (ExceptT (..), runExceptT)
 import Data.Aeson                 (eitherDecode)
 import Data.List                  (find)
+import Data.Maybe                 (fromMaybe)
 import Data.Tagged                (Tagged (..))
 import Data.Version               (showVersion)
 
@@ -87,13 +89,14 @@ import Network.HTTP.Client
        httpLbs, method, newManager, redirectCount, requestBody, requestHeaders,
        setQueryString, setRequestIgnoreStatus)
 import Network.HTTP.Link.Parser (parseLinkHeaderBS)
-import Network.HTTP.Link.Types  (LinkParam (..), href, linkParams)
+import Network.HTTP.Link.Types  (Link(..), LinkParam (..), href, linkParams)
 import Network.HTTP.Types       (Method, RequestHeaders, Status (..))
 import Network.URI
        (URI, escapeURIString, isUnescapedInURIComponent, parseURIReference,
        relativeTo)
 
 import qualified Data.ByteString              as BS
+import           Data.ByteString.Builder      (intDec, toLazyByteString)
 import qualified Data.ByteString.Lazy         as LBS
 import qualified Data.Text                    as T
 import qualified Data.Text.Encoding           as TE
@@ -199,11 +202,6 @@ executeRequest auth req = withOpenSSL $ do
     manager <- newManager tlsManagerSettings
     executeRequestWithMgr manager auth req
 
-lessFetchCount :: Int -> FetchCount -> Bool
-lessFetchCount _ FetchAll         = True
-lessFetchCount i (FetchAtLeast j) = i < fromIntegral j
-
-
 -- | Like 'executeRequest' but with provided 'Manager'.
 executeRequestWithMgr
     :: (AuthMethod am, ParseResponse mt a)
@@ -235,10 +233,13 @@ executeRequestWithMgrAndRes mgr auth req = runExceptT $ do
         res <- httpLbs' httpReq
         (<$ res) <$> unTagged (parseResponse httpReq res :: Tagged mt (ExceptT Error IO b))
 
-    performHttpReq httpReq (PagedQuery _ _ l) =
-        unTagged (performPagedRequest httpLbs' predicate httpReq :: Tagged mt (ExceptT Error IO (HTTP.Response b)))
-      where
-        predicate v = lessFetchCount (length v) l
+    performHttpReq httpReq (PagedQuery _ _ (FetchPage _)) = do
+        (res, _pageLinks) <- unTagged (performPerPageRequest httpLbs' httpReq :: Tagged mt (ExceptT Error IO (HTTP.Response b, PageLinks)))
+        return res
+    performHttpReq httpReq (PagedQuery _ _ FetchAll) =
+        unTagged (performPagedRequest httpLbs' (const True) httpReq :: Tagged mt (ExceptT Error IO (HTTP.Response b)))
+    performHttpReq httpReq (PagedQuery _ _ (FetchAtLeast j)) =
+        unTagged (performPagedRequest httpLbs' (\v -> length v < fromIntegral j) httpReq :: Tagged mt (ExceptT Error IO (HTTP.Response b)))
 
     performHttpReq httpReq (Command _ _ _) = do
         res <- httpLbs' httpReq
@@ -456,7 +457,7 @@ makeHttpRequest auth r = case r of
             $ setReqHeaders
             . unTagged (modifyRequest :: Tagged mt (HTTP.Request -> HTTP.Request))
             . maybe id setAuthRequest auth
-            . setQueryString qs
+            . setQueryString (qs <> extraQueryItems)
             $ req
     PagedQuery paths qs _ -> do
         req <- parseUrl' $ url paths
@@ -464,7 +465,7 @@ makeHttpRequest auth r = case r of
             $ setReqHeaders
             . unTagged (modifyRequest :: Tagged mt (HTTP.Request -> HTTP.Request))
             . maybe id setAuthRequest auth
-            . setQueryString qs
+            . setQueryString (qs <> extraQueryItems)
             $ req
     Command m paths body -> do
         req <- parseUrl' $ url paths
@@ -495,6 +496,14 @@ makeHttpRequest auth r = case r of
 
     setBody :: LBS.ByteString -> HTTP.Request -> HTTP.Request
     setBody body req = req { requestBody = RequestBodyLBS body }
+
+    extraQueryItems :: [(BS.ByteString, Maybe BS.ByteString)]
+    extraQueryItems = case r of
+      PagedQuery _ _ (FetchPage pp) -> catMaybes [
+          (\page -> ("page", Just (BS.toStrict $ toLazyByteString $ intDec page))) <$> pageParamsPage pp
+          , (\perPage -> ("per_page", Just (BS.toStrict $ toLazyByteString $ intDec perPage))) <$> pageParamsPerPage pp
+          ]
+      _ -> []
 
 -- | Query @Link@ header with @rel=next@ from the request headers.
 getNextUrl :: HTTP.Response a -> Maybe URI
@@ -541,6 +550,35 @@ performPagedRequest httpLbs' predicate initReq = Tagged $ do
                 m <- unTagged (parseResponse req' res' :: Tagged mt (m a))
                 go (acc <> m) res' req'
             (_, _)           -> return (acc <$ res)
+
+-- | Helper for requesting a single page, as specified by 'PageParams'.
+--
+-- This parses and returns the 'PageLinks' alongside the HTTP response.
+performPerPageRequest
+    :: forall a m mt. (ParseResponse mt a, MonadCatch m, MonadError Error m)
+    => (HTTP.Request -> m (HTTP.Response LBS.ByteString))  -- ^ `httpLbs` analogue
+    -> HTTP.Request                                        -- ^ initial request
+    -> Tagged mt (m (HTTP.Response a, PageLinks))
+performPerPageRequest httpLbs' initReq = Tagged $ do
+    res <- httpLbs' initReq
+    m <- unTagged (parseResponse initReq res :: Tagged mt (m a))
+    return (m <$ res, parsePageLinks res)
+
+-- | Parse the 'PageLinks' from an HTTP response, where the information is
+-- encoded in the Link header.
+parsePageLinks :: HTTP.Response a -> PageLinks
+parsePageLinks res = PageLinks {
+    pageLinksPrev = linkToUri <$> find (elem (Rel, "prev") . linkParams) links
+    , pageLinksNext = linkToUri <$> find (elem (Rel, "next") . linkParams) links
+    , pageLinksLast = linkToUri <$> find (elem (Rel, "last") . linkParams) links
+    , pageLinksFirst = linkToUri <$> find (elem (Rel, "first") . linkParams) links
+    }
+    where
+        links :: [Link URI]
+        links = fromMaybe [] (lookup "Link" (responseHeaders res) >>= parseLinkHeaderBS)
+
+        linkToUri :: Link URI -> URI
+        linkToUri (Link uri _) = uri
 
 -------------------------------------------------------------------------------
 -- Internal
