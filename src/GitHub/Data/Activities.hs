@@ -26,7 +26,7 @@ instance FromJSON RepoStarred where
 
 data Subject = Subject
     { subjectTitle :: !Text
-    , subjectURL :: !URL
+    , subjectURL :: !(Maybe URL)
     , subjectLatestCommentURL :: !(Maybe URL)
     -- https://developer.github.com/v3/activity/notifications/ doesn't indicate
     -- what the possible values for this field are.
