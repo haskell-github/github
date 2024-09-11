@@ -57,6 +57,7 @@ module GitHub.Data (
     module GitHub.Data.PullRequests,
     module GitHub.Data.RateLimit,
     module GitHub.Data.Releases,
+    module GitHub.Data.Reactions,
     module GitHub.Data.Repos,
     module GitHub.Data.Request,
     module GitHub.Data.Reviews,
@@ -99,6 +100,7 @@ import GitHub.Data.PublicSSHKeys
 import GitHub.Data.PullRequests
 import GitHub.Data.RateLimit
 import GitHub.Data.Releases
+import GitHub.Data.Reactions
 import GitHub.Data.Repos
 import GitHub.Data.Request
 import GitHub.Data.Reviews
