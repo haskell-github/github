@@ -285,6 +285,15 @@ module GitHub (
     commitR,
     diffR,
 
+    -- ** Reactions
+    -- | See <https://docs.github.com/en/rest/reactions/reactions?apiVersion=2022-11-28>
+    issueReactionsR,
+    createIssueReactionR,
+    deleteIssueReactionR,
+    commentReactionsR,
+    createCommentReactionR,
+    deleteCommentReactionR,
+
     -- ** Contents
     -- | See <https://developer.github.com/v3/repos/contents/>
     contentsForR,
@@ -514,6 +523,7 @@ import GitHub.Endpoints.Organizations.Teams
 import GitHub.Endpoints.PullRequests
 import GitHub.Endpoints.PullRequests.Comments
 import GitHub.Endpoints.PullRequests.Reviews
+import GitHub.Endpoints.Reactions
 import GitHub.Endpoints.RateLimit
 import GitHub.Endpoints.Repos
 import GitHub.Endpoints.Repos.Collaborators
