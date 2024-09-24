@@ -46,13 +46,18 @@ instance FromJSON Subject where
         <*> o .: "type"
 
 data NotificationReason
-    = AssignReason
+    = ApprovalRequestedReason
+    | AssignReason
     | AuthorReason
     | CommentReason
+    | CiActivityReason
     | InvitationReason
     | ManualReason
+    | MemberFeatureRequestedReason
     | MentionReason
     | ReviewRequestedReason
+    | SecurityAlertReason
+    | SecurityAdvisoryCreditReason
     | StateChangeReason
     | SubscribedReason
     | TeamMentionReason
@@ -63,17 +68,22 @@ instance Binary NotificationReason
 
 instance FromJSON NotificationReason where
     parseJSON = withText "NotificationReason" $ \t -> case T.toLower t of
-        "assign"           -> pure AssignReason
-        "author"           -> pure AuthorReason
-        "comment"          -> pure CommentReason
-        "invitation"       -> pure InvitationReason
-        "manual"           -> pure ManualReason
-        "mention"          -> pure MentionReason
-        "review_requested" -> pure ReviewRequestedReason
-        "state_change"     -> pure StateChangeReason
-        "subscribed"       -> pure SubscribedReason
-        "team_mention"     -> pure TeamMentionReason
-        _                  -> fail $ "Unknown NotificationReason " ++ show t
+      "approval_requested"       -> pure ApprovalRequestedReason
+      "assign"                   -> pure AssignReason
+      "author"                   -> pure AuthorReason
+      "comment"                  -> pure CommentReason
+      "ci_activity"              -> pure CiActivityReason
+      "invitation"               -> pure InvitationReason
+      "manual"                   -> pure ManualReason
+      "member_feature_requested" -> pure MemberFeatureRequestedReason
+      "mention"                  -> pure MentionReason
+      "review_requested"         -> pure ReviewRequestedReason
+      "security_alert"           -> pure SecurityAlertReason
+      "security_advisory_credit" -> pure SecurityAdvisoryCreditReason
+      "state_change"             -> pure StateChangeReason
+      "subscribed"               -> pure SubscribedReason
+      "team_mention"             -> pure TeamMentionReason
+      _                          -> fail $ "Unknown NotificationReason " ++ show t
 
 data Notification = Notification
     -- XXX: The notification id field type IS in fact string. Not sure why gh
