@@ -1,5 +1,4 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE CPP #-}
 
 -- |
 -- This module may change between minor releases. Do not rely on its contents.
@@ -24,7 +23,7 @@ import Data.Maybe               as X (catMaybes)
 import Data.Semigroup           as X (Semigroup (..))
 import Data.String              as X (IsString (..))
 import Data.Text                as X (Text, pack, unpack)
-import Data.Time.Compat         as X (UTCTime)
+import Data.Time                as X (UTCTime)
 import Data.Time.ISO8601        as X (formatISO8601)
 import Data.Vector              as X (Vector)
 import GHC.Generics             as X (Generic)

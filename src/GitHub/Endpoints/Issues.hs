@@ -1,5 +1,3 @@
-{-# LANGUAGE CPP #-}
-
 -- |
 -- The issues API as described on <http://developer.github.com/v3/issues/>.
 

@@ -1,5 +1,3 @@
-{-# LANGUAGE CPP #-}
-
 -- |
 -- This module re-exports the @GitHub.Data.@ and "GitHub.Auth" submodules.
 

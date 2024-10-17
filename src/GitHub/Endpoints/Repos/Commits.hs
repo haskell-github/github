@@ -1,5 +1,3 @@
-{-# LANGUAGE CPP #-}
-
 -- |
 -- The repo commits API as described on
 -- <http://developer.github.com/v3/repos/commits/>.

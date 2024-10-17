@@ -1,6 +1,4 @@
-{-# LANGUAGE CPP               #-}
 {-# LANGUAGE FlexibleInstances #-}
-#define UNSAFE 1
 
 -- |
 -- This module also exports
@@ -19,13 +17,7 @@ import Prelude ()
 
 import qualified Data.HashMap.Strict as HM
 import qualified Data.Text as T
-#if MIN_VERSION_aeson(1,0,0)
 import Data.Aeson.Types (FromJSONKey (..), fromJSONKeyCoerce)
-#else
-#ifdef UNSAFE
-import Unsafe.Coerce (unsafeCoerce)
-#endif
-#endif
 
 data Repo = Repo
     { repoId              :: !(Id Repo)
@@ -383,22 +375,8 @@ instance FromJSON Language where
 instance ToJSON Language where
     toJSON = toJSON . getLanguage
 
-#if MIN_VERSION_aeson(1,0,0)
 instance FromJSONKey Language where
     fromJSONKey = fromJSONKeyCoerce
-#else
-instance FromJSON a => FromJSON (HM.HashMap Language a) where
-    parseJSON = fmap mapKeyLanguage . parseJSON
-      where
-        mapKeyLanguage :: HM.HashMap Text a -> HM.HashMap Language a
-#ifdef UNSAFE
-        mapKeyLanguage = unsafeCoerce
-#else
-        mapKeyLanguage = mapKey Language
-        mapKey :: (Eq k2, Hashable k2) => (k1 -> k2) -> HM.HashMap k1 a -> HM.HashMap k2 a
-        mapKey f = HM.fromList . map (first f) . HM.toList
-#endif
-#endif
 
 data ArchiveFormat
     = ArchiveFormatTarball -- ^ ".tar.gz" format

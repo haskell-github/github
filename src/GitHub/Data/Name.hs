@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 module GitHub.Data.Name (
     Name(..),
     mkName,
@@ -8,10 +7,8 @@ module GitHub.Data.Name (
 import Prelude ()
 import GitHub.Internal.Prelude
 
-#if MIN_VERSION_aeson(1,0,0)
 import Data.Aeson.Types
        (FromJSONKey (..), ToJSONKey (..), fromJSONKeyCoerce, toJSONKeyText)
-#endif
 
 newtype Name entity = N Text
     deriving (Eq, Ord, Show, Generic, Typeable, Data)
@@ -38,7 +35,6 @@ instance ToJSON (Name entity) where
 instance IsString (Name entity) where
     fromString = N . fromString
 
-#if MIN_VERSION_aeson(1,0,0)
 -- | @since 0.15.0.0
 instance ToJSONKey (Name entity) where
     toJSONKey = toJSONKeyText untagName
@@ -46,4 +42,3 @@ instance ToJSONKey (Name entity) where
 -- | @since 0.15.0.0
 instance FromJSONKey (Name entity) where
     fromJSONKey = fromJSONKeyCoerce
-#endif

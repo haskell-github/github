@@ -1,3 +1,10 @@
+## Changes for 0.29.1
+
+- Drop support for GHC 8.0 and below.
+- Drop dependency `time-compat`.
+
+Tested with GHC 8.2 - 9.10.1.
+
 ## Changes for 0.29
 
 _2023-06-24, Andreas Abel, Midsommar edition_

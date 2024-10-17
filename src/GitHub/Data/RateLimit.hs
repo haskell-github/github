@@ -3,7 +3,7 @@ module GitHub.Data.RateLimit where
 import GitHub.Internal.Prelude
 import Prelude ()
 
-import Data.Time.Clock.System.Compat (SystemTime (..))
+import Data.Time.Clock.System (SystemTime (..))
 
 import qualified Data.ByteString.Char8 as BS8
 import qualified Network.HTTP.Client as HTTP
