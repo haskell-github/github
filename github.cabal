@@ -30,8 +30,9 @@ copyright:
   Copyright 2012-2013 Mike Burns, Copyright 2013-2015 John Wiegley, Copyright 2016-2021 Oleg Grenrus
 
 tested-with:
+  GHC == 9.12.1
   GHC == 9.10.1
-  GHC == 9.8.2
+  GHC == 9.8.4
   GHC == 9.6.6
   GHC == 9.4.8
   GHC == 9.2.8

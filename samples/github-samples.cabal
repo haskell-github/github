@@ -10,8 +10,9 @@ description:   Various samples of github package
 build-type:    Simple
 
 tested-with:
+  GHC == 9.12.1
   GHC == 9.10.1
-  GHC == 9.8.2
+  GHC == 9.8.4
   GHC == 9.6.6
   GHC == 9.4.8
   GHC == 9.2.8
@@ -40,7 +41,7 @@ executable github-operational
   hs-source-dirs:   Operational
   ghc-options:      -Wall -threaded
   build-depends:
-    , base                   >=0 && <5
+    , base
     , base-compat-batteries
     , github
     , github-samples
@@ -56,7 +57,7 @@ common deps
     -Wall
     -threaded
   build-depends:
-    , base                   >=4.8 && <5
+    , base
     , base-compat-batteries
     , base64-bytestring
     , github
