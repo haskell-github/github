@@ -47,6 +47,7 @@ data Job = Job
     , jobConclusion      :: !Text
     , jobStartedAt       :: !UTCTime
     , jobCompletedAt     :: !UTCTime
+    , jobName            :: !(Name Job)
     , jobSteps           :: !(Vector JobStep)
     , jobRunCheckUrl     :: !URL
     , jobLabels          :: !(Vector Text)
@@ -84,6 +85,7 @@ instance FromJSON Job where
         <*> o .: "conclusion"
         <*> o .: "started_at"
         <*> o .: "completed_at"
+        <*> o .: "name"
         <*> o .: "steps"
         <*> o .: "check_run_url"
         <*> o .: "labels"
