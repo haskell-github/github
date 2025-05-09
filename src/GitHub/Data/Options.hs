@@ -122,6 +122,7 @@ instance Binary IssueState
 -- | 'GitHub.Data.Issues.Issue' state reason
 data IssueStateReason
     = StateReasonCompleted
+    | StateReasonDuplicate
     | StateReasonNotPlanned
     | StateReasonReopened
   deriving
@@ -130,12 +131,14 @@ data IssueStateReason
 instance ToJSON IssueStateReason where
     toJSON = String . \case
       StateReasonCompleted  -> "completed"
+      StateReasonDuplicate  -> "duplicate"
       StateReasonNotPlanned -> "not_planned"
       StateReasonReopened   -> "reopened"
 
 instance FromJSON IssueStateReason where
     parseJSON = withText "IssueStateReason" $ \t -> case T.toLower t of
         "completed"   -> pure StateReasonCompleted
+        "duplicate"   -> pure StateReasonDuplicate
         "not_planned" -> pure StateReasonNotPlanned
         "reopened"    -> pure StateReasonReopened
         _ -> fail $ "Unknown IssueStateReason: " <> T.unpack t
