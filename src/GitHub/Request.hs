@@ -500,8 +500,8 @@ makeHttpRequest auth r = case r of
     extraQueryItems :: [(BS.ByteString, Maybe BS.ByteString)]
     extraQueryItems = case r of
       PagedQuery _ _ (FetchPage pp) -> catMaybes [
-          (\page -> ("page", Just (BS.toStrict $ toLazyByteString $ intDec page))) <$> pageParamsPage pp
-          , (\perPage -> ("per_page", Just (BS.toStrict $ toLazyByteString $ intDec perPage))) <$> pageParamsPerPage pp
+          (\page -> ("page", Just (LBS.toStrict $ toLazyByteString $ intDec page))) <$> pageParamsPage pp
+          , (\perPage -> ("per_page", Just (LBS.toStrict $ toLazyByteString $ intDec perPage))) <$> pageParamsPerPage pp
           ]
       _ -> []
 
