@@ -1,9 +1,19 @@
-## Changes for 0.29.1
+## Changes for 0.30
 
+_2025-05-09, Andreas Abel, Peace edition_
+
+- Organization membership endpoint (Domen Kožar, PR [#487](https://github.com/haskell-github/github/pull/487)).
+- Allow JWT as an authentication method (Tom Sydney Kerckhove, PR [#497](https://github.com/haskell-github/github/pull/497)).
+- Support pagination (Tom McLaughlin, PR [#503](https://github.com/haskell-github/github/pull/503)).
+- Initial subset of Reactions endpoints (Dan Rijks, PR [#509](https://github.com/haskell-github/github/pull/509)).
+- Fix `getNotifications` (maralorn, PR [#511](https://github.com/haskell-github/github/pull/511)).
+- Add missing `name` field to `WorkflowJobs` `Job` type (Hugh Davidson, PR [#518](https://github.com/haskell-github/github/pull/518)).
+- Add `StateReasonDuplicate` to `IssueStateReason` (PR [#523](https://github.com/haskell-github/github/pull/523)).
 - Drop support for GHC 8.0 and below.
 - Drop dependency `time-compat`.
 
-Tested with GHC 8.2 - 9.10.1.
+Tested with GHC 8.2 - 9.12.2.
+
 
 ## Changes for 0.29
 
