@@ -264,7 +264,6 @@ test-suite github-test
     , file-embed
     , github
     , hspec                 >=2.6.1 && <2.12
-    , http-client
     , tagged
     , text
     , unordered-containers
