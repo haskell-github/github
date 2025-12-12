@@ -208,8 +208,8 @@ instance FromJSON Commit where
         <*> o .: "parents"
         <*> o .: "url"
         <*> o .: "commit"
-        <*> o .:? "committer"
-        <*> o .:? "author"
+        <*> (o .:? "committer" <|> pure Nothing)
+        <*> (o .:? "author" <|> pure Nothing)
         <*> o .:? "files" .!= V.empty
         <*> o .:? "stats"
 
