@@ -1,6 +1,6 @@
 cabal-version:      2.4
 name:               github
-version:            0.30.0.1
+version:            0.30.0.2
 synopsis:           Access to the GitHub API, v3.
 category:           Network
 description:
@@ -32,7 +32,7 @@ copyright:
 tested-with:
   GHC == 9.14.1
   GHC == 9.12.2
-  GHC == 9.10.2
+  GHC == 9.10.3
   GHC == 9.8.4
   GHC == 9.6.7
   GHC == 9.4.8
@@ -223,7 +223,7 @@ library
 
   else
     build-depends:
-        http-client-tls  >=0.3.5.3 && <0.4
+        http-client-tls  >=0.3.5.3 && <0.5
       , tls              >=1.4.1
 
 test-suite github-test

@@ -1,3 +1,13 @@
+## Changes for 0.30.0.2
+
+_2026-03-12, Andreas Abel_
+
+- Fixed issue [#531](https://github.com/haskell-github/github/issues/531)
+  (Norfairking, PR [#532](https://github.com/haskell-github/github/pull/532)).
+- Allow `http-client-tls-0.4`.
+
+Tested with GHC 8.2 - 9.14.1.
+
 ## Changes for 0.30.0.1
 
 _2025-08-27, Andreas Abel_
