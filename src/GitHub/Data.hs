@@ -62,6 +62,7 @@ module GitHub.Data (
     module GitHub.Data.Search,
     module GitHub.Data.Statuses,
     module GitHub.Data.Teams,
+    module GitHub.Data.Traffic,
     module GitHub.Data.URL,
     module GitHub.Data.Webhooks,
     module GitHub.Data.Webhooks.Validate,
@@ -105,6 +106,7 @@ import GitHub.Data.Reviews
 import GitHub.Data.Search
 import GitHub.Data.Statuses
 import GitHub.Data.Teams
+import GitHub.Data.Traffic
 import GitHub.Data.URL
 import GitHub.Data.Webhooks
 import GitHub.Data.Webhooks.Validate
